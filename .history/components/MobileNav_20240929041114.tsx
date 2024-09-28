@@ -21,7 +21,7 @@ const MobileNav = () => {
             DOKMAI STORE
           </span>
         </div>
-        <div className='grid grid-cols-2 w-full h-fit gap-1'>
+        <div className='grid grid-flow-col w-full h-fit gap-1'>
           {navButtons.map((nav, i) => (
             <Link
               href={nav.url}

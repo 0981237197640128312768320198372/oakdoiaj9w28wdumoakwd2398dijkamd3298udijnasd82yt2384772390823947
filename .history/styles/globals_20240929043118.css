@@ -145,7 +145,7 @@
 }
 
 .__container {
-  @apply max-w-[1140px];
+  @apply min-w-fit max-w-[1140px];
 }
 
 a:focus,

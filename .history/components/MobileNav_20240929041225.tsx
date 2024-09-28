@@ -26,7 +26,7 @@ const MobileNav = () => {
             <Link
               href={nav.url}
               key={i}
-              className={`dark:text-gray-400 w-full flex justify-start items-start h-12 md:text-sm font-medium group duration-200 p-2 ${
+              className={`dark:text-gray-400 w-full flex justify-start items-end h-12 md:text-sm font-medium group duration-200 p-2 ${
                 path === nav.url
                   ? "font-black transition-transform duration-700 "
                   : ""

@@ -6,13 +6,13 @@ const HeroSection = () => {
   return (
     <section
       id='HeroSection'
-      className='flex flex-col justify-start items-center __container'
+      className='flex flex-col justify-start items-center bg-red-500'
     >
-      <div className='flex flex-col justify-start items-center text-center w-full'>
+      <div className='flex flex-col justify-start items-center text-center px-4 w-full'>
         <h1 className='text-3xl md:text-6xl font-aktivGroteskMedium text-light-200 mb-4'>
           Watch More Series, <br className='sm:hidden' /> Spend Less Money
         </h1>
-        <p className='md:text-xl text-light-200 font-mono text-xs'>
+        <p className='md:text-xl text-light-200 max-w-xl mx-auto font-mono bg-red-400 text-xs'>
           High Quality{" "}
           <span className='text-dark-800 bg-primary px-1'>Netflix Premium</span>{" "}
           Cheap Price with Lifetime Warranty – Dokmai Store, the best digital

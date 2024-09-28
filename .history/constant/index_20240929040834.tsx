@@ -12,10 +12,6 @@ export const navButtons = [
     url: "/testimonials",
   },
   {
-    title: "วิธีการสั่งซื้อ",
-    url: "/how-to-order",
-  },
-  {
     title: "Netflix News",
     url: "/netflix-news",
   },
@@ -30,6 +26,10 @@ export const navButtons = [
   {
     title: "ข้อตกลงและเงื่อนไข",
     url: "/terms-and-conditions",
+  },
+  {
+    title: "วิธีการสั่งซื้อ",
+    url: "/how-to-order",
   },
 ]
 
