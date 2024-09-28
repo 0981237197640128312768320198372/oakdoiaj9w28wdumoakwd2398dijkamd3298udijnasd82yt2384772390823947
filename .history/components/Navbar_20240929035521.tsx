@@ -62,7 +62,7 @@ const Navbar = () => {
           />
         </Link>
         <div className='flex items-center justify-end gap-5'>
-          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:text-md'>
+          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:text-lg'>
             <Link
               href='https://dokmaistore.mysellix.io'
               target='_blank'

@@ -9,7 +9,7 @@ const MobileNav = () => {
   const path = usePathname()
   return (
     <Drawer>
-      <DrawerTrigger className='xl:hidden dark:hover:bg-white/10 hover:bg-black/5 p-2 auto focus:outline-none focus:ring-0 focus:bg-gray-100 dark:focus:bg-gray-800'>
+      <DrawerTrigger className='xl:hidden dark:hover:bg-white/10 hover:bg-black/5 p-2'>
         <CiMenuBurger className='duration-500 text-dark-800 dark:text-primary text-3xl' />
       </DrawerTrigger>
       <DrawerContent className='bg-gray-200 dark:bg-dark-600 border-none px-5 pb-5 gap-10'>

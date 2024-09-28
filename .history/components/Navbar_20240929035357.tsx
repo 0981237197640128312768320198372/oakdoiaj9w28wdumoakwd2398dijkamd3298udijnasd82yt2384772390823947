@@ -62,7 +62,7 @@ const Navbar = () => {
           />
         </Link>
         <div className='flex items-center justify-end gap-5'>
-          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:text-md'>
+          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:textmd'>
             <Link
               href='https://dokmaistore.mysellix.io'
               target='_blank'
@@ -75,14 +75,14 @@ const Navbar = () => {
               target='_blank'
               className='text-dark-800 bg-primary flex px-2 py-1 items-center gap-2'
             >
-              Chat To Order <FaLine className='text-2xl' />
+              Chat To Order <FaLine className='text-xl' />
             </Link>
             <MobileNav />
           </div>
         </div>
       </div>
       <div className='w-full gap-10 xl:flex justify-between max-w-[1140px] hidden duration-1000 items-center'>
-        <div className='flex w-full justify-between items-center bg-dark-800/70 backdrop-blur p-2'>
+        <div className='flex w-full justify-between items-center bg-dark-700 backdrop-blur p-2'>
           <div className=' w-full flex gap-5 justify-between items-center text-white'>
             {navButtons.map((nav, i) => (
               <Link
