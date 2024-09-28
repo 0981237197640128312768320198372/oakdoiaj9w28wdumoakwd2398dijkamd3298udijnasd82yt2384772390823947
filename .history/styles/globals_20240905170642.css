@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "WSNFont";
+    src: url("../assets/fonts/primal.woff") format("woff2");
+}

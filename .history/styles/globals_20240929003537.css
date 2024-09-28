@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "dokmai-light";
+  src: url("../assets/fonts/dokmai-light.ttf") format("woff2");
+}
+@font-face {
+  font-family: "dokmai-regular";
+  src: url("../assets/fonts/dokmai-regular.ttf") format("woff2");
+}
+@font-face {
+  font-family: "dokmai-italic";
+  src: url("../assets/fonts/dokmai-italic.ttf") format("woff2");
+}
+@font-face {
+  font-family: "dokmai-bold";
+  src: url("../assets/fonts/dokmai-bold.ttf") format("woff2");
+}
+@font-face {
+  font-family: "dokmai-bold-italic";
+  src: url("../assets/fonts/dokmai-bold-italic.ttf") format("woff2");
+}
+@font-face {
+  font-family: "dokmai-bold-rounded";
+  src: url("../assets/fonts/dokmai-bold-rounded.otf") format("woff2");
+}
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 900;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Black.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 900;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-BlackItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 700;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 700;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-BoldItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 100;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Hairline.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 100;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-HairlineItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 400;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-Italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 300;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 300;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-LightItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 500;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Medium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 500;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-MediumItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 400;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 200;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-Thin.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 200;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-ThinItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 800;
+  font-style: normal;
+  src: url("../assets/fonts/AktivGrotesk-XBold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "AktivGrotesk";
+  font-weight: 800;
+  font-style: italic;
+  src: url("../assets/fonts/AktivGrotesk-XBoldItalic.otf") format("opentype");
+}
+
+.__stroke {
+  font-size: 48px; /* Adjust the size as needed */
+  -webkit-text-stroke: 1px #b9fe13; /* 1px stroke with black color */
+  color: transparent; /* Makes the fill transparent */
+}
+
+a:focus,
+button:focus,
+img:focus {
+  @apply focus:outline-none focus:ring-[0.5px] focus:ring-primary focus:border-primary;
+}
