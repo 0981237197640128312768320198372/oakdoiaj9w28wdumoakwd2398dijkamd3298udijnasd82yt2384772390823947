@@ -20,7 +20,7 @@ export const metadata: Metadata = {
       "แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย สำหรับทุกคนที่ต้องการ Netflix Premium ราคาถูกและคุณภาพดีที่ Dokmai Store เราเป็นผู้ขายอันดับหนึ่งในไทย พร้อมการันตีคุณภาพการใช้งานตลอดอายุการใช้งาน ด้วยบริการที่เชื่อถือได้ ตอบกลับลูกค้าอย่างรวดเร็วภายใน 10 นาที และไม่เกิน 24 ชั่วโมง พร้อมช่วยแก้ไขปัญหาทุกอย่างเพื่อให้คุณได้รับประสบการณ์การดูหนังและซีรีส์ที่ดีที่สุด",
     images: [
       {
-        url: "https://www.dokmaistore.com/og-dokmaistore.webp",
+        url: "https://www.dokmaistore.com/og-dokmaistore.jpg",
         width: 1200,
         height: 630,
         alt: "Netflix Premium คุณภาพสูง ราคาถูก ที่ Dokmai Store",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
       "แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย สำหรับทุกคนที่ต้องการ Netflix Premium ราคาถูกและคุณภาพดีที่ Dokmai Store เราเป็นผู้ขายอันดับหนึ่งในไทย พร้อมการันตีคุณภาพการใช้งานตลอดอายุการใช้งาน ด้วยบริการที่เชื่อถือได้ ตอบกลับลูกค้าอย่างรวดเร็วภายใน 10 นาที และไม่เกิน 24 ชั่วโมง พร้อมช่วยแก้ไขปัญหาทุกอย่างเพื่อให้คุณได้รับประสบการณ์การดูหนังและซีรีส์ที่ดีที่สุด",
     images: [
       {
-        url: "https://www.dokmaistore.com/og-dokmaistore.webp",
+        url: "https://www.dokmaistore.com/og-dokmaistore.jpg",
         alt: "Netflix Premium คุณภาพสูง ราคาถูก ที่ Dokmai Store",
       },
     ],
@@ -58,15 +58,12 @@ export default function RootLayout({
     <html lang='en' className='!scroll-smooth'>
       <body className='antialiased font-mono min-h-screen bg-dark-800 text-light-200'>
         <Navbar />
-        <div className='flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20'>
+        <div className='flex flex-col justify-start items-center w-full h-screen p-10 lg:px-60 pt-20'>
           {children}
         </div>
-        <div className='w-full font-aktivGroteskBold h-5 fixed bottom-0 flex justify-center items-center bg-cyan-500 sm:bg-blue-500 md:bg-green-500 lg:bg-yellow-500 xl:bg-orange-500 2xl:bg-red-500 '>
-          <p className='hidden sm:block md:hidden'>sm</p>
-          <p className='hidden md:block lg:hidden'>md</p>
-          <p className='hidden lg:block xl:hidden'>lg</p>
-          <p className='hidden xl:block 2xl:hidden'>xl</p>
-          <p className='hidden 2xl:block'>2xl</p>
+        <div className='w-full py-5 h-fit fixed bottom-0 flex justify-center items-center bg-cyan-500 sm:bg-blue-500 md:bg-green-500 lg:bg-yellow-500 xl:bg-orange-500 2xl:bg-red-500 '>
+          <p className='sm:hidden'>MOST SMALL</p>
+          <p className='hidden sm:block md:hidden'>MOST SMALL</p>
         </div>
       </body>
     </html>

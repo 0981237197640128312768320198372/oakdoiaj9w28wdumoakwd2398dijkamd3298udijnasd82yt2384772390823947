@@ -51,14 +51,14 @@ const Navbar = () => {
             height={100}
             src={dokmaiwithtext}
             alt='Dokmai Store'
-            className='duration-700 hidden xl:block'
+            className='duration-700 hidden lg:block'
           />
           <Image
             width={60}
             height={60}
             src={dokmailogo}
             alt='Dokmai Store'
-            className='duration-700 xl:hidden'
+            className='duration-700 lg:hidden'
           />
         </Link>
         <div className='flex items-center justify-end gap-5'>

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
       "แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย สำหรับทุกคนที่ต้องการ Netflix Premium ราคาถูกและคุณภาพดีที่ Dokmai Store เราเป็นผู้ขายอันดับหนึ่งในไทย พร้อมการันตีคุณภาพการใช้งานตลอดอายุการใช้งาน ด้วยบริการที่เชื่อถือได้ ตอบกลับลูกค้าอย่างรวดเร็วภายใน 10 นาที และไม่เกิน 24 ชั่วโมง พร้อมช่วยแก้ไขปัญหาทุกอย่างเพื่อให้คุณได้รับประสบการณ์การดูหนังและซีรีส์ที่ดีที่สุด",
     images: [
       {
-        url: "https://www.dokmaistore.com/og-dokmaistore.webp",
+        url: "https://www.dokmaistore.com/og-dokmaistore.jpg",
         width: 1200,
         height: 630,
         alt: "Netflix Premium คุณภาพสูง ราคาถูก ที่ Dokmai Store",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
       "แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย สำหรับทุกคนที่ต้องการ Netflix Premium ราคาถูกและคุณภาพดีที่ Dokmai Store เราเป็นผู้ขายอันดับหนึ่งในไทย พร้อมการันตีคุณภาพการใช้งานตลอดอายุการใช้งาน ด้วยบริการที่เชื่อถือได้ ตอบกลับลูกค้าอย่างรวดเร็วภายใน 10 นาที และไม่เกิน 24 ชั่วโมง พร้อมช่วยแก้ไขปัญหาทุกอย่างเพื่อให้คุณได้รับประสบการณ์การดูหนังและซีรีส์ที่ดีที่สุด",
     images: [
       {
-        url: "https://www.dokmaistore.com/og-dokmaistore.webp",
+        url: "https://www.dokmaistore.com/og-dokmaistore.jpg",
         alt: "Netflix Premium คุณภาพสูง ราคาถูก ที่ Dokmai Store",
       },
     ],

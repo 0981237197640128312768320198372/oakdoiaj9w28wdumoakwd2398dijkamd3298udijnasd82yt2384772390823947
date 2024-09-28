@@ -40,11 +40,11 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed flex flex-col items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform  ${
+      className={`fixed flex flex-col items-start justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform  ${
         visible ? "translate-y-0" : "-translate-y-full"
       } z-10`}
     >
-      <div className='w-full gap-10 bg-dark-800 flex p-3 xl:px-0 max-w-[1140px] justify-between duration-1000 items-center '>
+      <div className='w-full gap-10 bg-dark-800 py-5 flex px-10 lg:px-48 justify-between duration-1000 items-center '>
         <Link href='/' className='flex select-none items-center gap-1 w-fit'>
           <Image
             width={100}
@@ -62,16 +62,16 @@ const Navbar = () => {
           />
         </Link>
         <div className='flex items-center justify-end gap-5'>
-          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:textmd'>
+          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold '>
             <Link
               href='https://dokmaistore.mysellix.io'
-              className='border-[1px] border-primary px-2 py-1'
+              className='border-[1px] border-primary px-2 py-1 '
             >
               Buy Now
             </Link>
             <Link
               href='https://dokmaistore.mysellix.io'
-              className='text-dark-800 bg-primary flex px-2 py-1 items-center gap-2'
+              className='text-dark-800 bg-primary px-2 py-1 items-center gap-2'
             >
               Chat To Order <FaLine className='text-xl' />
             </Link>
@@ -79,7 +79,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className='w-full gap-10 pt-2 xl:flex justify-between max-w-[1140px] hidden duration-1000 items-center'>
+      <div className='w-full gap-10 pt-2 flex px-10 xl:px-48 justify-between duration-1000 items-center'>
         <div className='flex w-full justify-between items-center bg-dark-800/50 backdrop-blur p-2'>
           <div className=' w-full flex gap-5 justify-between items-center text-white'>
             {navButtons.map((nav, i) => (

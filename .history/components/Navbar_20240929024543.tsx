@@ -44,7 +44,7 @@ const Navbar = () => {
         visible ? "translate-y-0" : "-translate-y-full"
       } z-10`}
     >
-      <div className='w-full gap-10 bg-dark-800 flex p-3 xl:px-0 max-w-[1140px] justify-between duration-1000 items-center '>
+      <div className='w-full gap-10 bg-dark-800 py-5 flex px-10 lg:w-96 justify-between duration-1000 items-center '>
         <Link href='/' className='flex select-none items-center gap-1 w-fit'>
           <Image
             width={100}
@@ -62,10 +62,10 @@ const Navbar = () => {
           />
         </Link>
         <div className='flex items-center justify-end gap-5'>
-          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:textmd'>
+          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs'>
             <Link
               href='https://dokmaistore.mysellix.io'
-              className='border-[1px] border-primary px-2 py-1'
+              className='border-[1px] border-primary px-2 py-1 '
             >
               Buy Now
             </Link>
@@ -79,7 +79,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className='w-full gap-10 pt-2 xl:flex justify-between max-w-[1140px] hidden duration-1000 items-center'>
+      <div className='w-full gap-10 pt-2 flex justify-between duration-1000 items-center'>
         <div className='flex w-full justify-between items-center bg-dark-800/50 backdrop-blur p-2'>
           <div className=' w-full flex gap-5 justify-between items-center text-white'>
             {navButtons.map((nav, i) => (

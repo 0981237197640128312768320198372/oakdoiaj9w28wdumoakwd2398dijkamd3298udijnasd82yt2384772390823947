@@ -145,7 +145,7 @@
 }
 
 .__container {
-  @apply min-h-screen max-w-[1140px];
+  @apply px-10 min-h-screen max-w-[1140px];
 }
 
 a:focus,

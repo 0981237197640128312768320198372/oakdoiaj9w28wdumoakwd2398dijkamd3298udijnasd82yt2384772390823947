@@ -6,9 +6,9 @@ const HeroSection = () => {
   return (
     <section
       id='HeroSection'
-      className='flex flex-col justify-start items-center __container'
+      className='flex flex-col justify-center items-start __container'
     >
-      <div className='h-screen flex flex-col justify-start items-center text-center px-4'>
+      <div className='hero bg-cover bg-center h-screen flex flex-col justify-center items-center text-center px-4'>
         <h1 className='text-4xl md:text-6xl font-bold text-white mb-4'>
           Watch More Series, Spend Less Money
         </h1>

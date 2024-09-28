@@ -51,21 +51,21 @@ const Navbar = () => {
             height={100}
             src={dokmaiwithtext}
             alt='Dokmai Store'
-            className='duration-700 hidden xl:block'
+            className='duration-700 hidden md:block'
           />
           <Image
             width={60}
             height={60}
             src={dokmailogo}
             alt='Dokmai Store'
-            className='duration-700 xl:hidden'
+            className='duration-700 md:hidden'
           />
         </Link>
         <div className='flex items-center justify-end gap-5'>
-          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:textmd'>
+          <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs'>
             <Link
               href='https://dokmaistore.mysellix.io'
-              className='border-[1px] border-primary px-2 py-1'
+              className='border-[1px] border-primary px-2 py-1 '
             >
               Buy Now
             </Link>
