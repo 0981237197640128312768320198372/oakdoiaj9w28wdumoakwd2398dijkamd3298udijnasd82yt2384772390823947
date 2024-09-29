@@ -56,7 +56,7 @@ const Footer = () => {
         <Image
           src={dokmaistorefooter}
           alt='Footer Image - Dokmai Store'
-          className='opacity-80'
+          className='opacity-65'
         />
       </div>
     </footer>

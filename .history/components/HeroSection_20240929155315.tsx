@@ -1,6 +1,8 @@
 "use client"
 
 import React from "react"
+import { InfiniteMovingCards } from "./ui/infinite-moving-cards"
+import { FiveStarsReview } from "@/constant"
 
 const HeroSection = () => {
   return (
@@ -25,6 +27,9 @@ const HeroSection = () => {
           experience{" "}
           <span className='text-dark-800 bg-primary px-1'>for you.</span>
         </p>
+      </div>
+      <div className='h-[40rem] rounded-md flex flex-col antialiase dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden'>
+        <InfiniteMovingCards items={FiveStarsReview} />
       </div>
     </section>
   )

@@ -1,6 +1,8 @@
 "use client"
 
 import React from "react"
+import { Reviews } from "./ui/Reviews"
+import { FiveStarsReview, FiveStarsReview2 } from "@/constant"
 
 const HeroSection = () => {
   return (

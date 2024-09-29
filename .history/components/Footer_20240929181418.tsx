@@ -35,18 +35,13 @@ const Footer = () => {
   return (
     <footer className='flex justify-center items-center w-full '>
       <div className='flex w-ful flex-col justify-center __container items-center py-3 border-t-[1px] border-dark-500'>
-        <div className='flex justify-between items-center w-full'>
+        <div className='flex justify-between items-start w-full'>
           <p className='text-dark-100 font-aktivGroteskLight py-5'>
             Copyright 2022, Dokmai Store. All rights reserved.
           </p>
-          <li className='flex gap-5 items-center'>
+          <li className='flex gap-2'>
             {contact.map((contact, i) => (
-              <Link
-                href={contact.url}
-                target='_blank'
-                key={i}
-                className='text-dark-200 hover:text-light-200 text-2xl'
-              >
+              <Link href={contact.url} key={i}>
                 {contact.icon}
               </Link>
             ))}
@@ -56,7 +51,7 @@ const Footer = () => {
         <Image
           src={dokmaistorefooter}
           alt='Footer Image - Dokmai Store'
-          className='opacity-80'
+          className='opacity-65'
         />
       </div>
     </footer>

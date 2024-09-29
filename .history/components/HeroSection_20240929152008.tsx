@@ -6,7 +6,7 @@ const HeroSection = () => {
   return (
     <section
       id='HeroSection'
-      className='flex flex-col justify-start items-center px-5 __container gap-10'
+      className='flex flex-col justify-start items-center px-5 __container'
     >
       <div className='flex flex-col justify-start items-center text-center w-full'>
         <h1 className='text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>

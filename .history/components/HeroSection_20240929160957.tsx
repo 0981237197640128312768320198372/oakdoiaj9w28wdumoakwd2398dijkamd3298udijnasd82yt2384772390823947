@@ -1,6 +1,8 @@
 "use client"
 
 import React from "react"
+import { Reviews } from "./ui/Reviews"
+import { FiveStarsReview, FiveStarsReview2 } from "@/constant"
 
 const HeroSection = () => {
   return (
@@ -25,6 +27,10 @@ const HeroSection = () => {
           experience{" "}
           <span className='text-dark-800 bg-primary px-1'>for you.</span>
         </p>
+      </div>
+      <div className='h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden'>
+        <Reviews reviewsData={FiveStarsReview} direction='right' speed='slow' />
+        <Reviews reviewsData={FiveStarsReview2} direction='left' speed='slow' />
       </div>
     </section>
   )

@@ -43,7 +43,6 @@ const Footer = () => {
             {contact.map((contact, i) => (
               <Link
                 href={contact.url}
-                target='_blank'
                 key={i}
                 className='text-dark-200 hover:text-light-200 text-2xl'
               >
@@ -56,7 +55,7 @@ const Footer = () => {
         <Image
           src={dokmaistorefooter}
           alt='Footer Image - Dokmai Store'
-          className='opacity-80'
+          className='opacity-65'
         />
       </div>
     </footer>
