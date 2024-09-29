@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import React from "react"
 
 const HeroSection = () => {
@@ -9,7 +10,7 @@ const HeroSection = () => {
       className='flex flex-col justify-start items-center px-5 __container gap-10'
     >
       <div className='flex flex-col justify-start items-center text-center w-full'>
-        <h1 className='text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
+        <h1 className='text-xl xl:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
           Watch More Series, <br className='sm:hidden' /> Spend Less Money
         </h1>
         <p className='md:text-xl text-light-200 font-mono text-xs'>
@@ -25,6 +26,13 @@ const HeroSection = () => {
           experience{" "}
           <span className='text-dark-800 bg-primary px-1'>for you.</span>
         </p>
+        <Link
+          href='https://lin.ee/Ovlixv5'
+          target='_blank'
+          className='text-light-100 border-b-2 p-2 mt-3 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500'
+        >
+          Order Now
+        </Link>
       </div>
     </section>
   )
