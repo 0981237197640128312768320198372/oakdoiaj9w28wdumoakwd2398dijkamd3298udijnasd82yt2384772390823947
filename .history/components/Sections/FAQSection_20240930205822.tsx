@@ -1,7 +1,24 @@
 "use client"
 import React, { useState } from "react"
 import SubTitle from "@/components/SubTitle"
-import { faqs } from "@/constant"
+
+const faqs = [
+  {
+    question: "What is TailwindCSS?",
+    answer:
+      "TailwindCSS is a utility-first CSS framework that provides low-level CSS classes for custom UI design.",
+  },
+  {
+    question: "What is TailwindCSS?",
+    answer:
+      "TailwindCSS is a utility-first CSS framework that provides low-level CSS classes for custom UI design.",
+  },
+  {
+    question: "What is TailwindCSS?",
+    answer:
+      "TailwindCSS is a utility-first CSS framework that provides low-level CSS classes for custom UI design.",
+  },
+]
 
 const FAQSection = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
@@ -11,7 +28,7 @@ const FAQSection = () => {
   }
   return (
     <section
-      id='FrequentlyAskedQuestions'
+      id='Frequently Asked Questionss'
       className='w-full __container mt-64 flex flex-col gap-28'
     >
       <SubTitle
@@ -27,7 +44,7 @@ const FAQSection = () => {
               onClick={() => toggleFAQ(index)}
               className='w-full text-left flex justify-between items-center py-4 __nofocus'
             >
-              <span className='text-xl font-aktivGroteskRegular text-light-300 __nofocus'>
+              <span className='text-xl font-aktivGroteskThin text-light-200 __nofocus'>
                 {faq.question}
               </span>
               <span className='text-light-500 transition-all duration-700'>
@@ -66,7 +83,7 @@ const FAQSection = () => {
             </button>
             {activeIndex === index && (
               <div
-                className={`pl-4 pb-4 text-light-600 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
+                className={`pl-4 pb-4 text-light-600 transition-all duration-300 ease-in-out ${
                   activeIndex === index
                     ? "max-h-screen opacity-100"
                     : "max-h-0 opacity-0"

@@ -155,5 +155,5 @@ img:focus {
 }
 
 .__nofocus {
-  @apply focus:!outline-none focus:!ring-0 focus:!border-none;
+  @apply !focus:outline-none !focus:ring-0 !focus:border-none;
 }

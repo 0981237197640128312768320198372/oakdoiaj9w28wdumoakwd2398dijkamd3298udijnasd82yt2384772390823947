@@ -1,7 +1,24 @@
 "use client"
 import React, { useState } from "react"
 import SubTitle from "@/components/SubTitle"
-import { faqs } from "@/constant"
+
+const faqs = [
+  {
+    question: "Is This Service Legal?",
+    answer:
+      "Yes, the service is legal. Netflix permits account sharing within certain guidelines. Our platform ensures that users can share accounts in a way that aligns with these terms, giving each user their own profile on a shared account.",
+  },
+  {
+    question: "What is TailwindCSS?",
+    answer:
+      "TailwindCSS is a utility-first CSS framework that provides low-level CSS classes for custom UI design.",
+  },
+  {
+    question: "What is TailwindCSS?",
+    answer:
+      "TailwindCSS is a utility-first CSS framework that provides low-level CSS classes for custom UI design.",
+  },
+]
 
 const FAQSection = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
@@ -11,7 +28,7 @@ const FAQSection = () => {
   }
   return (
     <section
-      id='FrequentlyAskedQuestions'
+      id='Frequently Asked Questionss'
       className='w-full __container mt-64 flex flex-col gap-28'
     >
       <SubTitle
@@ -66,7 +83,7 @@ const FAQSection = () => {
             </button>
             {activeIndex === index && (
               <div
-                className={`pl-4 pb-4 text-light-600 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
+                className={`pl-4 pb-4 text-light-600 transition-all duration-300 ease-in-out ${
                   activeIndex === index
                     ? "max-h-screen opacity-100"
                     : "max-h-0 opacity-0"

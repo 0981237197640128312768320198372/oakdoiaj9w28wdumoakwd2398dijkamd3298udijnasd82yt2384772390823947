@@ -1,7 +1,34 @@
 "use client"
 import React, { useState } from "react"
 import SubTitle from "@/components/SubTitle"
-import { faqs } from "@/constant"
+
+const faqs = [
+  {
+    question: "ใช้บริการ Netflix Premium จาก Dokmai Store มีปัญหาหรือไม่?",
+    answer:
+      "บัญชีของเรารับประกันการใช้งานได้จริง และหากมีปัญหาใด ๆ เรามีทีมงานที่พร้อมช่วยเหลือภายใน 10 นาที ถึงไม่เกิน 24 ชั่วโมง",
+  },
+  {
+    question: "ระยะเวลาการรับประกันใช้งานนานแค่ไหน?",
+    answer:
+      "Dokmai Store ให้การรับประกันตลอดอายุการใช้งาน หากมีปัญหาใด ๆ เราพร้อมดูแลและแก้ไขให้คุณทันที",
+  },
+  {
+    question: "ใช้เวลาเท่าไรในการรับบัญชี Netflix Premium?",
+    answer:
+      "หลังจากทำการสั่งซื้อแล้ว คุณจะได้รับบัญชี Netflix Premium ภายในเวลาไม่เกิน 10 นาที พร้อมใช้งานทันที",
+  },
+  {
+    question: "สามารถคืนเงินได้หรือไม่ถ้าพบปัญหา?",
+    answer:
+      "คุณสามารถติดต่อทีมงาน Dokmai Store ผ่านช่องทางไลน์ หรืออีเมล เราพร้อมตอบคำถามและช่วยเหลืออย่างรวดเร็ว",
+  },
+  {
+    question: "มีช่องทางติดต่อทีมงานอย่างไร?",
+    answer:
+      "คุณสามารถติดต่อทีมงาน Dokmai Store ผ่านช่องทาง Line หรือ Facebook เราพร้อมตอบคำถามและช่วยเหลืออย่างทันที",
+  },
+]
 
 const FAQSection = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
@@ -11,7 +38,7 @@ const FAQSection = () => {
   }
   return (
     <section
-      id='FrequentlyAskedQuestions'
+      id='Frequently Asked Questionss'
       className='w-full __container mt-64 flex flex-col gap-28'
     >
       <SubTitle
@@ -66,7 +93,7 @@ const FAQSection = () => {
             </button>
             {activeIndex === index && (
               <div
-                className={`pl-4 pb-4 text-light-600 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
+                className={`pl-4 pb-4 text-light-600 transition-all duration-300 ease-in-out ${
                   activeIndex === index
                     ? "max-h-screen opacity-100"
                     : "max-h-0 opacity-0"

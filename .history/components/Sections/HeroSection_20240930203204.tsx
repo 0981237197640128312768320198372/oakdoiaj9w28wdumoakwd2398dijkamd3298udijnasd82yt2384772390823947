@@ -29,7 +29,7 @@ const HeroSection = () => {
         <Link
           href='https://lin.ee/Ovlixv5'
           target='_blank'
-          className='text-light-100 border-b-2 px-2 pt-4 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
+          className='text-light-100 border-b-2 px-2 pt-4 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 __nofocus'
         >
           สั่งซื้อตอนนี้
         </Link>

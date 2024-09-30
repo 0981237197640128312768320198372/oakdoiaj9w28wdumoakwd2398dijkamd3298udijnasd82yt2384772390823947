@@ -20,16 +20,15 @@ const HeroSection = () => {
           พร้อมรับประกันตลอดชีพจาก Dokmai Store
           แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย มอบบริการ
           <Highlight text='Netflix Premium' />
-          ที่เชื่อถือได้ในราคาย่อมเยา พร้อม
-          <Highlight text='การสนับสนุนลูกค้าที่รวดเร็ว' />
-          เราการันตีบริการคุณภาพและ
-          <Highlight text='การช่วยเหลืออย่างทันที' />
+          ที่เชื่อถือได้ในราคาย่อมเยา พร้อมการสนับสนุนลูกค้าที่รวดเร็ว
+          เราการันตีบริการคุณภาพและการช่วยเหลืออย่างทันท่วงที
           เพื่อให้คุณเพลิดเพลินกับการชมภาพยนตร์และซีรีส์ได้อย่างเต็มอิ่ม
+          <Highlight text='Netflix Premium' />
         </p>
         <Link
           href='https://lin.ee/Ovlixv5'
           target='_blank'
-          className='text-light-100 border-b-2 px-2 pt-4 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
+          className='text-light-100 border-b-2 px-2 pt-4 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500'
         >
           สั่งซื้อตอนนี้
         </Link>
