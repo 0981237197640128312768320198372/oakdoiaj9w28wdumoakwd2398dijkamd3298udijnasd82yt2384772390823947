@@ -59,6 +59,33 @@ export const faqs = [
       "คุณสามารถติดต่อทีมงาน Dokmai Store ผ่านช่องทาง Line หรือ Facebook เราพร้อมตอบคำถามและช่วยเหลืออย่างทันที",
   },
 ]
+
+export const features = [
+  {
+    text: "Affordable Pricing",
+  },
+  {
+    text: "Fast Service",
+  },
+  {
+    text: "Lifetime Access Guarantee",
+  },
+  {
+    text: "High Quality Support",
+  },
+  {
+    text: "Secure Transactions",
+  },
+  {
+    text: "Best Quality Account",
+  },
+  {
+    text: "Trusted Seller",
+  },
+  {
+    text: "Thailand's #1 Netflix Provider",
+  },
+]
 export const FiveStarsReview = [
   {
     title: "คุ้มค่ามาก",

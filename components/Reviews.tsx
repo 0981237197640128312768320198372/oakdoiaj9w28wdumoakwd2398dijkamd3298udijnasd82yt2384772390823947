@@ -95,7 +95,7 @@ export const Reviews = ({
             className='w-[350px] max-w-full relative rounded-lg border flex-shrink-0 border-dark-500 p-8 md:w-[450px]'
             key={item.name}
           >
-            <blockquote className='bh-full'>
+            <blockquote className='h-full'>
               <Image
                 src={fivestars}
                 width={100}

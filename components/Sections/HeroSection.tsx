@@ -2,6 +2,9 @@
 
 import Link from "next/link"
 import React from "react"
+import { Features } from "@/components/Features"
+import { features } from "@/constant"
+import { DOKMAI } from "@/components/DOKMAI"
 const Highlight = ({ text }: { text: string }) => (
   <span className='text-dark-800 bg-primary px-1'>{text}</span>
 )
@@ -9,9 +12,10 @@ const HeroSection = () => {
   return (
     <section
       id='HeroSection'
-      className='flex flex-col justify-start items-center px-5 __container gap-10'
+      className='flex flex-col w-full justify-start items-center'
     >
-      <div className='flex flex-col justify-start items-center text-center w-full'>
+      <DOKMAI text='DOKMAI' />
+      <div className='flex flex-col justify-start px-5 __container items-center text-center w-full'>
         <h1 className='text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
           Watch More Series, <br className='sm:hidden' /> Spend Less Money
         </h1>
@@ -33,6 +37,9 @@ const HeroSection = () => {
         >
           สั่งซื้อตอนนี้
         </Link>
+      </div>
+      <div className='pt-24 overflow-hidden relative w-full -rotate-3'>
+        <Features text={features} />
       </div>
     </section>
   )
