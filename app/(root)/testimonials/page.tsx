@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
 import ShowTesti from "@/components/ShowTesti"
 import React from "react"
