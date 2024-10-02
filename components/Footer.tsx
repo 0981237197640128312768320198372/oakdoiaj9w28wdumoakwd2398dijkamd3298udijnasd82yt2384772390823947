@@ -40,10 +40,10 @@ const Footer = () => {
           <Image
             src={dokmaiwhitewithtext}
             alt='Footer Image - Dokmai Store'
-            className='opacity-80'
+            className='opacity-80 select-none'
             height={50}
           />
-          <p className='text-xs font-aktivGroteskLight'>
+          <p className='text-xs font-aktivGroteskLight select-none'>
             <strong>Netflix Premium</strong> คุณภาพสูง ราคาถูก
             พร้อมรับประกันตลอดชีพจาก <br />
             <strong>Dokmai Store</strong> แพลตฟอร์มดิจิทัลชั้นนำของไทย
@@ -51,7 +51,7 @@ const Footer = () => {
           </p>
         </div>
         <div className='flex items-start md:items-center sm:flex-row flex-col-reverse justify-between md:p-0 px-5 pt-5 w-full border-t-[1px] border-dark-500'>
-          <p className='text-dark-100 font-aktivGroteskLight py-5'>
+          <p className='text-dark-100 font-aktivGroteskLight py-5 select-none'>
             Copyright 2022, Dokmai Store. All rights reserved.
           </p>
           <li className='flex gap-5 items-center'>
@@ -71,7 +71,7 @@ const Footer = () => {
         <Image
           src={dokmaistorefooter}
           alt='Footer Image - Dokmai Store'
-          className='opacity-80'
+          className='opacity-80 select-none'
         />
       </div>
     </footer>

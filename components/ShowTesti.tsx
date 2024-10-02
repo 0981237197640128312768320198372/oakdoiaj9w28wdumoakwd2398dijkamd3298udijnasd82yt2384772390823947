@@ -71,7 +71,7 @@ export default function ShowTesti({ testimonials }: { testimonials: any[] }) {
         >
           <GoChevronLeft />
         </button>
-        <span className='flex gap-2 font-aktivGroteskRegular'>
+        <span className='flex gap-2 font-aktivGroteskRegular select-none'>
           Page <p className='font-aktivGroteskBold'>{currentPage}</p> of
           <p className='font-aktivGroteskBold'>{totalPages}</p>
         </span>
