@@ -63,7 +63,7 @@ export const Features = ({
   const getSpeed = () => {
     if (containerRef.current) {
       if (speed === "fast") {
-        containerRef.current.style.setProperty("--animation-duration", "50s")
+        containerRef.current.style.setProperty("--animation-duration", "30s")
       }
     }
   }
