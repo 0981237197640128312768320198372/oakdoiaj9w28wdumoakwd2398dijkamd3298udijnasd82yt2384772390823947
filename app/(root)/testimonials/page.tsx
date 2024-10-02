@@ -2,9 +2,7 @@ import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
 import ShowTesti from "@/components/ShowTesti"
 import React from "react"
 export default async function Page() {
-  let rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
-
-  rawDataCreditsOrTestimonials = rawDataCreditsOrTestimonials || []
+  const rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
   console.log("")
   console.log("")
   console.log("================================")
