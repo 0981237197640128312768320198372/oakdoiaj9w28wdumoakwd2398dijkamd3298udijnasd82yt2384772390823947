@@ -12,6 +12,10 @@ export const navButtons = [
     url: "/testimonials",
   },
   {
+    title: "ราคา",
+    url: "/prices",
+  },
+  {
     title: "วิธีการสั่งซื้อ",
     url: "/how-to-order",
   },
