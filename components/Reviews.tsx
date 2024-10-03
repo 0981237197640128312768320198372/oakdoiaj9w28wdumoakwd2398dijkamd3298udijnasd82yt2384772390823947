@@ -78,7 +78,7 @@ export const Reviews = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative max-w-[1140px] overflow-hidden border-x-[1px] border-dark-500",
+        "scroller relative max-w-[1140px] overflow-hidden border-x-[1px] border-dark-500 ",
         className
       )}
     >

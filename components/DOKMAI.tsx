@@ -65,14 +65,6 @@ export const DOKMAI = ({
           r='15%'
           animate={maskPosition}
           transition={{ duration: duration ?? 1.3, ease: "easeOut" }}
-
-          // example for a smoother animation below
-
-          // transition={{
-          //   type: "spring",
-          //   stiffness: 700,
-          //   damping: 100,
-          // }}
         >
           <stop offset='0%' stopColor='white' />
           <stop offset='100%' stopColor='black' />
@@ -92,9 +84,9 @@ export const DOKMAI = ({
         y='50%'
         textAnchor='middle'
         dominantBaseline='middle'
-        strokeWidth='0.2'
+        strokeWidth='0.3'
         className='font-aktivGroteskBold stroke-dark-100 md:stroke-dark-500 fill-transparent text-7xl  '
-        style={{ opacity: hovered ? 0.6 : 0 }}
+        style={{ opacity: hovered ? 0.7 : 0 }}
       >
         {text}
       </text>
@@ -103,7 +95,7 @@ export const DOKMAI = ({
         y='50%'
         textAnchor='middle'
         dominantBaseline='middle'
-        strokeWidth='0.2'
+        strokeWidth='0.3'
         className='font-aktivGroteskBold fill-transparent text-7xl stroke-dark-100 md:stroke-dark-500'
         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
         animate={{
@@ -123,7 +115,7 @@ export const DOKMAI = ({
         textAnchor='middle'
         dominantBaseline='middle'
         stroke='url(#textGradient)'
-        strokeWidth='0.2'
+        strokeWidth='0.3'
         mask='url(#textMask)'
         className='font-aktivGroteskBold fill-transparent text-7xl  '
       >

@@ -1,4 +1,5 @@
 import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
+import PageHeadline from "@/components/PageHeadline"
 import ShowTesti from "@/components/ShowTesti"
 import React from "react"
 export default async function Page() {
@@ -13,14 +14,12 @@ export default async function Page() {
   console.log("")
 
   return (
-    <main className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-32 __container'>
-      <div className='flex pb-16 flex-col justify-start w-full '>
-        <strong className='font-aktivGroteskBold text-6xl '>เครดิต</strong>
-        <p className='text-light-300'>
-          ลูกค้ามากกว่า 50 คนไว้วางใจและกลับมาซื้อซ้ำกับเราอย่างต่อเนื่อง
-          โดยมีการขายสำเร็จไปแล้วกว่า 230 โปรไฟล์
-        </p>
-      </div>
+    <main className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-40 __container'>
+      <PageHeadline
+        headline='เครดิต'
+        description='ลูกค้ามากกว่า 50 คนไว้วางใจและกลับมาซื้อซ้ำกับเราอย่างต่อเนื่อง
+          โดยมีการขายสำเร็จไปแล้วกว่า 230 โปรไฟล์'
+      />
       <ShowTesti testimonials={rawDataCreditsOrTestimonials} />
     </main>
   )

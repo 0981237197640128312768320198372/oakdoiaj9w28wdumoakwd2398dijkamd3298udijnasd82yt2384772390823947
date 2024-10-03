@@ -71,11 +71,11 @@ export default function ShowTesti({ testimonials }: { testimonials: any[] }) {
               height={500}
               className='rounded-xl overflow-hidden select-none'
             />
-            <span className='flex flex-col w-full justify-start'>
-              <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl pt-3'>
+            <span className='flex flex-col w-full justify-start gap-0 mt-3'>
+              <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
                 {testimonial.item}
               </p>
-              <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs'>
+              <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
                 {testimonial.posted}
               </p>
             </span>

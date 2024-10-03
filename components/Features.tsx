@@ -71,7 +71,7 @@ export const Features = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative w-screen overflow-hidden border-x-[1px] border-dark-500 select-none",
+        "scroller relative w-screen overflow-hidden select-none",
         className
       )}
     >

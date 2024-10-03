@@ -151,7 +151,7 @@
 a:focus,
 button:focus,
 img:focus {
-  @apply focus:outline-none focus:ring-[0.5px] focus:ring-primary focus:border-primary;
+  @apply focus:outline-none focus:ring-0;
 }
 
 .__nofocus {

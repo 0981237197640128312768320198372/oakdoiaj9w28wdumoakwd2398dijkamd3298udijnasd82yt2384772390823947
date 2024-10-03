@@ -55,7 +55,9 @@ const config: Config = {
           700: "#A9A9A9",
           800: "#9B9B9B",
         },
-        primary: "#b9fe13",
+        goldVIP: "#FFD700",
+        purpleVVIP: "#9500FF",
+        primary: "#B9FE13",
       },
       animation: {
         scroll:

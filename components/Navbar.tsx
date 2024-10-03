@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-no-comment-textnodes */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 "use client"
 
 import React, { useState, useEffect } from "react"
@@ -15,7 +17,6 @@ const Navbar = () => {
   const path = usePathname()
 
   const [prevScrollPos, setPrevScrollPos] = useState(0)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [scrollToTopVisible, setScrollToTopVisible] = useState(false)
   const [visible, setVisible] = useState(true)
   const handleScroll = () => {
@@ -82,7 +83,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className='w-full gap-10 xl:flex justify-between max-w-[1140px] hidden duration-1000 items-center'>
-        <div className='flex w-full justify-between items-center bg-dark-800/70 backdrop-blur p-2'>
+        <div className='flex w-full justify-between items-center bg-dark-800/70 backdrop-blur py-2'>
           <div className=' w-full flex gap-5 justify-between items-center text-white'>
             {navButtons.map((nav, i) => (
               <Link

@@ -1,12 +1,12 @@
+import React from "react"
 import { FaFacebookF, FaInstagram } from "react-icons/fa"
 import { FaWhatsapp } from "react-icons/fa6"
 import { MdGroups } from "react-icons/md"
+import { RiVipCrownLine } from "react-icons/ri"
+import { IoDiamondOutline } from "react-icons/io5"
+import BadgePlan from "@/components/BadgePlan"
 
 export const navButtons = [
-  {
-    title: "เกี่ยวกับเรา",
-    url: "/about-us",
-  },
   {
     title: "เครดิต",
     url: "/testimonials",
@@ -27,16 +27,41 @@ export const navButtons = [
     title: "Recommendations",
     url: "/netflix-recommendation",
   },
+]
+export const footerButton = [
   {
-    title: "FAQ",
-    url: "/#FrequentlyAskedQuestions",
+    title: "วิธีการสั่งซื้อ",
+    url: "/how-to-order",
+  },
+  {
+    title: "เกี่ยวกับเรา",
+    url: "/about-us",
   },
   {
     title: "ข้อตกลงและเงื่อนไข",
     url: "/terms-and-conditions",
   },
+  {
+    title: "FAQ",
+    url: "/frequently-asked-questions",
+  },
 ]
 export const faqs = [
+  {
+    question: "วิธีการชำระเงินมีช่องทางใดบ้าง?",
+    answer:
+      "คุณสามารถชำระเงินผ่านช่องทางธนาคาร, PromptPay, หรือ TrueMoney Wallet ซึ่งทำให้สะดวกและรวดเร็วในการใช้งาน",
+  },
+  {
+    question: "บริการนี้ถูกกฎหมายหรือไม่?",
+    answer:
+      "Dokmai Store ให้บริการตามกฎหมายที่เกี่ยวข้องทุกประการ เรามอบบัญชี Netflix Premium ให้ลูกค้าผ่านวิธีที่ถูกต้องและโปร่งใส โดยเรารักษามาตรฐานทางจริยธรรมในการทำธุรกิจ และการแชร์บัญชีก็เป็นหนึ่งในบริการที่เป็นที่นิยม แต่สำคัญคือต้องใช้งานตามนโยบายของ Netflix ทั้งนี้เราจะทำให้ลูกค้าเข้าใจในลักษณะบริการของเราอย่างชัดเจน",
+  },
+  {
+    question: "ทำไมเราสามารถขายในราคาถูกได้?",
+    answer:
+      "บริการของเรามีการใช้งานในรูปแบบการแชร์บัญชี ซึ่งจะทำให้ผู้ใช้หลายคนสามารถแชร์ค่าใช้จ่ายกันได้ โดยมีการแบ่งโปรไฟล์ของบัญชีให้กับผู้ใช้แต่ละคน การชำระเงินรวมกันระหว่างผู้ใช้หลายคนทำให้เราสามารถตั้งราคาที่ถูกลงได้ และยังคงมีกำไรเล็กน้อยเพื่อสนับสนุนการดำเนินธุรกิจ",
+  },
   {
     question: "ใช้บริการ Netflix Premium จาก Dokmai Store มีปัญหาหรือไม่?",
     answer:
@@ -62,32 +87,46 @@ export const faqs = [
     answer:
       "คุณสามารถติดต่อทีมงาน Dokmai Store ผ่านช่องทาง Line หรือ Facebook เราพร้อมตอบคำถามและช่วยเหลืออย่างทันที",
   },
+  {
+    question: "บัญชี Netflix Premium จาก Dokmai Store เป็นแบบแชร์หรือไม่?",
+    answer:
+      "เรามีบริการบัญชีทั้งแบบแชร์กับผู้ใช้คนอื่น และแบบ Family Access ที่คุณสามารถใช้งานได้เต็มที่ทุกอุปกรณ์",
+  },
+  {
+    question: "หากต้องการเปลี่ยนแผนการใช้งาน Netflix ทำได้หรือไม่?",
+    answer:
+      "หากคุณต้องการเปลี่ยนแผนจากแชร์เป็น Family Access หรือปรับระยะเวลาการใช้งาน คุณสามารถติดต่อทีมงานได้ทันที",
+  },
+  {
+    question: "มีโปรโมชั่นหรือส่วนลดบ้างหรือไม่?",
+    answer:
+      "Dokmai Store มีการจัดโปรโมชั่นเป็นระยะ คุณสามารถติดตามผ่านช่องทาง Social Media ของเรา หรือสอบถามทีมงานได้เลย",
+  },
 ]
-
 export const features = [
   {
-    text: "Affordable Pricing",
+    text: "บริการเร็ว",
   },
   {
-    text: "Fast Service",
+    text: "รับประกันตลอดการใช้งาน",
   },
   {
-    text: "Lifetime Access Guarantee",
+    text: "ซัพพอร์ตด้วยคุณภาพ",
   },
   {
-    text: "High Quality Support",
+    text: "ชำระเงินอย่างปลอดภัย",
   },
   {
-    text: "Secure Transactions",
+    text: "บัญชีคุณภาพดีที่สุด",
   },
   {
-    text: "Best Quality Account",
+    text: "ผู้ขายเชื่อถือได้",
   },
   {
-    text: "Trusted Seller",
+    text: "ผู้ให้บริการ Netflix อันดับ 1 ในไทย",
   },
   {
-    text: "Thailand's #1 Netflix Provider",
+    text: "ราคาเข้าถึงง่าย",
   },
 ]
 export const FiveStarsReview = [
@@ -231,30 +270,144 @@ export const FiveStarsReview2 = [
     date: "30 March 2024",
   },
 ]
-
 export const contactsButton = [
   {
     url: "https://chat.whatsapp.com/INXaIq12j2bLch9sVslcfJ",
     icon: (
-      <MdGroups className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-primary' />
+      <MdGroups className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
     ),
   },
   {
     url: "https://wa.me/6289684684684",
     icon: (
-      <FaWhatsapp className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-primary' />
+      <FaWhatsapp className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
     ),
   },
   {
     url: "https://www.facebook.com/groups/2404456753194087",
     icon: (
-      <FaFacebookF className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-primary' />
+      <FaFacebookF className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
     ),
   },
   {
     url: "https://www.instagram.com/fpistore_net",
     icon: (
-      <FaInstagram className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-primary' />
+      <FaInstagram className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
     ),
+  },
+]
+export const pricingPlans = [
+  {
+    type: "Sharing Access (No TV)",
+    description: "1 จอส่วนตัว ดูใน TV ไม่ได้",
+    plans: [
+      {
+        badge: <BadgePlan text='Basic' />,
+        prices: [
+          { duration: "1 Day", price: 9 },
+          { duration: "3 Days", price: 15 },
+          { duration: "5 Days", price: 20 },
+          { duration: "7 Days", price: 29 },
+        ],
+      },
+      {
+        badge: (
+          <BadgePlan
+            text='VIP'
+            icon={<RiVipCrownLine className='text-goldVIP' />}
+          />
+        ),
+        prices: [
+          { duration: "14 Days", price: 55 },
+          { duration: "30 Days", price: 99 },
+        ],
+      },
+      {
+        badge: (
+          <BadgePlan
+            text='VVIP'
+            icon={<IoDiamondOutline className='text-purpleVVIP' />}
+          />
+        ),
+        prices: [
+          { duration: "60 Days", price: 189 },
+          { duration: "90 Days", price: 279 },
+          { duration: "1 Year", price: 999 },
+        ],
+      },
+    ],
+  },
+  {
+    type: "Sharing Access (With TV)",
+    description: "1 จอส่วนตัว ดูใน TV ได้",
+    plans: [
+      {
+        badge: <BadgePlan text='Basic' />,
+        prices: [
+          { duration: "1 Day", price: 19 },
+          { duration: "3 Days", price: 29 },
+          { duration: "5 Days", price: 39 },
+          { duration: "7 Days", price: 49 },
+        ],
+      },
+      {
+        badge: (
+          <BadgePlan
+            text='VIP'
+            icon={<RiVipCrownLine className='text-goldVIP' />}
+          />
+        ),
+        prices: [
+          { duration: "14 Days", price: 89 },
+          { duration: "30 Days", price: 149 },
+        ],
+      },
+      {
+        badge: (
+          <BadgePlan
+            text='VVIP'
+            icon={<IoDiamondOutline className='text-purpleVVIP' />}
+          />
+        ),
+        prices: [
+          { duration: "60 Days", price: 279 },
+          { duration: "90 Days", price: 409 },
+          { duration: "1 Year", price: 1499 },
+        ],
+      },
+    ],
+  },
+  {
+    type: "Family Access",
+    description: "1 บัญชี (ได้ทั้ง 5 จอ) ดูได้ทุกอุปกรณ์",
+    plans: [
+      {
+        badge: (
+          <BadgePlan
+            text='VIP'
+            icon={<RiVipCrownLine className='text-goldVIP' />}
+          />
+        ),
+        prices: [
+          { duration: "7 Days", price: 149 },
+          { duration: "30 Days", price: 599 },
+          { duration: "14 Days", price: 299 },
+          { duration: "30 Days", price: 599 },
+        ],
+      },
+      {
+        badge: (
+          <BadgePlan
+            text='VVIP'
+            icon={<IoDiamondOutline className='text-purpleVVIP' />}
+          />
+        ),
+        prices: [
+          { duration: "60 Days", price: 1149 },
+          { duration: "90 Days", price: 1599 },
+          { duration: "1 Year", price: 6111 },
+        ],
+      },
+    ],
   },
 ]
