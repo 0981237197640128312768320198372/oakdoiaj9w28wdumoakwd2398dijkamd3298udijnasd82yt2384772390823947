@@ -78,14 +78,14 @@ export const Reviews = ({
     <div
       ref={containerRef}
       className={cn(
-        "scroller relative max-w-[1140px] overflow-hidden border-x-[1px] border-dark-500 ",
+        "scroller relative max-w-[1140px] overflow-hidden border-x-[1px] pb-1 border-dark-500 ",
         className
       )}
     >
       <ul
         ref={scrollerRef}
         className={cn(
-          " flex min-w-full shrink-0 gap-4 py-2 w-max flex-nowrap",
+          " flex min-w-full shrink-0 gap-5 py-2 w-max flex-nowrap",
           start && "animate-scroll ",
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
