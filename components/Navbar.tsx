@@ -84,7 +84,7 @@ const Navbar = () => {
       </div>
       <div className='w-full gap-10 xl:flex justify-between max-w-[1140px] hidden duration-1000 items-center'>
         <div className='flex w-full justify-between items-center bg-dark-800/70 backdrop-blur py-2'>
-          <div className=' w-full flex gap-5 justify-between items-center text-white'>
+          <div className=' w-full flex gap-10 justify-center items-center text-white'>
             {navButtons.map((nav, i) => (
               <Link
                 href={nav.url}

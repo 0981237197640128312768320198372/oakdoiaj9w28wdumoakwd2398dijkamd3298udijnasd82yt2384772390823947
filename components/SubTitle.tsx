@@ -4,7 +4,7 @@ import React from "react"
 const SubTitle = ({
   title = "Sub Title",
   buttonMore = "View More",
-  urlButtonMore = "View More",
+  urlButtonMore,
   className,
 }: {
   title: string
@@ -20,12 +20,14 @@ const SubTitle = ({
         {title}
       </h3>
       <div className='w-full h-[1px] bg-light-200' />
-      <Link
-        className='flex w-fit justify-end text-xs xl:text-sm items-center border-b-[1px] border-light-200 flex-col-reverse py-[2px] hover:border-primary hover:text-primary duration-300 whitespace-nowrap '
-        href={urlButtonMore}
-      >
-        {buttonMore}
-      </Link>
+      {buttonMore && urlButtonMore && (
+        <Link
+          className='flex w-fit justify-end text-xs xl:text-sm items-center border-b-[1px] border-light-200 flex-col-reverse py-[2px] hover:border-primary hover:text-primary duration-300 whitespace-nowrap '
+          href={urlButtonMore}
+        >
+          {buttonMore}
+        </Link>
+      )}
     </div>
   )
 }

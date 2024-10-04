@@ -6,21 +6,14 @@ import SubTitle from "../SubTitle"
 
 const ReviewSection = () => {
   return (
-    <>
-      <SubTitle
-        title='เครดิต'
-        buttonMore='View More Credits'
-        urlButtonMore={"/testimonials"}
-        className='mt-40'
-      />
-      <section
-        id='5StarsReviews'
-        className='h-[40rem] w-screen px-5 rounded-md flex flex-col antialiased bg-transparent items-center justify-center relative overflow-hidden'
-      >
-        <Reviews reviewsData={FiveStarsReview} direction='right' speed='slow' />
-        <Reviews reviewsData={FiveStarsReview2} direction='left' speed='slow' />
-      </section>
-    </>
+    <section
+      id='5StarsReviews'
+      className='h-[40rem] w-screen px-5 rounded-md flex flex-col antialiased bg-transparent items-center justify-center relative overflow-hidden mt-20'
+    >
+      <SubTitle title='เครดิต' className='mb-16' />
+      <Reviews reviewsData={FiveStarsReview} direction='right' speed='slow' />
+      <Reviews reviewsData={FiveStarsReview2} direction='left' speed='slow' />
+    </section>
   )
 }
 

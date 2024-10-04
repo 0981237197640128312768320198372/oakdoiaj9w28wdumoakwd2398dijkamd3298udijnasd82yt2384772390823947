@@ -3,6 +3,7 @@ import PageHeadline from "@/components/PageHeadline"
 import Image from "next/image"
 import React from "react"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
+import amazonprimevideo from "@/assets/images/amazonprimevideo.png"
 import { pricingPlans } from "@/constant"
 import Link from "next/link"
 
@@ -30,7 +31,7 @@ const page = () => {
               className='flex w-full flex-col gap-3 rounded-lg border-[1px] border-dark-500 p-5'
               key={i}
             >
-              <span className='flex flex-col pb-5 mb-3 border-b-[1px] border-dark-500'>
+              <span className='flex flex-col pb-5 mb-5'>
                 <h2 className='text-light-100'>{price.type}</h2>
                 <p className='text-light-400 text-xs'>{price.description}</p>
               </span>
@@ -65,6 +66,17 @@ const page = () => {
             </div>
           ))}
         </div>
+      </div>
+      <div className='w-full flex items-center gap-10 mt-20'>
+        <Image
+          src={amazonprimevideo}
+          alt='High Quality Netflix Premium Cheap Price Dokmai Store'
+          width={150}
+          height={150}
+          className='w-fit select-none opacity-50'
+        />
+        <div className='w-full h-[1px] bg-dark-500' />
+        <span className='whitespace-nowrap'>Coming Soon!</span>
       </div>
     </main>
   )

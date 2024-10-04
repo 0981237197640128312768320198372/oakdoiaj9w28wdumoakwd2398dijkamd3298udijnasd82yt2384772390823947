@@ -4,6 +4,7 @@ import React from "react"
 import FAQSection from "@/components/Sections/FAQSection"
 import Pricing from "@/components/Sections/Pricing"
 import ReviewSection from "@/components/Sections/ReviewSection"
+import CreditsSection from "@/components/Sections/CreditsSection"
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <HeroSection />
       <Pricing />
       <FAQSection />
+      <CreditsSection />
       <ReviewSection />
     </main>
   )

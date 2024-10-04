@@ -4,7 +4,10 @@ import Link from "next/link"
 import SubTitle from "../SubTitle"
 const Pricing = () => {
   return (
-    <div className='flex flex-col w-full py-5 pt-40 __container gap-20'>
+    <section
+      id='Pricing'
+      className='flex flex-col w-full py-5 pt-40 __container gap-20'
+    >
       <SubTitle
         title='Pricing plans'
         buttonMore='View More Prices'
@@ -52,7 +55,7 @@ const Pricing = () => {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   )
 }
 

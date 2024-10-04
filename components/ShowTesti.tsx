@@ -5,7 +5,13 @@ import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
 
-export default function ShowTesti({ testimonials }: { testimonials: any[] }) {
+export default function ShowTesti({
+  testimonials,
+  paginations,
+}: {
+  testimonials: any[]
+  paginations: boolean
+}) {
   const itemsPerPage = 3
   const totalPages = Math.ceil(testimonials.length / itemsPerPage)
 
@@ -30,7 +36,6 @@ export default function ShowTesti({ testimonials }: { testimonials: any[] }) {
   }
 
   useEffect(() => {
-    // Preload images on the client side
     const imageUrls = testimonials.map(
       (testimonial: any) => testimonial.imageUrl
     )
@@ -83,27 +88,32 @@ export default function ShowTesti({ testimonials }: { testimonials: any[] }) {
         ))}
       </div>
 
-      {/* Pagination controls */}
-      <div className='flex justify-between items-center py-3 gap-5 border-y-[1px] border-dark-500 text-light-400'>
-        <button
-          onClick={handlePreviousPage}
-          disabled={currentPage === 1}
-          className='p-2 text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
-        >
-          <GoChevronLeft />
-        </button>
-        <span className='flex gap-2 font-aktivGroteskRegular select-none'>
-          Page <p className='font-aktivGroteskBold'>{currentPage}</p> of
-          <p className='font-aktivGroteskBold'>{totalPages}</p>
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className='p-2 text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
-        >
-          <GoChevronRight />
-        </button>
-      </div>
+      {paginations && (
+        <div className='flex justify-between items-center py-3 gap-5 border-y-[1px] border-dark-500 text-light-400'>
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className='p-2 text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
+            aria-label='Previous Page'
+          >
+            <GoChevronLeft />
+          </button>
+
+          <span className='flex gap-2 font-aktivGroteskRegular select-none'>
+            Page <p className='font-aktivGroteskBold'>{currentPage}</p> of
+            <p className='font-aktivGroteskBold'>{totalPages}</p>
+          </span>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className='p-2 text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
+            aria-label='Next Page'
+          >
+            <GoChevronRight />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
