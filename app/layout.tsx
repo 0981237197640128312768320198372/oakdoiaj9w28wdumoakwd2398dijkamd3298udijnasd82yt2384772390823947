@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/next-script-for-ga */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Metadata } from "next"
 import "../styles/globals.css"
@@ -57,6 +58,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className='!scroll-smooth'>
+      <head>
+        <script
+          async
+          src='https://www.googletagmanager.com/gtag/js?id=G-X6ZTVB6G8L'
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-X6ZTVB6G8L');
+            `,
+          }}
+        />
+      </head>
       <body className='font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden'>
         <Navbar />
         <div className='flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20'>
