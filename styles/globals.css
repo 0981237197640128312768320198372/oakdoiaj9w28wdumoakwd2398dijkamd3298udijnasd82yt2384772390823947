@@ -157,3 +157,7 @@ img:focus {
 .__nofocus {
   @apply focus:!outline-none focus:!ring-0 focus:!border-none;
 }
+
+body::-webkit-scrollbar {
+  @apply h-0 w-2;
+}

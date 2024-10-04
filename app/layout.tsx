@@ -57,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className='!scroll-smooth'>
-      <body className='font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200'>
+      <body className='font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden'>
         <Navbar />
         <div className='flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20'>
           {children}
