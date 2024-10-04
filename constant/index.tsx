@@ -302,7 +302,6 @@ export const pricingPlans = [
     description: "1 จอส่วนตัว ดูใน TV ไม่ได้",
     plans: [
       {
-        badge: <BadgePlan text='Basic' />,
         prices: [
           { duration: "1 Day", price: 9 },
           { duration: "3 Days", price: 15 },
@@ -342,7 +341,6 @@ export const pricingPlans = [
     description: "1 จอส่วนตัว ดูใน TV ได้",
     plans: [
       {
-        badge: <BadgePlan text='Basic' />,
         prices: [
           { duration: "1 Day", price: 19 },
           { duration: "3 Days", price: 29 },
