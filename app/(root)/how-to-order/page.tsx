@@ -6,6 +6,7 @@ import React from "react"
 import { GiClick } from "react-icons/gi"
 import { BsChatLeftTextFill } from "react-icons/bs"
 import chooseplan from "@/assets/images/chooseplan.png"
+import girlordering from "@/assets/images/girlordering.jpg"
 import Link from "next/link"
 
 const page = () => {
@@ -51,7 +52,34 @@ const page = () => {
           </p>
           <div className='flex w-full h-full gap-4'>
             <Image
-              src={chooseplan}
+              src={girlordering}
+              alt='Dokmai Store Price List Netflix Premium Plan'
+              width={500}
+              height={500}
+              className='rounded-lg'
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      icon: <BsChatLeftTextFill className='text-2xl text-light-500' />,
+      title: "Purchasing",
+      content: (
+        <div>
+          <p className='text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8'>
+            แจ้งแพ็กเกจที่ลูกค้าต้องการใน{" "}
+            <Link
+              href={"https://lin.ee/Ovlixv5"}
+              target='__blank'
+              className='text-primary'
+            >
+              Line chat
+            </Link>
+          </p>
+          <div className='flex w-full h-full gap-4'>
+            <Image
+              src={girlordering}
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
               height={500}
