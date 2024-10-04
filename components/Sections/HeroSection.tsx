@@ -4,7 +4,7 @@ import Link from "next/link"
 import React from "react"
 import { Features } from "@/components/Features"
 import { features } from "@/constant"
-import { DOKMAI } from "@/components/DOKMAI"
+// import { DOKMAI } from "@/components/DOKMAI"
 const Highlight = ({ text }: { text: string }) => (
   <span className='text-dark-800 bg-primary px-1'>{text}</span>
 )
@@ -14,7 +14,7 @@ const HeroSection = () => {
       id='HeroSection'
       className='flex flex-col w-full justify-start items-center'
     >
-      <DOKMAI text='DOKMAI' />
+      {/* <DOKMAI text='DOKMAI' /> */}
       <div className='flex flex-col justify-start px-5 __container items-center text-center w-full'>
         <h1 className='text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
           Watch More Series, <br className='sm:hidden' /> Spend Less Money
