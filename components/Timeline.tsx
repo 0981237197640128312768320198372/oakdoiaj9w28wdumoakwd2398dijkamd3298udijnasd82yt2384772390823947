@@ -31,7 +31,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
 
   return (
     <div className='w-full font-aktivGroteskRegular' ref={containerRef}>
-      <div ref={ref} className='relative __container '>
+      <div ref={ref} className='relative __container'>
         {data.map((item, index) => (
           <div
             key={index}

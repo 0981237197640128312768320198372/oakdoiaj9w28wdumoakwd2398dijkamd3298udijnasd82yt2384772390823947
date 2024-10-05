@@ -85,7 +85,7 @@ const page = () => {
     },
   ]
   return (
-    <div className='w-full mt-40 px-5 xl:px-0 __container'>
+    <div className='w-full px-5 xl:px-0 __container'>
       <PageHeadline
         headline='How To Order'
         description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'

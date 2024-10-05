@@ -14,7 +14,7 @@ const page = () => {
         headline='Price List'
         description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'
       />
-      <div className='flex flex-col w-full py-5 gap-10'>
+      <div className='flex flex-col w-full py-5 gap-10 justify-center items-center'>
         <div className='w-full flex items-center gap-10'>
           <Image
             src={netflixpremium}
@@ -25,7 +25,7 @@ const page = () => {
           />
           <div className='w-full h-[1px] bg-dark-500' />
         </div>
-        <div className='flex flex-col md:flex-row w-full justify-between items-start gap-7'>
+        <div className='flex flex-col lg:flex-row w-fit justify-between items-start gap-7'>
           {pricingPlans.map((price, i) => (
             <div
               className='flex w-full flex-col gap-3 rounded-lg border-[1px] border-dark-500 p-5'
@@ -38,7 +38,7 @@ const page = () => {
               <div className='flex flex-col gap-3'>
                 {price.plans.map((plan, i) => (
                   <div key={i} className='pb-5'>
-                    <div className='flex w-full items-start justify-end mb-1'>
+                    <div className='flex w-full bg-dark-700 items-start justify-end'>
                       {plan.badge}
                     </div>
                     <div className='flex flex-col py-5 px-10 h-full gap-5 bg-dark-700'>

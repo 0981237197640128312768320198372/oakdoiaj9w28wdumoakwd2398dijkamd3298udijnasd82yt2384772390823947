@@ -65,13 +65,6 @@ const Navbar = () => {
         <div className='flex items-center justify-end gap-5'>
           <div className='flex justify-end items-center gap-3 font-aktivGroteskBold text-xs md:text-md'>
             <Link
-              href='https://dokmaistore.mysellix.io'
-              target='_blank'
-              className='border-[1px] border-primary px-2 py-1'
-            >
-              Buy Now
-            </Link>
-            <Link
               href='https://lin.ee/Ovlixv5'
               target='_blank'
               className='text-dark-800 bg-primary flex px-2 py-1 items-center gap-2'

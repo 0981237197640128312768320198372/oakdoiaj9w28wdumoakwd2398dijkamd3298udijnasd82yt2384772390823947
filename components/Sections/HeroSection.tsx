@@ -5,9 +5,13 @@ import React from "react"
 import { Features } from "@/components/Features"
 import { features } from "@/constant"
 import { DOKMAI } from "@/components/DOKMAI"
-const Highlight = ({ text }: { text: string }) => (
-  <span className='text-dark-800 bg-primary px-1'>{text}</span>
-)
+const Highlight = ({
+  text,
+  bgcolor = "bg-primary",
+}: {
+  text: string
+  bgcolor?: string
+}) => <span className={`text-dark-800 ${bgcolor} px-1`}>{text}</span>
 const HeroSection = () => {
   return (
     <section
@@ -20,15 +24,38 @@ const HeroSection = () => {
           Watch More Series, <br className='sm:hidden' /> Spend Less Money
         </h1>
         <p className='md:text-xl text-light-200 font-mono text-xs'>
-          Netflix Premium <Highlight text='คุณภาพสูง' /> ราคาถูก
-          พร้อมรับประกันตลอดชีพจาก Dokmai Store
-          แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย มอบบริการ
-          <Highlight text='Netflix Premium' />
-          ที่เชื่อถือได้ในราคาย่อมเยา พร้อม
-          <Highlight text='การสนับสนุนลูกค้าที่รวดเร็ว' />
-          เราการันตีบริการคุณภาพและ
-          <Highlight text='การช่วยเหลืออย่างทันที' />
-          เพื่อให้คุณเพลิดเพลินกับการชมภาพยนตร์และซีรีส์ได้อย่างเต็มอิ่ม
+          <Highlight text='Digital Products Platform' /> offering{" "}
+          <Highlight text='Premium App Accounts' />, such as{" "}
+          <Highlight
+            text='Netflix Premium'
+            bgcolor='bg-[#e50914] !text-white whitespace-nowrap'
+          />{" "}
+          and{" "}
+          <Highlight
+            text='Prime Video'
+            bgcolor='bg-[#00aae4] !text-white whitespace-nowrap'
+          />
+          , at{" "}
+          <Highlight
+            text='affordable prices'
+            bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
+          />
+          . We are known for our{" "}
+          <Highlight
+            text='reliability'
+            bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
+          />
+          ,{" "}
+          <Highlight
+            text='fast response times'
+            bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
+          />
+          , and{" "}
+          <Highlight
+            text='trusted service'
+            bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
+          />
+          , delivering excellence and satisfaction for every client.
         </p>
         <Link
           href='https://lin.ee/Ovlixv5'
