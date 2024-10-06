@@ -3,7 +3,7 @@
 
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import dokmaioutline from "@/assets/images/dokmaioutline.png"
+import dokmailogo from "@/assets/images/dokmailogo.png"
 
 import React, { useEffect, useState } from "react"
 
@@ -78,7 +78,7 @@ export const Features = ({
       <ul
         ref={scrollerRef}
         className={cn(
-          " flex w-max items-center gap-7 font-aktivGroteskMediumItalic",
+          " flex w-max items-center gap-16 font-aktivGroteskMediumItalic",
           start && "animate-scroll ",
           pauseOnHover && "hover:[animation-play-state:paused]"
         )}
@@ -89,9 +89,9 @@ export const Features = ({
             key={item.text}
           >
             <Image
-              src={dokmaioutline}
-              width={50}
-              height={50}
+              src={dokmailogo}
+              width={30}
+              height={30}
               alt='dokmai 5 stars reviews'
               className='mb-5'
             />

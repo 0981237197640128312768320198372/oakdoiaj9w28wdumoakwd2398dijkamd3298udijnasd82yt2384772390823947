@@ -91,14 +91,7 @@ const page = () => {
       content: (
         <div>
           <p className='text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8'>
-            หลังจากชำระเงินแล้ว รอรับบัญชี Netflix แล้ว Login ได้ทันที ที่{" "}
-            <Link
-              href={"https://netflix.com"}
-              target='__blank'
-              className='text-primary'
-            >
-              netflix.com
-            </Link>
+            หลังจากชำระเงินเรียบร้อย สามารถรอรับบัญชี แล้ว Login ได้ทันที!!
           </p>
           <div className='flex w-full h-full gap-4'>
             <Image
