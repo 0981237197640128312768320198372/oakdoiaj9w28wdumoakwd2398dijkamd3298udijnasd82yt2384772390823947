@@ -6,7 +6,7 @@ const Pricing = () => {
   return (
     <section
       id='Pricing'
-      className='flex flex-col w-full py-5 pt-40 __container gap-20'
+      className='flex flex-col w-full items-center py-5 pt-40 __container gap-20'
     >
       <SubTitle
         title='Pricing plans'
@@ -14,31 +14,31 @@ const Pricing = () => {
         urlButtonMore='/prices'
         className=''
       />
-      <div className='flex flex-col md:flex-row w-full justify-between items-start gap-7 px-5 h-full'>
+      <div className='flex flex-col lg:flex-row w-fit justify-between items-start gap-7'>
         {pricingPlans.map((price, i) => (
           <div
-            className='flex w-full flex-col gap-3 rounded-lg border-[1px] border-dark-500 p-5 min-h-full'
+            className='flex w-full flex-col gap-3 rounded-lg border-[1px] border-dark-500 p-5'
             key={i}
           >
-            <span className='flex flex-col pb-5 mb-3 border-b-[1px] border-dark-500'>
+            <span className='flex flex-col pb-5 mb-5'>
               <h2 className='text-light-100'>{price.type}</h2>
               <p className='text-light-400 text-xs'>{price.description}</p>
             </span>
             <div className='flex flex-col gap-3'>
               {price.plans.map((plan, i) => (
                 <div key={i} className='pb-5'>
-                  <div className='flex w-full h-full items-start justify-end mb-1'>
+                  <div className='flex w-full bg-dark-700 items-start justify-end'>
                     {plan.badge}
                   </div>
-                  <div className='flex flex-col py-5 px-10 gap-5 bg-dark-700 h-full'>
+                  <div className='flex flex-col py-5 px-10 h-full gap-5 bg-dark-700'>
                     {plan.prices &&
                       plan.prices.length > 0 &&
                       plan.prices.map((price, i) => (
-                        <div className='flex gap-3' key={i}>
-                          <span className='px-2 py-1 bg-primary text-dark-800 font-aktivGroteskRegular'>
+                        <div className='flex gap-3 items-center' key={i}>
+                          <span className='px-2 text-xl bg-primary text-dark-800 font-aktivGroteskBold'>
                             {price.duration}
                           </span>
-                          <p>฿ {price.price}</p>
+                          <p className='text-xl'>฿ {price.price}</p>
                         </div>
                       ))}
                   </div>

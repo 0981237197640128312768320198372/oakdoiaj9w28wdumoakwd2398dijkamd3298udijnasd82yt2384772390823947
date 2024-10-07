@@ -1,4 +1,3 @@
-"use client"
 import PageHeadline from "@/components/PageHeadline"
 import { Timeline } from "@/components/Timeline"
 import Image from "next/image"
@@ -11,6 +10,16 @@ import girlordering from "@/assets/images/girlordering.jpg"
 import girlpaying from "@/assets/images/girlpaying.jpg"
 import girllogin from "@/assets/images/girllogin.jpg"
 import Link from "next/link"
+import { generateMetadata } from "@/lib/utils"
+
+export const metadata = generateMetadata({
+  title: "วิธีการสั่งซื้อ",
+  description:
+    "เรียนรู้วิธีการสั่งซื้อบัญชีแอพพรีเมียมเช่น Netflix Premium และ Prime Video ที่ Dokmai Store พร้อมการชำระเงินที่สะดวกสบายและรับบริการลูกค้าที่ยอดเยี่ยม.",
+  url: "https://www.dokmaistore.com/how-to-order",
+  keywords:
+    "วิธีการสั่งซื้อ, Netflix Premium, Prime Video, บัญชีพรีเมียม, Dokmai Store, ซื้อออนไลน์, การชำระเงินสะดวก",
+})
 
 const page = () => {
   const data = [
@@ -107,7 +116,7 @@ const page = () => {
     },
   ]
   return (
-    <div className='w-full px-5 xl:px-0 mt-40  __container'>
+    <div className='w-full px-5 xl:px-0 mt-40 mb-96  __container'>
       <PageHeadline
         headline='How To Order'
         description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'

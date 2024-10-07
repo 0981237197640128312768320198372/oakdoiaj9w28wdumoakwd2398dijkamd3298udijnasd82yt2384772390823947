@@ -409,3 +409,40 @@ export const pricingPlans = [
     ],
   },
 ]
+export const Terms = [
+  {
+    title: "1. Introduction",
+    description:
+      "These Terms and Conditions outline the rules and regulations for using the Dokmai Store website, located at www.dokmaistore.com. By accessing this website, we assume you accept these terms. Do not continue to use Dokmai Store if you do not agree to all of the terms stated on this page.",
+  },
+  {
+    title: "2. Services",
+    description:
+      " Dokmai Store offers digital products, such as premium app accounts (e.g., Netflix Premium, Amazon Prime Video). All products are sold for personal use, and reselling any product without prior agreement is prohibited unless stated otherwise.",
+  },
+  {
+    title: "3. Payment Policy",
+    description:
+      " All payments must be completed through the provided payment gateways. Once a purchase is made, **no refunds** will be provided. However, Dokmai Store guarantees to fix **any problem** you may encounter with your account. We are committed to ensuring you have a seamless experience, and any issues will be resolved by our support team.",
+  },
+  {
+    title: "4. Account Usage and Changes",
+    description:
+      "Customers are granted access to premium app accounts for the duration of their subscription. You are allowed to change your profile name, PIN, or password but must notify Dokmai Store before making any changes. **Changing the email address** linked to your account is **strictly prohibited**. Unauthorized sharing of accounts or violation of service guidelines may result in suspension or termination of access.",
+  },
+  {
+    title: "5. Limitation of Liability",
+    description:
+      "Dokmai Store is not liable for any damages that may arise from the misuse or inability to use the service. We are also not responsible for any disruptions caused by third-party service providers, such as Netflix or Prime Video.",
+  },
+  {
+    title: "6. Changes to Terms",
+    description:
+      "Dokmai Store reserves the right to revise and update these terms at any time. Any changes will be posted on this page, and by continuing to use the service, you agree to the new terms.",
+  },
+  {
+    title: "7. Contact Information",
+    description:
+      "If you have any questions or concerns regarding these Terms and Conditions, please contact our support team at support@dokmaistore.com.",
+  },
+]

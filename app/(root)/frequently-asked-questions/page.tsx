@@ -1,8 +1,17 @@
-"use client"
-import FAQButton from "@/components/FAQButton"
+import FAQList from "@/components/FAQList"
 import PageHeadline from "@/components/PageHeadline"
 import { faqs } from "@/constant"
+import { generateMetadata } from "@/lib/utils"
 import React from "react"
+
+export const metadata = generateMetadata({
+  title: "คำถามที่พบบ่อย",
+  description:
+    "หากคุณมีคำถามเกี่ยวกับ Dokmai Store หรือบริการของเรา เช่น Netflix Premium, Prime Video และบัญชีแอพพรีเมียมอื่น ๆ อ่านคำถามที่พบบ่อยเพื่อเรียนรู้เพิ่มเติม.",
+  url: "https://www.dokmaistore.com/frequently-asked-questions",
+  keywords:
+    "คำถามที่พบบ่อย, Netflix Premium, Prime Video, บัญชีพรีเมียม, Dokmai Store",
+})
 
 export default function Page() {
   return (
@@ -12,14 +21,7 @@ export default function Page() {
         description='คำถามที่พบบ่อย'
       />
       <div className='w-full px-5 xl:px-0 flex flex-col gap-3'>
-        {faqs.map((faq, i) => (
-          <FAQButton
-            key={i}
-            index={i}
-            question={faq.question}
-            answer={faq.answer}
-          />
-        ))}
+        <FAQList faqs={faqs} />
       </div>
     </main>
   )

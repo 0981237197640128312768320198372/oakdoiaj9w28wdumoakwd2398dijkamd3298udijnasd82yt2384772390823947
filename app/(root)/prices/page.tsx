@@ -1,4 +1,3 @@
-"use client"
 import PageHeadline from "@/components/PageHeadline"
 import Image from "next/image"
 import React from "react"
@@ -6,6 +5,16 @@ import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import amazonprimevideo from "@/assets/images/amazonprimevideo.png"
 import { pricingPlans } from "@/constant"
 import Link from "next/link"
+import { generateMetadata } from "@/lib/utils"
+
+export const metadata = generateMetadata({
+  title: "ราคาสินค้า",
+  description:
+    "ตรวจสอบราคาบัญชีแอพพรีเมียมเช่น Netflix Premium และ Prime Video ที่ Dokmai Store พร้อมข้อเสนอสุดพิเศษสำหรับผู้ขายและลูกค้าทั่วไป.",
+  url: "https://www.dokmaistore.com/prices",
+  keywords:
+    "ราคาสินค้า, Netflix Premium, Prime Video, บัญชีพรีเมียม, ราคาถูก, ข้อเสนอพิเศษ",
+})
 
 const page = () => {
   return (
