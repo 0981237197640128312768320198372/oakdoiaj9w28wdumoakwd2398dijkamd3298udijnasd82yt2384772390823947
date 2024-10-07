@@ -17,8 +17,8 @@ const page = () => {
   return (
     <div className='w-full px-5 xl:px-0 mt-40  __container'>
       <PageHeadline
-        headline='Terms and Conditions'
-        description='Welcome to Dokmai Store. These Terms and Conditions govern your use of our website and the purchase of our products. By accessing, browsing, or making a purchase on this site, you agree to comply with and be bound by the following terms. Please read these terms carefully before proceeding, as they constitute a legally binding agreement between you and Dokmai Store. If you do not agree to any part of these terms, you should refrain from using our services or purchasing any products from Dokmai Store.'
+        headline='ข้อตกลงและเงื่อนไข'
+        description='ยินดีต้อนรับสู่ Dokmai Store ข้อตกลงและเงื่อนไขเหล่านี้จะกำหนดการใช้งานเว็บไซต์และการซื้อผลิตภัณฑ์ของเรา เมื่อคุณเข้าถึง ใช้งาน หรือซื้อสินค้า คุณตกลงที่จะปฏิบัติตามข้อกำหนดเหล่านี้อย่างสมบูรณ์ โปรดอ่านอย่างละเอียด หากคุณไม่ยอมรับเงื่อนไขใดๆ กรุณาหยุดใช้บริการหรือซื้อสินค้าใดๆ จาก Dokmai Store ทันที'
       />
       <TermsAndConditions terms={Terms} />
     </div>

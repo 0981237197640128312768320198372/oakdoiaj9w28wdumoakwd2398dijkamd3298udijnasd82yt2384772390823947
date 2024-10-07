@@ -71,6 +71,59 @@ export default function AboutUsPage() {
           delivering excellence and ensuring you always get the best.
         </p>
       </section>
+      <section className='mt-40 mb-6'>
+        <h2 className='font-aktivGroteskBold text-3xl mb-4'>
+          สิ่งที่ทำให้เราพิเศษ?
+        </h2>
+        <p className='text-light-300'>
+          ที่ Dokmai Store เราภูมิใจในการมอบบัญชีแอพพรีเมียมที่ดีที่สุด
+          คุณสมบัติเด่นของเราคือ:
+        </p>
+        <ul className='list-disc ml-5 text-light-300'>
+          <li>
+            บัญชีคุณภาพสูงสำหรับบริการสตรีมมิ่งเช่น Netflix Premium และ Amazon
+            Prime Video
+          </li>
+          <li>
+            บริการลูกค้าที่ไม่มีใครเทียบได้ แก้ไขปัญหาใน 10 นาที ไม่เกิน 24
+            ชั่วโมง
+          </li>
+          <li>ช่องทางการชำระเงินที่ยืดหยุ่น รวมถึงสกุลเงินดิจิทัล</li>
+          <li>ราคาย่อมเยาแต่คุณภาพไม่มีลดลง</li>
+        </ul>
+      </section>
+
+      <section className='mb-6'>
+        <h2 className='font-aktivGroteskBold text-3xl mb-4'>
+          โอกาสพิเศษสำหรับผู้ขาย
+        </h2>
+        <p className='text-light-300'>
+          Dokmai Store ยินดีต้อนรับผู้ขายที่ต้องการเสนอขายบัญชีแอพพรีเมียม เรามี
+          <strong>ราคาพิเศษ</strong> และ <strong>ดีลพิเศษ</strong>{" "}
+          สำหรับผู้ขายที่มีคุณสมบัติตรงตามข้อกำหนด
+          ช่วยขยายธุรกิจของคุณได้ในราคาที่แข่งขันได้
+        </p>
+      </section>
+
+      <section className='mb-6'>
+        <h2 className='font-aktivGroteskBold text-3xl mb-4'>
+          ทำไมต้องเลือก Dokmai Store?
+        </h2>
+        <p className='text-light-300'>
+          เราเสนอมากกว่าบัญชี ด้วยการตอบสนองที่รวดเร็ว สนับสนุนเชื่อถือได้
+          และช่องทางการชำระเงินที่ยืดหยุ่น
+          เราคือทางเลือกที่ไว้วางใจได้สำหรับบัญชีแอพพรีเมียม
+        </p>
+      </section>
+
+      <section className='mb-6'>
+        <h2 className='font-aktivGroteskBold text-3xl mb-4'>เข้าร่วมกับเรา!</h2>
+        <p className='text-light-300'>
+          สำรวจบัญชีแอพพรีเมียมหลากหลายประเภทและประสบการณ์การบริการที่ดีที่สุดกับ
+          <strong>Dokmai Store</strong>{" "}
+          เรารับประกันการมอบบริการที่ดีเยี่ยมให้คุณเสมอ
+        </p>
+      </section>
     </main>
   )
 }

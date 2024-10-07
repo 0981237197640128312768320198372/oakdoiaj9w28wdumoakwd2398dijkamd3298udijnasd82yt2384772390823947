@@ -411,38 +411,37 @@ export const pricingPlans = [
 ]
 export const Terms = [
   {
-    title: "1. Introduction",
+    title: "1. บทนำ",
     description:
-      "These Terms and Conditions outline the rules and regulations for using the Dokmai Store website, located at www.dokmaistore.com. By accessing this website, we assume you accept these terms. Do not continue to use Dokmai Store if you do not agree to all of the terms stated on this page.",
+      "ข้อตกลงและเงื่อนไขนี้กำหนดกฎการใช้เว็บไซต์ Dokmai Store หากคุณเข้าถึงเว็บไซต์นี้ หมายความว่าคุณยอมรับข้อกำหนดเหล่านี้ หากคุณไม่ยอมรับ กรุณาหยุดใช้บริการทันที",
   },
   {
-    title: "2. Services",
+    title: "2. บริการ",
     description:
-      " Dokmai Store offers digital products, such as premium app accounts (e.g., Netflix Premium, Amazon Prime Video). All products are sold for personal use, and reselling any product without prior agreement is prohibited unless stated otherwise.",
+      "Dokmai Store จำหน่ายผลิตภัณฑ์ดิจิทัล เช่น บัญชีแอพพรีเมียม (เช่น Netflix Premium, Amazon Prime Video) ผลิตภัณฑ์ทั้งหมดใช้สำหรับการใช้งานส่วนตัว การขายต่อโดยไม่ได้รับอนุญาตเป็นสิ่งต้องห้าม",
   },
   {
-    title: "3. Payment Policy",
+    title: "3. นโยบายการชำระเงิน",
     description:
-      " All payments must be completed through the provided payment gateways. Once a purchase is made, **no refunds** will be provided. However, Dokmai Store guarantees to fix **any problem** you may encounter with your account. We are committed to ensuring you have a seamless experience, and any issues will be resolved by our support team.",
+      "การชำระเงินต้องทำผ่านช่องทางที่กำหนด เมื่อซื้อแล้ว ไม่มีการคืนเงิน แต่เรารับประกันจะแก้ไขปัญหาทั้งหมดที่คุณพบ",
   },
   {
-    title: "4. Account Usage and Changes",
+    title: "4. การใช้งานบัญชีและการเปลี่ยนแปลง",
     description:
-      "Customers are granted access to premium app accounts for the duration of their subscription. You are allowed to change your profile name, PIN, or password but must notify Dokmai Store before making any changes. **Changing the email address** linked to your account is **strictly prohibited**. Unauthorized sharing of accounts or violation of service guidelines may result in suspension or termination of access.",
+      "ลูกค้าสามารถเปลี่ยนชื่อโปรไฟล์ พิน หรือรหัสผ่านได้ แต่ต้องแจ้งก่อน การเปลี่ยนอีเมล เป็นสิ่งต้องห้าม การแชร์บัญชีโดยไม่ได้รับอนุญาตอาจส่งผลให้การเข้าถึงถูกระงับ",
   },
   {
-    title: "5. Limitation of Liability",
+    title: "5. ข้อจำกัดความรับผิดชอบ",
     description:
-      "Dokmai Store is not liable for any damages that may arise from the misuse or inability to use the service. We are also not responsible for any disruptions caused by third-party service providers, such as Netflix or Prime Video.",
+      "Dokmai Store ไม่รับผิดชอบต่อความเสียหายที่เกิดจากการใช้บริการอย่างผิดวิธี",
   },
   {
-    title: "6. Changes to Terms",
-    description:
-      "Dokmai Store reserves the right to revise and update these terms at any time. Any changes will be posted on this page, and by continuing to use the service, you agree to the new terms.",
+    title: "6. การเปลี่ยนแปลงข้อกำหนด",
+    description: "เราขอสงวนสิทธิ์ในการแก้ไขข้อกำหนดได้ทุกเมื่อ",
   },
   {
-    title: "7. Contact Information",
+    title: "7. ข้อมูลติดต่อ",
     description:
-      "If you have any questions or concerns regarding these Terms and Conditions, please contact our support team at support@dokmaistore.com.",
+      "หากมีคำถามเกี่ยวกับข้อกำหนด ติดต่อเราที่ support@dokmaistore.com",
   },
 ]

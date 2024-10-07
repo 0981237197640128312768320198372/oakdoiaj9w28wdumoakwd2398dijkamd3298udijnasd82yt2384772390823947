@@ -20,7 +20,10 @@ const HeroSection = () => {
     >
       <DOKMAI text='DOKMAI' />
       <div className='flex flex-col justify-start px-5 __container items-center text-center w-full'>
-        <h1 className='text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
+        <h1 className='flex flex-col items-start text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
+          <span className='text-sm font-mono text-light-400'>
+            Premium Apps Account Store Platform #1 In Thailand
+          </span>
           Watch More Series, <br className='sm:hidden' /> Spend Less Money
         </h1>
         <p className='md:text-xl text-light-200 font-mono text-xs'>
@@ -57,13 +60,22 @@ const HeroSection = () => {
           />
           , delivering excellence and satisfaction for every client.
         </p>
-        <Link
-          href='https://lin.ee/Ovlixv5'
-          target='_blank'
-          className='text-light-100 border-b-2 px-2 pt-4 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
-        >
-          สั่งซื้อตอนนี้
-        </Link>
+        <div className='flex justify-center items-center gap-5'>
+          <Link
+            href='https://lin.ee/Ovlixv5'
+            target='_blank'
+            className='text-light-100 border-b-2 px-2 pt-3 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
+          >
+            สั่งซื้อตอนนี้
+          </Link>
+          <Link
+            href='/about-us'
+            target='_blank'
+            className='text-light-100 border-b-2 px-2 pt-3 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
+          >
+            เกี่ยวกับเรา
+          </Link>
+        </div>
       </div>
       <div className='pt-24 overflow-hidden relative w-full -rotate-3'>
         <Features text={features} />
