@@ -24,7 +24,7 @@ const HeroSection = () => {
           <span className='text-sm font-mono text-light-400'>
             Premium Apps Account Store Platform #1 In Thailand
           </span>
-          Watch More Series, <br className='sm:hidden' /> Spend Less Money
+          Watch More Series, Spend Less Money
         </h1>
         <p className='md:text-xl text-light-200 font-mono text-xs'>
           <Highlight text='Digital Products Platform' /> offering{" "}
