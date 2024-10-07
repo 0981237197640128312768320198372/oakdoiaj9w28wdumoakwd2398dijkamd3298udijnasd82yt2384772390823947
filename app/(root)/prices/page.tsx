@@ -41,7 +41,9 @@ const page = () => {
               key={i}
             >
               <span className='flex flex-col pb-5 mb-5'>
-                <h2 className='text-light-100'>{price.type}</h2>
+                <h2 className='text-light-100 font-aktivGroteskBold'>
+                  {price.type}
+                </h2>
                 <p className='text-light-400 text-xs'>{price.description}</p>
               </span>
               <div className='flex flex-col gap-3'>

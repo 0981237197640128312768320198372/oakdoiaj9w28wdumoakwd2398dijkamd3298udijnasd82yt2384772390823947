@@ -68,3 +68,20 @@ export const CreditsOrTestimonialsDataModels = async () => {
     }))
     .reverse()
 }
+
+export const Recommendations = async () => {
+  const rawData =
+    (await getGoogleSheetsData(
+      process.env.MOVIE_RECOMMENDATIONS_SHEETS as string
+    )) || []
+
+  return rawData
+    .map((row: string[]) => ({
+      title: row[0],
+      description: row[1],
+      imageUrl: convertGoogleDriveUrl(row[2]),
+      netflixUrl: row[3],
+      date: row[4],
+    }))
+    .reverse()
+}

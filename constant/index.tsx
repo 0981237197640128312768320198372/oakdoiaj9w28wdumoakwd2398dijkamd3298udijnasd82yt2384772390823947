@@ -20,12 +20,12 @@ export const navButtons = [
     url: "/how-to-order",
   },
   {
-    title: "Netflix News",
-    url: "/netflix-news",
+    title: "เกี่ยวกับเรา",
+    url: "/about-us",
   },
   {
     title: "Recommendations",
-    url: "/netflix-recommendation",
+    url: "/movie-series-recommendations",
   },
 ]
 export const footerButton = [
