@@ -47,20 +47,49 @@ export default function ShowTesti({
             const img = new window.Image()
             img.src = url
             img.onload = () => resolve()
-            img.onerror = () => resolve() // Resolve even if an error occurs
+            img.onerror = () => resolve()
           })
         })
       )
-      setIsLoading(false) // All images are loaded
+      setIsLoading(false)
     }
 
     preloadImages()
   }, [testimonials])
 
   if (isLoading) {
-    // Use Next.js's built-in loading state for smoother UX
-    return null // Next.js will show loading.tsx automatically
+    return null
   }
+  const timeAgo = (dateString: string): string => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInMs = now.getTime() - date.getTime()
+
+    const seconds = Math.floor(diffInMs / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+    const weeks = Math.floor(days / 7)
+    const months = Math.floor(days / 30)
+    const years = Math.floor(days / 365)
+
+    if (years > 0) {
+      return years === 1 ? "1 year ago" : `${years} years ago`
+    } else if (months > 0) {
+      return months === 1 ? "1 month ago" : `${months} months ago`
+    } else if (weeks > 0) {
+      return weeks === 1 ? "1 week ago" : `${weeks} weeks ago`
+    } else if (days > 0) {
+      return days === 1 ? "1 day ago" : `${days} days ago`
+    } else if (hours > 0) {
+      return hours === 1 ? "1 hour ago" : `${hours} hours ago`
+    } else if (minutes > 0) {
+      return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`
+    } else {
+      return seconds <= 1 ? "just now" : `${seconds} seconds ago`
+    }
+  }
+
   return (
     <div className='flex flex-col justify-center w-full h-full items-center'>
       <div className='flex w-fit h-full max-md:flex-col gap-4 pb-10'>
@@ -81,7 +110,7 @@ export default function ShowTesti({
                 {testimonial.item}
               </p>
               <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
-                {testimonial.posted}
+                {testimonial.posted} ({timeAgo(testimonial.posted)})
               </p>
             </span>
           </div>

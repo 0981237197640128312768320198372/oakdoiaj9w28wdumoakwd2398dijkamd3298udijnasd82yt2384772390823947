@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from "googleapis"
-
 let cachedData: any = null
+let lastFetchedTime: number = 0
 
 export async function getGoogleSheetsData(range: string) {
-  if (cachedData) {
+  const cacheDuration = 5 * 60 * 1000
+
+  if (Date.now() - lastFetchedTime < cacheDuration && cachedData) {
     return cachedData
   }
 
@@ -34,12 +36,14 @@ export async function getGoogleSheetsData(range: string) {
     })
 
     cachedData = getData.data.values || []
+    lastFetchedTime = Date.now()
 
     return cachedData
   } catch (error) {
     console.error("ERROR HERE!!!: \n", error)
   }
 }
+
 const convertGoogleDriveUrl = (shareableUrl: string): string => {
   const fileIdMatch = shareableUrl.match(/\/d\/([a-zA-Z0-9_-]+)\//)
   if (fileIdMatch && fileIdMatch[1]) {
@@ -50,9 +54,10 @@ const convertGoogleDriveUrl = (shareableUrl: string): string => {
   }
 }
 export const CreditsOrTestimonialsDataModels = async () => {
-  const rawData = await getGoogleSheetsData(
-    process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string
-  )
+  const rawData =
+    (await getGoogleSheetsData(
+      process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string
+    )) || []
 
   return rawData
     .map((row: string[]) => ({
