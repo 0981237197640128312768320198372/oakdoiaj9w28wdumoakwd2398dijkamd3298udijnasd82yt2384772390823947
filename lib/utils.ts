@@ -14,8 +14,8 @@ export const generateMetadata = ({
   keywords,
 }: {
   title: string
-  description: string
-  url: string
+  description?: string
+  url?: string
   image?: string
   keywords?: string
 }): Metadata => {
