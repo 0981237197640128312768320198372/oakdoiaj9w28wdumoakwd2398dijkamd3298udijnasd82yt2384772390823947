@@ -55,10 +55,12 @@ const page = () => {
                         plan.prices.length > 0 &&
                         plan.prices.map((price, i) => (
                           <div className='flex gap-3 items-center' key={i}>
-                            <span className='px-2 text-xl bg-primary text-dark-800 font-aktivGroteskBold'>
+                            <span className='px-2 text-xl bg-primary text-dark-800 font-aktivGroteskBold whitespace-nowrap'>
                               {price.duration}
                             </span>
-                            <p className='text-xl'>฿ {price.price}</p>
+                            <p className='text-xl  whitespace-nowrap'>
+                              ฿ {price.price}
+                            </p>
                           </div>
                         ))}
                     </div>
