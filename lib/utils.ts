@@ -63,9 +63,6 @@ export const generateMetadata = ({
     },
     alternates: {
       canonical: url || defaultUrl,
-      languages: {
-        "th-TH": `${url || defaultUrl}/th`,
-      },
     },
   }
 }
