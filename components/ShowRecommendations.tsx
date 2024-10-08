@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
+import { MdPlayCircleOutline } from "react-icons/md"
 
 export default function ShowRecommendations({
   recommendations,
@@ -104,10 +105,10 @@ export default function ShowRecommendations({
             <div className='flex w-full justify-end mt-3'>
               <Link
                 href={recommendation.netflixUrl}
-                className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm'
+                className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm flex items-center justify-center gap-1'
                 target='_blank'
               >
-                Watch Now{" "}
+                Watch Now <MdPlayCircleOutline className='text-xl' />
               </Link>
             </div>
           </div>
