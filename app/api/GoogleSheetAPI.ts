@@ -52,7 +52,7 @@ export const CreditsOrTestimonialsDataModels = async () => {
 
   return rawCreditsData
     .map((creditsRow: string[]) => ({
-      creditsimageUrl: creditsRow[0],
+      creditsimageUrl: convertGoogleDriveUrl(creditsRow[0]),
       item: creditsRow[1],
       posted: creditsRow[2],
     }))
@@ -69,7 +69,7 @@ export const Recommendations = async () => {
     .map((recommendationsRow: string[]) => ({
       title: recommendationsRow[0],
       description: recommendationsRow[1],
-      recommendationsimageUrl: recommendationsRow[2],
+      recommendationsimageUrl: convertGoogleDriveUrl(recommendationsRow[2]),
       netflixUrl: recommendationsRow[3],
       date: recommendationsRow[4],
     }))

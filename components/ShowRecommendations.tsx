@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { timeAgo } from "@/lib/utils"
+// import { timeAgo } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
 import Loading from "./Loading"
+import { MdOutlineArrowOutward } from "react-icons/md"
 
 export default function ShowRecommendations({
   recomendations,
@@ -70,11 +71,11 @@ export default function ShowRecommendations({
         {currentPageData.map((recomendation, index: number) => (
           <div
             key={index}
-            className='relative flex flex-col items-center h-full w-full justify-center select-none'
+            className='relative flex flex-col items-center h-full w-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg'
           >
-            <p className='flex font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
+            {/* <p className='flex font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
               {recomendation.date} | (Posted {timeAgo(recomendation.date)})
-            </p>
+            </p> */}
             <Image
               src={recomendation.recommendationsimageUrl}
               alt={`Movies and Series Recommendation by Dokmai Store | ${recomendation.title}`}
@@ -96,10 +97,10 @@ export default function ShowRecommendations({
             <div className='flex w-full justify-end mt-3'>
               <Link
                 href={recomendation.netflixUrl}
-                className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm'
+                className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm flex items-center justify-center gap-1'
                 target='_blank'
               >
-                Watch Now{" "}
+                Watch Now <MdOutlineArrowOutward className='text-2xl' />
               </Link>
             </div>
           </div>
