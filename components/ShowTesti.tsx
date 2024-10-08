@@ -40,7 +40,7 @@ export default function ShowTesti({
   useEffect(() => {
     const creditsimageUrl = testimonials
       .map((testimonial: any) => testimonial.creditsimageUrl)
-      .filter((url: string) => url) // Ensure only valid URLs are processed
+      .filter((url: string) => url)
 
     const preloadImages = async () => {
       await Promise.all(
