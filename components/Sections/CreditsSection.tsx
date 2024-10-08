@@ -14,7 +14,7 @@ const CreditsSection = async () => {
         className='mb-16'
       />
       <ShowTesti
-        testimonials={rawDataCreditsOrTestimonials}
+        testimonials={rawDataCreditsOrTestimonials.slice(3)}
         paginations={false}
       />
     </section>

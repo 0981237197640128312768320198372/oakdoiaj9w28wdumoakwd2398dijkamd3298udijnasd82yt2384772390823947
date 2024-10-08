@@ -38,13 +38,13 @@ export default function ShowRecommendations({
   }
 
   useEffect(() => {
-    const imageUrls = recomendations.map(
-      (testimonial: any) => testimonial.imageUrl
+    const imageRecommendationsUrls = recomendations.map(
+      (recommendation: any) => recommendation.recommendationsimageUrl
     )
 
     const preloadImages = async () => {
       await Promise.all(
-        imageUrls.map((url: string) => {
+        imageRecommendationsUrls.map((url: string) => {
           return new Promise<void>((resolve) => {
             const img = new window.Image()
             img.src = url
@@ -72,10 +72,10 @@ export default function ShowRecommendations({
             className='relative flex flex-col items-center h-full w-full justify-center border-dark-500 border-[1px] rounded-2xl p-5 select-none'
           >
             <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
-              {recomendation.date} ({timeAgo(recomendation.date)})
+              {recomendation.date} | (Posted {timeAgo(recomendation.date)})
             </p>
             <Image
-              src={recomendation.imageUrl}
+              src={recomendation.recommendationsimageUrl}
               alt={`Movies and Series Recommendation by Dokmai Store | ${recomendation.title}`}
               placeholder='blur'
               blurDataURL='@/assets/images/blurCredits.jpg'

@@ -37,13 +37,13 @@ export default function ShowTesti({
   }
 
   useEffect(() => {
-    const imageUrls = testimonials.map(
-      (testimonial: any) => testimonial.imageUrl
+    const creditsimageUrl = testimonials.map(
+      (testimonial: any) => testimonial.creditsimageUrl
     )
 
     const preloadImages = async () => {
       await Promise.all(
-        imageUrls.map((url: string) => {
+        creditsimageUrl.map((url: string) => {
           return new Promise<void>((resolve) => {
             const img = new window.Image()
             img.src = url
@@ -71,7 +71,7 @@ export default function ShowTesti({
             className='relative flex flex-col items-center h-full w-full justify-center border-dark-500 border-[1px] rounded-2xl p-5 select-none'
           >
             <Image
-              src={testimonial.imageUrl}
+              src={testimonial.creditsimageUrl}
               alt={`Credits Or Testimonial Of ${testimonial.item} | Dokmai Store`}
               placeholder='blur'
               blurDataURL='@/assets/images/blurCredits.jpg'

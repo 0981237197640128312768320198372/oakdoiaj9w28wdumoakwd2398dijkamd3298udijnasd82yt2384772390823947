@@ -1,6 +1,6 @@
-// import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
+import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
 import PageHeadline from "@/components/PageHeadline"
-// import ShowTesti from "@/components/ShowTesti"
+import ShowTesti from "@/components/ShowTesti"
 import { generateMetadata } from "@/lib/utils"
 import React from "react"
 
@@ -14,7 +14,8 @@ export const metadata = generateMetadata({
 })
 
 export default async function Page() {
-  // const rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
+  const rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
+  console.log(rawDataCreditsOrTestimonials)
   return (
     <main className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-40 __container'>
       <PageHeadline
@@ -22,10 +23,10 @@ export default async function Page() {
         description='ลูกค้ามากกว่า 50 คนไว้วางใจและกลับมาซื้อซ้ำกับเราอย่างต่อเนื่อง
           โดยมีการขายสำเร็จไปแล้วกว่า 230 โปรไฟล์'
       />
-      {/* <ShowTesti
+      <ShowTesti
         testimonials={rawDataCreditsOrTestimonials}
         paginations={true}
-      /> */}
+      />
     </main>
   )
 }
