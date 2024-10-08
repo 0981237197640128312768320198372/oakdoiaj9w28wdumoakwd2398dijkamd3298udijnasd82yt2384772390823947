@@ -6,7 +6,7 @@ let cachedData: any = null
 let lastFetchedTime: number = 0
 
 export async function getGoogleSheetsData(range: string) {
-  const cacheDuration = 5 * 60 * 1000
+  const cacheDuration = 5 * 1000
 
   if (Date.now() - lastFetchedTime < cacheDuration && cachedData) {
     return cachedData
@@ -62,10 +62,10 @@ export const CreditsOrTestimonialsDataModels = async () => {
     )) || []
 
   return rawCreditsData
-    .map((row: string[]) => ({
-      creditsimageUrl: row[0],
-      item: row[1],
-      posted: row[2],
+    .map((creditsRow: string[]) => ({
+      creditsimageUrl: creditsRow[0],
+      item: creditsRow[1],
+      posted: creditsRow[2],
     }))
     .reverse()
 }
@@ -77,12 +77,12 @@ export const Recommendations = async () => {
     )) || []
 
   return rawRecommendationsData
-    .map((row: string[]) => ({
-      title: row[0],
-      description: row[1],
-      recommendationsimageUrl: row[2],
-      netflixUrl: row[3],
-      date: row[4],
+    .map((recommendationsRow: string[]) => ({
+      title: recommendationsRow[0],
+      description: recommendationsRow[1],
+      recommendationsimageUrl: recommendationsRow[2],
+      netflixUrl: recommendationsRow[3],
+      date: recommendationsRow[4],
     }))
     .reverse()
 }

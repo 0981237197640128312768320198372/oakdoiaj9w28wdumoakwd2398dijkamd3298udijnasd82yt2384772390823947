@@ -5,6 +5,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
+import Loading from "@/components/Loading"
 
 export default function ShowTesti({
   testimonials,
@@ -59,7 +60,7 @@ export default function ShowTesti({
   }, [testimonials])
 
   if (testimonialsIsLoading) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (
