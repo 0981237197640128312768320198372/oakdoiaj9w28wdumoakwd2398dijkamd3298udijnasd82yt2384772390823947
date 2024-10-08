@@ -2,19 +2,20 @@
 "use client"
 import { timeAgo } from "@/lib/utils"
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
 
-export default function ShowTesti({
-  testimonials,
+export default function ShowRecommendations({
+  recomendations,
   paginations,
 }: {
-  testimonials: any[]
+  recomendations: any[]
   paginations: boolean
 }) {
-  const itemsPerPage = 3
-  const totalPages = Math.ceil(testimonials.length / itemsPerPage)
+  const itemsPerPage = 2
+  const totalPages = Math.ceil(recomendations.length / itemsPerPage)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
@@ -22,7 +23,7 @@ export default function ShowTesti({
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
 
-  const currentPageData = testimonials.slice(startIndex, endIndex)
+  const currentPageData = recomendations.slice(startIndex, endIndex)
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -37,7 +38,7 @@ export default function ShowTesti({
   }
 
   useEffect(() => {
-    const imageUrls = testimonials.map(
+    const imageUrls = recomendations.map(
       (testimonial: any) => testimonial.imageUrl
     )
 
@@ -56,7 +57,7 @@ export default function ShowTesti({
     }
 
     preloadImages()
-  }, [testimonials])
+  }, [recomendations])
 
   if (isLoading) {
     return null
@@ -65,29 +66,41 @@ export default function ShowTesti({
   return (
     <div className='flex flex-col justify-center w-full h-full items-center'>
       <div className='flex w-fit h-full max-md:flex-col gap-4 pb-10'>
-        {currentPageData.map((testimonial, index: number) => (
+        {currentPageData.map((recomendation, index: number) => (
           <div
             key={index}
             className='relative flex flex-col items-center h-full w-full justify-center border-dark-500 border-[1px] rounded-2xl p-5 select-none'
           >
+            <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
+              {recomendation.date} ({timeAgo(recomendation.date)})
+            </p>
             <Image
-              src={testimonial.imageUrl}
-              alt={`Credits Or Testimonial Of ${testimonial.item} | Dokmai Store`}
+              src={recomendation.imageUrl}
+              alt={`Movies and Series Recommendation by Dokmai Store | ${recomendation.title}`}
               placeholder='blur'
               blurDataURL='@/assets/images/blurCredits.jpg'
-              width={350}
-              height={350}
+              width={500}
+              height={500}
               loading='lazy'
-              className='rounded-xl overflow-hidden select-non w-full h-full'
+              className='rounded-xl overflow-hidden select-none w-auto h-auto'
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>
               <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
-                {testimonial.item}
+                {recomendation.title}
               </p>
               <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
-                {testimonial.posted} ({timeAgo(testimonial.posted)})
+                {recomendation.description}
               </p>
             </span>
+            <div className='flex w-full justify-end mt-3'>
+              <Link
+                href={recomendation.netflixUrl}
+                className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm'
+                target='_blank'
+              >
+                Watch Now{" "}
+              </Link>
+            </div>
           </div>
         ))}
       </div>

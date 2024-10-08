@@ -30,6 +30,7 @@ const page = () => {
             alt='High Quality Netflix Premium Cheap Price Dokmai Store'
             width={300}
             height={300}
+            loading='lazy'
             className='w-fit select-none'
           />
           <div className='w-full h-[1px] bg-dark-500' />
@@ -86,6 +87,7 @@ const page = () => {
           alt='High Quality Netflix Premium Cheap Price Dokmai Store'
           width={150}
           height={150}
+          loading='lazy'
           className='w-fit select-none opacity-50'
         />
         <div className='w-full h-[1px] bg-dark-500' />

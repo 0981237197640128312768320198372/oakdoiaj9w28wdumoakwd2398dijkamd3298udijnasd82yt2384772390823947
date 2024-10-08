@@ -11,6 +11,7 @@ const Loading = () => {
           alt='Loading Logo | Dokmai Store'
           width={200}
           height={200}
+          loading='lazy'
           className='absolute p-5'
         />
       </div>

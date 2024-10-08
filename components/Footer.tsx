@@ -44,6 +44,7 @@ const Footer = () => {
               alt='Footer Image - Dokmai Store'
               className='select-none'
               height={50}
+              loading='lazy'
             />
             <p className='text-xs font-aktivGroteskLight select-none'>
               <strong>Netflix Premium</strong> คุณภาพสูง ราคาถูก
@@ -86,6 +87,7 @@ const Footer = () => {
           src={dokmaistorefooter}
           alt='Footer Image - Dokmai Store'
           className='select-none'
+          loading='lazy'
         />
       </div>
     </footer>

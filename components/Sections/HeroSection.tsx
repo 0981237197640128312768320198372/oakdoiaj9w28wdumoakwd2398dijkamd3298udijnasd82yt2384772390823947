@@ -20,7 +20,7 @@ const HeroSection = () => {
     >
       <DOKMAI text='DOKMAI' />
       <div className='flex flex-col justify-start px-5 __container items-center text-center w-full'>
-        <h1 className='flex flex-col items-start text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
+        <h1 className='flex flex-col items-center text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
           <span className='text-sm font-mono text-light-400'>
             Premium Apps Account Store Platform #1 In Thailand
           </span>

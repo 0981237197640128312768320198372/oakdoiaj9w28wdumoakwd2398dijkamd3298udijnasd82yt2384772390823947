@@ -51,6 +51,7 @@ const Navbar = () => {
             width={100}
             height={100}
             src={dokmaiwithtext}
+            loading='lazy'
             alt='Logo of Dokmai Store'
             className='duration-700 hidden xl:block'
           />
@@ -58,6 +59,7 @@ const Navbar = () => {
             width={60}
             height={60}
             src={dokmailogosquare}
+            loading='lazy'
             alt='Logo of Dokmai Store'
             className='duration-700 xl:hidden'
           />

@@ -100,6 +100,7 @@ export const Reviews = ({
                 src={fivestars}
                 width={100}
                 height={100}
+                loading='lazy'
                 alt='dokmai 5 stars reviews'
                 className='mb-5'
               />

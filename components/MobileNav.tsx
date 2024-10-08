@@ -42,6 +42,7 @@ const MobileNav = () => {
             src={dokmaistorefooter}
             alt='Footer Image - Dokmai Store'
             className='opacity-80'
+            loading='lazy'
           />
         </div>
       </DrawerContent>
