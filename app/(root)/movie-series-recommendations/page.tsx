@@ -1,7 +1,7 @@
 import React from "react"
 import PageHeadline from "@/components/PageHeadline"
-import RecommendationsList from "@/components/RecommendationsList"
 import { Recommendations } from "@/app/api/GoogleSheetAPI"
+import ShowRecommendations from "@/components/ShowRecommendations"
 const page = async () => {
   const recommendationsData = await Recommendations()
   return (
@@ -10,8 +10,10 @@ const page = async () => {
         headline='Our Recommendations'
         description='Movies and Series Recommendations by Dokmai Store'
       />
-
-      <RecommendationsList recommendations={recommendationsData} />
+      <ShowRecommendations
+        recomendations={recommendationsData}
+        paginations={true}
+      />
     </div>
   )
 }
