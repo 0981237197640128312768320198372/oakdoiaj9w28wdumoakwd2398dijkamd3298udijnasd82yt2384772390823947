@@ -10,10 +10,7 @@ const page = async () => {
         headline='Our Recommendations'
         description='Movies and Series Recommendations by Dokmai Store'
       />
-      <ShowRecommendations
-        recommendations={recommendationsData}
-        paginations={true}
-      />
+      <ShowRecommendations recommendations={recommendationsData.slice(3)} />
     </div>
   )
 }

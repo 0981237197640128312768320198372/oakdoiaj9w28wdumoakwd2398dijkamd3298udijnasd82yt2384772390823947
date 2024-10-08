@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from "googleapis"
@@ -41,6 +42,16 @@ export async function getGoogleSheetsData(range: string) {
     return cachedData
   } catch (error) {
     console.error("ERROR HERE!!!: \n", error)
+  }
+}
+
+const convertGoogleDriveUrl = (shareableUrl: string): string => {
+  const fileIdMatch = shareableUrl.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/)
+  if (fileIdMatch && fileIdMatch[1]) {
+    const fileId = fileIdMatch[1]
+    return `https://drive.usercontent.google.com/download?id=${fileId}&authuser=0`
+  } else {
+    throw new Error("Invalid Google Drive URL format")
   }
 }
 

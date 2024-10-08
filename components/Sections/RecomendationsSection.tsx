@@ -13,10 +13,7 @@ const RecomendationsSection = async () => {
         urlButtonMore={"/movie-series-recommendations"}
         className='mb-16'
       />
-      <ShowRecommendations
-        recommendations={recommendationsData}
-        paginations={false}
-      />
+      <ShowRecommendations recommendations={recommendationsData} />
     </section>
   )
 }

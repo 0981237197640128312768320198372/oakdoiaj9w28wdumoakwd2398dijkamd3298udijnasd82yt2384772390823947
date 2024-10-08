@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { convertGoogleDriveUrl, timeAgo } from "@/lib/utils"
+import { timeAgo } from "@/lib/utils"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
@@ -71,7 +71,7 @@ export default function ShowTesti({
             className='relative flex flex-col items-center h-full w-full justify-center border-dark-500 border-[1px] rounded-2xl p-5 select-none'
           >
             <Image
-              src={convertGoogleDriveUrl(testimonial.creditsimageUrl)}
+              src={testimonial.creditsimageUrl}
               alt={`Credits Or Testimonial Of ${testimonial.item} | Dokmai Store`}
               width={350}
               height={350}

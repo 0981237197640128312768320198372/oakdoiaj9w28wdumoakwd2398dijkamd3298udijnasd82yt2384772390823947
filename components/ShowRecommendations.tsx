@@ -1,45 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
-import { convertGoogleDriveUrl, timeAgo } from "@/lib/utils"
+import { timeAgo } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { GoChevronRight } from "react-icons/go"
-import { GoChevronLeft } from "react-icons/go"
 import { MdPlayCircleOutline } from "react-icons/md"
+import Loading from "@/components/Loading"
 
 export default function ShowRecommendations({
   recommendations,
-  paginations,
 }: {
   recommendations: any[]
-  paginations: boolean
 }) {
-  const itemsPerPage = 2
-  const totalPages = Math.ceil(recommendations.length / itemsPerPage)
-
-  const [recommendationsCurrentPage, setRecommendationsCurrentPage] =
-    useState(1)
   const [recommendationsIsLoading, setRecommendationsIsLoading] = useState(true)
 
-  const startIndex = (recommendationsCurrentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-
-  const currentPageData = recommendations.slice(startIndex, endIndex)
-
-  const handleNextPage = () => {
-    if (recommendationsCurrentPage < totalPages) {
-      setRecommendationsCurrentPage(recommendationsCurrentPage + 1)
-    }
-  }
-
-  const handlePreviousPage = () => {
-    if (recommendationsCurrentPage > 1) {
-      setRecommendationsCurrentPage(recommendationsCurrentPage - 1)
-    }
-  }
-
-  // Preload images
   useEffect(() => {
     const imageRecommendationsUrls = recommendations
       .map((recommendation: any) => recommendation.recommendationsimageUrl)
@@ -68,13 +42,13 @@ export default function ShowRecommendations({
   }, [recommendations])
 
   if (recommendationsIsLoading) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (
     <div className='flex flex-col justify-center w-full h-full items-center'>
-      <div className='flex w-fit h-full max-md:flex-col gap-4 pb-10'>
-        {currentPageData.map((recommendation, index: number) => (
+      <div className='grid grid-cols-2 w-fit h-full gap-4 pb-10'>
+        {recommendations.map((recommendation, index: number) => (
           <div
             key={index}
             className='relative flex flex-col items-center h-full w-full justify-center border-dark-500 border-[1px] rounded-2xl p-5 select-none'
@@ -83,9 +57,7 @@ export default function ShowRecommendations({
               {recommendation.date} | (Posted {timeAgo(recommendation.date)})
             </p>
             <Image
-              src={convertGoogleDriveUrl(
-                recommendation.recommendationsimageUrl
-              )}
+              src={recommendation.recommendationsimageUrl}
               alt={`Movies and Series Recommendation by Dokmai Store | ${recommendation.title}`}
               placeholder='blur'
               blurDataURL='/assets/images/blurCredits.jpg' // Corrected blur image
@@ -114,37 +86,6 @@ export default function ShowRecommendations({
           </div>
         ))}
       </div>
-
-      {paginations && (
-        <div className='flex justify-between items-center py-3 gap-5 border-y-[1px] border-dark-500 text-light-400'>
-          <button
-            onClick={handlePreviousPage}
-            disabled={recommendationsCurrentPage === 1}
-            className='p-2 text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
-            aria-label='Previous Page'
-          >
-            <GoChevronLeft />
-          </button>
-
-          <span className='flex gap-2 font-aktivGroteskRegular select-none'>
-            Page{" "}
-            <p className='font-aktivGroteskBold'>
-              {recommendationsCurrentPage}
-            </p>{" "}
-            of
-            <p className='font-aktivGroteskBold'>{totalPages}</p>
-          </span>
-
-          <button
-            onClick={handleNextPage}
-            disabled={recommendationsCurrentPage === totalPages}
-            className='p-2 text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
-            aria-label='Next Page'
-          >
-            <GoChevronRight />
-          </button>
-        </div>
-      )}
     </div>
   )
 }
