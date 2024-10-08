@@ -87,6 +87,7 @@ const Footer = () => {
           src={dokmaistorefooter}
           alt='Footer Image - Dokmai Store'
           className='select-none'
+          loading='lazy'
         />
       </div>
     </footer>

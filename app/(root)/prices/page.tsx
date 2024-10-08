@@ -31,6 +31,7 @@ const page = () => {
             width={300}
             height={300}
             className='w-fit select-none'
+            loading='lazy'
           />
           <div className='w-full h-[1px] bg-dark-500' />
         </div>
@@ -87,6 +88,7 @@ const page = () => {
           width={150}
           height={150}
           className='w-fit select-none opacity-50'
+          loading='lazy'
         />
         <div className='w-full h-[1px] bg-dark-500' />
         <span className='whitespace-nowrap'>Coming Soon!</span>

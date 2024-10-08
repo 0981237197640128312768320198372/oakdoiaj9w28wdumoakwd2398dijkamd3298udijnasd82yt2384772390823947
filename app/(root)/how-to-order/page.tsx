@@ -37,6 +37,7 @@ const page = () => {
           </p>
           <div className='flex w-full h-full gap-4'>
             <Image
+              loading='lazy'
               src={chooseplan}
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
@@ -64,6 +65,7 @@ const page = () => {
           </p>
           <div className='flex w-full h-full gap-4'>
             <Image
+              loading='lazy'
               src={girlordering}
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
@@ -84,6 +86,7 @@ const page = () => {
           </p>
           <div className='flex w-full h-full gap-4'>
             <Image
+              loading='lazy'
               src={girlpaying}
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
@@ -104,6 +107,7 @@ const page = () => {
           </p>
           <div className='flex w-full h-full gap-4'>
             <Image
+              loading='lazy'
               src={girllogin}
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}

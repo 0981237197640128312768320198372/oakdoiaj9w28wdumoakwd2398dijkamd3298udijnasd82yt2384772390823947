@@ -94,6 +94,7 @@ export const Features = ({
               height={30}
               alt='dokmai 5 stars reviews'
               className='mb-5'
+              loading='lazy'
             />
             <span className='text-xl mb-4 text-light-200 font-normal'>
               {item.text}

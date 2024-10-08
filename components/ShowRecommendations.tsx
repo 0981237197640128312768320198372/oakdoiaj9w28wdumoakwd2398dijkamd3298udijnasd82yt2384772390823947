@@ -82,6 +82,7 @@ export default function ShowRecommendations({
               width={500}
               height={500}
               className='rounded-xl overflow-hidden select-none w-auto h-auto'
+              loading='lazy'
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>
               <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>

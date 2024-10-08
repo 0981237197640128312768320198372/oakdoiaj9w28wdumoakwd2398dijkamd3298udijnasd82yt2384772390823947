@@ -78,6 +78,7 @@ export default function ShowTesti({
               width={350}
               height={350}
               className='rounded-xl overflow-hidden select-non w-full h-full'
+              loading='lazy'
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>
               <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>

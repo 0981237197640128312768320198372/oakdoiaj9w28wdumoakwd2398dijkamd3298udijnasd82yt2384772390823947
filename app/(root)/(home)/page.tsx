@@ -4,7 +4,7 @@ import React from "react"
 import FAQSection from "@/components/Sections/FAQSection"
 import Pricing from "@/components/Sections/Pricing"
 import ReviewSection from "@/components/Sections/ReviewSection"
-import CreditsSection from "@/components/Sections/CreditsSection"
+// import CreditsSection from "@/components/Sections/CreditsSection"
 import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
       <Pricing />
       <RecomendationsSection />
       <FAQSection />
-      <CreditsSection />
+      {/* <CreditsSection /> */}
       <ReviewSection />
     </main>
   )
