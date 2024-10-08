@@ -66,13 +66,13 @@ export default function ShowRecommendations({
 
   return (
     <div className='flex flex-col justify-center w-full h-full items-center'>
-      <div className='flex w-fit h-full max-md:flex-col gap-4 pb-10'>
+      <div className='flex w-fit h-full max-md:flex-col gap-5 pb-10'>
         {currentPageData.map((recomendation, index: number) => (
           <div
             key={index}
-            className='relative flex flex-col items-center h-full w-full justify-center border-dark-500 border-[1px] rounded-2xl p-5 select-none'
+            className='relative flex flex-col items-center h-full w-full justify-center select-none'
           >
-            <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
+            <p className='flex font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
               {recomendation.date} | (Posted {timeAgo(recomendation.date)})
             </p>
             <Image
@@ -82,7 +82,7 @@ export default function ShowRecommendations({
               blurDataURL='@/assets/images/blurCredits.jpg'
               width={500}
               height={500}
-              className='rounded-xl overflow-hidden select-none w-auto h-auto'
+              className='rounded-md overflow-hidden select-none w-auto h-auto'
               loading='lazy'
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>
