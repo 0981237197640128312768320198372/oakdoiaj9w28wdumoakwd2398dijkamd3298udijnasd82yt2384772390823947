@@ -2,16 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from "googleapis"
-let cachedData: any = null
-let lastFetchedTime: number = 0
 
 export async function getGoogleSheetsData(range: string) {
-  const cacheDuration = 5 * 1000
-
-  if (Date.now() - lastFetchedTime < cacheDuration && cachedData) {
-    return cachedData
-  }
-
   try {
     const auth = await google.auth.getClient({
       projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
@@ -36,10 +28,7 @@ export async function getGoogleSheetsData(range: string) {
       range: range,
     })
 
-    cachedData = getData.data.values || []
-    lastFetchedTime = Date.now()
-
-    return cachedData
+    return getData.data.values || []
   } catch (error) {
     console.error("ERROR HERE!!!: \n", error)
   }
