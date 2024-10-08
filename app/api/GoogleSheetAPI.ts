@@ -50,7 +50,7 @@ const convertGoogleDriveUrl = (shareableUrl: string): string => {
     const fileId = fileIdMatch[1]
     return `https://drive.google.com/uc?id=${fileId}`
   } else {
-    throw new Error("Invalid Google Drive URL format")
+    throw new Error(`Invalid Google Drive URL ${shareableUrl}`)
   }
 }
 
