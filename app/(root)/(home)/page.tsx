@@ -5,7 +5,7 @@ import FAQSection from "@/components/Sections/FAQSection"
 import Pricing from "@/components/Sections/Pricing"
 import ReviewSection from "@/components/Sections/ReviewSection"
 import CreditsSection from "@/components/Sections/CreditsSection"
-import RecomendationsSection from "@/components/Sections/RecomendationsRecomendationsSection"
+import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 
 export default function Home() {
   return (

@@ -50,17 +50,17 @@ const convertGoogleDriveUrl = (shareableUrl: string): string => {
     const fileId = fileIdMatch[1]
     return `https://drive.google.com/uc?id=${fileId}`
   } else {
-    throw new Error(`Invalid Google Drive URL ${shareableUrl}`)
+    throw new Error("Invalid Google Drive URL format")
   }
 }
 
 export const CreditsOrTestimonialsDataModels = async () => {
-  const rawData =
+  const rawCreditsData =
     (await getGoogleSheetsData(
       process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string
     )) || []
 
-  return rawData
+  return rawCreditsData
     .map((row: string[]) => ({
       imageUrl: convertGoogleDriveUrl(row[0]),
       item: row[1],
@@ -70,12 +70,12 @@ export const CreditsOrTestimonialsDataModels = async () => {
 }
 
 export const Recommendations = async () => {
-  const rawData =
+  const rawRecommendationsData =
     (await getGoogleSheetsData(
       process.env.MOVIE_RECOMMENDATIONS_SHEETS as string
     )) || []
 
-  return rawData
+  return rawRecommendationsData
     .map((row: string[]) => ({
       title: row[0],
       description: row[1],

@@ -41,7 +41,6 @@ const page = () => {
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
               height={500}
-              loading='lazy'
               className='rounded-lg'
             />
           </div>
@@ -69,7 +68,6 @@ const page = () => {
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
               height={500}
-              loading='lazy'
               className='rounded-lg'
             />
           </div>
@@ -90,7 +88,6 @@ const page = () => {
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
               height={500}
-              loading='lazy'
               className='rounded-lg'
             />
           </div>
@@ -111,7 +108,6 @@ const page = () => {
               alt='Dokmai Store Price List Netflix Premium Plan'
               width={500}
               height={500}
-              loading='lazy'
               className='rounded-lg'
             />
           </div>

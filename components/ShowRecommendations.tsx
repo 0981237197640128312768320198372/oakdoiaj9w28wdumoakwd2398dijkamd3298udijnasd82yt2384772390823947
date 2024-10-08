@@ -81,7 +81,6 @@ export default function ShowRecommendations({
               blurDataURL='@/assets/images/blurCredits.jpg'
               width={500}
               height={500}
-              loading='lazy'
               className='rounded-xl overflow-hidden select-none w-auto h-auto'
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>

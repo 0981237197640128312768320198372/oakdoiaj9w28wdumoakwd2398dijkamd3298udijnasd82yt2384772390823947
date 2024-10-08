@@ -77,7 +77,6 @@ export default function ShowTesti({
               blurDataURL='@/assets/images/blurCredits.jpg'
               width={350}
               height={350}
-              loading='lazy'
               className='rounded-xl overflow-hidden select-non w-full h-full'
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>
