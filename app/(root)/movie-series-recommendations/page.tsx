@@ -4,14 +4,21 @@ import { Recommendations } from "@/app/api/GoogleSheetAPI"
 import ShowRecommendations from "@/components/ShowRecommendations"
 import { generateMetadata } from "@/lib/utils"
 
-export const metadata = generateMetadata({
-  title: "Latest Movie Recommendations",
-  description:
-    "Check out the latest movie recommendations from Dokmai Store. We recommend the best Netflix movies and series for you to enjoy!",
-  url: "https://www.dokmaistore.com/movie-series-recommendations",
-  keywords:
-    "movie recommendations, netflix recommendations, top movies, dokmai store",
-})
+const getRecommendationsTitles = async (): Promise<string> => {
+  const recommendationsData = await Recommendations()
+  const titles = recommendationsData.map((rec) => rec.title).join(", ")
+  return titles
+}
+export const metadata = async () => {
+  const recommendationsTitles = await getRecommendationsTitles()
+  return generateMetadata({
+    title: "Latest Movie Recommendations",
+    description:
+      "Check out the latest movie recommendations from Dokmai Store. We recommend the best Netflix movies and series for you to enjoy!",
+    url: "https://www.dokmaistore.com/movie-series-recommendations",
+    keywords: `movie recommendations, netflix recommendations, top movies, recommendation by dokmai store, ${recommendationsTitles},`,
+  })
+}
 
 const page = async () => {
   const recommendationsData = await Recommendations()
