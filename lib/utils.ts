@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { Metadata } from "next"
@@ -94,5 +95,17 @@ export const timeAgo = (dateString: string): string => {
     return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`
   } else {
     return seconds <= 1 ? "just now" : `${seconds} seconds ago`
+  }
+}
+
+export const convertGoogleDriveUrl = (shareableUrl: string): string => {
+  let fileIdMatch = shareableUrl.match(
+    /(?:\/d\/|id=|\/file\/d\/|\/open\?id=)([a-zA-Z0-9_-]+)/
+  )
+  if (fileIdMatch && fileIdMatch[1]) {
+    const fileId = fileIdMatch[1]
+    return `https://drive.google.com/uc?id=${fileId}`
+  } else {
+    throw new Error("Invalid Google Drive URL format")
   }
 }

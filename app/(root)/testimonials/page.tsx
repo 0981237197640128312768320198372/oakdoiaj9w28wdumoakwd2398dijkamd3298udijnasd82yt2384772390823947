@@ -15,7 +15,6 @@ export const metadata = generateMetadata({
 
 export default async function Page() {
   const rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
-  console.log(rawDataCreditsOrTestimonials)
   return (
     <main className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-40 __container'>
       <PageHeadline
