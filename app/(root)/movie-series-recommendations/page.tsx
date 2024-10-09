@@ -31,6 +31,7 @@ const page = async () => {
       <ShowRecommendations
         recomendations={recommendationsData}
         paginations={true}
+        itemsperPage={2}
       />
     </div>
   )

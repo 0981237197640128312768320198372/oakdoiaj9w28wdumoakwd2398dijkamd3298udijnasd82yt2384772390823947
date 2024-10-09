@@ -41,8 +41,9 @@ const page = () => {
               className='flex w-full flex-col gap-3 rounded-lg border-[1px] border-dark-500 p-5'
               key={i}
             >
-              <span className='flex flex-col pb-5 mb-5'>
+              <span className='flex flex-col pb-5 mb-3 gap-3'>
                 <h2 className='text-light-100 font-aktivGroteskBold'>
+                  <p className='text-light-100 text-xs'>Netflix Premium</p>
                   {price.type}
                 </h2>
                 <p className='text-light-400 text-xs'>{price.description}</p>

@@ -13,12 +13,14 @@ import { unstable_noStore as noStore } from "next/cache"
 export default function ShowRecommendations({
   recomendations,
   paginations,
+  itemsperPage,
 }: {
   recomendations: any[]
   paginations: boolean
+  itemsperPage: number
 }) {
   noStore()
-  const itemsPerPage = 2
+  const itemsPerPage = itemsperPage
   const totalPages = Math.ceil(recomendations.length / itemsPerPage)
 
   const [currentPage, setCurrentPage] = useState(1)

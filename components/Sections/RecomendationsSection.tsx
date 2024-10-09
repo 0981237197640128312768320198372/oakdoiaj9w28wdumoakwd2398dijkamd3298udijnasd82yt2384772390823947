@@ -19,6 +19,7 @@ const RecomendationsSection = async () => {
       <ShowRecommendations
         recomendations={recommendationsData}
         paginations={false}
+        itemsperPage={1}
       />
     </section>
   )
