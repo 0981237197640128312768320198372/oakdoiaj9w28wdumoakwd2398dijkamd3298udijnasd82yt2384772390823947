@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
 import Loading from "@/components/Loading"
+import { unstable_noStore as noStore } from "next/cache"
 
 export default function ShowTesti({
   testimonials,
@@ -14,6 +15,7 @@ export default function ShowTesti({
   testimonials: any[]
   paginations: boolean
 }) {
+  noStore()
   const itemsPerPage = 3
   const totalPages = Math.ceil(testimonials.length / itemsPerPage)
 

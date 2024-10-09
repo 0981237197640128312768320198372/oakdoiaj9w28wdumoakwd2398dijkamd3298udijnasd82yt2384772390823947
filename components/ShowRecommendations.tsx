@@ -8,6 +8,7 @@ import { GoChevronRight } from "react-icons/go"
 import { GoChevronLeft } from "react-icons/go"
 import Loading from "./Loading"
 import { MdOutlineArrowOutward } from "react-icons/md"
+import { unstable_noStore as noStore } from "next/cache"
 
 export default function ShowRecommendations({
   recomendations,
@@ -16,6 +17,7 @@ export default function ShowRecommendations({
   recomendations: any[]
   paginations: boolean
 }) {
+  noStore()
   const itemsPerPage = 2
   const totalPages = Math.ceil(recomendations.length / itemsPerPage)
 
