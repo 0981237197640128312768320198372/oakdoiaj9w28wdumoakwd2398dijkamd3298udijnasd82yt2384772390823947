@@ -14,7 +14,7 @@ const SubTitle = ({
 }) => {
   return (
     <div
-      className={`flex gap-7 w-full justify-between items-center p-5 xl:p-0 __container ${className}`}
+      className={`flex gap-7 min-w-full justify-between items-center p-5 xl:p-0 __container ${className}`}
     >
       <h3 className='flex justify-start items-center w-fit text-sm xl:text-lg font-aktivGroteskMedium md:whitespace-nowrap'>
         {title}

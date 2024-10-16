@@ -2,7 +2,7 @@
 import HeroSection from "@/components/Sections/HeroSection"
 import React from "react"
 import FAQSection from "@/components/Sections/FAQSection"
-import Pricing from "@/components/Sections/Pricing"
+import PricingSection from "@/components/Sections/PricingSection"
 import ReviewSection from "@/components/Sections/ReviewSection"
 import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 import CreditsSection from "@/components/Sections/CreditsSection"
@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main className='flex flex-col justify-center items-center __container'>
       <HeroSection />
-      <Pricing />
+      <PricingSection />
       <RecomendationsSection />
       <FAQSection />
       <CreditsSection />

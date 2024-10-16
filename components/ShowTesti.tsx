@@ -53,7 +53,7 @@ export default function ShowTesti({
             img.onload = () => resolve()
             img.onerror = () => resolve()
           })
-        }),
+        })
       )
       setTestimonialsIsLoading(false)
     }
@@ -83,10 +83,13 @@ export default function ShowTesti({
             />
             <span className='flex flex-col w-full justify-start gap-0 mt-3'>
               <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
-                {testimonial.item}
+                {testimonial.posted}
               </p>
-              <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
-                {testimonial.posted} ({timeAgo(testimonial.posted)})
+              <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-md -mt-2'>
+                ({timeAgo(testimonial.posted)})
+              </p>
+              <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs'>
+                {testimonial.item}
               </p>
             </span>
           </div>
