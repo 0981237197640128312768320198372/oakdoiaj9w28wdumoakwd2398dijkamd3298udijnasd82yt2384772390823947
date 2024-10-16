@@ -53,7 +53,7 @@ export default function ShowTesti({
             img.onload = () => resolve()
             img.onerror = () => resolve()
           })
-        })
+        }),
       )
       setTestimonialsIsLoading(false)
     }

@@ -45,7 +45,7 @@ export default function ShowRecommendations({
 
   useEffect(() => {
     const imageRecommendationsUrls = recomendations.map(
-      (recommendation: any) => recommendation.recommendationsimageUrl
+      (recommendation: any) => recommendation.recommendationsimageUrl,
     )
 
     const preloadImages = async () => {
@@ -57,7 +57,7 @@ export default function ShowRecommendations({
             img.onload = () => resolve()
             img.onerror = () => resolve()
           })
-        })
+        }),
       )
       setIsLoading(false)
     }

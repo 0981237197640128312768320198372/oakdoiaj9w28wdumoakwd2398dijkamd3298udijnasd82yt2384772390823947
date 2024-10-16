@@ -11,7 +11,7 @@ export async function getGoogleSheetsData(range: string) {
         type: "service_account",
         private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
           /\\n/g,
-          "\n"
+          "\n",
         ),
         client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
@@ -47,7 +47,7 @@ const convertGoogleDriveUrl = (shareableUrl: string): string => {
 export const CreditsOrTestimonialsDataModels = async () => {
   const rawCreditsData =
     (await getGoogleSheetsData(
-      process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string
+      process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string,
     )) || []
 
   return rawCreditsData
@@ -62,7 +62,7 @@ export const CreditsOrTestimonialsDataModels = async () => {
 export const Recommendations = async () => {
   const rawRecommendationsData =
     (await getGoogleSheetsData(
-      process.env.MOVIE_RECOMMENDATIONS_SHEETS as string
+      process.env.MOVIE_RECOMMENDATIONS_SHEETS as string,
     )) || []
 
   return rawRecommendationsData

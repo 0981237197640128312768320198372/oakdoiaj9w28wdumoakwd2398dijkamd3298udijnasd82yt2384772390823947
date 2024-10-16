@@ -14,7 +14,7 @@ const Pricing = () => {
         urlButtonMore='/prices'
         className=''
       />
-      <div className='flex flex-col lg:flex-row w-fit justify-between items-start gap-7'>
+      <div className='flex flex-col lg:flex-row w-full justify-between items-start gap-7'>
         {pricingPlans.map((price, i) => (
           <div
             className='flex w-full flex-col gap-3 rounded-lg border-[1px] border-dark-500 p-5'
