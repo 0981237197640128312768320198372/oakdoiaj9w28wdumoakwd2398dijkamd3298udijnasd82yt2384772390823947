@@ -1,7 +1,7 @@
 import React from "react"
-import ShowTesti from "../ShowTesti"
+import ShowTesti from "@/components/ShowTesti"
 import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
-import SubTitle from "../SubTitle"
+import SubTitle from "@/components/SubTitle"
 
 const CreditsSection = async () => {
   const rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
@@ -14,7 +14,7 @@ const CreditsSection = async () => {
         className='mb-16'
       />
       <ShowTesti
-        testimonials={rawDataCreditsOrTestimonials.slice(3)}
+        testimonials={rawDataCreditsOrTestimonials}
         paginations={false}
       />
     </section>

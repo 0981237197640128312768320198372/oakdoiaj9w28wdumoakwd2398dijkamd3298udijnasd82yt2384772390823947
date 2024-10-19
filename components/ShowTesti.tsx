@@ -67,6 +67,9 @@ export default function ShowTesti({
 
   return (
     <div className='flex flex-col justify-center w-full h-full items-center'>
+      <p className='text-light-300 mb-5 w-full text-start font-aktivGroteskMedium'>
+        Total Transactions {testimonials.length}
+      </p>
       <div className='flex w-fit h-full max-md:flex-col gap-4 pb-10'>
         {currentPageData.map((testimonial, index: number) => (
           <div

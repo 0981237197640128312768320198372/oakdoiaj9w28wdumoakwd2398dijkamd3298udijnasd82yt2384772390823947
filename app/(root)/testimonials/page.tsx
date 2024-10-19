@@ -15,13 +15,15 @@ export const metadata = generateMetadata({
 
 export default async function Page() {
   const rawDataCreditsOrTestimonials = await CreditsOrTestimonialsDataModels()
+  const totalCredits = rawDataCreditsOrTestimonials.length
+
   return (
     <main className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-40 __container'>
       <PageHeadline
         headline='เครดิต'
-        description='ลูกค้ามากกว่า 50 คนไว้วางใจและกลับมาซื้อซ้ำกับเราอย่างต่อเนื่อง
-          โดยมีการขายสำเร็จไปแล้วกว่า 230 โปรไฟล์'
+        description={`ลูกค้าและตัวแทนหลายร้อยคนไว้วางใจและกลับมาซื้อกับเราอย่างต่อเนื่อง เราสามารถขายโปรไฟล์ได้มากกว่าหลายพันโปรไฟล์ และจนถึงตอนนี้เรามีรีวิวจากลูกค้ามากกว่า ${totalCredits} รีวิว`}
       />
+
       <ShowTesti
         testimonials={rawDataCreditsOrTestimonials}
         paginations={true}

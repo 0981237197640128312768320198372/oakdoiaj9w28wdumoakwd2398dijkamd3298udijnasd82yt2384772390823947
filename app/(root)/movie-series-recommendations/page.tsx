@@ -11,15 +11,16 @@ const getRecommendationsTitles = async (): Promise<string> => {
 }
 export const metadata = async () => {
   const recommendationsTitles = await getRecommendationsTitles()
+  const recommendationsData = await Recommendations()
   return generateMetadata({
     title: "Latest Movie Recommendations",
     description:
       "Check out the latest movie recommendations from Dokmai Store. We recommend the best Netflix movies and series for you to enjoy!",
     url: "https://www.dokmaistore.com/movie-series-recommendations",
+    image: recommendationsData[0].recommendationsimageUrl,
     keywords: `movie recommendations, netflix recommendations, top movies, recommendation by dokmai store, ${recommendationsTitles},`,
   })
 }
-
 const page = async () => {
   const recommendationsData = await Recommendations()
   return (
