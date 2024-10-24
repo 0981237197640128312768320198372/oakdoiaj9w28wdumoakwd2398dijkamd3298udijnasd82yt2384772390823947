@@ -31,9 +31,18 @@ export const generateMetadata = ({
     title: title ? `${title} | Dokmai Store` : defaultTitle,
     description: description || defaultDescription,
     icons: {
-      icon: "./favicon.ico",
-      apple: "./apple-touch-icon.png",
+      icon: [
+        {
+          url: "/icons/android-chrome-192x192.png",
+          sizes: "192x192",
+        },
+        {
+          url: "/icons/android-chrome-512x512.png",
+          sizes: "512x512",
+        },
+      ],
     },
+    manifest: "/manifest.json",
     keywords: `${keywords} ${defaultKeywords}`,
     openGraph: {
       type: "website",
