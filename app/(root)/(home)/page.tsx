@@ -4,7 +4,7 @@ import React from "react"
 import FAQSection from "@/components/Sections/FAQSection"
 import PricingSection from "@/components/Sections/PricingSection"
 import ReviewSection from "@/components/Sections/ReviewSection"
-import RecomendationsSection from "@/components/Sections/RecomendationsSection"
+// import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 import CreditsSection from "@/components/Sections/CreditsSection"
 import AlertAnnouncement from "@/components/AlertAnnouncement"
 import { generateMetadata } from "@/lib/utils"
@@ -21,7 +21,7 @@ export default function Home() {
       <AlertAnnouncement />
       <HeroSection />
       <PricingSection />
-      <RecomendationsSection />
+      {/* <RecomendationsSection /> */}
       <FAQSection />
       <CreditsSection />
       <ReviewSection />
