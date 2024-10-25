@@ -3,6 +3,7 @@
 import "@/styles/globals.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
+import { Analytics } from "@vercel/analytics/react"
 
 export default function RootLayout({
   children,
@@ -31,6 +32,7 @@ export default function RootLayout({
         <Navbar />
         <div className='flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20'>
           {children}
+          <Analytics />
         </div>
         <Footer />
         {/* <div className='w-full font-aktivGroteskBold h-5 fixed bottom-0 flex justify-center items-center bg-cyan-500 sm:bg-blue-500 md:bg-green-500 lg:bg-yellow-500 xl:bg-orange-500 2xl:bg-red-500 '>
