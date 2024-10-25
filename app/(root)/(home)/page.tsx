@@ -6,7 +6,7 @@ import PricingSection from "@/components/Sections/PricingSection"
 import ReviewSection from "@/components/Sections/ReviewSection"
 // import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 import CreditsSection from "@/components/Sections/CreditsSection"
-import AlertAnnouncement from "@/components/AlertAnnouncement"
+// import AlertAnnouncement from "@/components/AlertAnnouncement"
 import { generateMetadata } from "@/lib/utils"
 
 export const metadata = generateMetadata({
@@ -18,7 +18,7 @@ export const metadata = generateMetadata({
 export default function Home() {
   return (
     <main className='flex flex-col justify-center items-center __container'>
-      <AlertAnnouncement />
+      {/* <AlertAnnouncement /> */}
       <HeroSection />
       <PricingSection />
       {/* <RecomendationsSection /> */}
