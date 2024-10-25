@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { convertGoogleDriveUrl } from "@/lib/utils"
 import { google } from "googleapis"
 
 export async function getGoogleSheetsData(range: string) {
@@ -11,7 +12,7 @@ export async function getGoogleSheetsData(range: string) {
         type: "service_account",
         private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
           /\\n/g,
-          "\n",
+          "\n"
         ),
         client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
@@ -34,20 +35,10 @@ export async function getGoogleSheetsData(range: string) {
   }
 }
 
-const convertGoogleDriveUrl = (shareableUrl: string): string => {
-  const fileIdMatch = shareableUrl.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/)
-  if (fileIdMatch && fileIdMatch[1]) {
-    const fileId = fileIdMatch[1]
-    return `https://drive.usercontent.google.com/download?id=${fileId}&authuser=0`
-  } else {
-    throw new Error("Invalid Google Drive URL format")
-  }
-}
-
 export const CreditsOrTestimonialsDataModels = async () => {
   const rawCreditsData =
     (await getGoogleSheetsData(
-      process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string,
+      process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string
     )) || []
 
   return rawCreditsData
@@ -62,7 +53,7 @@ export const CreditsOrTestimonialsDataModels = async () => {
 export const Recommendations = async () => {
   const rawRecommendationsData =
     (await getGoogleSheetsData(
-      process.env.MOVIE_RECOMMENDATIONS_SHEETS as string,
+      process.env.MOVIE_RECOMMENDATIONS_SHEETS as string
     )) || []
 
   return rawRecommendationsData

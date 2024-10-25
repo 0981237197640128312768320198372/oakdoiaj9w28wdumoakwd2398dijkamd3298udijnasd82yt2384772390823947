@@ -12,8 +12,6 @@ const nextConfig = {
         hostname: "drive.usercontent.google.com",
         pathname: "**",
       },
-      // If you want to allow all domains, you would typically not use a wildcard directly.
-      // Instead, consider using a more secure approach or external services for image loading.
     ],
   },
 }

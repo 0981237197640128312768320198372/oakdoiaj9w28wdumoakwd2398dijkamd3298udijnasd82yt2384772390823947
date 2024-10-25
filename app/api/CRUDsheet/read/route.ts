@@ -15,6 +15,8 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const sheetName = searchParams.get("sheet") || ""
   const range = searchParams.get("range") || ""
+  const limit = parseInt(searchParams.get("limit") || "0", 10)
+  const offset = parseInt(searchParams.get("offset") || "0", 10)
   const columnsParam = searchParams.get("columns")
 
   let columns = columnsParam ? columnsParam.split(",") : null
@@ -30,6 +32,7 @@ export async function GET(req: NextRequest) {
     const data = await getGoogleSheetsData(`${sheetName}!${range}`)
 
     let processedData = data || []
+
     if (columns) {
       processedData = processedData.map((row) =>
         columns.map((col) => {
@@ -39,7 +42,19 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    return NextResponse.json({ data: processedData }, { status: 200 })
+    const totalRows = processedData.length
+
+    if (limit > 0) {
+      processedData = processedData.slice(offset, offset + limit)
+    }
+
+    return NextResponse.json(
+      {
+        data: processedData,
+        totalRows: totalRows,
+      },
+      { status: 200 }
+    )
   } catch (error) {
     console.error("Error reading data", error)
     return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })

@@ -106,3 +106,13 @@ export const timeAgo = (dateString: string): string => {
     return seconds <= 1 ? "just now" : `${seconds} seconds ago`
   }
 }
+
+export const convertGoogleDriveUrl = (shareableUrl: string): string => {
+  const fileIdMatch = shareableUrl.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/)
+  if (fileIdMatch && fileIdMatch[1]) {
+    const fileId = fileIdMatch[1]
+    return `https://drive.usercontent.google.com/download?id=${fileId}&authuser=0`
+  } else {
+    throw new Error("Invalid Google Drive URL format")
+  }
+}
