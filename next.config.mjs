@@ -19,13 +19,23 @@ const nextConfig = {
     return [
       {
         source: "/:path*",
-        destination: "/:path*",
         has: [
           {
             type: "host",
-            value: "(?<subdomain>help|app)\\.mydomain\\.com",
+            value: "help.store.com",
           },
         ],
+        destination: "/help/:path*",
+      },
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "app.store.com",
+          },
+        ],
+        destination: "/app/:path*",
       },
     ]
   },
