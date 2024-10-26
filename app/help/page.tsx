@@ -1,4 +1,7 @@
-// app/help/page.tsx
-export default function HelpPage() {
-  return <div className='pt-32'>Welcome to the Help Center!</div>
+import React from "react"
+
+const page = () => {
+  return <div className='mt-32'>help Page</div>
 }
+
+export default page

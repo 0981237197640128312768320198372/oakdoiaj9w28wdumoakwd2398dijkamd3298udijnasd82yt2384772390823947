@@ -15,30 +15,6 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  async rewrites() {
-    return [
-      {
-        source: "/:path*",
-        has: [
-          {
-            type: "host",
-            value: "help.store.com",
-          },
-        ],
-        destination: "/help/:path*",
-      },
-      {
-        source: "/:path*",
-        has: [
-          {
-            type: "host",
-            value: "app.store.com",
-          },
-        ],
-        destination: "/app/:path*",
-      },
-    ]
-  },
 }
 
 export default nextConfig

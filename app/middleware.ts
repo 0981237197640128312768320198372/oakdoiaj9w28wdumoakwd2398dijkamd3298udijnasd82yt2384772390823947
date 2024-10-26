@@ -1,23 +1,20 @@
-// middleware.ts
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
   const hostname = request.nextUrl.hostname
 
-  // Add debugging header
-  const response = NextResponse.next()
-  response.headers.set("x-debug-middleware", `hostname: ${hostname}`)
+  const mainDomain = "dokmaistore.com"
 
-  if (hostname.startsWith("help")) {
+  if (hostname === `help.${mainDomain}`) {
     request.nextUrl.pathname = `/help${request.nextUrl.pathname}`
-    response.headers.set("x-debug-middleware", `routing to help`)
-  } else if (hostname.startsWith("app")) {
-    request.nextUrl.pathname = `/app${request.nextUrl.pathname}`
-    response.headers.set("x-debug-middleware", `routing to app`)
-  } else {
-    response.headers.set("x-debug-middleware", `no matching subdomain`)
+    return NextResponse.rewrite(request.nextUrl)
   }
 
-  return NextResponse.rewrite(request.nextUrl)
+  if (hostname === `app.${mainDomain}`) {
+    request.nextUrl.pathname = `/app${request.nextUrl.pathname}`
+    return NextResponse.rewrite(request.nextUrl)
+  }
+
+  return NextResponse.next()
 }
