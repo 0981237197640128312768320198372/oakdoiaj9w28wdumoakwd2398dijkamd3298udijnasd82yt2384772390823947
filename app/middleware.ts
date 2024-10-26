@@ -1,16 +1,14 @@
-// middleware.ts
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
-  const url = request.nextUrl
-  const subdomain = url.hostname.split(".")[0]
+  const hostname = request.nextUrl.hostname
 
-  if (subdomain === "help") {
-    url.pathname = `/help${url.pathname}` // Route to /help
-  } else if (subdomain === "app") {
-    url.pathname = `/app${url.pathname}` // Route to /app
+  if (hostname.startsWith("help")) {
+    request.nextUrl.pathname = `/help${request.nextUrl.pathname}`
+  } else if (hostname.startsWith("app")) {
+    request.nextUrl.pathname = `/app${request.nextUrl.pathname}`
   }
 
-  return NextResponse.rewrite(url)
+  return NextResponse.rewrite(request.nextUrl)
 }
