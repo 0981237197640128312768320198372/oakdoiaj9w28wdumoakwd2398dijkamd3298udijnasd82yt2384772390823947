@@ -14,6 +14,21 @@ const nextConfig = {
       },
     ],
   },
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/:path*",
+        destination: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "(?<subdomain>help|app)\\.mydomain\\.com",
+          },
+        ],
+      },
+    ]
+  },
 }
 
 export default nextConfig
