@@ -138,41 +138,44 @@ export default function PaginatedRecommendations() {
                 <SkeletonLoader key={index} />
               </>
             ))
-          : data.map((recommendation, index: number) => (
-              <div
-                key={index}
-                className='relative flex flex-col items-center h-full w-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg'
-              >
-                <Image
-                  src={recommendation.recommendationsimageUrl}
-                  alt={`Movies and Series Recommendation by Dokmai Store | ${recommendation.title}`}
-                  placeholder='blur'
-                  blurDataURL='@/assets/images/blurCredits.jpg'
-                  width={500}
-                  height={500}
-                  className='rounded-md overflow-hidden select-none w-auto h-auto'
-                  loading='lazy'
-                />
-                <span className='flex flex-col w-full justify-start gap-0 mt-3'>
-                  <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
-                    {recommendation.title}
-                  </p>
-                  <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
-                    {recommendation.description}
-                  </p>
-                </span>
-                <div className='flex w-full justify-end mt-3'>
-                  <Link
-                    href={recommendation.netflixUrl}
-                    className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm flex items-center justify-center gap-1'
-                    target='_blank'
-                  >
-                    Watch Now
-                    <GoChevronRight className='text-2xl' />
-                  </Link>
+          : data
+              .slice()
+              .reverse()
+              .map((recommendation, index: number) => (
+                <div
+                  key={index}
+                  className='relative flex flex-col items-center h-full w-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg'
+                >
+                  <Image
+                    src={recommendation.recommendationsimageUrl}
+                    alt={`Movies and Series Recommendation by Dokmai Store | ${recommendation.title}`}
+                    placeholder='blur'
+                    blurDataURL='@/assets/images/blurCredits.jpg'
+                    width={500}
+                    height={500}
+                    className='rounded-md overflow-hidden select-none w-auto h-auto'
+                    loading='lazy'
+                  />
+                  <span className='flex flex-col w-full justify-start gap-0 mt-3'>
+                    <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
+                      {recommendation.title}
+                    </p>
+                    <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
+                      {recommendation.description}
+                    </p>
+                  </span>
+                  <div className='flex w-full justify-end mt-3'>
+                    <Link
+                      href={recommendation.netflixUrl}
+                      className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm flex items-center justify-center gap-1'
+                      target='_blank'
+                    >
+                      Watch Now
+                      <GoChevronRight className='text-2xl' />
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
       </div>
 
       <div className='flex justify-between items-center py-3 gap-5 border-y-[1px] border-dark-500 text-light-400'>
