@@ -101,8 +101,8 @@ export default function PaginatedCredits() {
 
   const SkeletonLoader = () => {
     return (
-      <div className='relative flex-grow flex flex-col items-center h-full w-screen md:min-w-[350px] max-w-full md:min-h-[800px] max-h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
-        <div className='w-full md:min-h-[800px] max-h-full bg-dark-400 rounded-md'>
+      <div className='relative flex flex-col items-center h-full w-screen md:min-w-[350px] max-w-full min-h-[800px] max-h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
+        <div className='w-full min-h-[800px] max-h-full bg-dark-400 rounded-md'>
           <div className='relative flex items-center justify-center h-full'>
             <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
             <Image
@@ -124,8 +124,8 @@ export default function PaginatedCredits() {
   }
 
   return (
-    <div className='flex flex-col justify-center w-full h-full items-center'>
-      <div className='w-fit h-full grid md:grid-cols-2 lg:grid-cols-3 gap-5 px-5 lg:px-0 pb-10'>
+    <div className='flex flex-col justify-center w-full h-full items-center px-5 lg:px-0'>
+      <div className='w-fit h-full grid md:grid-cols-2 lg:grid-cols-3 gap-5 pb-10'>
         {loading
           ? Array.from({ length: limit }).map((_, index) => (
               <>
