@@ -6,6 +6,8 @@ export async function GET(req: NextRequest) {
   const apiKey = req.headers.get("x-api-key")
   const validApiKey = process.env.NEXT_API_KEY
 
+  console.log("API Key in Production:", process.env.NEXT_API_KEY)
+
   if (apiKey !== validApiKey) {
     return NextResponse.json("Unauthorized: Invalid API key", {
       status: 401,
