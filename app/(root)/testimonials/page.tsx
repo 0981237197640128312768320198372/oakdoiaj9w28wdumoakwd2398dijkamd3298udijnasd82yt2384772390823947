@@ -1,6 +1,6 @@
 import { CreditsOrTestimonialsDataModels } from "@/app/api/GoogleSheetAPI"
 import PageHeadline from "@/components/PageHeadline"
-import ShowTesti from "@/components/ShowTesti"
+import PaginatedCredits from "@/components/PaginatedCredits"
 import { generateMetadata } from "@/lib/utils"
 import React from "react"
 
@@ -23,11 +23,7 @@ export default async function Page() {
         headline='เครดิต'
         description={`ลูกค้าและตัวแทนหลายร้อยคนไว้วางใจและกลับมาซื้อกับเราอย่างต่อเนื่อง เราสามารถขายโปรไฟล์ได้มากกว่าหลายพันโปรไฟล์ และจนถึงตอนนี้เรามีรีวิวจากลูกค้ามากกว่า ${totalCredits} รีวิว`}
       />
-
-      <ShowTesti
-        testimonials={rawDataCreditsOrTestimonials}
-        paginations={true}
-      />
+      <PaginatedCredits />
     </main>
   )
 }

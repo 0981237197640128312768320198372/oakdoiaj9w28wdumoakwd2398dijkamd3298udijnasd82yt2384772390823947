@@ -4,13 +4,12 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
-import Link from "next/link"
 import { GoChevronLeft, GoChevronRight } from "react-icons/go"
 import { convertGoogleDriveUrl } from "@/lib/utils"
 
 const fetchTotalItems = async () => {
   const res = await fetch(
-    `/api/CRUDsheet/read/get_paginated_data?sheet=MovieAndSeriesRecommendation&range=A2:E`,
+    `/api/CRUDsheet/read/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C`,
     {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
@@ -26,10 +25,10 @@ const fetchTotalItems = async () => {
   return rawData.data.length
 }
 
-const fetchRecommendations = async (page: number, limit: number) => {
+const fetchCredits = async (page: number, limit: number) => {
   const offset = (page - 1) * limit
   const res = await fetch(
-    `/api/CRUDsheet/read/get_paginated_data?sheet=MovieAndSeriesRecommendation&range=A2:E&limit=${limit}&offset=${offset}`,
+    `/api/CRUDsheet/read/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C&limit=${limit}&offset=${offset}`,
     {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
@@ -41,26 +40,24 @@ const fetchRecommendations = async (page: number, limit: number) => {
     throw new Error("Failed to fetch data")
   }
 
-  const rawRecommendationsData = await res.json()
+  const rawCreditsData = await res.json()
 
   // Transform the raw data into a structured object and reverse it
-  const recommendations = rawRecommendationsData.data
-    .map((recommendationsRow: string[]) => ({
-      title: recommendationsRow[0],
-      description: recommendationsRow[1],
-      recommendationsimageUrl: convertGoogleDriveUrl(recommendationsRow[2]),
-      netflixUrl: recommendationsRow[3],
-      date: recommendationsRow[4],
+  const creditsData = rawCreditsData.data
+    .map((creditsRow: string[]) => ({
+      creditsimageUrl: convertGoogleDriveUrl(creditsRow[0]),
+      item: creditsRow[1],
+      date: creditsRow[2],
     }))
     .reverse()
 
-  return recommendations
+  return creditsData
 }
 
-export default function PaginatedRecommendations() {
+export default function PaginatedCredits() {
   const [data, setData] = useState<any[]>([])
   const [page, setPage] = useState(1)
-  const [limit] = useState(4)
+  const [limit] = useState(3)
   const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(false)
 
@@ -78,8 +75,8 @@ export default function PaginatedRecommendations() {
       setLoading(true)
 
       try {
-        const recommendations = await fetchRecommendations(page, limit)
-        setData(recommendations)
+        const credits = await fetchCredits(page, limit)
+        setData(credits)
       } catch (err) {
         console.log(err)
       } finally {
@@ -104,8 +101,8 @@ export default function PaginatedRecommendations() {
 
   const SkeletonLoader = () => {
     return (
-      <div className='relative flex-grow flex flex-col items-center h-full w-screen md:w-[500px] justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
-        <div className='w-full h-[300px] bg-dark-400 rounded-md'>
+      <div className='relative flex-grow flex flex-col items-center h-full w-screen md:min-w-[350px] max-w-full md:min-h-[800px] max-h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
+        <div className='w-full md:min-h-[800px] max-h-full bg-dark-400 rounded-md'>
           <div className='relative flex items-center justify-center h-full'>
             <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
             <Image
@@ -118,20 +115,17 @@ export default function PaginatedRecommendations() {
             />
           </div>
         </div>
-        <span className='flex flex-col w-full justify-start gap-0 mt-3'>
+        <span className='flex flex-col w-full h-full justify-start gap-0 mt-3'>
           <div className='h-6 bg-dark-400 rounded w-3/4 mt-2'></div>
           <div className='h-4 bg-dark-400 rounded w-1/2 mt-1'></div>
         </span>
-        <div className='flex w-full justify-end mt-3'>
-          <div className='h-8 w-24 bg-dark-400 rounded-sm'></div>
-        </div>
       </div>
     )
   }
 
   return (
     <div className='flex flex-col justify-center w-full h-full items-center'>
-      <div className='w-fit h-full grid md:grid-cols-2 gap-5 px-5 lg:px-0 pb-10'>
+      <div className='w-fit h-full grid md:grid-cols-2 lg:grid-cols-3 gap-5 px-5 lg:px-0 pb-10'>
         {loading
           ? Array.from({ length: limit }).map((_, index) => (
               <>
@@ -141,39 +135,29 @@ export default function PaginatedRecommendations() {
           : data
               .slice()
               .reverse()
-              .map((recommendation, index: number) => (
+              .map((credit, index: number) => (
                 <div
                   key={index}
                   className='relative flex flex-col items-center h-full w-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg'
                 >
                   <Image
-                    src={recommendation.recommendationsimageUrl}
-                    alt={`Movies and Series Recommendation by Dokmai Store | ${recommendation.title}`}
+                    src={credit.creditsimageUrl}
+                    alt={`Credits Or Testimonial Of ${credit.item} | Dokmai Store`}
                     placeholder='blur'
                     blurDataURL='@/assets/images/blurCredits.jpg'
-                    width={500}
-                    height={500}
+                    width={350}
+                    height={350}
                     className='rounded-md overflow-hidden select-none w-auto h-auto'
                     loading='lazy'
                   />
                   <span className='flex flex-col w-full justify-start gap-0 mt-3'>
                     <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
-                      {recommendation.title}
+                      {credit.date}
                     </p>
                     <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
-                      {recommendation.description}
+                      {credit.item}
                     </p>
                   </span>
-                  <div className='flex w-full justify-end mt-3'>
-                    <Link
-                      href={recommendation.netflixUrl}
-                      className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm flex items-center justify-center gap-1'
-                      target='_blank'
-                    >
-                      Watch Now
-                      <GoChevronRight className='text-2xl' />
-                    </Link>
-                  </div>
                 </div>
               ))}
       </div>
