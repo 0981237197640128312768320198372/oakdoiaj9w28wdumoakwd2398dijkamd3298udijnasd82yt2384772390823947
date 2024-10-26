@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest) {
     if (!searchValue || !values) {
       return NextResponse.json(
         { error: "Missing search value or update values" },
-        { status: 400 }
+        { status: 400 },
       )
     }
 

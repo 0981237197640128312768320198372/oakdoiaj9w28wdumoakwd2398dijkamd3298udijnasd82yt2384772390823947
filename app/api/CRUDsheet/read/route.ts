@@ -4,7 +4,7 @@ import { getGoogleSheetsData } from "@/app/api/CRUD"
 
 export async function GET(req: NextRequest) {
   const apiKey = req.headers.get("x-api-key")
-  const validApiKey = process.env.API_KEY
+  const validApiKey = process.env.NEXT_API_KEY
 
   if (apiKey !== validApiKey) {
     return NextResponse.json("Unauthorized: Invalid API key", {

@@ -17,7 +17,7 @@ export default function PaymentButton() {
         {
           amount: 10000, // Example amount in THB (100.00 THB)
           currency: "thb",
-        }
+        },
       )
 
       const { paymentIntentId } = paymentIntentResponse.data

@@ -9,7 +9,7 @@ async function authenticateGoogleSheets() {
         type: "service_account",
         private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
           /\\n/g,
-          "\n"
+          "\n",
         ),
         client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
@@ -106,7 +106,7 @@ export async function findAndDeleteRow(sheetName: string, searchValue: string) {
 
     // Fetch the sheet by name dynamically
     const sheet = spreadsheet.data.sheets?.find(
-      (sheet) => sheet.properties?.title === sheetName
+      (sheet) => sheet.properties?.title === sheetName,
     )
     const sheetId = sheet?.properties?.sheetId
 

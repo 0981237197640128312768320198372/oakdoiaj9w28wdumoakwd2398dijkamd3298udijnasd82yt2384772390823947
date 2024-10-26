@@ -45,7 +45,7 @@ export default function ShowRecommendations({
 
   useEffect(() => {
     const imageRecommendationsUrls = recommendations.map(
-      (recommendation: any) => recommendation.recommendationsimageUrl
+      (recommendation: any) => recommendation.recommendationsimageUrl,
     )
 
     const preloadImages = async () => {
@@ -57,7 +57,7 @@ export default function ShowRecommendations({
             img.onload = () => resolve()
             img.onerror = () => resolve()
           })
-        })
+        }),
       )
       setIsLoading(false)
     }
@@ -77,9 +77,6 @@ export default function ShowRecommendations({
             key={index}
             className='relative flex flex-col items-center h-full w-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg'
           >
-            {/* <p className='flex font-aktivGroteskLight px-2 py-1 text-light-100 text-xs mb-2'>
-              {recomendation.date} | (Posted {timeAgo(recomendation.date)})
-            </p> */}
             <Image
               src={recomendation.recommendationsimageUrl}
               alt={`Movies and Series Recommendation by Dokmai Store | ${recomendation.title}`}

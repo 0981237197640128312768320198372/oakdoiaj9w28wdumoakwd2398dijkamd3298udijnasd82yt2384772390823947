@@ -11,7 +11,7 @@ export async function DELETE(req: NextRequest) {
     if (!sheetName || !searchValue) {
       return NextResponse.json(
         { error: "Missing sheet name or search value" },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
