@@ -1,3 +1,0 @@
-user-agent: *
-Allow: *
-Sitemap: https://www.dokmaistore.com/sitemap.xml
