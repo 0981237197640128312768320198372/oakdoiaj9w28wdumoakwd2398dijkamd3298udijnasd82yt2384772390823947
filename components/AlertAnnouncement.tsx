@@ -36,8 +36,6 @@ const AlertAnnouncement: React.FC = () => {
         document.removeEventListener("mousedown", handleClickOutside)
       }
     }
-    // This effect doesn't depend on anything outside of its body, only on isVisible
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible])
 
   if (!isVisible) return null // Early return if the announcement is not visible

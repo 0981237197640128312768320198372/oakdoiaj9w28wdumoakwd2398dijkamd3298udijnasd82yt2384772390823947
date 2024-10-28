@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { cn } from "@/lib/utils"
@@ -53,12 +52,12 @@ export const Reviews = ({
       if (direction === "left") {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "forwards",
+          "forwards"
         )
       } else {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "reverse",
+          "reverse"
         )
       }
     }
@@ -79,7 +78,7 @@ export const Reviews = ({
       ref={containerRef}
       className={cn(
         "scroller relative max-w-[1140px] overflow-hidden border-x-[1px] pb-1 border-dark-500 ",
-        className,
+        className
       )}
     >
       <ul
@@ -87,7 +86,7 @@ export const Reviews = ({
         className={cn(
           " flex min-w-full shrink-0 gap-5 py-2 w-max flex-nowrap",
           start && "animate-scroll ",
-          pauseOnHover && "hover:[animation-play-state:paused]",
+          pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
         {reviewsData.map((item) => (

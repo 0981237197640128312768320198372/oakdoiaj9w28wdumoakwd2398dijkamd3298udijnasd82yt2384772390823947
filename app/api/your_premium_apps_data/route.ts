@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getGoogleSheetsData } from "@/app/api/CRUD"
 
-// Define the column models for each range with static app names
 const rangeModels: Record<
   string,
   { appName: string; accessType: string; columns: string[] }
@@ -83,7 +82,7 @@ export async function POST(req: NextRequest) {
           }
 
           // Map each remaining column according to the model, skipping the Secret Key
-          model.columns.forEach((label, index) => {
+          model.columns.forEach((label: any, index: any) => {
             formattedRow[label] = row[index + 1] // +1 to skip the Secret Key column
           })
           return formattedRow

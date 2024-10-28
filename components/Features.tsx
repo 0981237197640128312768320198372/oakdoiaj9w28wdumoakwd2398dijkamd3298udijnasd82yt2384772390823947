@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 
 import { cn } from "@/lib/utils"
@@ -50,12 +49,12 @@ export const Features = ({
       if (direction === "left") {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "forwards",
+          "forwards"
         )
       } else {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "reverse",
+          "reverse"
         )
       }
     }
@@ -72,7 +71,7 @@ export const Features = ({
       ref={containerRef}
       className={cn(
         "scroller relative w-screen overflow-hidden select-none",
-        className,
+        className
       )}
     >
       <ul
@@ -80,7 +79,7 @@ export const Features = ({
         className={cn(
           " flex w-max items-center gap-16 font-aktivGroteskMediumItalic",
           start && "animate-scroll ",
-          pauseOnHover && "hover:[animation-play-state:paused]",
+          pauseOnHover && "hover:[animation-play-state:paused]"
         )}
       >
         {text.map((item) => (

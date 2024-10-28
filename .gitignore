@@ -2,10 +2,6 @@
 
 .history
 app/api/stripe
-app/help
-app/test
-app/dashboard
-app/login
 
 
 # dependencies
