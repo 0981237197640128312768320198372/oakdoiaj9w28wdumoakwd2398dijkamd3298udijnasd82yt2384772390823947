@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import Image from "next/image"
@@ -184,7 +186,7 @@ export const ShowPremiumApps = () => {
         premiumData.length > 0 && (
           <div className='mt-24 w-full'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
-              {premiumData.map((item, index) => (
+              {premiumData.map((item: any, index: any) => (
                 <div
                   key={index}
                   className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/50'
@@ -208,7 +210,10 @@ export const ShowPremiumApps = () => {
                         />
                       ) : null}
                       {String(label) === "accessType" ? (
-                        <span className='text-xs font-aktivGroteskThin text-white/70'>
+                        <span
+                          className='text-xs font-aktivGroteskThin text-white/70'
+                          key={idx}
+                        >
                           {String(value)}
                         </span>
                       ) : null}
