@@ -31,7 +31,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const data = await getGoogleSheetsData(`${sheetName}!${range}`)
+    const data = await getGoogleSheetsData(
+      process.env.WORK_WORK_WORK_WORK_SPREADSHEET_ID as string,
+      `${sheetName}!${range}`
+    )
 
     let processedData = data || []
 

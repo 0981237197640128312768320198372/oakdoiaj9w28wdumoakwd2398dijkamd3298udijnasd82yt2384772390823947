@@ -17,7 +17,9 @@
     "clsx": "^2.1.1",
     "framer-motion": "^11.5.4",
     "googleapis": "^144.0.0",
+    "jsonwebtoken": "^9.0.2",
     "next": "14.2.8",
+    "next-auth": "^4.24.10",
     "next-offline": "^5.0.5",
     "next-seo": "^6.6.0",
     "react": "^18",
@@ -28,6 +30,7 @@
     "vaul": "^0.9.2"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

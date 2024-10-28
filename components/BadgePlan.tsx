@@ -13,7 +13,7 @@ const BadgePlan: React.FC<BadgeProps> = ({ icon, text }) => {
 
   return (
     <span
-      className={`flex gap-1 rounded text-sm items-center w-fit px-2 py-1 font-aktivGroteskMedium ${color}`}
+      className={`flex gap-1 rounded text-sm items-center w-fit px-2 py-1 font-aktivGroteskBold ${color} select-none`}
     >
       {icon}
       {text}

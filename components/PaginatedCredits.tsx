@@ -9,7 +9,7 @@ import { convertGoogleDriveUrl } from "@/lib/utils"
 
 const fetchTotalItems = async () => {
   const res = await fetch(
-    `/api/CRUDsheet/read/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C`,
+    `/api/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C`,
     {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
@@ -28,7 +28,7 @@ const fetchTotalItems = async () => {
 const fetchCredits = async (page: number, limit: number) => {
   const offset = (page - 1) * limit
   const res = await fetch(
-    `/api/CRUDsheet/read/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C&limit=${limit}&offset=${offset}`,
+    `/api/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C&limit=${limit}&offset=${offset}`,
     {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",

@@ -5,6 +5,7 @@ import { appendGoogleSheetsData } from "@/app/api/CRUD"
 export async function POST(req: Request) {
   try {
     const body = await req.json()
+    const { spreadsheetId } = body
     const { range } = body
     const { values } = body
 
@@ -12,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "No values provided" }, { status: 400 })
     }
 
-    await appendGoogleSheetsData(range, values)
+    await appendGoogleSheetsData(spreadsheetId, range, values)
 
     return NextResponse.json({ message: "Data successfully added" })
   } catch (error) {

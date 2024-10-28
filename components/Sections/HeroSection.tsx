@@ -31,7 +31,7 @@ const HeroSection = () => {
           <Highlight text='Premium App Accounts' />, such as{" "}
           <Highlight
             text='Netflix Premium'
-            bgcolor='bg-[#e50914] !text-white whitespace-nowrap'
+            bgcolor='bg-[#e50914] !text-black whitespace-nowrap'
           />{" "}
           and{" "}
           <Highlight

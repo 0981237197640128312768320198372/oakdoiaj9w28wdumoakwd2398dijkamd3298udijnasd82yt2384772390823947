@@ -28,8 +28,8 @@ const page = () => {
           <Image
             src={netflixpremium}
             alt='High Quality Netflix Premium Cheap Price Dokmai Store'
-            width={300}
-            height={300}
+            width={150}
+            height={150}
             className='w-fit select-none'
             loading='lazy'
           />

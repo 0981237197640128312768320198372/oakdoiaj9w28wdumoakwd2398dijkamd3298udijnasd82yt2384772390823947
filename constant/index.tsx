@@ -490,3 +490,21 @@ export const netflixPrice = [
     ],
   },
 ]
+export const accountBadge = (badge: string) => {
+  if (badge === "VIP") {
+    return (
+      <BadgePlan
+        text='VIP'
+        icon={<RiVipCrownLine className='text-goldVIP' />}
+      />
+    )
+  } else if (badge === "VVIP") {
+    return (
+      <BadgePlan
+        text='VVIP'
+        icon={<IoDiamondOutline className='text-purpleVVIP' />}
+      />
+    )
+  }
+  return null
+}

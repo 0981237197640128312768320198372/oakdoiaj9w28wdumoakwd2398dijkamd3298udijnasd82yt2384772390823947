@@ -3,6 +3,9 @@ import { ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { Metadata } from "next"
 
+import { RiVipCrownLine } from "react-icons/ri"
+import { IoDiamondOutline } from "react-icons/io5"
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

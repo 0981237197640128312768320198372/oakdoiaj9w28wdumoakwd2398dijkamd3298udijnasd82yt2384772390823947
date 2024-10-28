@@ -9,7 +9,7 @@ async function authenticateGoogleSheets() {
         type: "service_account",
         private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
           /\\n/g,
-          "\n",
+          "\n"
         ),
         client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
@@ -29,11 +29,14 @@ async function getGoogleSheetsInstance() {
   return google.sheets({ version: "v4", auth })
 }
 
-export async function getGoogleSheetsData(range: string) {
+export async function getGoogleSheetsData(
+  spreadsheetId: string,
+  range: string
+) {
   try {
     const sheets = await getGoogleSheetsInstance()
     const getData = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId: spreadsheetId,
       range: range,
     })
     return getData.data.values || []
@@ -42,11 +45,15 @@ export async function getGoogleSheetsData(range: string) {
   }
 }
 
-export async function appendGoogleSheetsData(range: string, values: any[]) {
+export async function appendGoogleSheetsData(
+  spreadsheetId: string,
+  range: string,
+  values: any[]
+) {
   try {
     const sheets = await getGoogleSheetsInstance()
     await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId: spreadsheetId,
       range: range,
       valueInputOption: "RAW",
       requestBody: {
@@ -60,12 +67,17 @@ export async function appendGoogleSheetsData(range: string, values: any[]) {
   }
 }
 
-export async function findAndUpdateRow(searchValue: string, values: any[]) {
+export async function findAndUpdateRow(
+  spreadsheetId: string,
+  range: string,
+  searchValue: string,
+  values: any[]
+) {
   try {
     const sheets = await getGoogleSheetsInstance()
 
     const getData = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
+      spreadsheetId: spreadsheetId,
       range: "EmailAccess",
     })
 
@@ -106,7 +118,7 @@ export async function findAndDeleteRow(sheetName: string, searchValue: string) {
 
     // Fetch the sheet by name dynamically
     const sheet = spreadsheet.data.sheets?.find(
-      (sheet) => sheet.properties?.title === sheetName,
+      (sheet) => sheet.properties?.title === sheetName
     )
     const sheetId = sheet?.properties?.sheetId
 

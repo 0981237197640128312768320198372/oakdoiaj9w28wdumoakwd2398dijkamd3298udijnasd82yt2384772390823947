@@ -5,18 +5,23 @@ import { findAndUpdateRow } from "@/app/api/CRUD"
 export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json()
-    const { searchValue, values } = body
+    const { spreadsheetId, range, searchValue, values } = body
 
     // Validate input
     if (!searchValue || !values) {
       return NextResponse.json(
         { error: "Missing search value or update values" },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
     // Call the function to find and update the row
-    const response = await findAndUpdateRow(searchValue, values)
+    const response = await findAndUpdateRow(
+      spreadsheetId,
+      range,
+      searchValue,
+      values
+    )
 
     // Return success response
     return NextResponse.json(response, { status: 200 })
