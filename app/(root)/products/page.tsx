@@ -16,6 +16,7 @@ import { useState } from "react"
 
 const Page = () => {
   const [isCartOpen, setCartOpen] = useState(false)
+
   return (
     <main className='flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-20 xl:pt-40 __container'>
       <PageHeadline

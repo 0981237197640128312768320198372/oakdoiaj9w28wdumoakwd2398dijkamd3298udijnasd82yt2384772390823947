@@ -30,7 +30,7 @@ const page = () => {
         <div>
           <p className='text-neutral-800 dark:text-neutral-200 text-xs md:text-sm font-normal mb-8'>
             เลือกแพ็กเกจที่ใช่สำหรับคุณ{" "}
-            <Link href={"/prices"} target='__blank' className='text-primary'>
+            <Link href={"/products"} target='__blank' className='text-primary'>
               คลิกที่นี่
             </Link>
             เพื่อดูราคา

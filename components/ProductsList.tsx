@@ -6,7 +6,8 @@ import primevideo from "@/assets/images/amazonprimevideo.png"
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 
 export const ProductsList = ({ priceData }: { priceData: any[] }) => {
-  const { addToCart, updateQuantity, getCartItemQuantity } = useCart()
+  const { addToCart, updateQuantity, getCartItemQuantity, removeFromCart } =
+    useCart()
 
   return (
     <div className='w-full grid lg:grid-cols-2 gap-10 mt-24'>
@@ -62,10 +63,12 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                     <div className='flex items-center gap-2'>
                       <button
                         onClick={() =>
-                          updateQuantity(
-                            price.id,
-                            getCartItemQuantity(price.id) - 1
-                          )
+                          getCartItemQuantity(price.id) > 1
+                            ? updateQuantity(
+                                price.id,
+                                getCartItemQuantity(price.id) - 1
+                              )
+                            : removeFromCart(price.id)
                         }
                         className='p-1 text-xs text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-30 active:bg-dark-600 active:border-light-100 '
                       >
