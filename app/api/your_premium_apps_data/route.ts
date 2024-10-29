@@ -48,54 +48,44 @@ const rangeModels: Record<
   },
 }
 
-// Fetch and format data from each range
 export async function POST(req: NextRequest) {
-  const { secretKey } = await req.json()
+  const { personalKey } = await req.json()
 
-  if (!secretKey) {
+  if (!personalKey) {
     return NextResponse.json(
-      { error: "Secret key is required" },
+      { error: "Personal key is required" },
       { status: 400 }
     )
   }
 
   try {
-    // Consolidated array to store all matched data
     const consolidatedData: any[] = []
-
-    // Loop through each range and apply the specific model
     for (const [range, model] of Object.entries(rangeModels)) {
-      // Fetch data for the current range
       const sheetData =
         (await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
           range
         )) || []
 
-      // Filter and map rows that match the Secret Key
       const matchedRows = sheetData
-        .filter((row: string[]) => row[0] === secretKey) // Match Secret Key in the first column
+        .filter((row: string[]) => row[0] === personalKey)
         .map((row: string[]) => {
-          // Start with a formatted row that includes the static app name
           const formattedRow: Record<string, string> = {
             appName: model.appName,
             accessType: model.accessType,
           }
 
-          // Map each remaining column according to the model, skipping the Secret Key
           model.columns.forEach((label: any, index: any) => {
-            formattedRow[label] = row[index + 1] // +1 to skip the Secret Key column
+            formattedRow[label] = row[index + 1]
           })
           return formattedRow
         })
-      // Add matched rows to the consolidated data
       consolidatedData.push(...matchedRows)
     }
 
-    // Return the consolidated data as JSON
     if (consolidatedData.length === 0) {
       return NextResponse.json(
-        { error: "No premium data found for this Secret Key" },
+        { error: "No premium data found for this Personal Key" },
         { status: 404 }
       )
     }

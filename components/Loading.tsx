@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from "next/image"
 import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
 

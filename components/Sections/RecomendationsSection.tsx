@@ -13,7 +13,7 @@ import { GoChevronRight } from "react-icons/go"
 const fetchRecommendations = async (page: number, limit: number) => {
   const offset = (page - 1) * limit
   const res = await fetch(
-    `/api/CRUDsheet/read/get_paginated_data?sheet=MovieAndSeriesRecommendation&range=A2:E&limit=${limit}&offset=${offset}`,
+    `/api/get_paginated_data?sheet=MovieAndSeriesRecommendation&range=A2:E&limit=${limit}&offset=${offset}`,
     {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
@@ -41,8 +41,8 @@ const fetchRecommendations = async (page: number, limit: number) => {
 }
 const SkeletonLoader = () => {
   return (
-    <div className='relative flex-grow flex flex-col items-center h-full w-screen md:w-[500px] justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
-      <div className='w-full h-[300px] bg-dark-400 rounded-md'>
+    <div className='relative flex-grow flex flex-col items-center h-full w-full md:min-w-[500px] justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
+      <div className='w-full h-full min-h-[500px] bg-dark-400 rounded-md'>
         <div className='relative flex items-center justify-center h-full'>
           <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
           <Image
@@ -96,7 +96,7 @@ const RecomendationsSection = () => {
         urlButtonMore={"/movie-series-recommendations"}
         className='mb-16'
       />
-      <div className='w-fit h-full grid md:grid-cols-2 gap-5 px-5 lg:px-0 pb-10'>
+      <div className='w-full h-full grid lg:grid-cols-2 gap-5 px-5 lg:px-0 pb-10'>
         {loading
           ? Array.from({ length: limit }).map((_, index) => (
               <>

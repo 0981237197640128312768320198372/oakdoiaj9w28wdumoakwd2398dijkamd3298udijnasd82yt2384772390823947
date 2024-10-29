@@ -9,7 +9,7 @@ import { convertGoogleDriveUrl } from "@/lib/utils"
 const fetchCredits = async (page: number, limit: number) => {
   const offset = (page - 1) * limit
   const res = await fetch(
-    `/api/CRUDsheet/read/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C&limit=${limit}&offset=${offset}`,
+    `/api/get_paginated_data?sheet=CreditsOrTestimonials&range=A2:C&limit=${limit}&offset=${offset}`,
     {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
@@ -37,8 +37,8 @@ const fetchCredits = async (page: number, limit: number) => {
 
 const SkeletonLoader = () => {
   return (
-    <div className='relative flex-grow flex flex-col items-center h-full w-screen md:min-w-[350px] max-w-full md:min-h-[800px] max-h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
-      <div className='w-full md:min-h-[800px] max-h-full bg-dark-400 rounded-md'>
+    <div className='relative flex-grow flex flex-col items-center h-full w-screen md:min-w-[350px] max-w-full min-h-[800px] max-h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
+      <div className='w-full min-h-[800px] h-full bg-dark-400 rounded-md'>
         <div className='relative flex items-center justify-center h-full'>
           <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
           <Image

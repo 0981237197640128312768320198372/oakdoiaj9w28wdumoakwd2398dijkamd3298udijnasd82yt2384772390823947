@@ -4,26 +4,25 @@ import { NextRequest, NextResponse } from "next/server"
 import { getGoogleSheetsData } from "@/app/api/CRUD"
 
 export async function POST(req: NextRequest) {
-  const { secretKey } = await req.json()
+  const { personalKey } = await req.json()
 
-  if (!secretKey) {
+  if (!personalKey) {
     return NextResponse.json(
-      { error: "Secret key is required" },
+      { error: "Personal Key is required" },
       { status: 400 }
     )
   }
 
   try {
     const sheetName = "UserInfo"
-    const range = "A2:C" // Adjust the range as needed
+    const range = "A2:C"
     const data =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
         `${sheetName}!${range}`
       )) || []
 
-    // Find the row matching the secret key
-    const matchedRow = data.find((row: string[]) => row[0] === secretKey)
+    const matchedRow = data.find((row: string[]) => row[0] === personalKey)
 
     if (!matchedRow) {
       return NextResponse.json(
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
 
     // Return user info based on matched row
     const userInfo = {
-      secretKey: matchedRow[0],
+      personalKey: matchedRow[0],
       balance: matchedRow[1],
       badge: matchedRow[2],
     }

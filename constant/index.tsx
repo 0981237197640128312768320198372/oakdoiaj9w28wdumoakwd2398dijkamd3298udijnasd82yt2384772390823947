@@ -12,8 +12,8 @@ export const navButtons = [
     url: "/testimonials",
   },
   {
-    title: "ราคา",
-    url: "/prices",
+    title: "สินค้า",
+    url: "/products",
   },
   {
     title: "วิธีการสั่งซื้อ",
@@ -335,7 +335,7 @@ export const Terms = [
 export const primeVideoPrice = [
   {
     type: "Sharing Access",
-    description: "1 จอส่วนตัว",
+    description: "",
     plans: [
       {
         prices: [
@@ -360,7 +360,7 @@ export const primeVideoPrice = [
   },
   {
     type: "Family Access",
-    description: "1 บัญชี (ได้ทั้ง 5 จอ)",
+    description: "1 บัญชี (ได้ทั้ง 6 จอ)",
     plans: [
       {
         badge: (
@@ -471,7 +471,7 @@ export const netflixPrice = [
           { duration: "7 Days", price: 149 },
           { duration: "30 Days", price: 599 },
           { duration: "14 Days", price: 299 },
-          { duration: "30 Days", price: 599 },
+          { duration: "30 Days", price: 459 },
         ],
       },
       {
@@ -482,9 +482,9 @@ export const netflixPrice = [
           />
         ),
         prices: [
-          { duration: "60 Days", price: 1149 },
-          { duration: "90 Days", price: 1599 },
-          { duration: "1 Year", price: 6111 },
+          { duration: "60 Days", price: 819 },
+          { duration: "90 Days", price: 1099 },
+          { duration: "1 Year", price: 4300 },
         ],
       },
     ],
@@ -508,3 +508,73 @@ export const accountBadge = (badge: string) => {
   }
   return null
 }
+export const ProductPrices = [
+  {
+    id: "prime-video-sharing",
+    appName: "Prime Video",
+    type: "Sharing Access",
+    description: "1 จอส่วนตัว",
+    prices: [
+      { id: "prime-sharing-1day", duration: "1 Day", price: 9 },
+      { id: "prime-sharing-7days", duration: "7 Days", price: 19 },
+      { id: "prime-sharing-30days", duration: "30 Days", price: 49 },
+      { id: "prime-sharing-60days", duration: "60 Days", price: 79 },
+      { id: "prime-sharing-90days", duration: "90 Days", price: 109 },
+    ],
+  },
+  {
+    id: "prime-video-family",
+    appName: "Prime Video",
+    type: "Family Access",
+    description: "1 บัญชี (ได้ทั้ง 6 จอ)",
+    prices: [
+      { id: "prime-family-7days", duration: "7 Days", price: 59 },
+      { id: "prime-family-30days", duration: "30 Days", price: 149 },
+    ],
+  },
+  {
+    id: "netflix-premium-no-tv",
+    appName: "Netflix Premium",
+    type: "Sharing Access (No TV)",
+    description: "1 จอส่วนตัว ดูใน TV ไม่ได้",
+    prices: [
+      { id: "netflix-no-tv-1day", duration: "1 Day", price: 9 },
+      { id: "netflix-no-tv-3days", duration: "3 Days", price: 15 },
+      { id: "netflix-no-tv-5days", duration: "5 Days", price: 20 },
+      { id: "netflix-no-tv-7days", duration: "7 Days", price: 29 },
+      { id: "netflix-no-tv-14days", duration: "14 Days", price: 55 },
+      { id: "netflix-no-tv-30days", duration: "30 Days", price: 99 },
+      { id: "netflix-no-tv-60days", duration: "60 Days", price: 189 },
+      { id: "netflix-no-tv-90days", duration: "90 Days", price: 279 },
+    ],
+  },
+  {
+    id: "netflix-premium-with-tv",
+    appName: "Netflix Premium",
+    type: "Sharing Access (With TV)",
+    description: "1 จอส่วนตัว ดูใน TV ได้",
+    prices: [
+      { id: "netflix-tv-1day", duration: "1 Day", price: 19 },
+      { id: "netflix-tv-3days", duration: "3 Days", price: 29 },
+      { id: "netflix-tv-5days", duration: "5 Days", price: 39 },
+      { id: "netflix-tv-7days", duration: "7 Days", price: 49 },
+      { id: "netflix-tv-14days", duration: "14 Days", price: 89 },
+      { id: "netflix-tv-30days", duration: "30 Days", price: 149 },
+      { id: "netflix-tv-60days", duration: "60 Days", price: 279 },
+      { id: "netflix-tv-90days", duration: "90 Days", price: 409 },
+    ],
+  },
+  {
+    id: "netflix-premium-family",
+    appName: "Netflix Premium",
+    type: "Family Access",
+    description: "1 บัญชี (ได้ทั้ง 5 จอ) ดูได้ทุกอุปกรณ์",
+    prices: [
+      { id: "netflix-family-7days", duration: "7 Days", price: 149 },
+      { id: "netflix-family-14days", duration: "14 Days", price: 299 },
+      { id: "netflix-family-30days", duration: "30 Days", price: 459 },
+      { id: "netflix-family-60days", duration: "60 Days", price: 819 },
+      { id: "netflix-family-90days", duration: "90 Days", price: 1099 },
+    ],
+  },
+]

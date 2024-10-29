@@ -10,23 +10,26 @@ import { FaUserLock } from "react-icons/fa6"
 import { accountBadge } from "@/constant"
 import netflixpremiumlogo from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
+import { MdOutlineAccountBalanceWallet } from "react-icons/md"
+import Link from "next/link"
+import Loading from "@/components/Loading"
 
 export const ShowPremiumApps = () => {
-  const [inputSecretKey, setInputSecretKey] = useState<string>("")
-  const [secretKey, setSecretKey] = useState<string | null>(null)
+  const [inputPersonalKey, setInputPersonalKey] = useState<string>("")
+  const [personalKey, setPersonalKey] = useState<string | null>(null)
   const [userInfo, setUserInfo] = useState<any>(null)
   const [premiumData, setPremiumData] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
 
   const [checkingLocalStorage, setCheckingLocalStorage] = useState(true)
-  const [validatingSecretKey, setValidatingSecretKey] = useState(false)
+  const [validatingPersonalKey, setValidatingPersonalKey] = useState(false)
   const [fetchingData, setFetchingData] = useState(false)
 
   useEffect(() => {
-    const storedSecretKey = localStorage.getItem("secretKey")
-    if (storedSecretKey) {
-      setSecretKey(storedSecretKey)
-      validateSecretKey(storedSecretKey)
+    const storedPersonalKey = localStorage.getItem("personalKey")
+    if (storedPersonalKey) {
+      setPersonalKey(storedPersonalKey)
+      validatePersonalKey(storedPersonalKey)
     } else {
       setCheckingLocalStorage(false)
     }
@@ -34,38 +37,38 @@ export const ShowPremiumApps = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!inputSecretKey) return
-    setSecretKey(inputSecretKey)
-    setValidatingSecretKey(true)
-    await validateSecretKey(inputSecretKey)
-    setValidatingSecretKey(false)
+    if (!inputPersonalKey) return
+    setPersonalKey(inputPersonalKey)
+    setValidatingPersonalKey(true)
+    await validatePersonalKey(inputPersonalKey)
+    setValidatingPersonalKey(false)
   }
 
-  const validateSecretKey = async (key: string) => {
+  const validatePersonalKey = async (key: string) => {
     try {
       setError(null)
       const userInfoRes = await fetch("/api/get_info", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ secretKey: key }),
+        body: JSON.stringify({ personalKey: key }),
       })
 
       if (userInfoRes.ok) {
         const userInfoData = await userInfoRes.json()
         setUserInfo(userInfoData.data)
-        localStorage.setItem("secretKey", key)
+        localStorage.setItem("personalKey", key)
         fetchPremiumData(key)
       } else {
         const errorData = await userInfoRes.json()
-        setError(errorData.error || "Invalid Secret Key.")
+        setError(errorData.error || "Invalid Personal Key.")
         setUserInfo(null)
-        localStorage.removeItem("secretKey")
+        localStorage.removeItem("personalKey")
       }
     } catch (err) {
       setError("An error occurred. Please try again later.")
     } finally {
       setCheckingLocalStorage(false)
-      setValidatingSecretKey(false)
+      setValidatingPersonalKey(false)
     }
   }
 
@@ -75,7 +78,7 @@ export const ShowPremiumApps = () => {
       const premiumDataRes = await fetch("/api/your_premium_apps_data", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ secretKey: key }),
+        body: JSON.stringify({ personalKey: key }),
       })
 
       if (premiumDataRes.ok) {
@@ -94,12 +97,12 @@ export const ShowPremiumApps = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("secretKey")
-    setSecretKey(null)
+    localStorage.removeItem("personalKey")
+    setPersonalKey(null)
     setUserInfo(null)
     setPremiumData([])
     setError(null)
-    setInputSecretKey("") // Reset the input field as well
+    setInputPersonalKey("") // Reset the input field as well
   }
   const getLabelDisplayName = (label: string) =>
     ({
@@ -112,16 +115,16 @@ export const ShowPremiumApps = () => {
     }[label] || null)
 
   return (
-    <div className='w-full '>
-      {checkingLocalStorage && <p>Loading...</p>}
-      {!checkingLocalStorage && !secretKey && (
+    <div className='w-full'>
+      {checkingLocalStorage && <Loading />}
+      {!checkingLocalStorage && !personalKey && (
         <form onSubmit={handleSubmit} className='mb-4'>
           <input
             type='text'
-            placeholder='Enter Secret Key'
+            placeholder='Enter Personal Key'
             className='border rounded p-2 w-full mb-2'
-            value={inputSecretKey}
-            onChange={(e) => setInputSecretKey(e.target.value)}
+            value={inputPersonalKey}
+            onChange={(e) => setInputPersonalKey(e.target.value)}
           />
           <button
             type='submit'
@@ -131,49 +134,53 @@ export const ShowPremiumApps = () => {
           </button>
         </form>
       )}
-      {validatingSecretKey && <p>Validating Secret Key...</p>}
-      {!checkingLocalStorage && !validatingSecretKey && userInfo && (
-        <div className='mb-4 w-fit'>
-          <div className='bg-white/10 relative rounded-xl overflow-hidden group min-w-96 w-fit'>
-            <div className='bg-gradient-to-tl from-white/10 to-dark-800 rounded-lg p-5 w-full'>
-              <div className='justify-end flex items-start'>
-                <div className='flex gap-2 items-center select-none'>
-                  <Image
-                    src={dokmaicoin}
-                    width={500}
-                    height={500}
-                    className=' w-6 h-6'
-                    alt='Dokmai Coin Icon'
-                  />
-                  <p className='text-2xl font-aktivGroteskBold'>
-                    {userInfo.balance}
-                  </p>
-                </div>
+      {validatingPersonalKey && <p>Validating Personal Key...</p>}
+      {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
+        <div className='bg-white/10 relative rounded-xl overflow-hidden group w-full md:min-w-96 md:w-fit'>
+          <div className='bg-gradient-to-tl from-white/5 to-dark-800 rounded-lg p-5 w-full'>
+            <div className='justify-end flex items-start'>
+              <div className='flex gap-2 items-center select-none'>
+                <Image
+                  src={dokmaicoin}
+                  width={500}
+                  height={500}
+                  className=' w-6 h-6'
+                  alt='Dokmai Coin Icon'
+                />
+                <p className='text-2xl font-aktivGroteskBold'>
+                  {userInfo.balance}
+                </p>
               </div>
-              <div className='flex flex-col items-start justify-center gap-2'>
-                <div className='flex gap-2 items-center'>
-                  <FaUserLock className='w-8 h-8 text-white p-2 bg-white/10 rounded-lg' />
-                  <p className='text-lg select-none'>{userInfo.secretKey}</p>
-                </div>
-                <div className='flex gap-2 items-center'>
-                  {accountBadge(userInfo.badge)}
-                </div>
-              </div>
-              <button
-                onClick={handleLogout}
-                className='mt-8 bg-white/10 hover:bg-red-500/40 text-white text-xs rounded px-2 py-1 font-aktivGroteskRegular'
-              >
-                Logout
-              </button>
-
-              <Image
-                src={dokmaithinoutlinelogo}
-                alt='Dokmai Store Logo'
-                width={150}
-                height={150}
-                className='absolute -bottom-5 -right-5 opacity-40 group-hover:opacity-100 select-none'
-              />
             </div>
+            <div className='flex flex-col items-start justify-center gap-2'>
+              <div className='flex gap-2 items-center'>
+                {accountBadge(userInfo.badge)}
+              </div>
+              <div className='flex gap-2 items-center'>
+                <FaUserLock className='w-8 h-8 text-white p-2 bg-white/10 rounded-lg' />
+                <p className='text-lg select-none'>{userInfo.personalKey}</p>
+              </div>
+              <Link
+                href='/deposit'
+                className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded-lg p-2 kontol'
+              >
+                <MdOutlineAccountBalanceWallet className='w-5 h-5 ' />
+                Deposit Dokmai Coin
+              </Link>
+            </div>
+            <button
+              onClick={handleLogout}
+              className='mt-8 bg-white/10 hover:bg-red-500/40 text-white text-xs rounded px-2 py-1 font-aktivGroteskRegular'
+            >
+              Logout
+            </button>
+            <Image
+              src={dokmaithinoutlinelogo}
+              alt='Dokmai Store Logo'
+              width={300}
+              height={300}
+              className='absolute -bottom-5 -right-5 opacity-10 group-hover:opacity-40 select-none duration-1000 '
+            />
           </div>
         </div>
       )}
@@ -181,15 +188,19 @@ export const ShowPremiumApps = () => {
       {fetchingData && <p>Loading premium apps data...</p>}
 
       {!checkingLocalStorage &&
-        !validatingSecretKey &&
+        !validatingPersonalKey &&
         !fetchingData &&
         premiumData.length > 0 && (
-          <div className='mt-24 w-full'>
+          <div className='mt-52 w-full'>
+            <h1 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
+              Your Ordered{" "}
+              <span className='text-dark-800 bg-primary p-1'>Premium Apps</span>
+            </h1>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
               {premiumData.map((item: any, index: any) => (
                 <div
                   key={index}
-                  className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/50'
+                  className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/20'
                 >
                   {Object.entries(item).map(([label, value], idx) => (
                     <>
@@ -224,7 +235,7 @@ export const ShowPremiumApps = () => {
                       <p className='font-aktivGroteskMedium text-white/60 text-xs '>
                         {getLabelDisplayName(String(label))}
                       </p>
-                      <p className='text-xl'>
+                      <p className='text-xl font-aktivGroteskBold select-all'>
                         {String(label) !== "accessType" &&
                         String(label) !== "appName"
                           ? String(value)
@@ -239,15 +250,15 @@ export const ShowPremiumApps = () => {
         )}
 
       {!checkingLocalStorage &&
-        !validatingSecretKey &&
+        !validatingPersonalKey &&
         !fetchingData &&
         error && <p className='text-red-500 mt-4'>{error}</p>}
 
       {!checkingLocalStorage &&
-        !validatingSecretKey &&
+        !validatingPersonalKey &&
         !fetchingData &&
         premiumData.length === 0 &&
-        !error && <p>No premium apps data found for this Secret Key.</p>}
+        !error && <p>No premium apps data found for this Personal Key.</p>}
     </div>
   )
 }
