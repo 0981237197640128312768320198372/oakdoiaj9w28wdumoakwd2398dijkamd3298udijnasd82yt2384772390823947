@@ -27,6 +27,10 @@ export const navButtons = [
     title: "Recommendations",
     url: "/movie-series-recommendations",
   },
+  {
+    title: "Dashboard",
+    url: "/your-premium-apps",
+  },
 ]
 export const footerButton = [
   {
@@ -330,164 +334,6 @@ export const Terms = [
     title: "7. ข้อมูลติดต่อ",
     description:
       "หากมีคำถามเกี่ยวกับข้อกำหนด ติดต่อเราที่ support@dokmaistore.com",
-  },
-]
-export const primeVideoPrice = [
-  {
-    type: "Sharing Access",
-    description: "",
-    plans: [
-      {
-        prices: [
-          { duration: "1 Day", price: 9 },
-          { duration: "7 Days", price: 19 },
-        ],
-      },
-      {
-        badge: (
-          <BadgePlan
-            text='VIP'
-            icon={<RiVipCrownLine className='text-goldVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "30 Days", price: 49 },
-          { duration: "60 Days", price: 79 },
-          { duration: "90 Days", price: 109 },
-        ],
-      },
-    ],
-  },
-  {
-    type: "Family Access",
-    description: "1 บัญชี (ได้ทั้ง 6 จอ)",
-    plans: [
-      {
-        badge: (
-          <BadgePlan
-            text='VIP'
-            icon={<RiVipCrownLine className='text-goldVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "7 Days", price: 59 },
-          { duration: "30 Days", price: 149 },
-        ],
-      },
-    ],
-  },
-]
-export const netflixPrice = [
-  {
-    type: "Sharing Access (No TV)",
-    description: "1 จอส่วนตัว ดูใน TV ไม่ได้",
-    plans: [
-      {
-        prices: [
-          { duration: "1 Day", price: 9 },
-          { duration: "3 Days", price: 15 },
-          { duration: "5 Days", price: 20 },
-          { duration: "7 Days", price: 29 },
-        ],
-      },
-      {
-        badge: (
-          <BadgePlan
-            text='VIP'
-            icon={<RiVipCrownLine className='text-goldVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "14 Days", price: 55 },
-          { duration: "30 Days", price: 99 },
-        ],
-      },
-      {
-        badge: (
-          <BadgePlan
-            text='VVIP'
-            icon={<IoDiamondOutline className='text-purpleVVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "60 Days", price: 189 },
-          { duration: "90 Days", price: 279 },
-          { duration: "1 Year", price: 999 },
-        ],
-      },
-    ],
-  },
-  {
-    type: "Sharing Access (With TV)",
-    description: "1 จอส่วนตัว ดูใน TV ได้",
-    plans: [
-      {
-        prices: [
-          { duration: "1 Day", price: 19 },
-          { duration: "3 Days", price: 29 },
-          { duration: "5 Days", price: 39 },
-          { duration: "7 Days", price: 49 },
-        ],
-      },
-      {
-        badge: (
-          <BadgePlan
-            text='VIP'
-            icon={<RiVipCrownLine className='text-goldVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "14 Days", price: 89 },
-          { duration: "30 Days", price: 149 },
-        ],
-      },
-      {
-        badge: (
-          <BadgePlan
-            text='VVIP'
-            icon={<IoDiamondOutline className='text-purpleVVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "60 Days", price: 279 },
-          { duration: "90 Days", price: 409 },
-          { duration: "1 Year", price: 1499 },
-        ],
-      },
-    ],
-  },
-  {
-    type: "Family Access",
-    description: "1 บัญชี (ได้ทั้ง 5 จอ) ดูได้ทุกอุปกรณ์",
-    plans: [
-      {
-        badge: (
-          <BadgePlan
-            text='VIP'
-            icon={<RiVipCrownLine className='text-goldVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "7 Days", price: 149 },
-          { duration: "30 Days", price: 599 },
-          { duration: "14 Days", price: 299 },
-          { duration: "30 Days", price: 459 },
-        ],
-      },
-      {
-        badge: (
-          <BadgePlan
-            text='VVIP'
-            icon={<IoDiamondOutline className='text-purpleVVIP' />}
-          />
-        ),
-        prices: [
-          { duration: "60 Days", price: 819 },
-          { duration: "90 Days", price: 1099 },
-          { duration: "1 Year", price: 4300 },
-        ],
-      },
-    ],
   },
 ]
 export const accountBadge = (badge: string) => {

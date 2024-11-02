@@ -17,10 +17,7 @@ const EmailList: React.FC<EmailListProps> = ({ emails }) => {
   if (emails.length === 0) {
     return (
       <div className='items-center justify-center w-full border-[1px] border-dark-500 h-full flex flex-col px-10 text-center'>
-        <span>
-          Email Tidak Ditemukan, Pastikan email yang kamu masukan benar, lalu
-          coba lagi.
-        </span>
+        <span>Email Not Found, Try again, or Contact Admin</span>
       </div>
     )
   }
