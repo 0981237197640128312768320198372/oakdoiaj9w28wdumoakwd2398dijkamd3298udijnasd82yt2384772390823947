@@ -50,7 +50,7 @@ const CartModal = ({
                 key={item.id}
                 className='flex justify-between items-center border-b border-dark-600 py-3 gap-5'
               >
-                <div className='w-full gap-3 flex'>
+                <div className='w-full gap-3 flex items-center'>
                   <div className='mr-3'>
                     {item.appName === "Netflix Premium" && (
                       <Image
@@ -78,7 +78,7 @@ const CartModal = ({
                     <p className='text-light-200 font-aktivGroteskBold mt-1'>
                       {item.type}
                     </p>
-                    <div className='flex gap-3'>
+                    <div className='flex gap-3 mt-1'>
                       <span className='px-2 py-1 text-sm bg-primary text-dark-800 font-aktivGroteskBold whitespace-nowrap'>
                         {item.duration}
                       </span>
