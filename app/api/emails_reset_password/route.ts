@@ -19,6 +19,8 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
       imap.openBox("INBOX", true, (err, box) => {
         if (err) return reject(err)
 
+        console.log(`Fetching emails for ${searchEmail}...`)
+
         const fetchRange = `${Math.max(box.messages.total - 149, 1)}:${
           box.messages.total
         }`
@@ -42,26 +44,10 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
               buffer += chunk.toString("utf8")
             })
 
-            const formatDatethailand = (dateString: string) => {
-              const date = new Date(dateString)
-              const options: Intl.DateTimeFormatOptions = {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              }
-              return new Intl.DateTimeFormat("th-TH", options).format(date)
-            }
-
             stream.once("end", async () => {
               const from = extractHeader(buffer, "From") || "Unknown"
               const to = extractHeader(buffer, "To") || "Unknown"
               const subject = extractHeader(buffer, "Subject") || "No Subject"
-              const rawDate = extractHeader(buffer, "Date") || "Unknown"
-
-              const formattedDate = formatDatethailand(rawDate)
 
               try {
                 const parsedEmail = await simpleParser(buffer)
@@ -69,28 +55,24 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
 
                 if (
                   (to.includes(searchEmail) || from.includes(searchEmail)) &&
-                  // htmlBody.includes("Complete your password reset request") ||
-                  // htmlBody.includes(
-                  //   "ทำการขอรีเซ็ตรหัสผ่านของคุณให้เสร็จสมบูรณ์"
-                  // ) ||
-                  (htmlBody.includes("รีเซ็ตรหัสผ่านของคุณ") ||
-                    htmlBody.includes("Reset your password"))
+                  (htmlBody.includes("Complete your password reset request") ||
+                    htmlBody.includes("Reset your password") ||
+                    htmlBody.includes(
+                      "ทำการขอรีเซ็ตรหัสผ่านของคุณให้เสร็จสมบูรณ์"
+                    ) ||
+                    htmlBody.includes("รีเซ็ตรหัสผ่านของคุณ"))
                 ) {
                   matchedEmails.push({
                     uid,
                     from,
                     to,
                     subject,
-                    date: formattedDate,
+                    date: parsedEmail.date || "Unknown",
                     body: htmlBody,
                   })
+                  console.log(`Matched email with UID: ${uid}`)
+                  console.log(`Subject: \n ${subject}`)
                 }
-                console.log(`Searching ${searchEmail}`)
-                console.log("")
-                console.log("")
-                console.log(`Fetched : ${subject}`)
-                console.log(`To : ${to}`)
-                console.log(`From : ${from}`)
               } catch (err) {
                 console.error(`Error parsing email with UID ${uid}:`, err)
               }
@@ -99,13 +81,22 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
         })
 
         f.once("end", () => {
+          console.log("Fetch operation complete.")
           imap.end()
-          resolve(matchedEmails) // Resolve with matched emails
+          resolve(matchedEmails)
         })
       })
     })
 
-    imap.once("error", (err) => reject(err))
+    imap.once("error", (err) => {
+      console.error("IMAP error:", err)
+      reject(err)
+    })
+
+    imap.once("end", () => {
+      console.log("IMAP connection ended.")
+    })
+
     imap.connect()
   })
 }
@@ -124,7 +115,8 @@ export async function GET(request: Request) {
   try {
     // Fetch emails with the search query
     const matchedEmails = await fetchLatestEmails(search || "")
-    return NextResponse.json(matchedEmails) // Return matched emails directly
+    console.log(`Returning ${matchedEmails.length} MATCHED EMAILS!.`)
+    return NextResponse.json(matchedEmails)
   } catch (error) {
     console.error("Error fetching emails:", error)
     return NextResponse.json(
