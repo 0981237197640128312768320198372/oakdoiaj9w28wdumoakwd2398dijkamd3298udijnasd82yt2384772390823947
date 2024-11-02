@@ -16,7 +16,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
     const imap = new Imap(imapConfig)
 
     imap.once("ready", () => {
-      imap.openBox("[Gmail]/All Mail", true, (err, box) => {
+      imap.openBox("INBOX", true, (err, box) => {
         if (err) return reject(err)
 
         console.log(`Fetching emails for ${searchEmail}...`)
@@ -116,6 +116,16 @@ export async function GET(request: Request) {
     // Fetch emails with the search query
     const matchedEmails = await fetchLatestEmails(search || "")
     console.log(`Returning ${matchedEmails.length} MATCHED EMAILS!.`)
+    const response = NextResponse.json(matchedEmails)
+
+    // Set headers to disable caching
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate"
+    )
+    response.headers.set("Pragma", "no-cache")
+    response.headers.set("Expires", "0")
+
     return NextResponse.json(matchedEmails)
   } catch (error) {
     console.error("Error fetching emails:", error)
