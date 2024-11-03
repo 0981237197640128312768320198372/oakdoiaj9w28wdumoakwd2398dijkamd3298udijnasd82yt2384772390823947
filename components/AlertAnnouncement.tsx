@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client"
 import React, { useState, useEffect, useRef } from "react"
 import { GrClose } from "react-icons/gr"
@@ -6,17 +7,10 @@ const AlertAnnouncement: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true)
   const announcementRef = useRef<HTMLDivElement>(null)
 
-  /**
-   * Handles closing the announcement.
-   */
   const handleClose = () => {
     setIsVisible(false)
   }
 
-  /**
-   * Listens for clicks outside the announcement to close it.
-   * @param event - The click event.
-   */
   const handleClickOutside = (event: MouseEvent) => {
     if (
       announcementRef.current &&
@@ -26,17 +20,14 @@ const AlertAnnouncement: React.FC = () => {
     }
   }
 
-  // Add event listener when the component mounts, remove it when the component unmounts.
   useEffect(() => {
     if (isVisible) {
-      // Add when the component is added to the DOM
       document.addEventListener("mousedown", handleClickOutside)
-      // Specify how to clean up after this effect:
       return () => {
         document.removeEventListener("mousedown", handleClickOutside)
       }
     }
-  }, [isVisible])
+  })
 
   if (!isVisible) return null // Early return if the announcement is not visible
 
