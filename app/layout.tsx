@@ -28,6 +28,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </head>
       <body className='font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/10 selection:text-primary'>
         <CartProvider>

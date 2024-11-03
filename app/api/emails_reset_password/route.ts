@@ -123,10 +123,7 @@ export async function GET(request: Request) {
 
   try {
     const matchedEmails = await fetchLatestEmails(search || "")
-    console.log(
-      `Returning ${matchedEmails.length} MATCHED EMAILS!`,
-      matchedEmails
-    ) // Log matched emails
+    console.log(`Returning ${matchedEmails.length} MATCHED EMAILS!`)
     const response = NextResponse.json(matchedEmails, { status: 200 })
     response.headers.set(
       "Cache-Control",
