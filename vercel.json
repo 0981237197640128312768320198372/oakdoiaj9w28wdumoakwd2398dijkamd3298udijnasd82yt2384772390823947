@@ -1,8 +1,0 @@
-{
-  "functions": {
-    "api/emails_reset_password": {
-      "maxDuration": 300,
-      "memory": 1024
-    }
-  }
-}
