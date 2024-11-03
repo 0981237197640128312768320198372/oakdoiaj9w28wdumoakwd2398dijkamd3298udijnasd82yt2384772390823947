@@ -1,13 +1,8 @@
 {
   "functions": {
     "api/emails_reset_password": {
-      "maxDuration": 300
-    },
-    "api/your_premium_apps_data": {
-      "maxDuration": 300
-    },
-    "api/get_info": {
-      "maxDuration": 300
+      "maxDuration": 300,
+      "memory": 1024
     }
   }
 }

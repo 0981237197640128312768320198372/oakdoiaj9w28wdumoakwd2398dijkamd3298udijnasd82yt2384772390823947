@@ -12,7 +12,6 @@ const imapConfig = {
   tls: true,
 }
 
-export const maxDuration = 300
 const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     const imap = new Imap(imapConfig)
