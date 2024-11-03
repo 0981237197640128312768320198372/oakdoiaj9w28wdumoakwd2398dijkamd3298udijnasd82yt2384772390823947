@@ -104,30 +104,31 @@ const extractHeader = (emailData: string, headerName: string) => {
   return match ? match[1].trim() : null
 }
 
-// API route handler
+// Final return in GET handler
 export async function GET(request: Request) {
   const { search } = Object.fromEntries(new URL(request.url).searchParams)
 
   try {
     const matchedEmails = await fetchLatestEmails(search || "")
-    console.log(`Returning ${matchedEmails.length} MATCHED EMAILS!`)
+    console.log(
+      `Returning ${matchedEmails.length} MATCHED EMAILS!`,
+      matchedEmails
+    ) // Log matched emails
 
-    const response = new NextResponse(JSON.stringify(matchedEmails), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
-      },
-    })
+    // Return response with headers set
+    const response = NextResponse.json(matchedEmails, { status: 200 })
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate"
+    )
+    response.headers.set("Pragma", "no-cache")
+    response.headers.set("Expires", "0")
 
     return response
   } catch (error) {
     console.error("Error fetching emails:", error)
-    return new NextResponse(
-      JSON.stringify({ error: "Failed to fetch emails" }),
+    return NextResponse.json(
+      { error: "Failed to fetch emails" },
       { status: 500 }
     )
   }

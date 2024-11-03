@@ -217,7 +217,7 @@ export const ShowPremiumApps = () => {
           >
             <input
               type='text'
-              placeholder='Enter your Personal Key'
+              placeholder='Enter your Personal Key (#ABCD1234)'
               className='border-[1px] border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
               value={inputPersonalKey}
               onChange={(e) => setInputPersonalKey(e.target.value)}
@@ -275,7 +275,7 @@ export const ShowPremiumApps = () => {
                 </div>
                 <Link
                   href='/deposit'
-                  className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded-lg p-2 kontol'
+                  className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded-lg p-2 z-30'
                 >
                   <MdOutlineAccountBalanceWallet className='w-5 h-5 ' />
                   Deposit Dokmai Coin
