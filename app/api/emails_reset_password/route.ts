@@ -31,6 +31,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
         })
 
         const matchedEmails: any[] = []
+        const emailParsingPromises: Promise<void>[] = [] // Array to hold parsing promises
 
         f.on("message", (msg) => {
           let buffer = ""
@@ -45,42 +46,53 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
               buffer += chunk.toString("utf8")
             })
 
-            stream.once("end", async () => {
-              const from = extractHeader(buffer, "From") || "Unknown"
-              const to = extractHeader(buffer, "To") || "Unknown"
-              const subject = extractHeader(buffer, "Subject") || "No Subject"
+            // Push a promise for each email parsing operation
+            const emailPromise = new Promise<void>((resolveParse) => {
+              stream.once("end", async () => {
+                const from = extractHeader(buffer, "From") || "Unknown"
+                const to = extractHeader(buffer, "To") || "Unknown"
+                const subject = extractHeader(buffer, "Subject") || "No Subject"
 
-              try {
-                const parsedEmail = await simpleParser(buffer)
-                const htmlBody = parsedEmail.html || parsedEmail.text || ""
+                try {
+                  const parsedEmail = await simpleParser(buffer)
+                  const htmlBody = parsedEmail.html || parsedEmail.text || ""
 
-                if (
-                  (to.includes(searchEmail) || from.includes(searchEmail)) &&
-                  (htmlBody.includes("Reset your password") ||
-                    htmlBody.includes("รีเซ็ตรหัสผ่านของคุณ"))
-                ) {
-                  matchedEmails.push({
-                    uid,
-                    from,
-                    to,
-                    subject,
-                    date: parsedEmail.date || "Unknown",
-                    body: htmlBody,
-                  })
-                  console.log(`Matched email with UID: ${uid}`)
-                  console.log(`Subject: \n ${subject}`)
+                  if (
+                    (to.includes(searchEmail) || from.includes(searchEmail)) &&
+                    (htmlBody.includes("Reset your password") ||
+                      htmlBody.includes("รีเซ็ตรหัสผ่านของคุณ"))
+                  ) {
+                    matchedEmails.push({
+                      uid,
+                      from,
+                      to,
+                      subject,
+                      date: parsedEmail.date || "Unknown",
+                      body: htmlBody,
+                    })
+                    console.log(`Matched email with UID: ${uid}`)
+                    console.log(`Subject: \n ${subject}`)
+                  }
+                } catch (err) {
+                  console.error(`Error parsing email with UID ${uid}:`, err)
+                } finally {
+                  resolveParse() // Resolve this email's parsing promise
                 }
-              } catch (err) {
-                console.error(`Error parsing email with UID ${uid}:`, err)
-              }
+              })
             })
+
+            emailParsingPromises.push(emailPromise) // Add each promise to the array
           })
         })
 
         f.once("end", () => {
           console.log("Fetch operation complete.")
-          imap.end()
-          resolve(matchedEmails)
+          Promise.all(emailParsingPromises) // Wait for all parsing promises to complete
+            .then(() => {
+              imap.end()
+              resolve(matchedEmails)
+            })
+            .catch(reject) // Reject the main promise if any parsing fails
         })
       })
     })
@@ -112,8 +124,8 @@ export async function GET(request: Request) {
   try {
     const matchedEmails = await fetchLatestEmails(search || "")
     console.log(
-      `Returning ${matchedEmails.length} MATCHED EMAILS!`
-      // matchedEmails
+      `Returning ${matchedEmails.length} MATCHED EMAILS!`,
+      matchedEmails
     ) // Log matched emails
     const response = NextResponse.json(matchedEmails, { status: 200 })
     response.headers.set(
@@ -122,7 +134,7 @@ export async function GET(request: Request) {
     )
     response.headers.set("Pragma", "no-cache")
     response.headers.set("Expires", "0")
-    return NextResponse.json(matchedEmails, { status: 200 })
+    return response
   } catch (error) {
     console.error("Error fetching emails:", error)
     return NextResponse.json(
