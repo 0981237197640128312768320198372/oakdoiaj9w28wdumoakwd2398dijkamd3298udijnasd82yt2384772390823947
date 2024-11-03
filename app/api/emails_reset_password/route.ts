@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { NextResponse } from "next/server"
 import Imap from "node-imap"
 import { simpleParser } from "mailparser"
@@ -11,6 +12,7 @@ const imapConfig = {
   tls: true,
 }
 
+export const maxDuration = 300
 const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     const imap = new Imap(imapConfig)
@@ -21,7 +23,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
 
         console.log(`Fetching emails for ${searchEmail}...`)
 
-        const fetchRange = `${Math.max(box.messages.total - 149, 1)}:${
+        const fetchRange = `${Math.max(box.messages.total - 49, 1)}:${
           box.messages.total
         }`
         const f = imap.seq.fetch(fetchRange, {
