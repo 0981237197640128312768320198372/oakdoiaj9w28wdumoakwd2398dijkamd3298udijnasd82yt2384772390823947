@@ -60,7 +60,11 @@ export const ShowPremiumApps = () => {
   }
 
   const emailAllowedReset = premiumData
-    .map((item: any) => item.email) // Extract each email
+    .filter(
+      (item: any) =>
+        item.accessType && item.accessType.includes("Family Access")
+    )
+    .map((item: any) => item.email)
     .filter((email: string | undefined) => email !== undefined) as string[]
 
   const handleSearch = () => {
@@ -194,7 +198,7 @@ export const ShowPremiumApps = () => {
       pin: "PIN",
     }[label] || null)
 
-  console.log(`Searching ${searchEmail}`)
+  // console.log(`Searching ${searchEmail}`)
 
   return (
     <div className='w-full'>
@@ -460,14 +464,20 @@ export const ShowPremiumApps = () => {
                       <option value='' disabled>
                         Select an email
                       </option>
-                      {premiumData.map((item: any, index: number) => {
-                        const email = item.email
-                        return email ? (
-                          <option key={index} value={email}>
-                            {email}
-                          </option>
-                        ) : null
-                      })}
+                      {premiumData
+                        .filter(
+                          (item: any) =>
+                            item.accessType &&
+                            item.accessType.includes("Family Access")
+                        )
+                        .map((item: any, index: number) => {
+                          const email = item.email
+                          return email ? (
+                            <option key={index} value={email}>
+                              {email}
+                            </option>
+                          ) : null
+                        })}
                     </select>
                     <button
                       type='submit'
