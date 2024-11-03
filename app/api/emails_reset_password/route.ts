@@ -17,7 +17,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
     const imap = new Imap(imapConfig)
 
     imap.once("ready", () => {
-      imap.openBox("INBOX", true, (err, box) => {
+      imap.openBox("[Gmail]/All Mail", true, (err, box) => {
         if (err) return reject(err)
 
         console.log(`Fetching emails for ${searchEmail}...`)
