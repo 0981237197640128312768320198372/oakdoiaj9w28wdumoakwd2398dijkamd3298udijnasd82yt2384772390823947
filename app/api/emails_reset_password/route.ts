@@ -55,11 +55,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
 
                 if (
                   (to.includes(searchEmail) || from.includes(searchEmail)) &&
-                  (htmlBody.includes("Complete your password reset request") ||
-                    htmlBody.includes("Reset your password") ||
-                    htmlBody.includes(
-                      "ทำการขอรีเซ็ตรหัสผ่านของคุณให้เสร็จสมบูรณ์"
-                    ) ||
+                  (htmlBody.includes("Reset your password") ||
                     htmlBody.includes("รีเซ็ตรหัสผ่านของคุณ"))
                 ) {
                   matchedEmails.push({
@@ -113,24 +109,25 @@ export async function GET(request: Request) {
   const { search } = Object.fromEntries(new URL(request.url).searchParams)
 
   try {
-    // Fetch emails with the search query
     const matchedEmails = await fetchLatestEmails(search || "")
-    console.log(`Returning ${matchedEmails.length} MATCHED EMAILS!.`)
-    const response = NextResponse.json(matchedEmails)
+    console.log(`Returning ${matchedEmails.length} MATCHED EMAILS!`)
 
-    // Set headers to disable caching
-    response.headers.set(
-      "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate"
-    )
-    response.headers.set("Pragma", "no-cache")
-    response.headers.set("Expires", "0")
+    const response = new NextResponse(JSON.stringify(matchedEmails), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    })
 
-    return NextResponse.json(matchedEmails)
+    return response
   } catch (error) {
     console.error("Error fetching emails:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch emails" },
+    return new NextResponse(
+      JSON.stringify({ error: "Failed to fetch emails" }),
       { status: 500 }
     )
   }
