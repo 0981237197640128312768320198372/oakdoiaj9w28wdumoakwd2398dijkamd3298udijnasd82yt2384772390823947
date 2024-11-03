@@ -116,16 +116,7 @@ export async function GET(request: Request) {
       matchedEmails
     ) // Log matched emails
 
-    // Return response with headers set
-    const response = NextResponse.json(matchedEmails, { status: 200 })
-    response.headers.set(
-      "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate"
-    )
-    response.headers.set("Pragma", "no-cache")
-    response.headers.set("Expires", "0")
-
-    return response
+    return NextResponse.json(matchedEmails, { status: 200 })
   } catch (error) {
     console.error("Error fetching emails:", error)
     return NextResponse.json(
