@@ -41,7 +41,9 @@ export const ShowPremiumApps = () => {
     setIsRefreshing(true)
     try {
       const response = await fetch(
-        `/api/emails_reset_password?search=${encodeURIComponent(email)}`
+        `/api/emails_reset_password?search=${encodeURIComponent(
+          email
+        )}&t=${Date.now()}`
       )
       if (!response.ok) {
         throw new Error("Failed to fetch emails")
