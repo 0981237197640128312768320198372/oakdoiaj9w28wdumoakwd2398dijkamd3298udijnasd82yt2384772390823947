@@ -25,7 +25,7 @@ const contact = [
   },
   {
     icon: <FaFacebook />,
-    url: "https://facebook.com/watchseriesnow01",
+    url: "https://www.facebook.com/dokmaistore01",
   },
   {
     icon: <FaLine />,
