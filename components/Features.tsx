@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react"
 export const Features = ({
   text,
   direction = "left",
-  speed = "fast",
+  speed = "slow",
   pauseOnHover = true,
   className,
 }: {
@@ -17,7 +17,7 @@ export const Features = ({
     text: string
   }[]
   direction?: "left" | "right"
-  speed?: "fast"
+  speed?: "slow"
   pauseOnHover?: boolean
   className?: string
 }) => {
@@ -61,8 +61,8 @@ export const Features = ({
   }
   const getSpeed = () => {
     if (containerRef.current) {
-      if (speed === "fast") {
-        containerRef.current.style.setProperty("--animation-duration", "30s")
+      if (speed === "slow") {
+        containerRef.current.style.setProperty("--animation-duration", "75s")
       }
     }
   }

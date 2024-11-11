@@ -12,6 +12,16 @@ const nextConfig = {
         hostname: "drive.usercontent.google.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "dnm.nflximg.net",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.netflix.com",
+        pathname: "**",
+      },
     ],
   },
   reactStrictMode: true,

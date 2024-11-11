@@ -7,6 +7,7 @@ import CreditsSection from "@/components/Sections/CreditsSection"
 // import AlertAnnouncement from "@/components/AlertAnnouncement"
 import { generateMetadata } from "@/lib/utils"
 import RecomendationsSection from "@/components/Sections/RecomendationsSection"
+import WeeklyTop10Section from "@/components/Sections/WeeklyTop10Section"
 
 export const metadata = generateMetadata({
   title: "แอพพรีเมียมคุณภาพสูง",
@@ -20,6 +21,7 @@ export default function Home() {
       {/* <AlertAnnouncement /> */}
       <HeroSection />
       <RecomendationsSection />
+      <WeeklyTop10Section />
       <FAQSection />
       <CreditsSection />
       <ReviewSection />

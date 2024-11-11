@@ -77,7 +77,7 @@ const HeroSection = () => {
           </Link>
         </div>
       </div>
-      <div className='pt-24 overflow-hidden relative w-full -rotate-3'>
+      <div className='pt-24 overflow-hidden relative w-full'>
         <Features text={features} />
       </div>
     </section>
