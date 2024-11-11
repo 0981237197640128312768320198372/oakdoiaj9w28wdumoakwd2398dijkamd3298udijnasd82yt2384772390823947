@@ -66,7 +66,6 @@ export async function GET() {
       vertical: boxartMap[item.id]?.vertical,
     }))
 
-    console.log(mergedData)
     // Return the merged data as a JSON response
     return NextResponse.json(mergedData)
   } catch (error) {

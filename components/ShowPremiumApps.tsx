@@ -35,6 +35,7 @@ export const ShowPremiumApps = () => {
   const [loadingEmail, setLoadingEmail] = useState(false)
   const [refreshCountdown, setRefreshCountdown] = useState(120)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   const fetchEmails = async (email: string) => {
     setLoadingEmail(true)
@@ -78,7 +79,6 @@ export const ShowPremiumApps = () => {
     }
   }
 
-  // Update onSubmitForm to prevent form submission default behavior
   const onSubmitForm = (e: React.FormEvent) => {
     e.preventDefault() // Prevents the page refresh
     handleSearch()
@@ -198,8 +198,14 @@ export const ShowPremiumApps = () => {
       pin: "PIN",
     }[label] || null)
 
-  // console.log(`Searching ${searchEmail}`)
-
+  const filteredPremiumData = premiumData.filter((item: any) => {
+    const searchQuery = searchTerm.toLowerCase()
+    return (
+      item.email?.toLowerCase().includes(searchQuery) ||
+      item.appName?.toLowerCase().includes(searchQuery) ||
+      item.accessType?.toLowerCase().includes(searchQuery)
+    )
+  })
   return (
     <div className='w-full'>
       {checkingLocalStorage && <Loading />}
@@ -372,62 +378,72 @@ export const ShowPremiumApps = () => {
               Your Ordered{" "}
               <span className='text-dark-800 bg-primary p-1'>Premium Apps</span>
             </h2>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 w-fit lg:w-full'>
-              {premiumData.map((item: any, index: any) => (
-                <div
-                  key={index}
-                  className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5'
-                >
-                  {Object.entries(item).map(([label, value], idx) => (
-                    <>
-                      {String(value) === "Netflix Premium" ? (
-                        <Image
-                          src={netflixpremiumlogo}
-                          alt='Netflix Premium Ultra HD Icon'
-                          width={50}
-                          height={50}
-                        />
-                      ) : null}
-                      {String(value) === "Prime Video" ? (
-                        <Image
-                          src={primevideo}
-                          alt='Netflix Premium Ultra HD Icon'
-                          width={75}
-                          height={75}
-                        />
-                      ) : null}
-                      {String(label) === "accessType" ? (
-                        <span
-                          className='text-xs font-aktivGroteskThin text-white/70'
-                          key={idx}
-                        >
-                          {String(value)}
-                        </span>
-                      ) : null}
-                    </>
-                  ))}
-                  {Object.entries(item).map(([label, value], idx) => (
-                    <div className='flex flex-col ml-7' key={idx}>
-                      <p className='font-aktivGroteskMedium text-white/60 text-xs '>
-                        {getLabelDisplayName(String(label))}
-                      </p>
-                      <p className='font-aktivGroteskBold flex gap-2 items-center'>
-                        {String(label) !== "accessType" &&
-                        String(label) !== "appName" ? (
-                          <>
-                            {String(value)}{" "}
-                            {String(label) !== "accessType" &&
-                            String(label) !== "orderDate" &&
-                            String(label) !== "appName" ? (
-                              <CopyToClipboard textToCopy={String(value)} />
-                            ) : null}
-                          </>
+
+            <input
+              type='text'
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder='Search your premium apps...'
+              className='mb-5  border-[1px] border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+            />
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 w-fit lg:w-full max-h-[650px] overflow-y-scroll px-5 border-x-[1px] border-dark-500'>
+              {(searchTerm ? filteredPremiumData : premiumData).map(
+                (item: any, index: any) => (
+                  <div
+                    key={index}
+                    className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5'
+                  >
+                    {Object.entries(item).map(([label, value], idx) => (
+                      <>
+                        {String(value) === "Netflix Premium" ? (
+                          <Image
+                            src={netflixpremiumlogo}
+                            alt='Netflix Premium Ultra HD Icon'
+                            width={50}
+                            height={50}
+                          />
                         ) : null}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                        {String(value) === "Prime Video" ? (
+                          <Image
+                            src={primevideo}
+                            alt='Prime Video Icon'
+                            width={75}
+                            height={75}
+                          />
+                        ) : null}
+                        {String(label) === "accessType" ? (
+                          <span
+                            className='text-xs font-aktivGroteskThin text-white/70'
+                            key={idx}
+                          >
+                            {String(value)}
+                          </span>
+                        ) : null}
+                      </>
+                    ))}
+                    {Object.entries(item).map(([label, value], idx) => (
+                      <div className='flex flex-col ml-7' key={idx}>
+                        <p className='font-aktivGroteskMedium text-white/60 text-xs '>
+                          {getLabelDisplayName(String(label))}
+                        </p>
+                        <p className='font-aktivGroteskBold flex gap-2 items-center'>
+                          {String(label) !== "accessType" &&
+                          String(label) !== "appName" ? (
+                            <>
+                              {String(value)}{" "}
+                              {String(label) !== "accessType" &&
+                              String(label) !== "orderDate" &&
+                              String(label) !== "appName" ? (
+                                <CopyToClipboard textToCopy={String(value)} />
+                              ) : null}
+                            </>
+                          ) : null}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )
+              )}
             </div>
             <div className='w-full flex flex-col justify-center items-center pt-48 pb-40'>
               <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
@@ -447,14 +463,6 @@ export const ShowPremiumApps = () => {
                     onSubmit={onSubmitForm}
                     className='w-full flex border-[1px] border-primary/40 rounded-sm'
                   >
-                    {/* <input
-                      type='email'
-                      placeholder='email@dokmaistore.com'
-                      required
-                      value={searchEmail}
-                      onChange={(e) => setSearchEmail(e.target.value)}
-                      className='px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
-                    /> */}
                     <select
                       required
                       value={searchEmail}
