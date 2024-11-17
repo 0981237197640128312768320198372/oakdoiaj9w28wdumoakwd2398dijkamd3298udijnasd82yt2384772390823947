@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, ReactNode } from "react"
 type CartItem = {
   id: string
   appName: string
-  type: string
   duration: string
   price: number
   quantity: number
@@ -15,6 +14,7 @@ type CartContextType = {
   addToCart: (item: CartItem) => void
   updateQuantity: (id: string, quantity: number) => void
   removeFromCart: (id: string) => void
+  clearCart: () => void
   total: number
   getCartItemQuantity: (id: string) => number
 }
@@ -29,10 +29,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const existingItem = prevCart.find((i) => i.id === item.id)
       if (existingItem) {
         return prevCart.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          i.id === item.id ? { ...i, quantity: i.quantity + item.quantity } : i
         )
       }
-      return [...prevCart, { ...item, quantity: 1 }]
+      return [...prevCart, item]
     })
   }
 
@@ -46,6 +46,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const removeFromCart = (id: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id))
+  }
+
+  const clearCart = () => {
+    setCart([]) // Clear all items from the cart
   }
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
@@ -62,6 +66,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         addToCart,
         updateQuantity,
         removeFromCart,
+        clearCart,
         total,
         getCartItemQuantity,
       }}

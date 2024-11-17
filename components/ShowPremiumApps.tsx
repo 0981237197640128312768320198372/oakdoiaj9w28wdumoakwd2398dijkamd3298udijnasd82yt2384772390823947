@@ -203,6 +203,9 @@ export const ShowPremiumApps = () => {
     return (
       item.email?.toLowerCase().includes(searchQuery) ||
       item.appName?.toLowerCase().includes(searchQuery) ||
+      item.orderDate?.toLowerCase().includes(searchQuery) ||
+      item.expireDate?.toLowerCase().includes(searchQuery) ||
+      item.password?.toLowerCase().includes(searchQuery) ||
       item.accessType?.toLowerCase().includes(searchQuery)
     )
   })
@@ -384,9 +387,9 @@ export const ShowPremiumApps = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder='Search your premium apps...'
-              className='mb-5  border-[1px] border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+              className='mb-5  border-[1px] border-primary/40 p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
             />
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-5 w-fit lg:w-full max-h-[650px] overflow-y-scroll px-5 border-x-[1px] border-dark-500'>
+            <div className='grid flex-col-reverse grid-cols-1 lg:grid-cols-2 gap-5 w-fit lg:w-full max-h-[650px] overflow-y-scroll px-5 border-x-[1px] border-dark-500'>
               {(searchTerm ? filteredPremiumData : premiumData).map(
                 (item: any, index: any) => (
                   <div
