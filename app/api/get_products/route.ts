@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
 import { getGoogleSheetsData } from "@/app/api/CRUD"
 import process from "process"

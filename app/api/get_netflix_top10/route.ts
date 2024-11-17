@@ -18,13 +18,13 @@ export async function GET() {
     // Fetch data from all URLs
     const [dataRes, namesRes, boxartRes] = await Promise.all([
       fetch(
-        "https://www.netflix.com/tudum/top10/data/weeks/20241027-data.json"
+        "https://www.netflix.com/tudum/top10/data/weeks/20241103-data.json"
       ),
       fetch(
-        "https://www.netflix.com/tudum/top10/data/weeks/20241027-en-names.json"
+        "https://www.netflix.com/tudum/top10/data/weeks/20241103-en-names.json"
       ),
       fetch(
-        "https://www.netflix.com/tudum/top10/data/weeks/20241027-th-boxart.json"
+        "https://www.netflix.com/tudum/top10/data/weeks/20241103-th-boxart.json"
       ),
     ])
 

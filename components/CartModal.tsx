@@ -131,7 +131,7 @@ const CartModal = ({
           {error && <p className='text-red-500'>{error}</p>}
         </form>
         <a href='/register' className='text-primary'>
-          Don't Have a Personal Key? Register Here
+          Don&apos;t Have a Personal Key? Register Here
         </a>
       </div>
     </div>
