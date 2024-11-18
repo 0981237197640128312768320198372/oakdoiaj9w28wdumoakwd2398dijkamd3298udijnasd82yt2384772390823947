@@ -5,9 +5,9 @@ import { useCart } from "@/context/CartContext"
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import { PiShoppingCartLight, PiTrashLight } from "react-icons/pi"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
+import Link from "next/link"
 
 const CartModal = ({
   isOpen,
@@ -16,9 +16,7 @@ const CartModal = ({
   isOpen: boolean
   onClose: () => void
 }) => {
-  const router = useRouter()
   const { cart, updateQuantity, removeFromCart, total, clearCart } = useCart()
-  console.log(cart)
   const [showPersonalKeyModal, setShowPersonalKeyModal] = useState(false)
   const [inputPersonalKey, setInputPersonalKey] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -40,7 +38,6 @@ const CartModal = ({
     setLoading(true)
 
     try {
-      // Verify checkout
       const verifyResponse = await fetch("/api/verify_checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,7 +55,6 @@ const CartModal = ({
       if (!verifyResponse.ok)
         throw new Error(verifyData.error || "Checkout failed")
 
-      // Update balance after successful verification
       const balanceResponse = await fetch("/api/update_balance", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -106,61 +102,100 @@ const CartModal = ({
 
   const PersonalKeyModal = () => (
     <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-      <div className='w-11/12 md:w-1/2 bg-dark-500 p-5 rounded flex flex-col gap-5'>
-        <h2 className='text-2xl font-bold text-light-300'>
-          Enter Your Personal Key
-        </h2>
-        <p className='text-light-300'>
-          A unique <strong>Personal Key</strong> allows you to manage your
-          account and access premium services securely.
-        </p>
-        <form
-          onSubmit={handleSubmitPersonalKey}
-          className='flex flex-col gap-4'
-        >
-          <input
-            type='text'
-            placeholder='Enter your Personal Key (#ABCD1234)'
-            value={inputPersonalKey}
-            onChange={(e) => setInputPersonalKey(e.target.value)}
-            className='border-primary border px-3 py-2 bg-transparent text-sm'
-          />
-          <button type='submit' className='bg-primary text-dark-800 px-4 py-2'>
-            Submit
-          </button>
+      <div className='w-11/12 md:w-1/2 bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col gap-5'>
+        <div className='text-light-300'>
+          <h2 className='text-2xl font-bold mb-3'>ป้อน Personal Key ของคุณ</h2>
+          <h3 className='text-sm font-bold'>ทำความรู้จักกับ Personal Key</h3>
+          <p className='text-light-700 text-xs'>
+            <strong>Personal Key</strong>{" "}
+            คือรหัสเฉพาะที่ไม่ซ้ำกันและเป็นของคุณคนเดียว!
+            คุณจะได้รับรหัสนี้เพียงหนึ่งชุดเท่านั้น
+            ซึ่งช่วยให้คุณจัดการข้อมูลและการเข้าถึงบัญชีของคุณอย่างปลอดภัย
+            รวมถึงการซื้อแอปพรีเมียมเพิ่มเติมได้สะดวกยิ่งขึ้น
+          </p>
+        </div>
+        <div className='w-full flex flex-col justify-center items-start h-full gap-10'>
+          <form
+            onSubmit={handleSubmitPersonalKey}
+            className='mb-4 w-full flex flex-col md:flex-row'
+          >
+            <input
+              type='text'
+              placeholder='Enter your Personal Key (#ABCD1234)'
+              className='border-[1px] border-primary/70 focus:border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+              value={inputPersonalKey}
+              onChange={(e) => setInputPersonalKey(e.target.value)}
+            />
+            <button
+              type='submit'
+              className='bg-primary text-dark-800 px-4 py-2 w-full md:w-fit font-aktivGroteskBold'
+            >
+              Continue
+            </button>
+          </form>
           {error && <p className='text-red-500'>{error}</p>}
-        </form>
-        <a href='/register' className='text-primary'>
-          Don&apos;t Have a Personal Key? Register Here
-        </a>
+        </div>
+        <Link href='/register' className='text-primary text-xs font-mono'>
+          New? Register here.
+        </Link>
       </div>
     </div>
   )
 
   const SuccessModal = () => (
     <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-      <div className='bg-gray-800 p-5 rounded-lg flex flex-col items-center'>
-        <h2 className='text-light-300 text-center mb-4'>
-          Checkout Successful! Balance Updated.
+      <div className='bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col items-center w-fit'>
+        <h2 className='text-primary px-3 py-1 text-2xl text-center mb-4 '>
+          คำสั่งซื้อสำเร็จแล้ว √
         </h2>
-        <div className='w-full mb-4'>
-          {orderedItems.map((item) => (
+        <div className='w-full mb-4 gap-5'>
+          {orderedItems.map((item, i) => (
             <div
-              key={item.id}
-              className='flex justify-between w-full text-light-300 py-2'
+              key={i}
+              className='flex justify-between items-center border-b border-dark-600 py-3 gap-5'
             >
-              <span>
-                {formatProductName(item.appName)} <br /> ({item.duration})
-              </span>
-              <span>Qty: {item.quantity}</span>
+              <div className='w-full flex gap-3 items-center'>
+                <Image
+                  src={
+                    item.appName.includes("Netflix")
+                      ? netflixpremium
+                      : primevideo
+                  }
+                  alt={`${item.appName} image`}
+                  width={60}
+                  height={60}
+                  className='select-none'
+                  loading='lazy'
+                />
+                <div className='flex flex-col'>
+                  <p className='text-xs font-thin'>
+                    {formatProductName(item.appName)}
+                  </p>
+                  <div className='flex gap-3 items-center'>
+                    <span className='px-2 py-1 text-sm bg-primary text-dark-800 font-bold'>
+                      {item.duration}
+                    </span>
+                    <p className='text-light-100 font-medium'>฿ {item.price}</p>
+                  </div>
+                </div>
+              </div>
+              <div className='flex items-center gap-3 p-2 rounded bg-dark-700 border-[1px] border-dark-500'>
+                x{item.quantity}
+              </div>
             </div>
           ))}
         </div>
-        <button
-          onClick={() => router.push("/your-premium-apps")}
-          className='bg-primary text-dark-800 px-4 py-2 rounded'
+        <Link
+          href='/your-premium-apps'
+          className='bg-primary text-dark-800 px-4 py-2 rounded font-bold'
         >
           Go to Dashboard
+        </Link>
+        <button
+          className='text-primary text-xs font-mono'
+          onClick={() => setStatus(null)}
+        >
+          Continue Shopping
         </button>
       </div>
     </div>

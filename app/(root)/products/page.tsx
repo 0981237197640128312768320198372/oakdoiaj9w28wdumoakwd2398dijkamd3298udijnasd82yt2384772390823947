@@ -1,4 +1,3 @@
-import PageHeadline from "@/components/PageHeadline"
 import ShowProducts from "@/components/ShowProducts"
 import { generateMetadata } from "@/lib/utils"
 
@@ -14,10 +13,6 @@ export const metadata = generateMetadata({
 const Page = () => {
   return (
     <main className='flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-20 xl:pt-40 __container'>
-      <PageHeadline
-        headline='สินค้า'
-        description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'
-      />
       <ShowProducts />
     </main>
   )

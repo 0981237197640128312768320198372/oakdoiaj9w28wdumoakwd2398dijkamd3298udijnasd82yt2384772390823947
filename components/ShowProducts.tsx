@@ -3,20 +3,25 @@
 import React, { useState, useEffect } from "react"
 import { ProductsList } from "@/components/ProductsList"
 import CartModal from "@/components/CartModal"
+import PageHeadline from "./PageHeadline"
+import Loading from "@/components/Loading"
+import { useCart } from "@/context/CartContext"
 
 const ShowProducts = () => {
   const [isCartOpen, setCartOpen] = useState(false)
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const { cart } = useCart()
+  console.log("FROM SHOW PRODUCTS COMPONENT\n\n\n", cart)
+  console.log("FROM SHOW PRODUCTS COMPONENT\n\n\n", cart.length)
+  console.log()
 
   useEffect(() => {
-    // Fetch product data from the API when component mounts
     const fetchProducts = async () => {
       try {
         const response = await fetch("/api/get_products")
         const data = await response.json()
 
-        // Add unique ID for each product's duration option
         const productsWithIds = data.map((product: any) => ({
           ...product,
           name: product.name,
@@ -42,17 +47,23 @@ const ShowProducts = () => {
   return (
     <>
       {loading ? (
-        <p>Loading products...</p>
+        <Loading />
       ) : (
         <>
-          <div className='fixed bottom-0 px-10 pt-10 pb-5 w-full bg-dark-700/40 backdrop-blur h-fit flex justify-center items-center border-t-[1px] border-dark-500'>
-            <button
-              onClick={() => setCartOpen(true)}
-              className='bg-primary text-dark-800 py-2 rounded font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
-            >
-              View Cart
-            </button>
-          </div>
+          <PageHeadline
+            headline='สินค้า'
+            description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'
+          />{" "}
+          {cart.length > 0 && (
+            <div className='fixed bottom-0 px-10 pt-10 pb-5 w-full bg-dark-700/40 backdrop-blur h-fit flex justify-center items-center border-t-[1px] border-dark-500'>
+              <button
+                onClick={() => setCartOpen(true)}
+                className='bg-primary text-dark-800 py-2 rounded font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
+              >
+                View Cart
+              </button>
+            </div>
+          )}
           <ProductsList priceData={products} />
         </>
       )}
