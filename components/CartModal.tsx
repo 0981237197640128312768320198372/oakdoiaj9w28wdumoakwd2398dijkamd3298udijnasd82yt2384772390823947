@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import React, { useState } from "react"
@@ -8,6 +9,7 @@ import Image from "next/image"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
 import Link from "next/link"
+import PersonalKeyModal from "@/components/PersonalKeyModal"
 
 const CartModal = ({
   isOpen,
@@ -18,12 +20,10 @@ const CartModal = ({
 }) => {
   const { cart, updateQuantity, removeFromCart, total, clearCart } = useCart()
   const [showPersonalKeyModal, setShowPersonalKeyModal] = useState(false)
-  const [inputPersonalKey, setInputPersonalKey] = useState("")
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<
     "success" | "insufficient" | "error" | null
-  >(null)
+  >("insufficient")
   const [orderedItems, setOrderedItems] = useState<any[]>([])
 
   if (!isOpen) return null
@@ -79,80 +79,17 @@ const CartModal = ({
     }
   }
 
-  const handleSubmitPersonalKey = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!inputPersonalKey) return
-
-    try {
-      const userInfoRes = await fetch("/api/get_info", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personalKey: inputPersonalKey }),
-      })
-
-      if (!userInfoRes.ok) throw new Error("Invalid Personal Key")
-
-      localStorage.setItem("personalKey", inputPersonalKey)
-      setShowPersonalKeyModal(false)
-      handleCheckout()
-    } catch (error) {
-      setError("An error occurred. Please try again.")
-    }
-  }
-
-  const PersonalKeyModal = () => (
-    <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-      <div className='w-11/12 md:w-1/2 bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col gap-5'>
-        <div className='text-light-300'>
-          <h2 className='text-2xl font-bold mb-3'>ป้อน Personal Key ของคุณ</h2>
-          <h3 className='text-sm font-bold'>ทำความรู้จักกับ Personal Key</h3>
-          <p className='text-light-700 text-xs'>
-            <strong>Personal Key</strong>{" "}
-            คือรหัสเฉพาะที่ไม่ซ้ำกันและเป็นของคุณคนเดียว!
-            คุณจะได้รับรหัสนี้เพียงหนึ่งชุดเท่านั้น
-            ซึ่งช่วยให้คุณจัดการข้อมูลและการเข้าถึงบัญชีของคุณอย่างปลอดภัย
-            รวมถึงการซื้อแอปพรีเมียมเพิ่มเติมได้สะดวกยิ่งขึ้น
-          </p>
-        </div>
-        <div className='w-full flex flex-col justify-center items-start h-full gap-10'>
-          <form
-            onSubmit={handleSubmitPersonalKey}
-            className='mb-4 w-full flex flex-col md:flex-row'
-          >
-            <input
-              type='text'
-              placeholder='Enter your Personal Key (#ABCD1234)'
-              className='border-[1px] border-primary/70 focus:border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
-              value={inputPersonalKey}
-              onChange={(e) => setInputPersonalKey(e.target.value)}
-            />
-            <button
-              type='submit'
-              className='bg-primary text-dark-800 px-4 py-2 w-full md:w-fit font-aktivGroteskBold'
-            >
-              Continue
-            </button>
-          </form>
-          {error && <p className='text-red-500'>{error}</p>}
-        </div>
-        <Link href='/register' className='text-primary text-xs font-mono'>
-          New? Register here.
-        </Link>
-      </div>
-    </div>
-  )
-
   const SuccessModal = () => (
     <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-      <div className='bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col items-center w-fit'>
-        <h2 className='text-primary px-3 py-1 text-2xl text-center mb-4 '>
+      <div className='bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col items-start w-fit shadow-black shadow-2xl'>
+        <h2 className='text-primary mt-1 text-2xl text-start pb-5 border-b-[1px] border-dark-600 w-full'>
           คำสั่งซื้อสำเร็จแล้ว √
         </h2>
-        <div className='w-full mb-4 gap-5'>
+        <div className='w-full mb-10 gap-5'>
           {orderedItems.map((item, i) => (
             <div
               key={i}
-              className='flex justify-between items-center border-b border-dark-600 py-3 gap-5'
+              className='flex justify-between items-center border-b border-dark-600 py-3 gap-14'
             >
               <div className='w-full flex gap-3 items-center'>
                 <Image
@@ -172,44 +109,46 @@ const CartModal = ({
                     {formatProductName(item.appName)}
                   </p>
                   <div className='flex gap-3 items-center'>
-                    <span className='px-2 py-1 text-sm bg-primary text-dark-800 font-bold'>
+                    <span className='px-1 text-sm font-aktivGroteskBold bg-primary text-dark-800 font-bold'>
                       {item.duration}
                     </span>
                     <p className='text-light-100 font-medium'>฿ {item.price}</p>
                   </div>
                 </div>
               </div>
-              <div className='flex items-center gap-3 p-2 rounded bg-dark-700 border-[1px] border-dark-500'>
+              <div className='flex items-center gap-3 text-xs px-2 py-1 rounded bg-dark-700 border-[1px] border-dark-500'>
                 x{item.quantity}
               </div>
             </div>
           ))}
         </div>
-        <Link
-          href='/your-premium-apps'
-          className='bg-primary text-dark-800 px-4 py-2 rounded font-bold'
-        >
-          Go to Dashboard
-        </Link>
-        <button
-          className='text-primary text-xs font-mono'
-          onClick={() => setStatus(null)}
-        >
-          Continue Shopping
-        </button>
+        <div className='w-full flex justify-between items-end text-xs'>
+          <Link
+            href='/your-premium-apps'
+            className='text-primary px-2 py-1 font-aktivGroteskRegular rounded border-[0.7px] border-primary'
+          >
+            Go to Dashboard
+          </Link>
+          <button
+            className='bg-primary text-dark-800 active:bg-primary/80 px-2 py-1 font-aktivGroteskBold rounded'
+            onClick={() => setStatus(null)}
+          >
+            Continue Shopping
+          </button>
+        </div>
       </div>
     </div>
   )
 
   const InsufficientBalanceModal = () => (
     <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-      <div className='bg-gray-800 p-5 rounded-lg flex flex-col items-center'>
+      <div className='bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col items-end w-fit shadow-black shadow-2xl'>
         <p className='text-light-300 text-center mb-4'>
-          Insufficient balance to complete checkout.
+          คุณมี Dokmai Coin ไม่เพียงพอในการชำระเงิน.
         </p>
         <button
           onClick={() => setStatus(null)}
-          className='bg-primary text-dark-800 px-4 py-2 rounded'
+          className='text-red-600 bg-red-600/20 active:bg-red-600/10 rounded px-2 py-1'
         >
           Close
         </button>
@@ -246,7 +185,7 @@ const CartModal = ({
           </h2>
           <button
             onClick={onClose}
-            className='text-red-600 bg-red-600/20 rounded px-2 py-1'
+            className='text-red-600 bg-red-600/20 active:bg-red-600/10 rounded px-2 py-1'
           >
             Close
           </button>
@@ -306,7 +245,7 @@ const CartModal = ({
                   </div>
                   <button
                     onClick={() => removeFromCart(item.id)}
-                    className='text-red-500 bg-red-600/20 rounded p-2'
+                    className='text-red-500 bg-red-600/20 active:bg-red-600/10 rounded p-2'
                   >
                     <PiTrashLight className='text-lg' />
                   </button>
@@ -320,8 +259,8 @@ const CartModal = ({
             <button
               onClick={handleCheckout}
               disabled={loading}
-              className={`w-full mt-4 bg-primary text-dark-800 py-2 rounded font-bold text-xl ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
+              className={`w-full mt-4 bg-primary active:bg-primary/80 text-dark-800 py-2 rounded font-bold text-xl ${
+                loading ? "opacity-80 cursor-not-allowed" : ""
               }`}
             >
               {loading ? "Processing..." : "Checkout"}
@@ -330,7 +269,12 @@ const CartModal = ({
         )}
       </div>
 
-      {showPersonalKeyModal && <PersonalKeyModal />}
+      {showPersonalKeyModal && (
+        <PersonalKeyModal
+          onClose={() => setShowPersonalKeyModal(false)}
+          handleCheckout={handleCheckout}
+        />
+      )}
       {status === "success" && <SuccessModal />}
       {status === "insufficient" && <InsufficientBalanceModal />}
       {status === "error" && <ErrorModal />}

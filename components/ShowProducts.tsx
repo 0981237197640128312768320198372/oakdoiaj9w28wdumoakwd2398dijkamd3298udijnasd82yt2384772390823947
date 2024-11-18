@@ -12,8 +12,6 @@ const ShowProducts = () => {
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const { cart } = useCart()
-  console.log("FROM SHOW PRODUCTS COMPONENT\n\n\n", cart)
-  console.log("FROM SHOW PRODUCTS COMPONENT\n\n\n", cart.length)
   console.log()
 
   useEffect(() => {
@@ -58,7 +56,7 @@ const ShowProducts = () => {
             <div className='fixed bottom-0 px-10 pt-10 pb-5 w-full bg-dark-700/40 backdrop-blur h-fit flex justify-center items-center border-t-[1px] border-dark-500'>
               <button
                 onClick={() => setCartOpen(true)}
-                className='bg-primary text-dark-800 py-2 rounded font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
+                className='bg-primary text-dark-800 py-2 rounded active:bg-primary/80 font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
               >
                 View Cart
               </button>

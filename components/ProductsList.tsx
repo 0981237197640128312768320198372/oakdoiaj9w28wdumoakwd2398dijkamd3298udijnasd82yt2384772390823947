@@ -9,7 +9,6 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
   const { addToCart, updateQuantity, getCartItemQuantity, removeFromCart } =
     useCart()
 
-  // Helper function to calculate total quantity in cart for a given product name
   const getTotalCartQuantityForProduct = (productName: string) => {
     return priceData
       .filter((product) => product.name === productName)
@@ -34,7 +33,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
 
         return (
           <div
-            className='flex flex-col w-full gap-3 rounded-lg border-[1px] border-dark-600 bg-dark-700 p-5'
+            className='flex flex-col w-full gap-3 rounded-lg border-[1px] border-dark-600 bg-dark-700 p-10'
             key={i}
           >
             <div className='flex w-full gap-28 justify-between items-start pb-5'>
@@ -53,8 +52,8 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                 <Image
                   src={netflixpremium}
                   alt='High Quality Netflix Premium Cheap Price | Dokmai Store'
-                  width={65}
-                  height={65}
+                  width={60}
+                  height={60}
                   className='w-fit select-none'
                   loading='lazy'
                 />
@@ -63,8 +62,8 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                 <Image
                   src={primevideo}
                   alt='High Quality Prime Video Cheap Price | Dokmai Store'
-                  width={75}
-                  height={75}
+                  width={60}
+                  height={60}
                   className='w-fit select-none'
                   loading='lazy'
                 />
@@ -81,7 +80,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                   >
                     <div className='flex w-fit gap-3'>
                       <span
-                        className={`px-2 text-xl ${
+                        className={`px-1 text-xl ${
                           product.name.includes("Reseller")
                             ? "bg-goldVIP"
                             : "bg-primary"

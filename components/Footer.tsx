@@ -59,7 +59,7 @@ const Footer = () => {
                 href={contact.url}
                 target='_blank'
                 key={i}
-                className='flex items-center text-light-50 hover:text-light-100 '
+                className='flex items-center text-light-100 hover:text-primary '
               >
                 {contact.title}
               </Link>

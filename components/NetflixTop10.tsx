@@ -149,7 +149,12 @@ export default function NetflixTop10() {
     fetchData()
   }, [])
 
-  if (error) return <div>{error}</div>
+  if (error)
+    return (
+      <div className='px-2 pt-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500'>
+        {error}
+      </div>
+    )
 
   const tvItems = data
     .filter((item) => item.category === "tv")

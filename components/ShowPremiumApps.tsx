@@ -24,7 +24,6 @@ export const ShowPremiumApps = () => {
   const [userInfo, setUserInfo] = useState<any>(null)
   const [premiumData, setPremiumData] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
-
   const [checkingLocalStorage, setCheckingLocalStorage] = useState(true)
   const [validatingPersonalKey, setValidatingPersonalKey] = useState(false)
   const [fetchingData, setFetchingData] = useState(false)
@@ -546,7 +545,13 @@ export const ShowPremiumApps = () => {
       {!checkingLocalStorage &&
         !validatingPersonalKey &&
         !fetchingData &&
-        error && <p className='text-red-500 mt-4'>{error}</p>}
+        error && (
+          <div className='w-full p-5'>
+            <p className='px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit'>
+              {error}
+            </p>
+          </div>
+        )}
     </div>
   )
 }
