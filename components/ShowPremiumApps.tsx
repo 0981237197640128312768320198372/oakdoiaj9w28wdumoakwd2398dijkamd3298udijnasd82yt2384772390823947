@@ -395,40 +395,43 @@ export const ShowPremiumApps = () => {
                     key={index}
                     className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5'
                   >
+                    <div className='w-full flex flex-row-reverse items-start justify-between'>
+                      {Object.entries(item).map(([label, value], idx) => (
+                        <>
+                          {String(label) === "accessType" ? (
+                            <span
+                              className='text-xs font-aktivGroteskThin text-white/70'
+                              key={idx}
+                            >
+                              {String(value)}
+                            </span>
+                          ) : null}
+                          {String(value) === "Netflix Premium" ? (
+                            <Image
+                              src={netflixpremiumlogo}
+                              alt='Netflix Premium Ultra HD Icon'
+                              width={50}
+                              height={50}
+                            />
+                          ) : null}
+                          {String(value) === "Prime Video" ? (
+                            <Image
+                              src={primevideo}
+                              alt='Prime Video Icon'
+                              width={75}
+                              height={75}
+                            />
+                          ) : null}
+                        </>
+                      ))}
+                    </div>
+
                     {Object.entries(item).map(([label, value], idx) => (
-                      <>
-                        {String(value) === "Netflix Premium" ? (
-                          <Image
-                            src={netflixpremiumlogo}
-                            alt='Netflix Premium Ultra HD Icon'
-                            width={50}
-                            height={50}
-                          />
-                        ) : null}
-                        {String(value) === "Prime Video" ? (
-                          <Image
-                            src={primevideo}
-                            alt='Prime Video Icon'
-                            width={75}
-                            height={75}
-                          />
-                        ) : null}
-                        {String(label) === "accessType" ? (
-                          <span
-                            className='text-xs font-aktivGroteskThin text-white/70'
-                            key={idx}
-                          >
-                            {String(value)}
-                          </span>
-                        ) : null}
-                      </>
-                    ))}
-                    {Object.entries(item).map(([label, value], idx) => (
-                      <div className='flex flex-col ml-7' key={idx}>
-                        <p className='font-aktivGroteskMedium text-white/60 text-[5px] md:text-xs '>
+                      <div className='flex flex-col' key={idx}>
+                        <p className='font-aktivGroteskMedium text-white/60 text-[7px] md:text-xs '>
                           {getLabelDisplayName(String(label))}
                         </p>
-                        <p className='font-aktivGroteskBold flex gap-2 text-[7px] md:text-sm items-center'>
+                        <p className='font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center'>
                           {String(label) !== "accessType" &&
                           String(label) !== "appName" ? (
                             <>
