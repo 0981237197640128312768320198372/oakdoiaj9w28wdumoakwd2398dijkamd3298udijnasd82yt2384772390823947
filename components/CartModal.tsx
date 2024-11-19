@@ -10,6 +10,7 @@ import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
 import Link from "next/link"
 import PersonalKeyModal from "@/components/PersonalKeyModal"
+import { MdOutlineAccountBalanceWallet } from "react-icons/md"
 
 const CartModal = ({
   isOpen,
@@ -23,7 +24,7 @@ const CartModal = ({
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<
     "success" | "insufficient" | "error" | null
-  >(null)
+  >("error")
   const [orderedItems, setOrderedItems] = useState<any[]>([])
 
   if (!isOpen) return null
@@ -146,28 +147,46 @@ const CartModal = ({
         <p className='text-light-300 text-center mb-4'>
           คุณมี Dokmai Coin ไม่เพียงพอในการชำระเงิน.
         </p>
-        <button
-          onClick={() => setStatus(null)}
-          className='text-red-600 bg-red-600/20 active:bg-red-600/10 rounded px-2 py-1'
-        >
-          Close
-        </button>
+        <div className='flex justify-between w-full text-xs'>
+          <Link
+            href='/deposit'
+            className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded p-2'
+          >
+            <MdOutlineAccountBalanceWallet className='w-5 h-5 ' />
+            Deposit Dokmai Coin
+          </Link>
+          <button
+            onClick={() => setStatus(null)}
+            className='text-red-600 bg-red-600/20 active:bg-red-600/10 rounded px-2 py-1'
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   )
 
   const ErrorModal = () => (
     <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-      <div className='bg-gray-800 p-5 rounded-lg flex flex-col items-center'>
+      <div className='bg-dark-800 border-[1px] border-dark-500 p-5 rounded flex flex-col items-end w-fit shadow-black shadow-2xl'>
         <p className='text-light-300 text-center mb-4'>
-          An error occurred during checkout.
+          เกิดข้อผิดพลาดในการชำระเงิน หากปัญหายังไม่หาย
+          กรุณาติดต่อแอดมินเพื่อช่วยเหลือ ขอบคุณค่ะ
         </p>
-        <button
-          onClick={() => setStatus(null)}
-          className='bg-primary text-dark-800 px-4 py-2 rounded'
-        >
-          Close
-        </button>
+        <div className='flex justify-between w-full text-xs'>
+          <Link
+            href='https://lin.ee/Ovlixv5'
+            className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded p-2'
+          >
+            Contact Admin
+          </Link>
+          <button
+            onClick={() => setStatus(null)}
+            className='text-red-600 bg-red-600/20 active:bg-red-600/10 rounded px-2 py-1'
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -178,8 +197,8 @@ const CartModal = ({
 
   return (
     <div className='fixed inset-0 bg-dark-800/20 backdrop-blur-lg flex justify-center items-end z-50'>
-      <div className='w-full max-w-lg bg-dark-800 p-4 rounded-t-lg border-[1px] border-dark-500'>
-        <div className='flex justify-between items-center pb-4 mb-5 border-b-[1px] border-dark-500'>
+      <div className='w-full max-w-lg bg-dark-800 p-4 rounded-t-lg border-[1px] border-dark-600'>
+        <div className='flex justify-between items-center pb-4 mb-5 border-b-[1px] border-dark-600'>
           <h2 className='text-lg font-bold text-light-200 flex items-center gap-2'>
             <PiShoppingCartLight className='text-primary text-xl' /> Your Cart
           </h2>
@@ -198,7 +217,7 @@ const CartModal = ({
             {cart.map((item) => (
               <div
                 key={item.id}
-                className='flex justify-between items-center border-b border-dark-600 py-3 gap-5'
+                className='flex justify-between items-center py-3 gap-5'
               >
                 <div className='w-full flex gap-3 items-center'>
                   <Image
@@ -252,9 +271,12 @@ const CartModal = ({
                 </div>
               </div>
             ))}
-            <div className='flex justify-between items-center pt-4 border-t border-dark-600'>
+            <div className='flex justify-between items-center pt-4  gap-8'>
               <span className='text-light-200 font-bold'>Total:</span>
-              <span className='text-light-200 font-bold'>฿ {total}</span>
+              <div className='w-full h-[1px] bg-dark-500' />
+              <span className='text-light-200 font-bold whitespace-nowrap'>
+                ฿ {total}
+              </span>
             </div>
             <button
               onClick={handleCheckout}

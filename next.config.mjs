@@ -25,6 +25,20 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/deposit",
+        destination: "https://lin.ee/Ovlixv5",
+        permanent: false,
+      },
+      {
+        source: "/register",
+        destination: "https://lin.ee/Ovlixv5",
+        permanent: false,
+      },
+    ]
+  },
 }
 
 export default nextConfig

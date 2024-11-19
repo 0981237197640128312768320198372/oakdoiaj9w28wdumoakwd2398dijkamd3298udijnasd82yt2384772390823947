@@ -37,7 +37,7 @@ const Footer = () => {
   return (
     <footer className='flex justify-center items-center w-full bg-dark-800 z-[99999]'>
       <div className='flex w-ful flex-col justify-center __container items-center px-0 bg-dark-800'>
-        <div className='flex w-full flex-col lg:justify-between lg:flex-row gap-3 bg-dark-700 py-5 mt-24 px-5'>
+        <div className='flex w-full flex-col lg:justify-between lg:flex-row gap-5 bg-dark-700 py-5 mt-24 px-5'>
           <div className='flex flex-col gap-3'>
             <Image
               src={dokmaiwhitewithtext}
@@ -47,10 +47,21 @@ const Footer = () => {
               loading='lazy'
             />
             <p className='text-xs font-aktivGroteskLight select-none'>
-              <strong>Netflix Premium</strong> คุณภาพสูง ราคาถูก
+              {/* <strong>Netflix Premium</strong> คุณภาพสูง ราคาถูก
               พร้อมรับประกันตลอดชีพจาก <br />
               <strong>Dokmai Store</strong> แพลตฟอร์มดิจิทัลชั้นนำของไทย
-              <strong>บริการรวดเร็ว</strong> ดูหนังและซีรีส์ได้เต็มอิ่มทุกเวลา
+              <strong>บริการรวดเร็ว</strong> ดูหนังและซีรีส์ได้เต็มอิ่มทุกเวลา */}
+              <strong>
+                ยินดีต้อนรับสู่ดอกไม้สโตร์
+                แพลตฟอร์มที่คุณไว้วางใจสำหรับบัญชีแอปพรีเมียม เช่น Netflix
+                Premium, Amazon Prime Video
+              </strong>
+              <br />
+              <strong>
+                และบริการอื่นๆ อีกมากมาย เรามุ่งมั่นที่จะมอบบัญชีคุณภาพสูง
+                พร้อมบริการลูกค้าที่เป็นเลิศและราคาที่คุ้มค่า
+                เพื่อให้คุณได้รับประสบการณ์ที่ดีที่สุด
+              </strong>
             </p>
           </div>
           <div className='flex font-aktivGroteskRegular text-xs justify-start xl:justify-end items-start gap-5 underline'>
