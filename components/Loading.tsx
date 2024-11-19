@@ -4,7 +4,7 @@ import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
 
 const Loading = () => {
   return (
-    <div className='absolute top-0 left-0 z-30 w-full min-h-screen flex justify-center items-center'>
+    <div className='w-full min-h-screen flex justify-center items-center'>
       <div className='relative flex items-center justify-center'>
         <div className='w-32 h-32 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
         <Image
