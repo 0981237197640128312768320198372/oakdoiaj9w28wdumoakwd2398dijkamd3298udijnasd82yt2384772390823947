@@ -94,15 +94,13 @@ export async function GET() {
         const filteredAvailableData = normalizedAvailableData
           .map((row: any[], index: number) => ({
             data: row,
-            row: index + 12, // Add the range header offset (e.g., starting row is 12)
+            row: index + 12,
           }))
           .filter(
             (item) =>
               item.data[0] === "" &&
               item.data[ranges.expireDateColumnIndex] === ""
           )
-        // console.log(filteredAvailableData)
-        // console.log(ranges.expireDateColumnIndex)
         return {
           name,
           details: (detailData || [])
@@ -123,11 +121,9 @@ export async function GET() {
       }
     )
     const productsData = await Promise.all(productDataPromises)
-    // productsData.forEach((product) => {
-    //   console.log(`Product: ${product.name}`)
-    //   console.log("Available Accounts:", product.availableAccounts)
-    // })
-    return NextResponse.json(productsData)
+    const response = NextResponse.json(productsData)
+    response.headers.set("Cache-Control", "no-store")
+    return response
   } catch (error) {
     console.error("Error fetching products data:", error)
     return NextResponse.json(
