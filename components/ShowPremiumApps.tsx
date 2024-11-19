@@ -388,7 +388,7 @@ export const ShowPremiumApps = () => {
               placeholder='Search your premium apps...'
               className='mb-5  border-[1px] border-primary/40 p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
             />
-            <div className='grid flex-col-reverse grid-cols-1 lg:grid-cols-2 gap-5 w-fit lg:w-full max-h-[650px] overflow-y-scroll px-5 border-x-[1px] border-dark-500'>
+            <div className='grid flex-col-reverse grid-cols-1 lg:grid-cols-2 gap-5 w-full max-h-[650px] overflow-y-scroll px-5 border-x-[1px] border-dark-500'>
               {(searchTerm ? filteredPremiumData : premiumData).map(
                 (item: any, index: any) => (
                   <div
@@ -425,10 +425,10 @@ export const ShowPremiumApps = () => {
                     ))}
                     {Object.entries(item).map(([label, value], idx) => (
                       <div className='flex flex-col ml-7' key={idx}>
-                        <p className='font-aktivGroteskMedium text-white/60 text-xs '>
+                        <p className='font-aktivGroteskMedium text-white/60 text-[5px] md:text-xs '>
                           {getLabelDisplayName(String(label))}
                         </p>
-                        <p className='font-aktivGroteskBold flex gap-2 items-center'>
+                        <p className='font-aktivGroteskBold flex gap-2 text-[7px] md:text-sm items-center'>
                           {String(label) !== "accessType" &&
                           String(label) !== "appName" ? (
                             <>

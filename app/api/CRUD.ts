@@ -325,7 +325,6 @@ export async function manageProductData(
   try {
     const sheets = await getGoogleSheetsInstance()
 
-    // Update Personal Key in the A column
     const personalKeyRange = `${sheetName}!A${rowIndex}`
     await sheets.spreadsheets.values.update({
       spreadsheetId,
@@ -336,18 +335,19 @@ export async function manageProductData(
       },
     })
 
-    // Update Expire Date, Order Date, and Contact
     const dateContactRange = `${sheetName}!${String.fromCharCode(
       65 + expireDateColumnIndex
     )}${rowIndex}:${String.fromCharCode(
-      65 + expireDateColumnIndex + 2
+      65 + expireDateColumnIndex + 3
     )}${rowIndex}`
     await sheets.spreadsheets.values.update({
       spreadsheetId,
       range: dateContactRange,
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[updates.expireDate, updates.orderDate, updates.contact]],
+        values: [
+          [updates.expireDate, updates.orderDate, updates.contact, "Website"],
+        ],
       },
     })
 
