@@ -40,6 +40,14 @@ const Navbar = () => {
     }
   })
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  const reloadPage = () => {
+    window.location.reload()
+  }
+
   return (
     <>
       {" "}
@@ -102,8 +110,18 @@ const Navbar = () => {
         </div>
       </nav>
       <div className='lg:hidden fixed bottom-1/4 -right-1 py-3 pl-3 pr-4 flex flex-col gap-5 z-50 bg-transparent items-center backdrop-blur-sm border-[1px] border-dark-500 rounded shadow-2xl shadow-black'>
-        <PiArrowFatLinesUp className='duration-500 text-primary text-2xl' />
-        <TbReload className='duration-500 text-primary text-2xl' />
+        <button
+          onClick={scrollToTop}
+          className='duration-500 text-primary text-2xl'
+        >
+          <PiArrowFatLinesUp />
+        </button>
+        <button
+          onClick={reloadPage}
+          className='duration-500 text-primary text-2xl'
+        >
+          <TbReload />
+        </button>
         <MobileNav />
       </div>
     </>
