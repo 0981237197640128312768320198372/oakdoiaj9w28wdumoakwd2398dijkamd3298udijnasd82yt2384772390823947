@@ -14,7 +14,7 @@ const fetchCredits = async (page: number, limit: number) => {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
       },
-    }
+    },
   )
 
   if (!res.ok) {
@@ -23,7 +23,6 @@ const fetchCredits = async (page: number, limit: number) => {
 
   const rawCreditsData = await res.json()
 
-  // Transform the raw data into a structured object and reverse it
   const creditsData = rawCreditsData.data
     .map((creditsRow: string[]) => ({
       creditsimageUrl: convertGoogleDriveUrl(creditsRow[0]),

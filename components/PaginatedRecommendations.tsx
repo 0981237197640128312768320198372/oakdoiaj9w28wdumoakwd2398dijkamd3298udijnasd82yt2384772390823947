@@ -15,7 +15,7 @@ const fetchTotalItems = async () => {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
       },
-    }
+    },
   )
 
   if (!res.ok) {
@@ -34,7 +34,7 @@ const fetchRecommendations = async (page: number, limit: number) => {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
       },
-    }
+    },
   )
 
   if (!res.ok) {
@@ -43,7 +43,6 @@ const fetchRecommendations = async (page: number, limit: number) => {
 
   const rawRecommendationsData = await res.json()
 
-  // Transform the raw data into a structured object and reverse it
   const recommendations = rawRecommendationsData.data
     .map((recommendationsRow: string[]) => ({
       title: recommendationsRow[0],

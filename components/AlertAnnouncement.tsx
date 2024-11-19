@@ -29,7 +29,7 @@ const AlertAnnouncement: React.FC = () => {
     }
   })
 
-  if (!isVisible) return null // Early return if the announcement is not visible
+  if (!isVisible) return null
 
   return (
     <div className='fixed inset-0 z-[50] bg-black/50 backdrop-blur flex items-center justify-center'>

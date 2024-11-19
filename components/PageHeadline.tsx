@@ -1,4 +1,3 @@
-// components/PageHeadline.tsx
 import React from "react"
 
 interface PageHeadlineProps {

@@ -1,7 +1,7 @@
-"use client" // Make this a client component
+"use client"
 
 import React from "react"
-import FAQButton from "@/components/FAQButton" // Import your FAQButton component
+import FAQButton from "@/components/FAQButton"
 
 interface FAQ {
   question: string

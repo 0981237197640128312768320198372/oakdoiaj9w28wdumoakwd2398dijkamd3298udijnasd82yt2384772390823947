@@ -29,7 +29,7 @@ const ShowProducts = () => {
             ...detail,
             id: `${product.name.replace(/\s+/g, "")}-${detail.duration.replace(
               /\s+/g,
-              "-"
+              "-",
             )}`,
           })),
         }))

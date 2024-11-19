@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-no-comment-textnodes */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 "use client"
 
 import React, { useState, useEffect } from "react"
@@ -24,7 +24,6 @@ const Navbar = () => {
     const currentScrollPos = window.pageYOffset
     const isScrollingDown = prevScrollPos < currentScrollPos
     if (currentScrollPos <= 0) {
-      // If at the top of the page, make the navbar always visible
       setVisible(true)
       setScrollToTopVisible(false)
     } else {

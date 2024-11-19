@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const userData =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        userInfoSheetRange
+        userInfoSheetRange,
       )) || []
 
     const userRow = userData.findIndex((row) => row[0] === personalKey)
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     if (newBalance < 0) {
       return NextResponse.json(
         { error: "Insufficient balance." },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       "A",
       personalKey,
       "B",
-      newBalance.toString()
+      newBalance.toString(),
     )
 
     return NextResponse.json({
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     console.error("Error updating balance:", error)
     return NextResponse.json(
       { error: "Failed to update balance" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

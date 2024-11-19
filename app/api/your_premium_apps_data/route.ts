@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   if (!personalKey) {
     return NextResponse.json(
       { error: "Personal key is required" },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       const sheetData =
         (await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
-          range
+          range,
         )) || []
 
       const matchedRows = sheetData
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     if (consolidatedData.length === 0) {
       return NextResponse.json(
         { error: "No premium data found for this Personal Key" },
-        { status: 404 }
+        { status: 404 },
       )
     }
 
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
     console.error("Error reading data", error)
     return NextResponse.json(
       { error: "Failed to fetch premium apps data" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

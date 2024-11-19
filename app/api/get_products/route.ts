@@ -14,13 +14,13 @@ export async function GET(request: Request) {
     const selectedProducts = fetchAll
       ? productsConfig
       : productName
-      ? { [productName]: productsConfig[productName] }
-      : {}
+        ? { [productName]: productsConfig[productName] }
+        : {}
 
     if (Object.keys(selectedProducts).length === 0) {
       return NextResponse.json(
         { error: "No valid product found" },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -29,26 +29,25 @@ export async function GET(request: Request) {
         const [detailData, stockData, availableData] = await Promise.all([
           getGoogleSheetsData(
             process.env.___SPREADSHEET_ID as string,
-            ranges.detailRange
+            ranges.detailRange,
           ),
           getGoogleSheetsData(
             process.env.___SPREADSHEET_ID as string,
-            ranges.stockRange
+            ranges.stockRange,
           ),
           getGoogleSheetsData(
             process.env.___SPREADSHEET_ID as string,
-            ranges.availableDataRange
+            ranges.availableDataRange,
           ),
         ])
 
-        // Normalize each row to have a consistent number of columns
         const normalizedAvailableData = (availableData || []).map(
           (row: any[]) => {
             while (row.length < ranges.totalColumns) {
-              row.push("") // Add empty strings for missing columns
+              row.push("")
             }
             return row
-          }
+          },
         )
 
         const filteredAvailableData = normalizedAvailableData
@@ -59,14 +58,14 @@ export async function GET(request: Request) {
           .filter(
             (item) =>
               item.data[0] === "" &&
-              item.data[ranges.expireDateColumnIndex] === ""
+              item.data[ranges.expireDateColumnIndex] === "",
           )
         return {
           name,
           details: (detailData || [])
             .filter(
               (item): item is [string, string] =>
-                Array.isArray(item) && item.length === 2
+                Array.isArray(item) && item.length === 2,
             )
             .map(([duration, price]) => ({
               duration,
@@ -78,7 +77,7 @@ export async function GET(request: Request) {
           expireDateColumnIndex: ranges.expireDateColumnIndex,
           totalColumns: ranges.totalColumns,
         }
-      }
+      },
     )
     const productsData = await Promise.all(productDataPromises)
     return NextResponse.json(productsData)
@@ -86,7 +85,7 @@ export async function GET(request: Request) {
     console.error("Error fetching products data:", error)
     return NextResponse.json(
       { error: "Failed to fetch product data" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server"
 import { appendGoogleSheetsData } from "@/app/api/CRUD"
-
-// Named export for POST request
 export async function POST(req: Request) {
   try {
     const body = await req.json()

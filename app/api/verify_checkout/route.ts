@@ -19,15 +19,14 @@ export async function POST(request: Request) {
     if (!personalKey || !selectedProducts || selectedProducts.length === 0) {
       return NextResponse.json(
         { error: "Invalid request: Missing personal key or products" },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
-    // Fetch user data
     const userInfo =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        "UserInfo!A2:D"
+        "UserInfo!A2:D",
       )) || []
 
     const user = userInfo.find((row: any[]) => row[0] === personalKey)
@@ -38,9 +37,8 @@ export async function POST(request: Request) {
     const userBalance = parseFloat(user[1])
     const userContact = user[3]
 
-    // Fetch real-time product data
     const productData = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/get_products`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/get_products`,
     )
       .then((res) => res.json())
       .catch((error) => {
@@ -51,7 +49,7 @@ export async function POST(request: Request) {
     if (!productData) {
       return NextResponse.json(
         { error: "Failed to retrieve product data" },
-        { status: 500 }
+        { status: 500 },
       )
     }
 
@@ -76,7 +74,7 @@ export async function POST(request: Request) {
     if (unavailableProducts.length > 0) {
       return NextResponse.json(
         { error: "Some products are out of stock", unavailableProducts },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
@@ -87,22 +85,21 @@ export async function POST(request: Request) {
           requiredBalance: calculatedTotalCost,
           currentBalance: userBalance,
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
     const currentDate = new Date()
     const formattedOrderDate = `${String(currentDate.getDate()).padStart(
       2,
-      "0"
+      "0",
     )} ${currentDate.toLocaleString("default", {
       month: "long",
     })} ${currentDate.getFullYear()} ${String(currentDate.getHours()).padStart(
       2,
-      "0"
+      "0",
     )}:${String(currentDate.getMinutes()).padStart(2, "0")}`
 
-    // Batch updates grouped by sheet
     const batchUpdates: Record<
       string,
       {
@@ -120,7 +117,7 @@ export async function POST(request: Request) {
     for (const { product, quantity, duration } of purchasedProductsData) {
       if (!product.availableDataRange) {
         console.warn(
-          `No availableDataRange defined for product: ${product.name}`
+          `No availableDataRange defined for product: ${product.name}`,
         )
         continue
       }
@@ -153,7 +150,6 @@ export async function POST(request: Request) {
         expireDate.setDate(expireDate.getDate() + durationDays)
         const formattedExpireDate = expireDate.toISOString().split("T")[0]
 
-        // Prepare batch update
         if (!batchUpdates[sheetName]) batchUpdates[sheetName] = []
         batchUpdates[sheetName].push({
           row,
@@ -168,7 +164,6 @@ export async function POST(request: Request) {
       }
     }
 
-    // Execute batch updates
     const updatePromises = Object.entries(batchUpdates).map(
       async ([sheetName, updates]) => {
         const updateOperations = updates.map(
@@ -178,11 +173,11 @@ export async function POST(request: Request) {
               sheetName,
               row,
               updates,
-              expireDateColumnIndex
-            )
+              expireDateColumnIndex,
+            ),
         )
         return Promise.all(updateOperations)
-      }
+      },
     )
 
     await Promise.all(updatePromises)
@@ -196,7 +191,7 @@ export async function POST(request: Request) {
     console.error("Error during checkout verification:", error)
     return NextResponse.json(
       { error: "Failed to verify checkout" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

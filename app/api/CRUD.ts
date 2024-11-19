@@ -9,7 +9,7 @@ async function authenticateGoogleSheets() {
         type: "service_account",
         private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
           /\\n/g,
-          "\n"
+          "\n",
         ),
         client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
         client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
@@ -31,7 +31,7 @@ async function getGoogleSheetsInstance() {
 
 export async function getGoogleSheetsData(
   spreadsheetId: string,
-  range: string
+  range: string,
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -48,7 +48,7 @@ export async function getGoogleSheetsData(
 export async function appendGoogleSheetsData(
   spreadsheetId: string,
   range: string,
-  values: any[]
+  values: any[],
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -71,24 +71,21 @@ export async function findAndUpdateRow(
   spreadsheetId: string,
   searchRange: string,
   searchValue: string,
-  values: any[]
+  values: any[],
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
 
-    // Log the search range and value for debugging
     console.log("Searching for value:", searchValue, "in range:", searchRange)
 
-    // Fetch the data from the specified range for searching
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
       range: searchRange,
     })
 
     const rows = getData.data.values || []
-    console.log("Fetched rows:", rows) // Log fetched rows for visibility
+    console.log("Fetched rows:", rows)
 
-    // Find the index of the row that includes the search value
     const rowIndex = rows.findIndex((row) => row.includes(searchValue))
 
     if (rowIndex === -1) {
@@ -96,13 +93,11 @@ export async function findAndUpdateRow(
       throw new Error("Search value not found in the specified range.")
     }
 
-    // Determine the range to update based on the row index and the specified columns
     const updateRange = `${searchRange.split("!")[0]}!${
       searchRange.split("!")[1][0]
     }${rowIndex + 2}`
-    console.log("Updating range:", updateRange) // Log the range we are about to update
+    console.log("Updating range:", updateRange)
 
-    // Update the specified range with new values
     await sheets.spreadsheets.values.update({
       spreadsheetId: spreadsheetId,
       range: updateRange,
@@ -123,14 +118,11 @@ export async function findAndDeleteRow(sheetName: string, searchValue: string) {
   try {
     const sheets = await getGoogleSheetsInstance()
 
-    // Step 1: Fetch the spreadsheet metadata to get the correct sheetId
     const spreadsheet = await sheets.spreadsheets.get({
       spreadsheetId: process.env.SPREADSHEET_ID,
     })
-
-    // Fetch the sheet by name dynamically
     const sheet = spreadsheet.data.sheets?.find(
-      (sheet) => sheet.properties?.title === sheetName
+      (sheet) => sheet.properties?.title === sheetName,
     )
     const sheetId = sheet?.properties?.sheetId
 
@@ -138,38 +130,34 @@ export async function findAndDeleteRow(sheetName: string, searchValue: string) {
       throw new Error(`Sheet with name ${sheetName} not found.`)
     }
 
-    // Step 2: Read the entire sheet to find the search value
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SPREADSHEET_ID,
-      range: `${sheetName}`, // Use dynamic sheet name
+      range: `${sheetName}`,
     })
 
     const rows = getData.data.values || []
 
-    // Step 3: Find the index of the row containing the search value
     const rowIndex = rows.findIndex((row) => row.includes(searchValue))
 
     if (rowIndex === -1) {
       throw new Error("Search value not found in the sheet.")
     }
 
-    // Step 4: Construct the batchUpdate request to delete the row
     const batchUpdateRequest = {
       requests: [
         {
           deleteDimension: {
             range: {
-              sheetId: sheetId, // Use the dynamic sheetId
+              sheetId: sheetId,
               dimension: "ROWS",
-              startIndex: rowIndex, // 0-based index of the row to delete
-              endIndex: rowIndex + 1, // Delete just this one row
+              startIndex: rowIndex,
+              endIndex: rowIndex + 1,
             },
           },
         },
       ],
     }
 
-    // Step 5: Execute the batchUpdate to delete the row
     await sheets.spreadsheets.batchUpdate({
       spreadsheetId: process.env.SPREADSHEET_ID,
       requestBody: batchUpdateRequest,
@@ -189,36 +177,29 @@ export async function updateUserField(
   searchValue: string,
   updateColumn: string,
   newValue: string,
-  startRow: number = 2 // Default to start from row 2 to skip headers
+  startRow: number = 2,
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
 
-    // Define the search range dynamically (e.g., "UserInfo!A2:A" if searchColumn is "A" and startRow is 2)
     const searchRange = `${sheetName}!${searchColumn}${startRow}:${searchColumn}`
 
-    // Fetch data from the specified search range
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
       range: searchRange,
     })
 
     const rows = getData.data.values || []
-
-    // Find the row index where the searchValue is located
     const rowIndex = rows.findIndex((row) => row[0] === searchValue)
 
     if (rowIndex === -1) {
       throw new Error("Search value not found in the specified range.")
     }
 
-    // Calculate the actual row in the Google Sheet by adding the startRow offset
     const actualRow = rowIndex + startRow
 
-    // Define the range to update (e.g., "UserInfo!B3" if updateColumn is "B" and actualRow is 3)
     const updateRange = `${sheetName}!${updateColumn}${actualRow}`
 
-    // Update the cell in the specified update column with the new value
     await sheets.spreadsheets.values.update({
       spreadsheetId: spreadsheetId,
       range: updateRange,
@@ -241,19 +222,17 @@ export async function updateAvailableProductData(
   expireDate: string,
   orderDate: string,
   contact: string,
-  startRow: number = 2, // Start from row 2 to skip headers
-  personalKeyColumn: string = "A", // Column where Personal Key is stored
-  expireDateColumn: string, // Column for Expired Date
-  orderDateColumn: string, // Column for Order Date
-  contactColumn: string // Column for Contact
+  startRow: number = 2,
+  personalKeyColumn: string = "A",
+  expireDateColumn: string,
+  orderDateColumn: string,
+  contactColumn: string,
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
 
-    // Define the range to search for an available product (e.g., "ProductSheet!A2:A")
     const searchRange = `${sheetName}!${personalKeyColumn}${startRow}:${personalKeyColumn}`
 
-    // Fetch data from the specified range
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
       range: searchRange,
@@ -261,17 +240,14 @@ export async function updateAvailableProductData(
 
     const rows = getData.data.values || []
 
-    // Find the first available row with an empty Personal Key (no owner)
     const rowIndex = rows.findIndex((row) => row[0] === "")
 
     if (rowIndex === -1) {
       throw new Error("No available product found.")
     }
 
-    // Calculate the actual row in the Google Sheet by adding the startRow offset
     const actualRow = rowIndex + startRow
 
-    // Define the range for each field we want to update
     const rangesToUpdate = [
       {
         range: `${sheetName}!${personalKeyColumn}${actualRow}`,
@@ -288,7 +264,6 @@ export async function updateAvailableProductData(
       { range: `${sheetName}!${contactColumn}${actualRow}`, value: contact },
     ]
 
-    // Update each field in the specified columns
     const updatePromises = rangesToUpdate.map((field) =>
       sheets.spreadsheets.values.update({
         spreadsheetId: spreadsheetId,
@@ -297,10 +272,9 @@ export async function updateAvailableProductData(
         requestBody: {
           values: [[field.value]],
         },
-      })
+      }),
     )
 
-    // Wait for all updates to complete
     await Promise.all(updatePromises)
 
     return { message: "Product data successfully updated" }
@@ -320,7 +294,7 @@ export async function manageProductData(
     orderDate: string
     contact: string
   },
-  expireDateColumnIndex: number
+  expireDateColumnIndex: number,
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -336,9 +310,9 @@ export async function manageProductData(
     })
 
     const dateContactRange = `${sheetName}!${String.fromCharCode(
-      65 + expireDateColumnIndex
+      65 + expireDateColumnIndex,
     )}${rowIndex}:${String.fromCharCode(
-      65 + expireDateColumnIndex + 3
+      65 + expireDateColumnIndex + 3,
     )}${rowIndex}`
     await sheets.spreadsheets.values.update({
       spreadsheetId,

@@ -20,7 +20,7 @@ interface MergedEntry {
 interface CarouselProps {
   items: MergedEntry[]
   scrollSpeed: number
-  isLoading: boolean // Add isLoading prop to control skeleton display
+  isLoading: boolean
 }
 
 const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
@@ -37,24 +37,22 @@ const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
     const container = containerRef.current
     if (!container) return
 
-    // Auto-scroll function
     const autoScroll = () => {
       if (
         !isHovered &&
         container.scrollLeft + container.clientWidth < container.scrollWidth
       ) {
-        container.scrollLeft += 1 // Adjust speed by changing the increment value
+        container.scrollLeft += 1
       } else if (
         container.scrollLeft + container.clientWidth >=
         container.scrollWidth
       ) {
-        container.scrollLeft = 0 // Reset to start when reaching the end
+        container.scrollLeft = 0
       }
     }
 
     const scrollInterval = setInterval(autoScroll, scrollSpeed)
 
-    // Cleanup on component unmount
     return () => clearInterval(scrollInterval)
   }, [isHovered, scrollSpeed, isLoading])
 
@@ -98,7 +96,6 @@ const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
             height={700}
           />
 
-          {/* Content */}
           <div className='absolute bottom-0 left-0 right-0 z-10 p-2 bg-gradient-to-t from-black to-transparent flex'>
             <Image
               src={`https://www.netflix.com/tudum/top10/images/big_numbers/${item.rank}.png`}

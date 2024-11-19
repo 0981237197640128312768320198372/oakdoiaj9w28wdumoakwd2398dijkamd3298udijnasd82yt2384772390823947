@@ -17,7 +17,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
           total +
           product.details.reduce(
             (sum: number, detail: any) => sum + getCartItemQuantity(detail.id),
-            0
+            0,
           )
         )
       }, 0)
@@ -104,7 +104,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                             disabled={
                               product.name.includes("Reseller") &&
                               cartQuantity <= 2
-                            } // Disable if Reseller product and quantity is 2 or less
+                            }
                             className='p-1 text-xs text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-50 disabled:cursor-not-allowed active:bg-dark-600 active:border-light-100'
                           >
                             <AiOutlineMinus />

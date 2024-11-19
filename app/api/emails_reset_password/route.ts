@@ -31,7 +31,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
         })
 
         const matchedEmails: any[] = []
-        const emailParsingPromises: Promise<void>[] = [] // Array to hold parsing promises
+        const emailParsingPromises: Promise<void>[] = []
 
         f.on("message", (msg) => {
           let buffer = ""
@@ -46,7 +46,6 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
               buffer += chunk.toString("utf8")
             })
 
-            // Push a promise for each email parsing operation
             const emailPromise = new Promise<void>((resolveParse) => {
               stream.once("end", async () => {
                 const from = extractHeader(buffer, "From") || "Unknown"
@@ -76,23 +75,23 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
                 } catch (err) {
                   console.error(`Error parsing email with UID ${uid}:`, err)
                 } finally {
-                  resolveParse() // Resolve this email's parsing promise
+                  resolveParse()
                 }
               })
             })
 
-            emailParsingPromises.push(emailPromise) // Add each promise to the array
+            emailParsingPromises.push(emailPromise)
           })
         })
 
         f.once("end", () => {
           console.log("Fetch operation complete.")
-          Promise.all(emailParsingPromises) // Wait for all parsing promises to complete
+          Promise.all(emailParsingPromises)
             .then(() => {
               imap.end()
               resolve(matchedEmails)
             })
-            .catch(reject) // Reject the main promise if any parsing fails
+            .catch(reject)
         })
       })
     })
@@ -110,14 +109,12 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
   })
 }
 
-// Function to extract email headers
 const extractHeader = (emailData: string, headerName: string) => {
   const regex = new RegExp(`^${headerName}: (.+)$`, "mi")
   const match = emailData.match(regex)
   return match ? match[1].trim() : null
 }
 
-// Final return in GET handler
 export async function GET(request: Request) {
   const { search } = Object.fromEntries(new URL(request.url).searchParams)
 
@@ -127,7 +124,7 @@ export async function GET(request: Request) {
     const response = NextResponse.json(matchedEmails, { status: 200 })
     response.headers.set(
       "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate"
+      "no-store, no-cache, must-revalidate, proxy-revalidate",
     )
     response.headers.set("Pragma", "no-cache")
     response.headers.set("Expires", "0")
@@ -136,7 +133,7 @@ export async function GET(request: Request) {
     console.error("Error fetching emails:", error)
     return NextResponse.json(
       { error: "Failed to fetch emails" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

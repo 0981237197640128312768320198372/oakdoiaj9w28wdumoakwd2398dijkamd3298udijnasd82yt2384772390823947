@@ -24,14 +24,14 @@ export async function GET(req: NextRequest) {
   if (columns !== null && columns.some((col) => !/^[A-Z]+$/.test(col))) {
     return NextResponse.json(
       { error: "Invalid columns format" },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
   try {
     const data = await getGoogleSheetsData(
       process.env.WORK_WORK_WORK_WORK_SPREADSHEET_ID as string,
-      `${sheetName}!${range}`
+      `${sheetName}!${range}`,
     )
 
     let processedData = data || []
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
         columns.map((col) => {
           const colIndex = col.charCodeAt(0) - 65
           return row[colIndex]
-        })
+        }),
       )
     }
 
@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
         data: processedData,
         totalRows: totalRows,
       },
-      { status: 200 }
+      { status: 200 },
     )
   } catch (error) {
     console.error("Error reading data", error)
