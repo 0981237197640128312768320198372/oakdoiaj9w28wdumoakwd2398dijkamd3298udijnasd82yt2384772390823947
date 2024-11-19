@@ -50,7 +50,6 @@ const Navbar = () => {
 
   return (
     <>
-      {" "}
       <nav
         className={`fixed flex flex-col items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform  ${
           visible ? "translate-y-0" : "-translate-y-full"
@@ -78,9 +77,8 @@ const Navbar = () => {
           <div className='flex items-center justify-end gap-5'>
             <div className='flex justify-end items-center gap-3 font-aktivGroteskBold '>
               <Link
-                href='https://lin.ee/Ovlixv5'
-                target='_blank'
-                className='text-dark-800 bg-primary flex px-2 pt-1 items-center gap-2 rounded-sm'
+                href='/products'
+                className='text-dark-800 bg-primary flex px-2 pt-1 items-center gap-2 text-lg rounded-sm font-aktivGroteskBold'
               >
                 ซื้อเลย!
               </Link>
