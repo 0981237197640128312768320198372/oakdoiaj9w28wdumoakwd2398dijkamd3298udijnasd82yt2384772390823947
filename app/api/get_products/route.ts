@@ -1,70 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
 import { getGoogleSheetsData } from "@/app/api/CRUD"
+import { productsConfig } from "@/constant"
 import process from "process"
 
-export async function GET() {
+type ProductName = keyof typeof productsConfig
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const productName = searchParams.get("name") as ProductName | null
+  const fetchAll = searchParams.get("all") === "true"
   try {
-    const products = {
-      PrimeVideoSharingAccess: {
-        detailRange: "PRODUCTS!A3:B",
-        stockRange: "PRODUCTS!B1",
-        availableDataRange: "PrimeVideoSharing!A12:H",
-        expireDateColumnIndex: 4,
-        totalColumns: 8, // Specifies the expected number of columns
-      },
-      PrimeVideoFamilyAccess: {
-        detailRange: "PRODUCTS!D3:E",
-        stockRange: "PRODUCTS!E1",
-        availableDataRange: "PrimeVideoFamily!A12:G",
-        expireDateColumnIndex: 3,
-        totalColumns: 7,
-      },
-      NetflixPremiumSharingNoTV: {
-        detailRange: "PRODUCTS!G3:H",
-        stockRange: "PRODUCTS!H1",
-        availableDataRange: "SharingNoTV!A12:I",
-        expireDateColumnIndex: 5,
-        totalColumns: 9,
-      },
-      NetflixPremiumSharingWithTV: {
-        detailRange: "PRODUCTS!J3:K",
-        stockRange: "PRODUCTS!K1",
-        availableDataRange: "SharingWithTV!A12:I",
-        expireDateColumnIndex: 5,
-        totalColumns: 9,
-      },
-      NetflixPremiumFamilyAccess: {
-        detailRange: "PRODUCTS!M3:N",
-        stockRange: "PRODUCTS!N1",
-        availableDataRange: "FamilyAccess!A12:G",
-        expireDateColumnIndex: 3,
-        totalColumns: 7,
-      },
-      NetflixPremiumSharingNoTVResellerPrice: {
-        detailRange: "PRODUCTS!P3:Q",
-        stockRange: "PRODUCTS!Q1",
-        availableDataRange: "RESELLERSharingNoTV!A12:I",
-        expireDateColumnIndex: 5,
-        totalColumns: 9,
-      },
-      NetflixPremiumSharingWithTVResellerPrice: {
-        detailRange: "PRODUCTS!S3:T",
-        stockRange: "PRODUCTS!T1",
-        availableDataRange: "RESELLERSharingWithTV!A12:I",
-        expireDateColumnIndex: 5,
-        totalColumns: 9,
-      },
-      NetflixPremiumFamilyAccessResellerPrice: {
-        detailRange: "PRODUCTS!V3:W",
-        stockRange: "PRODUCTS!W1",
-        availableDataRange: "RESELLERFamilyAccess!A12:G",
-        expireDateColumnIndex: 3,
-        totalColumns: 7,
-      },
+    const selectedProducts = fetchAll
+      ? productsConfig
+      : productName
+      ? { [productName]: productsConfig[productName] }
+      : {}
+
+    if (Object.keys(selectedProducts).length === 0) {
+      return NextResponse.json(
+        { error: "No valid product found" },
+        { status: 400 }
+      )
     }
 
-    const productDataPromises = Object.entries(products).map(
+    const productDataPromises = Object.entries(selectedProducts).map(
       async ([name, ranges]) => {
         const [detailData, stockData, availableData] = await Promise.all([
           getGoogleSheetsData(
@@ -121,9 +81,7 @@ export async function GET() {
       }
     )
     const productsData = await Promise.all(productDataPromises)
-    const response = NextResponse.json(productsData)
-    response.headers.set("Cache-Control", "no-store")
-    return response
+    return NextResponse.json(productsData)
   } catch (error) {
     console.error("Error fetching products data:", error)
     return NextResponse.json(

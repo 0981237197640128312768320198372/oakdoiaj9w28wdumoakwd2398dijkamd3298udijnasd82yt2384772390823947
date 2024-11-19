@@ -19,7 +19,7 @@ const ShowProducts = () => {
       try {
         console.log("Fetching products from /api/get_products...")
 
-        const response = await fetch("/api/get_products", { cache: "no-store" })
+        const response = await fetch("/api/get_products?all=true")
         const data = await response.json()
         console.log("Fetched products:", data)
         const productsWithIds = data.map((product: any) => ({

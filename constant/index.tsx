@@ -354,73 +354,62 @@ export const accountBadge = (badge: string) => {
   }
   return null
 }
-export const ProductPrices = [
-  {
-    id: "prime-video-sharing",
-    appName: "Prime Video",
-    type: "Sharing Access",
-    description: "1 จอส่วนตัว",
-    prices: [
-      { id: "prime-sharing-1day", duration: "1 Day", price: 9 },
-      { id: "prime-sharing-7days", duration: "7 Days", price: 19 },
-      { id: "prime-sharing-30days", duration: "30 Days", price: 49 },
-      { id: "prime-sharing-60days", duration: "60 Days", price: 79 },
-      { id: "prime-sharing-90days", duration: "90 Days", price: 109 },
-    ],
+
+export const productsConfig = {
+  PrimeVideoSharingAccess: {
+    detailRange: "PRODUCTS!A3:B",
+    stockRange: "PRODUCTS!B1",
+    availableDataRange: "PrimeVideoSharing!A12:H",
+    expireDateColumnIndex: 4,
+    totalColumns: 8,
   },
-  {
-    id: "prime-video-family",
-    appName: "Prime Video",
-    type: "Family Access",
-    description: "1 บัญชี (ได้ทั้ง 6 จอ)",
-    prices: [
-      { id: "prime-family-7days", duration: "7 Days", price: 59 },
-      { id: "prime-family-30days", duration: "30 Days", price: 149 },
-    ],
+  PrimeVideoFamilyAccess: {
+    detailRange: "PRODUCTS!D3:E",
+    stockRange: "PRODUCTS!E1",
+    availableDataRange: "PrimeVideoFamily!A12:G",
+    expireDateColumnIndex: 3,
+    totalColumns: 7,
   },
-  {
-    id: "netflix-premium-no-tv",
-    appName: "Netflix Premium",
-    type: "Sharing Access (No TV)",
-    description: "1 จอส่วนตัว ดูใน TV ไม่ได้",
-    prices: [
-      { id: "netflix-no-tv-1day", duration: "1 Day", price: 9 },
-      { id: "netflix-no-tv-3days", duration: "3 Days", price: 15 },
-      { id: "netflix-no-tv-5days", duration: "5 Days", price: 20 },
-      { id: "netflix-no-tv-7days", duration: "7 Days", price: 29 },
-      { id: "netflix-no-tv-14days", duration: "14 Days", price: 55 },
-      { id: "netflix-no-tv-30days", duration: "30 Days", price: 99 },
-      { id: "netflix-no-tv-60days", duration: "60 Days", price: 189 },
-      { id: "netflix-no-tv-90days", duration: "90 Days", price: 279 },
-    ],
+  NetflixPremiumSharingNoTV: {
+    detailRange: "PRODUCTS!G3:H",
+    stockRange: "PRODUCTS!H1",
+    availableDataRange: "SharingNoTV!A12:I",
+    expireDateColumnIndex: 5,
+    totalColumns: 9,
   },
-  {
-    id: "netflix-premium-with-tv",
-    appName: "Netflix Premium",
-    type: "Sharing Access (With TV)",
-    description: "1 จอส่วนตัว ดูใน TV ได้",
-    prices: [
-      { id: "netflix-tv-1day", duration: "1 Day", price: 19 },
-      { id: "netflix-tv-3days", duration: "3 Days", price: 29 },
-      { id: "netflix-tv-5days", duration: "5 Days", price: 39 },
-      { id: "netflix-tv-7days", duration: "7 Days", price: 49 },
-      { id: "netflix-tv-14days", duration: "14 Days", price: 89 },
-      { id: "netflix-tv-30days", duration: "30 Days", price: 149 },
-      { id: "netflix-tv-60days", duration: "60 Days", price: 279 },
-      { id: "netflix-tv-90days", duration: "90 Days", price: 409 },
-    ],
+  NetflixPremiumSharingWithTV: {
+    detailRange: "PRODUCTS!J3:K",
+    stockRange: "PRODUCTS!K1",
+    availableDataRange: "SharingWithTV!A12:I",
+    expireDateColumnIndex: 5,
+    totalColumns: 9,
   },
-  {
-    id: "netflix-premium-family",
-    appName: "Netflix Premium",
-    type: "Family Access",
-    description: "1 บัญชี (ได้ทั้ง 5 จอ) ดูได้ทุกอุปกรณ์",
-    prices: [
-      { id: "netflix-family-7days", duration: "7 Days", price: 149 },
-      { id: "netflix-family-14days", duration: "14 Days", price: 299 },
-      { id: "netflix-family-30days", duration: "30 Days", price: 459 },
-      { id: "netflix-family-60days", duration: "60 Days", price: 819 },
-      { id: "netflix-family-90days", duration: "90 Days", price: 1099 },
-    ],
+  NetflixPremiumFamilyAccess: {
+    detailRange: "PRODUCTS!M3:N",
+    stockRange: "PRODUCTS!N1",
+    availableDataRange: "FamilyAccess!A12:G",
+    expireDateColumnIndex: 3,
+    totalColumns: 7,
   },
-]
+  NetflixPremiumSharingNoTVResellerPrice: {
+    detailRange: "PRODUCTS!P3:Q",
+    stockRange: "PRODUCTS!Q1",
+    availableDataRange: "RESELLERSharingNoTV!A12:I",
+    expireDateColumnIndex: 5,
+    totalColumns: 9,
+  },
+  NetflixPremiumSharingWithTVResellerPrice: {
+    detailRange: "PRODUCTS!S3:T",
+    stockRange: "PRODUCTS!T1",
+    availableDataRange: "RESELLERSharingWithTV!A12:I",
+    expireDateColumnIndex: 5,
+    totalColumns: 9,
+  },
+  NetflixPremiumFamilyAccessResellerPrice: {
+    detailRange: "PRODUCTS!V3:W",
+    stockRange: "PRODUCTS!W1",
+    availableDataRange: "RESELLERFamilyAccess!A12:G",
+    expireDateColumnIndex: 3,
+    totalColumns: 7,
+  },
+}
