@@ -2,7 +2,7 @@
 import { navButtons } from "@/constant"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { CiMenuBurger } from "react-icons/ci"
+import { IoMenuSharp } from "react-icons/io5"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
 import Image from "next/image"
 import dokmaistorefooter from "@/assets/images/dokmaistorefooter.png"
@@ -11,8 +11,8 @@ const MobileNav = () => {
   const path = usePathname()
   return (
     <Drawer>
-      <DrawerTrigger className='xl:hidden hover:bg-black/5 p-2 focus:outline-none focus:ring-0'>
-        <CiMenuBurger className='duration-500 text-primary text-2xl' />
+      <DrawerTrigger className='xl:hidden hover:bg-black/5 focus:outline-none focus:ring-0'>
+        <IoMenuSharp className='duration-500 text-primary text-2xl' />
       </DrawerTrigger>
       <DrawerContent className='bg-dark-800 border-t-[1px] border-dark-500 px-5 gap-10 focus:outline-none focus:ring-0'>
         <div className='grid grid-cols-2 w-full h-fit gap-1'>
