@@ -23,7 +23,7 @@ const CartModal = ({
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<
     "success" | "insufficient" | "error" | null
-  >("insufficient")
+  >(null)
   const [orderedItems, setOrderedItems] = useState<any[]>([])
 
   if (!isOpen) return null
