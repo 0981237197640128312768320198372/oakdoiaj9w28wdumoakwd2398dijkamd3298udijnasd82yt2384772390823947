@@ -1,7 +1,4 @@
 import React from "react"
-import { FaFacebookF, FaInstagram } from "react-icons/fa"
-import { FaWhatsapp } from "react-icons/fa6"
-import { MdGroups } from "react-icons/md"
 import { RiVipCrownLine } from "react-icons/ri"
 import { IoDiamondOutline } from "react-icons/io5"
 import BadgePlan from "@/components/BadgePlan"
@@ -274,32 +271,7 @@ export const FiveStarsReview2 = [
     date: "30 March 2024",
   },
 ]
-export const contactsButton = [
-  {
-    url: "https://chat.whatsapp.com/INXaIq12j2bLch9sVslcfJ",
-    icon: (
-      <MdGroups className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
-    ),
-  },
-  {
-    url: "https://wa.me/6289684684684",
-    icon: (
-      <FaWhatsapp className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
-    ),
-  },
-  {
-    url: "https://www.facebook.com/groups/2404456753194087",
-    icon: (
-      <FaFacebookF className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
-    ),
-  },
-  {
-    url: "https://www.instagram.com/fpistore_net",
-    icon: (
-      <FaInstagram className='text-dark-800 dark:text-gray-300 text-2xl lg:text-xl m-1 group-hover:text-bg-primary' />
-    ),
-  },
-]
+
 export const Terms = [
   {
     title: "1. บทนำ",
@@ -357,57 +329,49 @@ export const accountBadge = (badge: string) => {
 
 export const productsConfig = {
   PrimeVideoSharingAccess: {
-    detailRange: "PRODUCTS!A3:B",
-    stockRange: "PRODUCTS!B1",
+    detailRange: "PRODUCTS!A3:B,D3:E,G3:H",
     availableDataRange: "PrimeVideoSharing!A12:H",
     expireDateColumnIndex: 4,
     totalColumns: 8,
   },
   PrimeVideoFamilyAccess: {
     detailRange: "PRODUCTS!D3:E",
-    stockRange: "PRODUCTS!E1",
     availableDataRange: "PrimeVideoFamily!A12:G",
     expireDateColumnIndex: 3,
     totalColumns: 7,
   },
   NetflixPremiumSharingNoTV: {
     detailRange: "PRODUCTS!G3:H",
-    stockRange: "PRODUCTS!H1",
     availableDataRange: "SharingNoTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumSharingWithTV: {
     detailRange: "PRODUCTS!J3:K",
-    stockRange: "PRODUCTS!K1",
     availableDataRange: "SharingWithTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumFamilyAccess: {
     detailRange: "PRODUCTS!M3:N",
-    stockRange: "PRODUCTS!N1",
     availableDataRange: "FamilyAccess!A12:G",
     expireDateColumnIndex: 3,
     totalColumns: 7,
   },
   NetflixPremiumSharingNoTVResellerPrice: {
     detailRange: "PRODUCTS!P3:Q",
-    stockRange: "PRODUCTS!Q1",
     availableDataRange: "RESELLERSharingNoTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumSharingWithTVResellerPrice: {
     detailRange: "PRODUCTS!S3:T",
-    stockRange: "PRODUCTS!T1",
     availableDataRange: "RESELLERSharingWithTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumFamilyAccessResellerPrice: {
     detailRange: "PRODUCTS!V3:W",
-    stockRange: "PRODUCTS!W1",
     availableDataRange: "RESELLERFamilyAccess!A12:G",
     expireDateColumnIndex: 3,
     totalColumns: 7,

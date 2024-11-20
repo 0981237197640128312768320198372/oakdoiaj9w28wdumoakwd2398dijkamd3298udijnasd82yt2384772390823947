@@ -17,11 +17,8 @@ const ShowProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        console.log("Fetching products from /api/get_products...")
-
         const response = await fetch("/api/get_products?all=true")
         const data = await response.json()
-        console.log("Fetched products:", data)
         const productsWithIds = data.map((product: any) => ({
           ...product,
           name: product.name,
@@ -29,11 +26,10 @@ const ShowProducts = () => {
             ...detail,
             id: `${product.name.replace(/\s+/g, "")}-${detail.duration.replace(
               /\s+/g,
-              "-",
+              "-"
             )}`,
           })),
         }))
-        console.log("Processed products:", productsWithIds)
         setProducts(productsWithIds)
       } catch (error) {
         console.error("Failed to fetch products:", error)
