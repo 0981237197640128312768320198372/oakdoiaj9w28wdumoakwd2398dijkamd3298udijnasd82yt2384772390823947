@@ -22,14 +22,14 @@ export async function POST(request: Request) {
     if (!personalKey || !selectedProducts || selectedProducts.length === 0) {
       return NextResponse.json(
         { error: "Invalid request: Missing personal key or products" },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
     const userInfo =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        "UserInfo!A2:D",
+        "UserInfo!A2:D"
       )) || []
 
     const user = userInfo.find((row: any[]) => row[0] === personalKey)
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         headers: {
           "x-api-key": process.env.SECURE_API_KEY || "", // Pass the secure API key
         },
-      },
+      }
     )
       .then((res) => res.json())
       .catch((error) => {
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     if (!secureProductData) {
       return NextResponse.json(
         { error: "Failed to retrieve product data" },
-        { status: 500 },
+        { status: 500 }
       )
     }
 
@@ -99,26 +99,39 @@ export async function POST(request: Request) {
 
         const expireDate = new Date()
         expireDate.setDate(expireDate.getDate() + durationDays)
-        const formattedExpireDate = expireDate.toISOString().split("T")[0]
-        const currentDate = new Date()
-        const formattedOrderDate = `${String(currentDate.getDate()).padStart(
-          2,
-          "0",
-        )} ${currentDate.toLocaleString("default", {
+
+        const formattedExpireDate = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Bangkok",
+          day: "2-digit",
           month: "long",
-        })} ${currentDate.getFullYear()} ${String(
-          currentDate.getHours(),
-        ).padStart(2, "0")}:${String(currentDate.getMinutes()).padStart(
-          2,
-          "0",
-        )}`
+        }).format(expireDate)
+
+        const currentDate = new Date()
+        const options: Intl.DateTimeFormatOptions = {
+          timeZone: "Asia/Bangkok",
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }
+
+        const formattedOrderDate = new Intl.DateTimeFormat(
+          "en-GB",
+          options
+        ).format(currentDate)
+
+        // Ensure the formattedExpireDate retains the YYYY-MM-DD format
+        const [year, month, day] = formattedExpireDate.split("-")
+        const finalFormattedExpireDate = `${year}-${month}-${day}`
 
         if (!batchUpdates[sheetName]) batchUpdates[sheetName] = []
         batchUpdates[sheetName].push({
           row,
           updates: {
             personalKey,
-            expireDate: formattedExpireDate,
+            expireDate: finalFormattedExpireDate,
             orderDate: formattedOrderDate,
             contact: userContact,
           },
@@ -130,7 +143,7 @@ export async function POST(request: Request) {
     if (unavailableProducts.length > 0) {
       return NextResponse.json(
         { error: "Some products are out of stock", unavailableProducts },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -141,7 +154,7 @@ export async function POST(request: Request) {
           requiredBalance: calculatedTotalCost,
           currentBalance: userBalance,
         },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -154,11 +167,11 @@ export async function POST(request: Request) {
               sheetName,
               row,
               updates,
-              expireDateColumnIndex,
-            ),
-          ),
-        ),
-      ),
+              expireDateColumnIndex
+            )
+          )
+        )
+      )
     )
 
     return NextResponse.json({
@@ -170,7 +183,7 @@ export async function POST(request: Request) {
     console.error("Error during checkout verification:", error)
     return NextResponse.json(
       { error: "Failed to verify checkout" },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }

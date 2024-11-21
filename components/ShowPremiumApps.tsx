@@ -42,8 +42,8 @@ export const ShowPremiumApps = () => {
     try {
       const response = await fetch(
         `/api/emails_reset_password?search=${encodeURIComponent(
-          email,
-        )}&t=${Date.now()}`,
+          email
+        )}&t=${Date.now()}`
       )
       if (!response.ok) {
         throw new Error("Failed to fetch emails")
@@ -62,7 +62,7 @@ export const ShowPremiumApps = () => {
   const emailAllowedReset = premiumData
     .filter(
       (item: any) =>
-        item.accessType && item.accessType.includes("Family Access"),
+        item.accessType && item.accessType.includes("Family Access")
     )
     .map((item: any) => item.email)
     .filter((email: string | undefined) => email !== undefined) as string[]
@@ -195,7 +195,7 @@ export const ShowPremiumApps = () => {
       password: "Password",
       profile: "Profile",
       pin: "PIN",
-    })[label] || null
+    }[label] || null)
 
   const filteredPremiumData = premiumData.filter((item: any) => {
     const searchQuery = searchTerm.toLowerCase()
@@ -447,7 +447,7 @@ export const ShowPremiumApps = () => {
                       </div>
                     ))}
                   </div>
-                ),
+                )
               )}
             </div>
             <div className='w-full flex flex-col justify-center items-center pt-48 pb-40'>
@@ -481,7 +481,7 @@ export const ShowPremiumApps = () => {
                         .filter(
                           (item: any) =>
                             item.accessType &&
-                            item.accessType.includes("Family Access"),
+                            item.accessType.includes("Family Access")
                         )
                         .map((item: any, index: number) => {
                           const email = item.email
