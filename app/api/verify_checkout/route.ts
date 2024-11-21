@@ -99,13 +99,7 @@ export async function POST(request: Request) {
 
         const expireDate = new Date()
         expireDate.setDate(expireDate.getDate() + durationDays)
-
-        const formattedExpireDate = new Intl.DateTimeFormat("en-GB", {
-          timeZone: "Asia/Bangkok",
-          day: "2-digit",
-          month: "long",
-        }).format(expireDate)
-
+        const formattedExpireDate = expireDate.toISOString().split("T")[0]
         const currentDate = new Date()
         const options: Intl.DateTimeFormatOptions = {
           timeZone: "Asia/Bangkok",
@@ -121,17 +115,25 @@ export async function POST(request: Request) {
           "en-GB",
           options
         ).format(currentDate)
-
-        // Ensure the formattedExpireDate retains the YYYY-MM-DD format
-        const [year, month, day] = formattedExpireDate.split("-")
-        const finalFormattedExpireDate = `${year}-${month}-${day}`
+        // const currentDate = new Date()
+        // const formattedOrderDate = `${String(currentDate.getDate()).padStart(
+        //   2,
+        //   "0"
+        // )} ${currentDate.toLocaleString("default", {
+        //   month: "long",
+        // })} ${currentDate.getFullYear()} ${String(
+        //   currentDate.getHours()
+        // ).padStart(2, "0")}:${String(currentDate.getMinutes()).padStart(
+        //   2,
+        //   "0"
+        // )}`
 
         if (!batchUpdates[sheetName]) batchUpdates[sheetName] = []
         batchUpdates[sheetName].push({
           row,
           updates: {
             personalKey,
-            expireDate: finalFormattedExpireDate,
+            expireDate: formattedExpireDate,
             orderDate: formattedOrderDate,
             contact: userContact,
           },
