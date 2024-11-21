@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
 import { getGoogleSheetsData, manageProductData } from "@/app/api/CRUD"
+import { productsConfig } from "@/constant"
 import process from "process"
 
 type SelectedProduct = {
@@ -8,6 +9,8 @@ type SelectedProduct = {
   quantity: number
   duration: string
 }
+
+type ProductName = keyof typeof productsConfig
 
 export async function POST(request: Request) {
   try {
@@ -37,16 +40,21 @@ export async function POST(request: Request) {
     const userBalance = parseFloat(user[1])
     const userContact = user[3]
 
-    const productData = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/get_products`,
+    const secureProductData = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/get_secure_products`,
+      {
+        headers: {
+          "x-api-key": process.env.SECURE_API_KEY || "", // Pass the secure API key
+        },
+      },
     )
       .then((res) => res.json())
       .catch((error) => {
-        console.error("Error fetching product data:", error)
+        console.error("Error fetching secure product data:", error)
         return null
       })
 
-    if (!productData) {
+    if (!secureProductData) {
       return NextResponse.json(
         { error: "Failed to retrieve product data" },
         { status: 500 },
@@ -55,20 +63,68 @@ export async function POST(request: Request) {
 
     let calculatedTotalCost = 0
     const unavailableProducts: string[] = []
-    const purchasedProductsData = []
+    const batchUpdates: Record<string, any[]> = {}
 
-    for (const selectedProduct of selectedProducts) {
-      const { name, quantity, duration } = selectedProduct
-      const product = productData.find((p: any) => p.name === name)
+    for (const { name, quantity, duration } of selectedProducts) {
+      const productConfig = productsConfig[name as ProductName]
+      const secureProduct = secureProductData.find((p: any) => p.name === name)
 
-      if (!product || product.stock < quantity) {
+      if (!productConfig || !secureProduct || secureProduct.stock < quantity) {
         unavailableProducts.push(name)
         continue
       }
 
-      const productPrice = parseFloat(product.details[0].price)
+      const productPrice = parseFloat(secureProduct.details[0].price)
       calculatedTotalCost += productPrice * quantity
-      purchasedProductsData.push({ product, quantity, duration })
+
+      const sheetName = productConfig.availableDataRange.split("!")[0]
+      const expireDateColumnIndex = productConfig.expireDateColumnIndex
+
+      for (let i = 0; i < quantity; i++) {
+        const availableAccount = secureProduct.availableAccounts.shift()
+
+        if (!availableAccount || availableAccount.data[0] !== "") {
+          console.warn("No valid available account found for the product.")
+          unavailableProducts.push(name)
+          continue
+        }
+
+        const row = availableAccount.row
+
+        const durationDays = parseInt(duration.split(" ")[0], 10)
+        if (isNaN(durationDays) || durationDays <= 0) {
+          console.error(`Invalid duration provided: ${duration}`)
+          continue
+        }
+
+        const expireDate = new Date()
+        expireDate.setDate(expireDate.getDate() + durationDays)
+        const formattedExpireDate = expireDate.toISOString().split("T")[0]
+        const currentDate = new Date()
+        const formattedOrderDate = `${String(currentDate.getDate()).padStart(
+          2,
+          "0",
+        )} ${currentDate.toLocaleString("default", {
+          month: "long",
+        })} ${currentDate.getFullYear()} ${String(
+          currentDate.getHours(),
+        ).padStart(2, "0")}:${String(currentDate.getMinutes()).padStart(
+          2,
+          "0",
+        )}`
+
+        if (!batchUpdates[sheetName]) batchUpdates[sheetName] = []
+        batchUpdates[sheetName].push({
+          row,
+          updates: {
+            personalKey,
+            expireDate: formattedExpireDate,
+            orderDate: formattedOrderDate,
+            contact: userContact,
+          },
+          expireDateColumnIndex,
+        })
+      }
     }
 
     if (unavailableProducts.length > 0) {
@@ -89,85 +145,10 @@ export async function POST(request: Request) {
       )
     }
 
-    const currentDate = new Date()
-    const formattedOrderDate = `${String(currentDate.getDate()).padStart(
-      2,
-      "0",
-    )} ${currentDate.toLocaleString("default", {
-      month: "long",
-    })} ${currentDate.getFullYear()} ${String(currentDate.getHours()).padStart(
-      2,
-      "0",
-    )}:${String(currentDate.getMinutes()).padStart(2, "0")}`
-
-    const batchUpdates: Record<
-      string,
-      {
-        row: number
-        updates: {
-          personalKey: string
-          expireDate: string
-          orderDate: string
-          contact: string
-        }
-        expireDateColumnIndex: number
-      }[]
-    > = {}
-
-    for (const { product, quantity, duration } of purchasedProductsData) {
-      if (!product.availableDataRange) {
-        console.warn(
-          `No availableDataRange defined for product: ${product.name}`,
-        )
-        continue
-      }
-
-      const expireDateColumnIndex = product.expireDateColumnIndex
-      const sheetName = product.availableDataRange.split("!")[0]
-
-      if (!sheetName) {
-        console.error(`Invalid sheet name for product: ${product.name}`)
-        continue
-      }
-
-      for (let i = 0; i < quantity; i++) {
-        const availableAccount = product.availableAccounts.shift()
-
-        if (!availableAccount || availableAccount.data[0] !== "") {
-          console.warn("No valid available account found for the product.")
-          continue
-        }
-
-        const row = availableAccount.row
-
-        const durationDays = parseInt(duration.split(" ")[0], 10)
-        if (isNaN(durationDays) || durationDays <= 0) {
-          console.error(`Invalid duration provided: ${duration}`)
-          continue
-        }
-
-        const expireDate = new Date()
-        expireDate.setDate(expireDate.getDate() + durationDays)
-        const formattedExpireDate = expireDate.toISOString().split("T")[0]
-
-        if (!batchUpdates[sheetName]) batchUpdates[sheetName] = []
-        batchUpdates[sheetName].push({
-          row,
-          updates: {
-            personalKey,
-            expireDate: formattedExpireDate,
-            orderDate: formattedOrderDate,
-            contact: userContact,
-          },
-          expireDateColumnIndex,
-        })
-      }
-    }
-
-    const updatePromises = Object.entries(batchUpdates).map(
-      async ([sheetName, updates]) => {
-        const updateOperations = updates.map(
-          ({ row, updates, expireDateColumnIndex }) =>
+    await Promise.all(
+      Object.entries(batchUpdates).map(([sheetName, updates]) =>
+        Promise.all(
+          updates.map(({ row, updates, expireDateColumnIndex }) =>
             manageProductData(
               process.env.___SPREADSHEET_ID as string,
               sheetName,
@@ -175,12 +156,10 @@ export async function POST(request: Request) {
               updates,
               expireDateColumnIndex,
             ),
-        )
-        return Promise.all(updateOperations)
-      },
+          ),
+        ),
+      ),
     )
-
-    await Promise.all(updatePromises)
 
     return NextResponse.json({
       message: "Checkout successful",
