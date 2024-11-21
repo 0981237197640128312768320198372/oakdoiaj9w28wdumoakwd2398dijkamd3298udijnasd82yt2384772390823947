@@ -10,7 +10,32 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const productName = searchParams.get("name") as ProductName | null
   const fetchAll = searchParams.get("all") === "true"
+
   try {
+    // Fetch all product details from Google Sheets
+    const allDetails =
+      (await getGoogleSheetsData(
+        process.env.___SPREADSHEET_ID as string,
+        "PRODUCTS!A2:D"
+      )) || []
+
+    // Transform details to map with productConfig keys
+    const detailsMap = allDetails.reduce((map: Record<string, any[]>, row) => {
+      const [appName, typeAccess, duration, price] = row
+
+      if (!appName || !typeAccess || !duration || !price) return map // Skip invalid rows
+
+      // Generate key matching ProductConfig name (remove spaces, combine appName + typeAccess)
+      const configKey = `${appName.trim()}${typeAccess.trim()}`.replace(
+        /\s+/g,
+        ""
+      )
+
+      if (!map[configKey]) map[configKey] = []
+      map[configKey].push({ duration, price }) // Push matching details under the key
+      return map
+    }, {})
+
     const selectedProducts = fetchAll
       ? productsConfig
       : productName
@@ -24,18 +49,19 @@ export async function GET(request: Request) {
       )
     }
 
+    // Process each selected product
     const productDataPromises = Object.entries(selectedProducts).map(
       async ([name, ranges]) => {
-        const [detailData, availableData] = await Promise.all([
-          getGoogleSheetsData(
-            process.env.___SPREADSHEET_ID as string,
-            ranges.detailRange
-          ),
-          getGoogleSheetsData(
-            process.env.___SPREADSHEET_ID as string,
-            ranges.availableDataRange
-          ),
-        ])
+        // Match product details based on config name
+        const matchedDetails = detailsMap[name] || []
+
+        // Fetch available data for the product
+        const availableData = await getGoogleSheetsData(
+          process.env.___SPREADSHEET_ID as string,
+          ranges.availableDataRange
+        )
+
+        // Normalize available data
         const normalizedAvailableData = (availableData || []).map(
           (row: any[]) => {
             while (row.length < ranges.totalColumns) {
@@ -45,6 +71,7 @@ export async function GET(request: Request) {
           }
         )
 
+        // Filter available accounts
         const filteredAvailableData = normalizedAvailableData
           .map((row: any[], index: number) => ({
             data: row,
@@ -55,28 +82,22 @@ export async function GET(request: Request) {
               item.data[0] === "" &&
               item.data[ranges.expireDateColumnIndex] === ""
           )
+
         return {
           name,
-          details: (detailData || [])
-            .filter(
-              (item): item is [string, string] =>
-                Array.isArray(item) && item.length === 2
-            )
-            .map(([duration, price]) => ({
-              duration,
-              price,
-            })),
+          details: matchedDetails, // Only include matched details for the product
           stock: filteredAvailableData.length,
-          availableAccounts: filteredAvailableData,
+          // availableAccounts: filteredAvailableData,
           expireDateColumnIndex: ranges.expireDateColumnIndex,
           totalColumns: ranges.totalColumns,
         }
       }
     )
+
     const productsData = await Promise.all(productDataPromises)
     return NextResponse.json(productsData)
   } catch (error) {
-    console.error("ERROR ERROR ERROR ERROR ERROR ERROR ", error)
+    console.error("Error fetching products data:", error)
     return NextResponse.json(
       { error: "Failed to fetch product data" },
       { status: 500 }

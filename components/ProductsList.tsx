@@ -17,7 +17,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
           total +
           product.details.reduce(
             (sum: number, detail: any) => sum + getCartItemQuantity(detail.id),
-            0,
+            0
           )
         )
       }, 0)

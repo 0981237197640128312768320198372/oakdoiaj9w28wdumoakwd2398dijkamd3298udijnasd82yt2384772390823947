@@ -329,49 +329,41 @@ export const accountBadge = (badge: string) => {
 
 export const productsConfig = {
   PrimeVideoSharingAccess: {
-    detailRange: "PRODUCTS!A3:B,D3:E,G3:H",
     availableDataRange: "PrimeVideoSharing!A12:H",
     expireDateColumnIndex: 4,
     totalColumns: 8,
   },
   PrimeVideoFamilyAccess: {
-    detailRange: "PRODUCTS!D3:E",
     availableDataRange: "PrimeVideoFamily!A12:G",
     expireDateColumnIndex: 3,
     totalColumns: 7,
   },
   NetflixPremiumSharingNoTV: {
-    detailRange: "PRODUCTS!G3:H",
     availableDataRange: "SharingNoTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumSharingWithTV: {
-    detailRange: "PRODUCTS!J3:K",
     availableDataRange: "SharingWithTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumFamilyAccess: {
-    detailRange: "PRODUCTS!M3:N",
     availableDataRange: "FamilyAccess!A12:G",
     expireDateColumnIndex: 3,
     totalColumns: 7,
   },
   NetflixPremiumSharingNoTVResellerPrice: {
-    detailRange: "PRODUCTS!P3:Q",
     availableDataRange: "RESELLERSharingNoTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumSharingWithTVResellerPrice: {
-    detailRange: "PRODUCTS!S3:T",
     availableDataRange: "RESELLERSharingWithTV!A12:I",
     expireDateColumnIndex: 5,
     totalColumns: 9,
   },
   NetflixPremiumFamilyAccessResellerPrice: {
-    detailRange: "PRODUCTS!V3:W",
     availableDataRange: "RESELLERFamilyAccess!A12:G",
     expireDateColumnIndex: 3,
     totalColumns: 7,
