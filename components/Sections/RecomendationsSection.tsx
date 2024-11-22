@@ -18,7 +18,7 @@ const fetchRecommendations = async (page: number, limit: number) => {
       headers: {
         "x-api-key": "1092461893164193047348723920781631",
       },
-    },
+    }
   )
 
   if (!res.ok) {
@@ -41,7 +41,7 @@ const fetchRecommendations = async (page: number, limit: number) => {
 }
 const SkeletonLoader = () => {
   return (
-    <div className='relative flex-grow flex flex-col items-center h-full w-full md:min-w-[500px] justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
+    <div className='relative flex flex-col items-center h-full w-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
       <div className='w-full h-full min-h-[500px] bg-dark-400 rounded-md'>
         <div className='relative flex items-center justify-center h-full'>
           <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
@@ -99,9 +99,7 @@ const RecomendationsSection = () => {
       <div className='w-full h-full grid lg:grid-cols-2 gap-5 px-5 lg:px-0 pb-10'>
         {loading
           ? Array.from({ length: limit }).map((_, index) => (
-              <>
-                <SkeletonLoader key={index} />
-              </>
+              <SkeletonLoader key={index} />
             ))
           : recommendationsData
               .slice()

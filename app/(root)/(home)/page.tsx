@@ -8,6 +8,7 @@ import CreditsSection from "@/components/Sections/CreditsSection"
 import { generateMetadata } from "@/lib/utils"
 import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 import WeeklyTop10Section from "@/components/Sections/WeeklyTop10Section"
+import { HomeWrapper } from "@/components/Sections/HomeWrapper"
 
 export const metadata = generateMetadata({
   title: "แอพพรีเมียมคุณภาพสูง",
@@ -18,13 +19,15 @@ export const metadata = generateMetadata({
 export default function Home() {
   return (
     <main className='flex flex-col justify-center items-center __container'>
-      {/* <AlertAnnouncement /> */}
-      <HeroSection />
-      <RecomendationsSection />
-      <WeeklyTop10Section />
-      <FAQSection />
-      <CreditsSection />
-      <ReviewSection />
+      <HomeWrapper>
+        {/* <AlertAnnouncement /> */}
+        <HeroSection />
+        <RecomendationsSection />
+        <WeeklyTop10Section />
+        <FAQSection />
+        <CreditsSection />
+        <ReviewSection />
+      </HomeWrapper>
     </main>
   )
 }

@@ -6,7 +6,7 @@ const Loading = () => {
   return (
     <div className='w-full min-h-screen flex justify-center items-center'>
       <div className='relative flex items-center justify-center'>
-        <div className='w-32 h-32 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
+        <div className='w-32 h-32 border-2 border-y -transparent border-primary rounded-full animate-spin'></div>
         <Image
           src={dokmailogosquare}
           alt='Loading Logo | Dokmai Store'
