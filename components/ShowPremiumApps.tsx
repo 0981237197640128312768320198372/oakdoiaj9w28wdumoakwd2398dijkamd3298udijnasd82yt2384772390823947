@@ -265,24 +265,27 @@ export const ShowPremiumApps = () => {
         <div className='flex gap-5 flex-col lg:flex-row'>
           <div className='bg-white/10 relative rounded-xl overflow-hidden h-fit group w-full md:min-w-96 md:w-fit'>
             <div className='bg-gradient-to-tl from-white/5 to-dark-800 rounded-lg p-5 w-full'>
-              <div className='justify-end flex items-start'>
-                <div className='flex gap-2 items-center select-none'>
+              <div className='flex gap-2 items-start select-none w-full justify-between mb-10'>
+                <div className='flex gap-2 h-14 items-center'>
                   <Image
                     src={dokmaicoin}
-                    width={500}
-                    height={500}
-                    className=' w-6 h-6'
+                    width={300}
+                    height={300}
+                    className='w-10 h-10'
                     alt='Dokmai Coin Icon'
                   />
-                  <p className='text-2xl font-aktivGroteskBold'>
-                    {userInfo.balance}
-                  </p>
+                  <span className='gap-0 text-xs'>
+                    Dokmai Coin
+                    <p className='text-xl font-aktivGroteskBold'>
+                      {userInfo.balance}
+                    </p>
+                  </span>
                 </div>
-              </div>
-              <div className='flex flex-col items-start justify-center gap-2'>
                 <div className='flex gap-2 items-center'>
                   {accountBadge(userInfo.badge)}
                 </div>
+              </div>
+              <div className='flex flex-col items-start justify-center gap-2'>
                 <div className='flex gap-2 items-center'>
                   <FaUserLock className='w-8 h-8 text-white p-2 bg-white/10 rounded-lg' />
                   <p className='text-lg select-none'>{userInfo.personalKey}</p>
@@ -295,18 +298,20 @@ export const ShowPremiumApps = () => {
                   Deposit Dokmai Coin
                 </Link>
               </div>
-              <button
-                onClick={handleLogout}
-                className='mt-8 bg-white/10 hover:bg-red-500/40 text-white text-xs rounded px-2 py-1 font-aktivGroteskRegular'
-              >
-                Logout
-              </button>
+              <div className='w-full flex justify-end'>
+                <button
+                  onClick={handleLogout}
+                  className=' bg-red-500/10 hover:bg-red-500/30 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskRegular'
+                >
+                  Logout
+                </button>
+              </div>
               <Image
                 src={dokmaithinoutlinelogo}
                 alt='Dokmai Store Logo'
                 width={300}
                 height={300}
-                className='absolute -bottom-5 -right-5 opacity-10 group-hover:opacity-40 select-none duration-1000 '
+                className='absolute -bottom-5 -right-5 opacity-10 group-hover:opacity-40 select-none duration-1000 -z-40'
               />
             </div>
           </div>
