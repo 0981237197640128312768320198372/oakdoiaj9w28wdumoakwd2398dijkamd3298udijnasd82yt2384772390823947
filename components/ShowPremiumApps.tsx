@@ -281,22 +281,22 @@ export const ShowPremiumApps = () => {
                     </p>
                   </span>
                 </div>
-                <div className='flex gap-2 items-center'>
-                  {accountBadge(userInfo.badge)}
-                </div>
-              </div>
-              <div className='flex flex-col items-start justify-center gap-2'>
-                <div className='flex gap-2 items-center'>
-                  <FaUserLock className='w-8 h-8 text-white p-2 bg-white/10 rounded-lg' />
-                  <p className='text-lg select-none'>{userInfo.personalKey}</p>
-                </div>
                 <Link
                   href='/deposit'
-                  className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded-lg p-2 z-30'
+                  className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded p-1 z-30'
                 >
                   <MdOutlineAccountBalanceWallet className='w-5 h-5 ' />
                   Deposit Dokmai Coin
                 </Link>
+              </div>
+              <div className='flex flex-col items-start justify-center gap-2'>
+                <div className='flex gap-2 items-center'>
+                  {accountBadge(userInfo.badge)}
+                </div>
+                <div className='flex gap-2 items-center'>
+                  <FaUserLock className='w-8 h-8 text-white p-2 bg-white/10 rounded-lg' />
+                  <p className='text-lg select-none'>{userInfo.personalKey}</p>
+                </div>
               </div>
               <div className='w-full flex justify-end'>
                 <button
