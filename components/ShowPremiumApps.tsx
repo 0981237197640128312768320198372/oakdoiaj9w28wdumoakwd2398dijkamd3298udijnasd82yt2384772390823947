@@ -380,7 +380,7 @@ export const ShowPremiumApps = () => {
         !validatingPersonalKey &&
         !fetchingData &&
         premiumData.length > 0 && (
-          <div className='mt-52 w-full'>
+          <div className='mt-52 w-full max-md:justify-center'>
             <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
               Your Ordered{" "}
               <span className='text-dark-800 bg-primary p-1'>Premium Apps</span>
