@@ -91,7 +91,7 @@ const Navbar = () => {
                 <Link
                   href={nav.url}
                   key={i}
-                  className={`text-light-200 border-b-[1px] border-primary flex-col-reverse py-[3px] hover:py-[1px] duration-300 px-[10px] md:text-sm font-medium group ${
+                  className={`text-light-200 border-b-[1px] border-primary flex-col-reverse py-[3px] hover:py-[1px] duration-300 md:text-sm font-medium group ${
                     path === nav.url
                       ? "font-black transition-transform duration-700 "
                       : ""
