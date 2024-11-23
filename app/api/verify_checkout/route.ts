@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
         const currentDate = new Date()
 
-        const options: Intl.DateTimeFormatOptions = {
+        const orderDateOptions: Intl.DateTimeFormatOptions = {
           timeZone: "Asia/Bangkok",
           day: "2-digit",
           month: "long",
@@ -112,11 +112,25 @@ export async function POST(request: Request) {
           hour12: false,
         }
 
-        // Use the same formatter for both dates
-        const formatter = new Intl.DateTimeFormat("en-GB", options)
+        const expireDateOptions: Intl.DateTimeFormatOptions = {
+          timeZone: "Asia/Bangkok",
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }
 
-        const formattedOrderDate = formatter.format(currentDate)
-        const formattedExpireDate = formatter.format(expireDate)
+        // Format using the respective options
+        const orderDateFormatter = new Intl.DateTimeFormat(
+          "en-GB",
+          orderDateOptions
+        )
+        const expireDateFormatter = new Intl.DateTimeFormat(
+          "en-GB",
+          expireDateOptions
+        )
+
+        const formattedOrderDate = orderDateFormatter.format(currentDate)
+        const formattedExpireDate = expireDateFormatter.format(expireDate)
 
         if (!batchUpdates[sheetName]) batchUpdates[sheetName] = []
         batchUpdates[sheetName].push({
