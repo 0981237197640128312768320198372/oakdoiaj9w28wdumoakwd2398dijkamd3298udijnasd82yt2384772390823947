@@ -54,7 +54,7 @@ const Navbar = () => {
           visible ? "translate-y-0" : "-translate-y-full"
         } z-10`}
       >
-        <div className='w-full gap-10 bg-dark-800 flex p-3 pb-6 xl:px-0 xl:pt-10 max-w-[1140px] justify-between duration-1000 items-center '>
+        <div className='w-full gap-10 bg-dark-800 flex p-3 pb-6 xl:px-0 xl:pt-10 max-w-[1140px] px-5 justify-between duration-1000 items-center '>
           <Link href='/' className='flex select-none items-center gap-1 w-fit'>
             <Image
               width={100}

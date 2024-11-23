@@ -208,6 +208,8 @@ export const ShowPremiumApps = () => {
       item.accessType?.toLowerCase().includes(searchQuery)
     )
   })
+
+  console.log()
   return (
     <div className='w-full'>
       {checkingLocalStorage && <Loading />}
@@ -233,7 +235,7 @@ export const ShowPremiumApps = () => {
               type='text'
               placeholder='Enter your Personal Key (#ABCD1234)'
               className='border-[1px] border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
-              value={inputPersonalKey}
+              value={inputPersonalKey.toUpperCase()}
               onChange={(e) => setInputPersonalKey(e.target.value)}
             />
             <button
@@ -355,7 +357,6 @@ export const ShowPremiumApps = () => {
               Your Ordered{" "}
               <span className='text-dark-800 bg-primary p-1'>Premium Apps</span>
             </h2>
-
             <input
               type='text'
               value={searchTerm}
@@ -425,85 +426,90 @@ export const ShowPremiumApps = () => {
                 )
               )}
             </div>
-            <div className='w-full flex flex-col justify-center items-center pt-48 pb-40'>
-              <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
-                Get Email{" "}
-                <span className='text-dark-800 bg-primary p-1'>
-                  Link Or Code
-                </span>{" "}
-                For Reset Password Your{" "}
-                <span className='text-dark-800 bg-primary p-1'>
-                  Premium Apps
-                </span>{" "}
-                Here
-              </h2>
-              <div className='flex w-full justify-start items-start gap-5 flex-col lg:flex-row '>
-                <div className='w-full h-full flex flex-col gap-5 '>
-                  <form
-                    onSubmit={onSubmitForm}
-                    className='w-full flex border-[1px] border-primary/40 rounded-sm'
-                  >
-                    <select
-                      required
-                      value={searchEmail}
-                      onChange={(e) => setSearchEmail(e.target.value)}
-                      className='px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+            {premiumData.filter(
+              (item: any) =>
+                item.accessType && item.accessType.includes("Family Access")
+            ).length > 0 && (
+              <div className='w-full flex flex-col justify-center items-center pt-48 pb-40'>
+                <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
+                  Get Email{" "}
+                  <span className='text-dark-800 bg-primary p-1'>
+                    Link Or Code
+                  </span>{" "}
+                  For Reset Password Your{" "}
+                  <span className='text-dark-800 bg-primary p-1'>
+                    Premium Apps
+                  </span>{" "}
+                  Here
+                </h2>
+                <div className='flex w-full justify-start items-start gap-5 flex-col lg:flex-row '>
+                  <div className='w-full h-full flex flex-col gap-5 '>
+                    <form
+                      onSubmit={onSubmitForm}
+                      className='w-full flex border-[1px] border-primary/40 rounded-sm'
                     >
-                      <option value='' disabled>
-                        Select an email
-                      </option>
-                      {premiumData
-                        .filter(
-                          (item: any) =>
-                            item.accessType &&
-                            item.accessType.includes("Family Access")
-                        )
-                        .map((item: any, index: number) => {
-                          const email = item.email
-                          return email ? (
-                            <option key={index} value={email}>
-                              {email}
-                            </option>
-                          ) : null
-                        })}
-                    </select>
-                    <button
-                      type='submit'
-                      className='ml-4 bg-primary hover:bg-primary/70 active:bg-primary/50 text-sm text-dark-800 px-4 py-2 font-aktivGroteskBold'
-                    >
-                      Submit
-                    </button>
-                  </form>
-                  <div className='flex w-full h-full'>
-                    {loadingEmail ? (
-                      <Loading text='กรุณารอสักครู่...' />
-                    ) : (
-                      <>
-                        {hasSearched ? (
-                          <div className='w-full'>
-                            <div className='flex items-center justify-between mb-2'>
-                              {/* Display countdown timer */}
-                              <p className='text-gray-500'>
-                                Refreshing ({lastSearchedEmail})
-                                <br className='md:hidden' /> in{" "}
-                                {refreshCountdown} seconds...
-                              </p>
-                              {/* Show "Refreshing..." message when refreshing */}
-                              {isRefreshing && (
-                                <p className='text-blue-500 animate-pulse'>
-                                  Refreshing emails...
+                      <select
+                        required
+                        value={searchEmail}
+                        onChange={(e) => setSearchEmail(e.target.value)}
+                        className='px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+                      >
+                        <option value='' disabled>
+                          Select an email
+                        </option>
+                        {premiumData
+                          .filter(
+                            (item: any) =>
+                              item.accessType &&
+                              item.accessType.includes("Family Access")
+                          )
+                          .map((item: any, index: number) => {
+                            const email = item.email
+                            return email ? (
+                              <option key={index} value={email}>
+                                {email}
+                              </option>
+                            ) : null
+                          })}
+                      </select>
+                      <button
+                        type='submit'
+                        className='ml-4 bg-primary hover:bg-primary/70 active:bg-primary/50 text-sm text-dark-800 px-4 py-2 font-aktivGroteskBold'
+                      >
+                        Submit
+                      </button>
+                    </form>
+                    <div className='flex w-full h-full'>
+                      {loadingEmail ? (
+                        <Loading text='กรุณารอสักครู่...' />
+                      ) : (
+                        <>
+                          {hasSearched ? (
+                            <div className='w-full'>
+                              <div className='flex items-center justify-between mb-2'>
+                                {/* Display countdown timer */}
+                                <p className='text-gray-500'>
+                                  Refreshing ({lastSearchedEmail})
+                                  <br className='md:hidden' /> in{" "}
+                                  {refreshCountdown} seconds...
                                 </p>
-                              )}
+                                {/* Show "Refreshing..." message when refreshing */}
+                                {isRefreshing && (
+                                  <p className='text-blue-500 animate-pulse'>
+                                    Refreshing emails...
+                                  </p>
+                                )}
+                              </div>
+                              <EmailList emails={emails} />
                             </div>
-                            <EmailList emails={emails} />
-                          </div>
-                        ) : null}
-                      </>
-                    )}
+                          ) : null}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
