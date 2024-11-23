@@ -12,6 +12,7 @@ import Link from "next/link"
 import PersonalKeyModal from "@/components/PersonalKeyModal"
 import { MdOutlineAccountBalanceWallet } from "react-icons/md"
 import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
+import Loading from "./Loading"
 
 const CartModal = ({
   isOpen,
@@ -197,20 +198,10 @@ const CartModal = ({
   }
 
   return loading ? (
-    <div className='fixed top-0 left-0 z-[9999999999999] w-screen h-screen flex flex-col justify-center items-center bg-dark-800'>
-      <div className='relative flex flex-col items-center justify-center gap-3'>
-        <div className='w-32 h-32 border-y-[1px] border-y-primary/30 border-x-2 border-x-primary rounded-full animate-spin'></div>
-        <Image
-          src={dokmailogosquare}
-          alt='Loading Logo | Dokmai Store'
-          width={200}
-          height={200}
-          loading='lazy'
-          className='absolute p-5 animate-pulse'
-        />
-      </div>
-      <p className='mt-2'>Processing...</p>
-    </div>
+    <Loading
+      text='กรุณารอสักครู่...
+'
+    />
   ) : (
     <div className='fixed inset-0 bg-dark-800/20 backdrop-blur-lg flex justify-center items-end z-50'>
       <div className='w-full max-w-lg bg-dark-800 p-4 rounded-t-lg border-[1px] border-dark-600'>
