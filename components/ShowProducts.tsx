@@ -26,7 +26,7 @@ const ShowProducts = () => {
             ...detail,
             id: `${product.name.replace(/\s+/g, "")}-${detail.duration.replace(
               /\s+/g,
-              "-",
+              "-"
             )}`,
           })),
         }))
@@ -50,16 +50,34 @@ const ShowProducts = () => {
             headline='สินค้า'
             description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'
           />{" "}
-          {cart.length > 0 && (
-            <div className='fixed bottom-0 px-10 pt-10 pb-5 w-full bg-dark-700/40 backdrop-blur h-fit flex justify-center items-center border-t-[1px] border-dark-500'>
-              <button
-                onClick={() => setCartOpen(true)}
-                className='bg-primary text-dark-800 py-2 rounded active:bg-primary/80 font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
-              >
-                View Cart
-              </button>
-            </div>
-          )}
+          {cart.length > 0 &&
+            (() => {
+              const resellerItems = cart.filter((item) =>
+                item.id.includes("Reseller")
+              )
+              const hasValidResellerCondition =
+                resellerItems.some((item) => item.quantity === 2) ||
+                resellerItems.length > 1
+
+              // Always show the button if there are non-reseller items or valid reseller condition
+              if (
+                resellerItems.length === 0 ||
+                hasValidResellerCondition ||
+                cart.length > resellerItems.length
+              ) {
+                return (
+                  <div className='fixed bottom-0 px-10 pt-10 pb-5 w-full bg-dark-700/40 backdrop-blur h-fit flex justify-center items-center border-t-[1px] border-dark-500'>
+                    <button
+                      onClick={() => setCartOpen(true)}
+                      className='bg-primary text-dark-800 py-2 rounded active:bg-primary/80 font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
+                    >
+                      View Cart
+                    </button>
+                  </div>
+                )
+              }
+              return null
+            })()}
           <ProductsList priceData={products} />
         </>
       )}

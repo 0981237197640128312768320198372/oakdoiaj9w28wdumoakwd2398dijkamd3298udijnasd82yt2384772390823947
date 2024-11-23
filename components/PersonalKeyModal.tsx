@@ -30,6 +30,7 @@ const PersonalKeyModal: React.FC<PersonalKeyModalProps> = ({
       localStorage.setItem("personalKey", inputPersonalKey)
       onClose()
       handleCheckout(inputPersonalKey)
+      setLoading(true)
     } catch (error) {
       setLoading(false)
       setError("มีข้อผิดพลาดเกิดขึ้น โปรดตรวจสอบ Personal Key อีกครั้ง")

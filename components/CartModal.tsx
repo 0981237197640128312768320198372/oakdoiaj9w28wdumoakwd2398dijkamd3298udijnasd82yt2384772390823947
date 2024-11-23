@@ -11,7 +11,6 @@ import primevideo from "@/assets/images/amazonprimevideo.png"
 import Link from "next/link"
 import PersonalKeyModal from "@/components/PersonalKeyModal"
 import { MdOutlineAccountBalanceWallet } from "react-icons/md"
-import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
 import Loading from "./Loading"
 
 const CartModal = ({
@@ -41,16 +40,6 @@ const CartModal = ({
     setLoading(true)
 
     try {
-      const balanceResponse = await fetch("/api/update_balance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personalKey, purchaseTotal: total }),
-      })
-
-      const balanceData = await balanceResponse.json()
-      if (!balanceResponse.ok)
-        throw new Error(balanceData.error || "Balance update failed")
-
       const verifyResponse = await fetch("/api/verify_checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -67,6 +56,16 @@ const CartModal = ({
       const verifyData = await verifyResponse.json()
       if (!verifyResponse.ok)
         throw new Error(verifyData.error || "Checkout failed")
+
+      const balanceResponse = await fetch("/api/update_balance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personalKey, purchaseTotal: total }),
+      })
+
+      const balanceData = await balanceResponse.json()
+      if (!balanceResponse.ok)
+        throw new Error(balanceData.error || "Balance update failed")
 
       setOrderedItems(cart)
       setStatus("success")
@@ -198,10 +197,7 @@ const CartModal = ({
   }
 
   return loading ? (
-    <Loading
-      text='กรุณารอสักครู่...
-'
-    />
+    <Loading text='กรุณารอสักครู่...' />
   ) : (
     <div className='fixed inset-0 bg-dark-800/20 backdrop-blur-lg flex justify-center items-end z-50'>
       <div className='w-full max-w-lg bg-dark-800 p-4 rounded-t-lg border-[1px] border-dark-600'>
@@ -285,15 +281,33 @@ const CartModal = ({
                 ฿ {total}
               </span>
             </div>
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className={`w-full mt-4 bg-primary active:bg-primary/80 text-dark-800 py-2 rounded font-bold text-xl ${
-                loading ? "opacity-80 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Processing..." : "Checkout"}
-            </button>
+            {(() => {
+              const resellerItems = cart.filter((item) =>
+                item.id.includes("Reseller")
+              )
+              const hasValidResellerCondition =
+                resellerItems.some((item) => item.quantity === 2) ||
+                resellerItems.length > 1
+
+              const shouldEnableCheckout =
+                resellerItems.length === 0 ||
+                hasValidResellerCondition ||
+                cart.length > resellerItems.length
+
+              return (
+                <button
+                  onClick={handleCheckout}
+                  disabled={loading || !shouldEnableCheckout}
+                  className={`w-full mt-4 bg-primary active:bg-primary/80 text-dark-800 py-2 rounded font-bold text-xl ${
+                    loading || !shouldEnableCheckout
+                      ? "opacity-80 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {loading ? "Processing..." : "Checkout"}
+                </button>
+              )
+            })()}
           </div>
         )}
       </div>

@@ -17,7 +17,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
           total +
           product.details.reduce(
             (sum: number, detail: any) => sum + getCartItemQuantity(detail.id),
-            0,
+            0
           )
         )
       }, 0)
@@ -101,10 +101,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                                 ? updateQuantity(price.id, cartQuantity - 1)
                                 : removeFromCart(price.id)
                             }
-                            disabled={
-                              product.name.includes("Reseller") &&
-                              cartQuantity <= 2
-                            }
+                            disabled={cartQuantity <= 0}
                             className='p-1 text-xs text-light-400 rounded-full border-[1px] border-light-400 disabled:opacity-50 disabled:cursor-not-allowed active:bg-dark-600 active:border-light-100'
                           >
                             <AiOutlineMinus />
@@ -123,12 +120,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                       ) : (
                         <button
                           onClick={() => {
-                            const quantityToAdd =
-                              product.name.includes("Reseller") &&
-                              cartQuantity === 0
-                                ? 2
-                                : 1
-
+                            const quantityToAdd = 1
                             addToCart({
                               id: price.id,
                               appName: product.name,
