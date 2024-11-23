@@ -8,11 +8,11 @@
   "theme_color": "#0F0F0F",
   "icons": [
     {
-      "src": "/icons/android-chrome-192x192.png",
+      "src": "/icons/favicon.png",
       "sizes": "192x192"
     },
     {
-      "src": "/icons/android-chrome-512x512.png",
+      "src": "/icons/favicon.png",
       "sizes": "512x512"
     }
   ]

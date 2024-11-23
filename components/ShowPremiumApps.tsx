@@ -467,85 +467,90 @@ export const ShowPremiumApps = () => {
                 </span>{" "}
                 Here
               </h2>
-              <div className='flex w-full justify-start items-start gap-5 flex-col lg:flex-row '>
-                <div className='w-full h-full flex flex-col gap-5 '>
-                  <form
-                    onSubmit={onSubmitForm}
-                    className='w-full flex border-[1px] border-primary/40 rounded-sm'
-                  >
-                    <select
-                      required
-                      value={searchEmail}
-                      onChange={(e) => setSearchEmail(e.target.value)}
-                      className='px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+              {premiumData.filter(
+                (item: any) =>
+                  item.accessType && item.accessType.includes("Family Access")
+              ) && (
+                <div className='flex w-full justify-start items-start gap-5 flex-col lg:flex-row '>
+                  <div className='w-full h-full flex flex-col gap-5 '>
+                    <form
+                      onSubmit={onSubmitForm}
+                      className='w-full flex border-[1px] border-primary/40 rounded-sm'
                     >
-                      <option value='' disabled>
-                        Select an email
-                      </option>
-                      {premiumData
-                        .filter(
-                          (item: any) =>
-                            item.accessType &&
-                            item.accessType.includes("Family Access")
-                        )
-                        .map((item: any, index: number) => {
-                          const email = item.email
-                          return email ? (
-                            <option key={index} value={email}>
-                              {email}
-                            </option>
-                          ) : null
-                        })}
-                    </select>
-                    <button
-                      type='submit'
-                      className='ml-4 bg-primary hover:bg-primary/70 active:bg-primary/50 text-sm text-dark-800 px-4 py-2 font-aktivGroteskBold'
-                    >
-                      Submit
-                    </button>
-                  </form>
-                  <div className='flex w-full h-full'>
-                    {loadingEmail ? (
-                      <div className='items-center justify-center w-full rounded-3xl border-[1px] border-black/40 md:h-full flex flex-col mt-10'>
-                        <div className='relative flex items-center justify-center'>
-                          <div className='w-24 h-24 border-2 border-b-transparent border-primary rounded-full animate-spin' />
-                          <Image
-                            src={dokmailogosquare}
-                            alt='Loading Logo'
-                            width={100}
-                            height={100}
-                            loading='lazy'
-                            className='absolute p-5 animate-pulse'
-                          />
-                        </div>
-                        <p className='mt-2'>กรุณารอสักครู่ ...</p>
-                      </div>
-                    ) : (
-                      <>
-                        {hasSearched ? (
-                          <div className='w-full'>
-                            <div className='flex items-center justify-between mb-2'>
-                              {/* Display countdown timer */}
-                              <p className='text-gray-500'>
-                                Refreshing ({lastSearchedEmail})
-                                <br className='md:hidden' /> in{" "}
-                                {refreshCountdown} seconds...
-                              </p>
-                              {/* Show "Refreshing..." message when refreshing */}
-                              {isRefreshing && (
-                                <p className='text-blue-500 animate-pulse'>
-                                  Refreshing emails...
-                                </p>
-                              )}
-                            </div>
-                            <EmailList emails={emails} />
+                      <select
+                        required
+                        value={searchEmail}
+                        onChange={(e) => setSearchEmail(e.target.value)}
+                        className='px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+                      >
+                        <option value='' disabled>
+                          Select an email
+                        </option>
+                        {premiumData
+                          .filter(
+                            (item: any) =>
+                              item.accessType &&
+                              item.accessType.includes("Family Access")
+                          )
+                          .map((item: any, index: number) => {
+                            const email = item.email
+                            return email ? (
+                              <option key={index} value={email}>
+                                {email}
+                              </option>
+                            ) : null
+                          })}
+                      </select>
+                      <button
+                        type='submit'
+                        className='ml-4 bg-primary hover:bg-primary/70 active:bg-primary/50 text-sm text-dark-800 px-4 py-2 font-aktivGroteskBold'
+                      >
+                        Submit
+                      </button>
+                    </form>
+                    <div className='flex w-full h-full'>
+                      {loadingEmail ? (
+                        <div className='items-center justify-center w-full rounded-3xl border-[1px] border-black/40 md:h-full flex flex-col mt-10'>
+                          <div className='relative flex items-center justify-center'>
+                            <div className='w-24 h-24 border-2 border-b-transparent border-primary rounded-full animate-spin' />
+                            <Image
+                              src={dokmailogosquare}
+                              alt='Loading Logo'
+                              width={100}
+                              height={100}
+                              loading='lazy'
+                              className='absolute p-5 animate-pulse'
+                            />
                           </div>
-                        ) : null}
-                      </>
-                    )}
+                          <p className='mt-2'>กรุณารอสักครู่ ...</p>
+                        </div>
+                      ) : (
+                        <>
+                          {hasSearched ? (
+                            <div className='w-full'>
+                              <div className='flex items-center justify-between mb-2'>
+                                {/* Display countdown timer */}
+                                <p className='text-gray-500'>
+                                  Refreshing ({lastSearchedEmail})
+                                  <br className='md:hidden' /> in{" "}
+                                  {refreshCountdown} seconds...
+                                </p>
+                                {/* Show "Refreshing..." message when refreshing */}
+                                {isRefreshing && (
+                                  <p className='text-blue-500 animate-pulse'>
+                                    Refreshing emails...
+                                  </p>
+                                )}
+                              </div>
+                              <EmailList emails={emails} />
+                            </div>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}
