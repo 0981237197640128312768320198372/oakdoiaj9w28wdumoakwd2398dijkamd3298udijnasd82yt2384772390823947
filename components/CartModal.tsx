@@ -41,6 +41,16 @@ const CartModal = ({
     setLoading(true)
 
     try {
+      const balanceResponse = await fetch("/api/update_balance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ personalKey, purchaseTotal: total }),
+      })
+
+      const balanceData = await balanceResponse.json()
+      if (!balanceResponse.ok)
+        throw new Error(balanceData.error || "Balance update failed")
+
       const verifyResponse = await fetch("/api/verify_checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,16 +67,6 @@ const CartModal = ({
       const verifyData = await verifyResponse.json()
       if (!verifyResponse.ok)
         throw new Error(verifyData.error || "Checkout failed")
-
-      const balanceResponse = await fetch("/api/update_balance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personalKey, purchaseTotal: total }),
-      })
-
-      const balanceData = await balanceResponse.json()
-      if (!balanceResponse.ok)
-        throw new Error(balanceData.error || "Balance update failed")
 
       setOrderedItems(cart)
       setStatus("success")
