@@ -6,13 +6,12 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
-import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
 import dokmaicoin from "@/assets/images/dokmaicoin.png"
 import { FaUserLock } from "react-icons/fa6"
 import { accountBadge } from "@/constant"
 import netflixpremiumlogo from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
-import { MdOutlineAccountBalanceWallet } from "react-icons/md"
+import { PiWallet } from "react-icons/pi"
 import Link from "next/link"
 import Loading from "@/components/Loading"
 import EmailList from "./EmailList"
@@ -250,7 +249,7 @@ export const ShowPremiumApps = () => {
       {validatingPersonalKey && <Loading text='กำลังเช็คข้อมูลของคุณ...' />}
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
         <div className='flex gap-5 flex-col lg:flex-row'>
-          <div className='bg-white/10 relative rounded-xl overflow-hidden h-fit group w-full md:min-w-96 md:w-fit'>
+          <div className='bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group w-full'>
             <div className='bg-gradient-to-tl from-white/5 to-dark-800 rounded-lg p-5 w-full'>
               <div className='flex gap-2 items-start select-none w-full justify-between mb-10'>
                 <div className='flex gap-2 h-14 items-center'>
@@ -272,8 +271,8 @@ export const ShowPremiumApps = () => {
                   href='/deposit'
                   className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded p-1 z-30'
                 >
-                  <MdOutlineAccountBalanceWallet className='w-5 h-5 ' />
-                  Deposit Dokmai Coin
+                  <PiWallet className='w-5 h-5 ' />
+                  Deposit
                 </Link>
               </div>
               <div className='flex flex-col items-start justify-center gap-2'>
@@ -288,7 +287,7 @@ export const ShowPremiumApps = () => {
               <div className='w-full flex justify-end'>
                 <button
                   onClick={handleLogout}
-                  className=' bg-red-500/10 hover:bg-red-500/30 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskRegular'
+                  className=' bg-red-500/20 hover:bg-red-500/40 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskRegular border-[1px] border-red-500/40'
                 >
                   Logout
                 </button>
