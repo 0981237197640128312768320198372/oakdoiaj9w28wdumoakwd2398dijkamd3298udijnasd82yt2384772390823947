@@ -38,7 +38,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
           >
             <div className='flex w-full gap-28 justify-between items-start pb-5'>
               <div className='flex flex-col'>
-                <h2 className='font-aktivGroteskBold text-white'>
+                <h2 className='font-aktivGroteskBold text-white text-sm'>
                   {formatProductName(product.name)}
                 </h2>
                 <p className='font-aktivGroteskThin text-xs'>
