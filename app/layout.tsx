@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { Analytics } from "@vercel/analytics/react"
 import { CartProvider } from "@/context/CartContext"
+import Image from "next/image"
+import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
 
 export default function RootLayout({
   children,
@@ -37,6 +39,9 @@ export default function RootLayout({
             {children}
 
             <Analytics />
+            <div className='light-effect'>
+              <div className='light-element'></div>
+            </div>
           </div>
           <Footer />
         </CartProvider>

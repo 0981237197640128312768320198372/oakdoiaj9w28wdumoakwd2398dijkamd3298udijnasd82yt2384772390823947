@@ -317,7 +317,7 @@ const CartModal = ({
               let feedbackMessage = ""
               if (!hasValidResellerCondition && resellerItems.length > 0) {
                 feedbackMessage =
-                  "Add more reseller items to meet the minimum quantity of 2."
+                  "เพิ่มสินค้าเรทตัวแทน รวมจำนวนอย่างน้อย 2 อย่าง"
               }
 
               return (

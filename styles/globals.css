@@ -3,30 +3,6 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "dokmai-light";
-  src: url("../assets/fonts/dokmai-light.ttf") format("woff2");
-}
-@font-face {
-  font-family: "dokmai-regular";
-  src: url("../assets/fonts/dokmai-regular.ttf") format("woff2");
-}
-@font-face {
-  font-family: "dokmai-italic";
-  src: url("../assets/fonts/dokmai-italic.ttf") format("woff2");
-}
-@font-face {
-  font-family: "dokmai-bold";
-  src: url("../assets/fonts/dokmai-bold.ttf") format("woff2");
-}
-@font-face {
-  font-family: "dokmai-bold-italic";
-  src: url("../assets/fonts/dokmai-bold-italic.ttf") format("woff2");
-}
-@font-face {
-  font-family: "dokmai-bold-rounded";
-  src: url("../assets/fonts/dokmai-bold-rounded.otf") format("woff2");
-}
-@font-face {
   font-family: "AktivGrotesk";
   font-weight: 900;
   font-style: normal;
@@ -163,4 +139,25 @@ body::-webkit-scrollbar {
 }
 .__noscrollbar::-webkit-scrollbar {
   @apply h-0 w-0;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(20px, -30px) rotate(15deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg); /* Matches the starting state */
+  }
+}
+
+.light-effect {
+  @apply fixed inset-0 pointer-events-none overflow-hidden -z-50;
+}
+
+.light-element {
+  @apply absolute top-3/4 right-0 w-[700px] h-60 bg-primary/5 blur-3xl rounded-lg;
+  animation: float 6s infinite ease-in-out;
 }
