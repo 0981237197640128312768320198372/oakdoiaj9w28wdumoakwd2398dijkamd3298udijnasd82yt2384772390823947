@@ -12,7 +12,7 @@ export const metadata = generateMetadata({
 
 const Page = () => {
   return (
-    <main className='flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-20 xl:pt-40 __container'>
+    <main className='flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-10 xl:pt-28 __container'>
       <ShowProducts />
     </main>
   )

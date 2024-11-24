@@ -15,7 +15,7 @@ export const metadata = generateMetadata({
 
 export default function Page() {
   return (
-    <div className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-40 __container'>
+    <div className='flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-10 xl:pt-28 __container'>
       <PageHeadline
         headline='Frequently Asked Questions'
         description='คำถามที่พบบ่อย'

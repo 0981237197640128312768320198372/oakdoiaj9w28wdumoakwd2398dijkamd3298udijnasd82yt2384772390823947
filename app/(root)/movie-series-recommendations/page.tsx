@@ -23,7 +23,7 @@ export const metadata = async () => {
 }
 const page = () => {
   return (
-    <div className='w-full __container min-h-screen mt-32 px-5'>
+    <div className='w-full __container min-h-screen mt-10 md:mt-28 px-5'>
       <PageHeadline
         headline='Movie and Series Recommendations'
         description='Check out the latest movie recommendations from Dokmai Store. We recommend the best Netflix movies and series for you to enjoy!'

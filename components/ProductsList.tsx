@@ -27,7 +27,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
   }
 
   return (
-    <div className='w-full grid lg:grid-cols-2 gap-10 mt-24'>
+    <div className='w-full grid lg:grid-cols-2 gap-10 mt-8'>
       {priceData.map((product, i) => {
         const totalCartQuantity = getTotalCartQuantityForProduct(product.name)
 

@@ -10,9 +10,9 @@ const PageHeadline: React.FC<PageHeadlineProps> = ({
   description,
 }) => {
   return (
-    <div className='flex pb-32 mb-8 flex-col gap-1 justify-start w-full border-b-[1px] border-dark-500'>
-      <h1 className='font-aktivGroteskBold text-4xl'>{headline}</h1>
-      <p className='text-light-300 text-sm font-aktivGroteskThin'>
+    <div className='flex pb-10 mb-8 flex-col gap-1 justify-start w-full border-b-[1px] border-dark-500'>
+      <h1 className='font-aktivGroteskBold md:text-2xl'>{headline}</h1>
+      <p className='text-light-300 text-xs font-aktivGroteskThin'>
         {description}
       </p>
     </div>
