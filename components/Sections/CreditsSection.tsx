@@ -60,7 +60,7 @@ const SkeletonLoader = () => (
 
 const CreditsSection = () => {
   const [creditsData, setCreditsData] = useState<any[]>([])
-  const [limit] = useState(4)
+  const [limit] = useState(6)
   const [loading, setLoading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
