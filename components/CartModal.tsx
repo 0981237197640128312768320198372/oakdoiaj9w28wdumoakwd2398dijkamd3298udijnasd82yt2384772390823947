@@ -57,16 +57,6 @@ const CartModal = ({
       if (!verifyResponse.ok)
         throw new Error(verifyData.error || "Checkout failed")
 
-      const balanceResponse = await fetch("/api/update_balance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ personalKey, purchaseTotal: total }),
-      })
-
-      const balanceData = await balanceResponse.json()
-      if (!balanceResponse.ok)
-        throw new Error(balanceData.error || "Balance update failed")
-
       setOrderedItems(cart)
       setStatus("success")
       clearCart()
@@ -129,7 +119,7 @@ const CartModal = ({
             href='/your-premium-apps'
             className='text-primary px-2 py-1 font-aktivGroteskRegular rounded border-[0.7px] border-primary'
           >
-            Go to Dashboard
+            ดูบัญชีที่สั่งซื้อทั้งหมด
           </Link>
           <button
             className='bg-primary text-dark-800 active:bg-primary/80 px-2 py-1 font-aktivGroteskBold rounded'

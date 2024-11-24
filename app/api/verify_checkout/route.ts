@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
-import { getGoogleSheetsData, manageProductData } from "@/app/api/CRUD"
+import {
+  getGoogleSheetsData,
+  manageProductData,
+  updateUserField,
+} from "@/app/api/CRUD"
 import { productsConfig } from "@/constant"
 import process from "process"
 
@@ -11,6 +15,28 @@ type SelectedProduct = {
 }
 
 type ProductName = keyof typeof productsConfig
+
+async function retryOperation<T>(
+  operation: () => Promise<T>,
+  retries: number,
+  delay: number
+): Promise<T> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await operation()
+    } catch (error: any) {
+      if (
+        attempt === retries ||
+        !error.message.includes("Quota exceeded for quota metric")
+      ) {
+        throw error // Throw the error if retries are exhausted or it's not a quota error
+      }
+      console.warn(`Retrying operation after error: ${error.message}`)
+      await new Promise((resolve) => setTimeout(resolve, delay))
+    }
+  }
+  throw new Error("Operation failed after retries")
+}
 
 export async function POST(request: Request) {
   try {
@@ -26,33 +52,38 @@ export async function POST(request: Request) {
       )
     }
 
+    // Fetch user data with retry mechanism
+    const userInfoSheetRange = "UserInfo!A2:D"
     const userInfo =
-      (await getGoogleSheetsData(
-        process.env.___SPREADSHEET_ID as string,
-        "UserInfo!A2:D"
+      (await retryOperation(
+        () =>
+          getGoogleSheetsData(
+            process.env.___SPREADSHEET_ID as string,
+            userInfoSheetRange
+          ),
+        3, // Retries
+        5000 // Delay in ms
       )) || []
 
-    const user = userInfo.find((row: any[]) => row[0] === personalKey)
-    if (!user) {
+    const userRow = userInfo.findIndex((row: any[]) => row[0] === personalKey)
+    if (userRow === -1) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const userBalance = parseFloat(user[1])
-    const userContact = user[3]
+    const currentBalance = parseFloat(userInfo[userRow][1])
+    const userContact = userInfo[userRow][3]
 
-    const secureProductData = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/get_secure_products`,
-      {
-        headers: {
-          "x-api-key": process.env.SECURE_API_KEY || "", // Pass the secure API key
-        },
-      }
+    // Fetch secure product data with retry mechanism
+    const secureProductData = await retryOperation(
+      () =>
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/get_secure_products`, {
+          headers: {
+            "x-api-key": process.env.SECURE_API_KEY || "",
+          },
+        }).then((res) => res.json()),
+      3,
+      5000
     )
-      .then((res) => res.json())
-      .catch((error) => {
-        console.error("Error fetching secure product data:", error)
-        return null
-      })
 
     if (!secureProductData) {
       return NextResponse.json(
@@ -65,6 +96,7 @@ export async function POST(request: Request) {
     const unavailableProducts: string[] = []
     const batchUpdates: Record<string, any[]> = {}
 
+    // Process selected products
     for (const { name, quantity, duration } of selectedProducts) {
       const productConfig = productsConfig[name as ProductName]
       const secureProduct = secureProductData.find((p: any) => p.name === name)
@@ -116,10 +148,8 @@ export async function POST(request: Request) {
           timeZone: "Asia/Bangkok",
           day: "2-digit",
           month: "long",
-          year: "numeric",
         }
 
-        // Format using the respective options
         const orderDateFormatter = new Intl.DateTimeFormat(
           "en-GB",
           orderDateOptions
@@ -153,17 +183,18 @@ export async function POST(request: Request) {
       )
     }
 
-    if (userBalance < calculatedTotalCost) {
+    if (currentBalance < calculatedTotalCost) {
       return NextResponse.json(
         {
           error: "Insufficient balance",
           requiredBalance: calculatedTotalCost,
-          currentBalance: userBalance,
+          currentBalance,
         },
         { status: 400 }
       )
     }
 
+    // Perform batch updates
     await Promise.all(
       Object.entries(batchUpdates).map(([sheetName, updates]) =>
         Promise.all(
@@ -180,10 +211,22 @@ export async function POST(request: Request) {
       )
     )
 
+    // Update user balance
+    const newBalance = currentBalance - calculatedTotalCost
+    await updateUserField(
+      process.env.___SPREADSHEET_ID as string,
+      "UserInfo",
+      "A",
+      personalKey,
+      "B",
+      newBalance.toString()
+    )
+
     return NextResponse.json({
       message: "Checkout successful",
       userContact,
       totalCost: calculatedTotalCost,
+      newBalance,
     })
   } catch (error) {
     console.error("Error during checkout verification:", error)
