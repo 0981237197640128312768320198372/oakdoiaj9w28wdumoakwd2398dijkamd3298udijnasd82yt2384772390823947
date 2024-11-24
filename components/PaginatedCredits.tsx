@@ -146,7 +146,7 @@ export default function PaginatedCredits() {
   )
 
   return (
-    <div className='flex flex-col justify-center w-full h-full items-center px-5 lg:px-0'>
+    <div className='flex flex-col justify-center w-full h-full items-center'>
       <div className='w-fit h-full grid grid-cols-2 lg:grid-cols-3 gap-5 pb-10'>
         {loading
           ? Array.from({ length: limit }).map((_, index) => (
