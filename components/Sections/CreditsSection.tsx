@@ -168,7 +168,7 @@ const CreditsSection = () => {
             className='relative p-5 rounded-md'
             onClick={(e) => e.stopPropagation()}
           >
-            <div className='absolute inset-0 flex items-center justify-center'>
+            <div className='absolute inset-0 flex items-center justify-center w-full h-[75%]'>
               <div className='relative flex flex-col items-center justify-center gap-3'>
                 <div className='w-10 h-10 border-y-[1px] border-y-primary/30 border-x-2 border-x-primary rounded-full animate-spin'></div>
                 <Image
@@ -184,8 +184,8 @@ const CreditsSection = () => {
             <Image
               src={selectedImage}
               alt='Selected Credit'
-              width={800}
-              height={800}
+              width={500}
+              height={500}
               className='relative rounded-md z-40'
             />
           </div>
