@@ -4,6 +4,7 @@ import Image from "next/image"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
+import dokmaicoin from "@/assets/images/dokmaicoin.png"
 
 export const ProductsList = ({ priceData }: { priceData: any[] }) => {
   const { addToCart, updateQuantity, getCartItemQuantity, removeFromCart } =
@@ -33,18 +34,16 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
 
         return (
           <div
-            className='flex flex-col w-full gap-3 rounded-lg border-[1px] border-dark-600 bg-dark-700 p-10'
+            className='flex flex-col w-full gap-3 rounded-lg border-[1px] border-dark-600 bg-dark-700 p-5'
             key={i}
           >
             <div className='flex w-full gap-28 justify-between items-start pb-5'>
               <div className='flex flex-col'>
-                <h2 className='font-aktivGroteskBold text-white text-sm'>
+                <h2 className='font-aktivGroteskBold text-white text-xs'>
                   {formatProductName(product.name)}
                 </h2>
-                <p className='font-aktivGroteskThin text-xs'>
-                  {product.description}
-                </p>
-                <p className='text-sm text-gray-400'>
+                <p className=''>{product.description}</p>
+                <p className='font-aktivGroteskThin text-[11px] text-light-800'>
                   Stock Available: {product.stock}
                 </p>
               </div>
@@ -72,15 +71,14 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
             <div className='flex flex-col w-full'>
               {product.details.map((price: any, j: number) => {
                 const cartQuantity = getCartItemQuantity(price.id)
-
                 return (
                   <div
                     className='flex w-full justify-between items-center py-3 border-b-[1px] border-dark-500'
                     key={j}
                   >
-                    <div className='flex w-fit gap-3'>
+                    <div className='flex w-fit gap-1 items-center'>
                       <span
-                        className={`px-1 text-xl ${
+                        className={`px-1 text-xl mr-3 ${
                           product.name.includes("Reseller")
                             ? "bg-goldVIP"
                             : "bg-primary"
@@ -88,8 +86,15 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                       >
                         {price.duration}
                       </span>
-                      <p className='text-xl whitespace-nowrap'>
-                        ฿ {price.price}
+                      <Image
+                        src={dokmaicoin}
+                        width={70}
+                        height={70}
+                        alt='Dokmai Coin '
+                        className='w-8 h-8'
+                      />
+                      <p className='text-xl whitespace-nowrap flex'>
+                        {price.price}
                       </p>
                     </div>
                     <div className='flex gap-3 items-center'>

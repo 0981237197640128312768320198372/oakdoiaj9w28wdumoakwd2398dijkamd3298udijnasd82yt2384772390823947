@@ -11,6 +11,7 @@ import primevideo from "@/assets/images/amazonprimevideo.png"
 import Link from "next/link"
 import PersonalKeyModal from "@/components/PersonalKeyModal"
 import { MdOutlineAccountBalanceWallet } from "react-icons/md"
+import dokmaicoin from "@/assets/images/dokmaicoin.png"
 import Loading from "./Loading"
 
 const CartModal = ({
@@ -100,11 +101,24 @@ const CartModal = ({
                   <p className='text-xs font-thin'>
                     {formatProductName(item.appName)}
                   </p>
-                  <div className='flex gap-3 items-center'>
-                    <span className='px-1 text-sm font-aktivGroteskBold bg-primary text-dark-800 font-bold'>
+                  <div className='flex gap-1 items-center'>
+                    <span
+                      className={`px-1 text-sm mr-3 ${
+                        item.appName.includes("Reseller")
+                          ? "bg-goldVIP"
+                          : "bg-primary"
+                      } text-dark-800 font-aktivGroteskBold whitespace-nowrap`}
+                    >
                       {item.duration}
                     </span>
-                    <p className='text-light-100 font-medium'>฿ {item.price}</p>
+                    <Image
+                      src={dokmaicoin}
+                      width={70}
+                      height={70}
+                      alt='Dokmai Coin '
+                      className='w-8 h-8'
+                    />
+                    <p className='text-light-100 font-medium'>{item.price}</p>
                   </div>
                 </div>
               </div>
@@ -229,13 +243,24 @@ const CartModal = ({
                     <p className='text-xs font-thin'>
                       {formatProductName(item.appName)}
                     </p>
-                    <div className='flex gap-3 items-center'>
-                      <span className='px-2 py-1 text-sm bg-primary text-dark-800 font-bold'>
+                    <div className='flex gap-1 items-center'>
+                      <span
+                        className={`px-1 text-sm mr-3 ${
+                          item.appName.includes("Reseller")
+                            ? "bg-goldVIP"
+                            : "bg-primary"
+                        } text-dark-800 font-aktivGroteskBold whitespace-nowrap`}
+                      >
                         {item.duration}
                       </span>
-                      <p className='text-light-100 font-medium'>
-                        ฿ {item.price}
-                      </p>
+                      <Image
+                        src={dokmaicoin}
+                        width={70}
+                        height={70}
+                        alt='Dokmai Coin '
+                        className='w-8 h-8'
+                      />
+                      <p className='text-light-100 font-medium'>{item.price}</p>
                     </div>
                   </div>
                 </div>
@@ -275,27 +300,48 @@ const CartModal = ({
               const resellerItems = cart.filter((item) =>
                 item.id.includes("Reseller")
               )
-              const hasValidResellerCondition =
-                resellerItems.some((item) => item.quantity === 2) ||
-                resellerItems.length > 1
+              const nonResellerItems = cart.filter(
+                (item) => !item.id.includes("Reseller")
+              )
 
+              // Check if reseller items meet the minimum quantity requirement (at least 2)
+              const hasValidResellerCondition =
+                resellerItems.reduce((sum, item) => sum + item.quantity, 0) >= 2
+
+              // Determine if checkout should be enabled
               const shouldEnableCheckout =
-                resellerItems.length === 0 ||
-                hasValidResellerCondition ||
-                cart.length > resellerItems.length
+                (resellerItems.length === 0 || hasValidResellerCondition) &&
+                (nonResellerItems.length > 0 || hasValidResellerCondition)
+
+              // Determine the message to show
+              let feedbackMessage = ""
+              if (!hasValidResellerCondition && resellerItems.length > 0) {
+                feedbackMessage =
+                  "Add more reseller items to meet the minimum quantity of 2."
+              }
 
               return (
-                <button
-                  onClick={handleCheckout}
-                  disabled={loading || !shouldEnableCheckout}
-                  className={`w-full mt-4 bg-primary active:bg-primary/80 text-dark-800 py-2 rounded font-bold text-xl ${
-                    loading || !shouldEnableCheckout
-                      ? "opacity-80 cursor-not-allowed"
-                      : ""
-                  }`}
-                >
-                  {loading ? "Processing..." : "Checkout"}
-                </button>
+                <div className='w-full'>
+                  {/* Feedback message */}
+                  {!shouldEnableCheckout && feedbackMessage && (
+                    <p className='px-2 py-1 my-2 text-xs bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit'>
+                      {feedbackMessage}
+                    </p>
+                  )}
+
+                  {/* Checkout button */}
+                  <button
+                    onClick={handleCheckout}
+                    disabled={loading || !shouldEnableCheckout}
+                    className={`w-full mt-4  text-dark-800 py-2 rounded font-bold text-xl ${
+                      loading || !shouldEnableCheckout
+                        ? "opacity-80 cursor-not-allowed bg-dark-100 active:bg-dark-100/80"
+                        : " bg-primary active:bg-primary/80"
+                    }`}
+                  >
+                    {loading ? "Processing..." : "Checkout"}
+                  </button>
+                </div>
               )
             })()}
           </div>

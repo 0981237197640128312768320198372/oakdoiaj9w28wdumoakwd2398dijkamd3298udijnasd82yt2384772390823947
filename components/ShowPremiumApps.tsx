@@ -210,7 +210,7 @@ export const ShowPremiumApps = () => {
 
   console.log()
   return (
-    <div className='w-full'>
+    <div className='w-full justify-center items-center'>
       {checkingLocalStorage && <Loading />}
       {!checkingLocalStorage && !personalKey && (
         <div className='w-full flex flex-col min-h-96 justify-center items-start h-full gap-10'>
@@ -249,7 +249,7 @@ export const ShowPremiumApps = () => {
       {validatingPersonalKey && <Loading text='กำลังเช็คข้อมูลของคุณ...' />}
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
         <div className='flex gap-5 flex-col lg:flex-row'>
-          <div className='bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group w-full'>
+          <div className='bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group md:w-fit w-full'>
             <div className='bg-gradient-to-tl from-white/5 to-dark-800 rounded-lg p-5 w-full'>
               <div className='flex gap-2 items-start select-none w-full justify-between mb-10'>
                 <div className='flex gap-2 h-14 items-center'>
@@ -351,7 +351,7 @@ export const ShowPremiumApps = () => {
         !validatingPersonalKey &&
         !fetchingData &&
         premiumData.length > 0 && (
-          <div className='mt-52 w-full max-md:justify-center'>
+          <div className='mt-32 w-full max-md:justify-center'>
             <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
               Your Ordered{" "}
               <span className='text-dark-800 bg-primary p-1'>Premium Apps</span>
@@ -516,7 +516,7 @@ export const ShowPremiumApps = () => {
         !validatingPersonalKey &&
         !fetchingData &&
         error && (
-          <div className='w-full p-5'>
+          <div className='w-full p-5 justify-center'>
             <p className='px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit'>
               {error}
             </p>
