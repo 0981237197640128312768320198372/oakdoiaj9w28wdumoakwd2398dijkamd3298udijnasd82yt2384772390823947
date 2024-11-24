@@ -4,7 +4,7 @@ import React from "react"
 import FAQSection from "@/components/Sections/FAQSection"
 import ReviewSection from "@/components/Sections/ReviewSection"
 import CreditsSection from "@/components/Sections/CreditsSection"
-// import AlertAnnouncement from "@/components/AlertAnnouncement"
+import AlertAnnouncement from "@/components/AlertAnnouncement"
 import { generateMetadata } from "@/lib/utils"
 import RecomendationsSection from "@/components/Sections/RecomendationsSection"
 import WeeklyTop10Section from "@/components/Sections/WeeklyTop10Section"
@@ -20,7 +20,7 @@ export default function Home() {
   return (
     <main className='flex flex-col justify-center items-center __container'>
       <HomeWrapper>
-        {/* <AlertAnnouncement /> */}
+        <AlertAnnouncement />
         <HeroSection />
         <RecomendationsSection />
         <WeeklyTop10Section />
