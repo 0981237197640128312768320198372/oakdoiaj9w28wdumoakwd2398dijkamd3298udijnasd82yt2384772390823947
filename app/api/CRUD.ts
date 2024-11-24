@@ -1,18 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from "googleapis"
 
-async function authenticateGoogleSheets() {
+async function authenticateGoogleSheets(
+  credentialsSet: "default" | "second" = "default"
+) {
   try {
+    const credentials =
+      credentialsSet === "default"
+        ? {
+            projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
+            private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
+              /\\n/g,
+              "\n"
+            ),
+            client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+            client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
+          }
+        : {
+            projectId: process.env.GOOGLE_SHEETS_PROJECT_ID_2,
+            private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY_2?.replace(
+              /\\n/g,
+              "\n"
+            ),
+            client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL_2,
+            client_id: process.env.GOOGLE_SHEETS_CLIENT_ID_2,
+          }
+
     return await google.auth.getClient({
-      projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
+      projectId: credentials.projectId,
       credentials: {
         type: "service_account",
-        private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
-          /\\n/g,
-          "\n",
-        ),
-        client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-        client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
+        private_key: credentials.private_key,
+        client_email: credentials.client_email,
+        client_id: credentials.client_id,
         token_url: "https://oauth2.googleapis.com/token",
         universe_domain: "googleapis.com",
       },
@@ -24,17 +44,20 @@ async function authenticateGoogleSheets() {
   }
 }
 
-async function getGoogleSheetsInstance() {
-  const auth = await authenticateGoogleSheets()
+async function getGoogleSheetsInstance(
+  credentialsSet: "default" | "second" = "default"
+) {
+  const auth = await authenticateGoogleSheets(credentialsSet)
   return google.sheets({ version: "v4", auth })
 }
 
 export async function getGoogleSheetsData(
   spreadsheetId: string,
   range: string,
+  credentialsSet: "default" | "second" = "default"
 ) {
   try {
-    const sheets = await getGoogleSheetsInstance()
+    const sheets = await getGoogleSheetsInstance(credentialsSet)
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
       range: range,
@@ -42,13 +65,14 @@ export async function getGoogleSheetsData(
     return getData.data.values || []
   } catch (error) {
     console.error("ERROR in reading data: \n", error)
+    throw new Error("Failed to fetch data from Google Sheets")
   }
 }
 
 export async function appendGoogleSheetsData(
   spreadsheetId: string,
   range: string,
-  values: any[],
+  values: any[]
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -71,7 +95,7 @@ export async function findAndUpdateRow(
   spreadsheetId: string,
   searchRange: string,
   searchValue: string,
-  values: any[],
+  values: any[]
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -122,7 +146,7 @@ export async function findAndDeleteRow(sheetName: string, searchValue: string) {
       spreadsheetId: process.env.SPREADSHEET_ID,
     })
     const sheet = spreadsheet.data.sheets?.find(
-      (sheet) => sheet.properties?.title === sheetName,
+      (sheet) => sheet.properties?.title === sheetName
     )
     const sheetId = sheet?.properties?.sheetId
 
@@ -177,7 +201,7 @@ export async function updateUserField(
   searchValue: string,
   updateColumn: string,
   newValue: string,
-  startRow: number = 2,
+  startRow: number = 2
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -226,7 +250,7 @@ export async function updateAvailableProductData(
   personalKeyColumn: string = "A",
   expireDateColumn: string,
   orderDateColumn: string,
-  contactColumn: string,
+  contactColumn: string
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -272,7 +296,7 @@ export async function updateAvailableProductData(
         requestBody: {
           values: [[field.value]],
         },
-      }),
+      })
     )
 
     await Promise.all(updatePromises)
@@ -294,7 +318,7 @@ export async function manageProductData(
     orderDate: string
     contact: string
   },
-  expireDateColumnIndex: number,
+  expireDateColumnIndex: number
 ) {
   try {
     const sheets = await getGoogleSheetsInstance()
@@ -310,9 +334,9 @@ export async function manageProductData(
     })
 
     const dateContactRange = `${sheetName}!${String.fromCharCode(
-      65 + expireDateColumnIndex,
+      65 + expireDateColumnIndex
     )}${rowIndex}:${String.fromCharCode(
-      65 + expireDateColumnIndex + 3,
+      65 + expireDateColumnIndex + 3
     )}${rowIndex}`
     await sheets.spreadsheets.values.update({
       spreadsheetId,
