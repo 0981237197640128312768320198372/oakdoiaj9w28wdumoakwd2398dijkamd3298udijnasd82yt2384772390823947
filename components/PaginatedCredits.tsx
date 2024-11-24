@@ -224,7 +224,7 @@ export default function PaginatedCredits() {
         <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
           <div
             ref={modalRef}
-            className='relative p-5 rounded-md shadow-md'
+            className='relative p-5 rounded-md'
             onClick={(e) => e.stopPropagation()}
           >
             <div className='absolute inset-0 flex items-center justify-center'>
