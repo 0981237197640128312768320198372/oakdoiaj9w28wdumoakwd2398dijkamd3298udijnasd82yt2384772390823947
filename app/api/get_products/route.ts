@@ -16,7 +16,7 @@ export async function GET(request: Request) {
     const allDetails =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        "PRODUCTS!A2:D",
+        "PRODUCTS!A2:D"
       )) || []
 
     // Transform details to map with productConfig keys
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
       // Generate key matching ProductConfig name (remove spaces, combine appName + typeAccess)
       const configKey = `${appName.trim()}${typeAccess.trim()}`.replace(
         /\s+/g,
-        "",
+        ""
       )
 
       if (!map[configKey]) map[configKey] = []
@@ -39,13 +39,13 @@ export async function GET(request: Request) {
     const selectedProducts = fetchAll
       ? productsConfig
       : productName
-        ? { [productName]: productsConfig[productName] }
-        : {}
+      ? { [productName]: productsConfig[productName] }
+      : {}
 
     if (Object.keys(selectedProducts).length === 0) {
       return NextResponse.json(
         { error: "No valid product found" },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
@@ -59,6 +59,7 @@ export async function GET(request: Request) {
         const availableData = await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
           ranges.availableDataRange,
+          "second"
         )
 
         // Normalize available data
@@ -68,7 +69,7 @@ export async function GET(request: Request) {
               row.push("")
             }
             return row
-          },
+          }
         )
 
         // Filter available accounts
@@ -80,7 +81,7 @@ export async function GET(request: Request) {
           .filter(
             (item) =>
               item.data[0] === "" &&
-              item.data[ranges.expireDateColumnIndex] === "",
+              item.data[ranges.expireDateColumnIndex] === ""
           )
 
         return {
@@ -91,7 +92,7 @@ export async function GET(request: Request) {
           expireDateColumnIndex: ranges.expireDateColumnIndex,
           totalColumns: ranges.totalColumns,
         }
-      },
+      }
     )
 
     const productsData = await Promise.all(productDataPromises)
@@ -100,7 +101,7 @@ export async function GET(request: Request) {
     console.error("Error fetching products data:", error)
     return NextResponse.json(
       { error: "Failed to fetch product data" },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
