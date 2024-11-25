@@ -229,18 +229,18 @@ export async function POST(request: Request) {
       newBalance.toString()
     )
 
-    console.log(
-      `\n${personalKey} Successfully Checkout\n${selectedProducts
-        .map(
-          (product) =>
-            `${formatProductName(product.name)} Quantity: ${
-              product.quantity
-            } Duration: ${product.duration}`
-        )
-        .join(
-          " | "
-        )}\nCurrent Balance: ${currentBalance}\nTotal Cost: ${calculatedTotalCost}\nNew Balance: ${newBalance} \n\n________________________________`
-    )
+    // console.log(
+    //   `\n${personalKey} Successfully Checkout\n${selectedProducts
+    //     .map(
+    //       (product) =>
+    //         `${formatProductName(product.name)} Quantity: ${
+    //           product.quantity
+    //         } Duration: ${product.duration}`
+    //     )
+    //     .join(
+    //       " | "
+    //     )}\nCurrent Balance: ${currentBalance}\nTotal Cost: ${calculatedTotalCost}\nNew Balance: ${newBalance} \n\n________________________________`
+    // )
     logActivity(
       `\n${personalKey} Successfully Checkout\n${selectedProducts
         .map(
