@@ -12,6 +12,7 @@ type SelectedProduct = {
   name: string
   quantity: number
   duration: string
+  price: number
 }
 
 type ProductName = keyof typeof productsConfig
@@ -37,7 +38,9 @@ async function retryOperation<T>(
   }
   throw new Error("Operation failed after retries")
 }
-
+function formatProductName(name: string): string {
+  return name.replace(/([A-Z])/g, " $1").trim()
+}
 export async function POST(request: Request) {
   try {
     const { personalKey, selectedProducts } = (await request.json()) as {
@@ -97,7 +100,7 @@ export async function POST(request: Request) {
     const batchUpdates: Record<string, any[]> = {}
 
     // Process selected products
-    for (const { name, quantity, duration } of selectedProducts) {
+    for (const { name, quantity, duration, price } of selectedProducts) {
       const productConfig = productsConfig[name as ProductName]
       const secureProduct = secureProductData.find((p: any) => p.name === name)
 
@@ -106,9 +109,11 @@ export async function POST(request: Request) {
         continue
       }
 
-      const productPrice = parseFloat(secureProduct.details[0].price)
-      calculatedTotalCost += productPrice * quantity
+      calculatedTotalCost += price * quantity
 
+      // console.log("PRICE", price)
+      // console.log("QUANTITY", quantity)
+      // console.log("CALCULATED COST", calculatedTotalCost)
       const sheetName = productConfig.availableDataRange.split("!")[0]
       const expireDateColumnIndex = productConfig.expireDateColumnIndex
 
@@ -221,7 +226,35 @@ export async function POST(request: Request) {
       "B",
       newBalance.toString()
     )
+    const currentDate = new Date()
 
+    const orderDateOptions: Intl.DateTimeFormatOptions = {
+      timeZone: "Asia/Bangkok",
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }
+    const orderDateFormatter = new Intl.DateTimeFormat(
+      "en-GB",
+      orderDateOptions
+    )
+
+    const formattedOrderDate = orderDateFormatter.format(currentDate)
+    console.log(
+      `\n[${formattedOrderDate}]\n${personalKey} Successfully Checkout\n${selectedProducts
+        .map(
+          (product) =>
+            `${formatProductName(product.name)} Quantity: ${
+              product.quantity
+            } Duration: ${product.duration}`
+        )
+        .join(
+          " | "
+        )}\nCurrent Balance: ${currentBalance}\nTotal Cost: ${calculatedTotalCost}\nNew Balance: ${newBalance} \n\n________________________________`
+    )
     return NextResponse.json({
       message: "Checkout successful",
       userContact,

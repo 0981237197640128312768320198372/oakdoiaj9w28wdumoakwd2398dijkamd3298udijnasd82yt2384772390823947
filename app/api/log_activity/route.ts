@@ -2,27 +2,31 @@ import { NextResponse } from "next/server"
 import { Storage } from "@google-cloud/storage"
 
 // Initialize GCS Client
-const privateKey = process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, "\n")
-if (!privateKey) {
-  throw new Error(
-    "GCP_PRIVATE_KEY is not defined in the environment variables."
-  )
-}
-
 const storage = new Storage({
   projectId: process.env.GCP_PROJECT_ID,
   credentials: {
     client_email: process.env.GCP_CLIENT_EMAIL,
-    private_key: privateKey,
+    private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, "\n"),
   },
 })
 
 const bucketName = process.env.GCP_BUCKET_NAME || ""
+const fileName = "logs.jsonl"
+const validApiKey = process.env.LOGGING_API_KEY
 
 export async function POST(req: Request) {
   try {
-    const { logEntry } = await req.json()
+    // Check API Key
+    const apiKey = req.headers.get("x-api-key")
+    if (!apiKey || apiKey !== validApiKey) {
+      return NextResponse.json(
+        { error: "Unauthorized. Invalid or missing API key." },
+        { status: 401 }
+      )
+    }
 
+    // Parse the log entry from request body
+    const { logEntry } = await req.json()
     if (!logEntry) {
       return NextResponse.json(
         { error: "Log entry is required." },
@@ -30,27 +34,26 @@ export async function POST(req: Request) {
       )
     }
 
-    const timestamp = new Date().toISOString()
-    const newLog = `[${timestamp}] | ${logEntry}\n`
-
     const bucket = storage.bucket(bucketName)
-    const fileName = "logs.jsonl"
     const file = bucket.file(fileName)
 
-    let existingLogs = ""
+    const logLine = logEntry
 
-    try {
+    // Check if the file exists
+    const [exists] = await file.exists()
+    let currentContent = ""
+
+    if (exists) {
+      // Read the existing file content
       const [contents] = await file.download()
-      existingLogs = contents.toString()
-    } catch (error) {
-      console.log("Log file does not exist, creating a new one.")
+      currentContent = contents.toString()
     }
 
-    const updatedLogs = existingLogs + newLog
-    await file.save(updatedLogs, {
-      contentType: "text/plain",
-      resumable: false,
-    })
+    // Append the new log entry
+    const updatedContent = currentContent + logLine
+
+    // Write back the updated content
+    await file.save(updatedContent)
 
     return NextResponse.json({ message: "Log added successfully." })
   } catch (error) {

@@ -50,10 +50,10 @@ const CartModal = ({
             name: item.appName,
             quantity: item.quantity,
             duration: item.duration,
+            price: item.price,
           })),
         }),
       })
-
       const verifyData = await verifyResponse.json()
       if (!verifyResponse.ok)
         throw new Error(verifyData.error || "Checkout failed")
@@ -322,14 +322,12 @@ const CartModal = ({
 
               return (
                 <div className='w-full'>
-                  {/* Feedback message */}
                   {!shouldEnableCheckout && feedbackMessage && (
                     <p className='px-2 py-1 my-2 text-xs bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit'>
                       {feedbackMessage}
                     </p>
                   )}
 
-                  {/* Checkout button */}
                   <button
                     onClick={handleCheckout}
                     disabled={loading || !shouldEnableCheckout}
