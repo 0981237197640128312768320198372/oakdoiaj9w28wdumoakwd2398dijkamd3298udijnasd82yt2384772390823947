@@ -118,27 +118,21 @@ export const convertGoogleDriveUrl = (shareableUrl: string): string => {
 }
 
 export async function logActivity(logEntry: string) {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/log_activity`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": process.env.LOGGING_API_KEY || "", // Replace with your actual key if needed
-        },
-        body: JSON.stringify({ logEntry }),
-      }
-    )
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      console.error("Failed to log activity:", errorData.error)
-    } else {
-      const data = await response.json()
-      console.log("Log successfully added:", data.message)
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/log_activity`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.LOGGING_API_KEY || "",
+      },
+      body: JSON.stringify({ logEntry }),
     }
-  } catch (error) {
-    console.error("Error logging activity:", error)
+  )
+
+  if (!response.ok) {
+    console.error("Failed to log activity")
+  } else {
+    console.log("Activity logged successfully")
   }
 }

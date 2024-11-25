@@ -7,6 +7,7 @@ import {
 } from "@/app/api/CRUD"
 import { productsConfig } from "@/constant"
 import process from "process"
+import { logActivity } from "@/lib/utils"
 
 type SelectedProduct = {
   name: string
@@ -41,6 +42,7 @@ async function retryOperation<T>(
 function formatProductName(name: string): string {
   return name.replace(/([A-Z])/g, " $1").trim()
 }
+
 export async function POST(request: Request) {
   try {
     const { personalKey, selectedProducts } = (await request.json()) as {
@@ -226,25 +228,21 @@ export async function POST(request: Request) {
       "B",
       newBalance.toString()
     )
-    const currentDate = new Date()
 
-    const orderDateOptions: Intl.DateTimeFormatOptions = {
-      timeZone: "Asia/Bangkok",
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }
-    const orderDateFormatter = new Intl.DateTimeFormat(
-      "en-GB",
-      orderDateOptions
-    )
-
-    const formattedOrderDate = orderDateFormatter.format(currentDate)
     console.log(
-      `\n[${formattedOrderDate}]\n${personalKey} Successfully Checkout\n${selectedProducts
+      `\n${personalKey} Successfully Checkout\n${selectedProducts
+        .map(
+          (product) =>
+            `${formatProductName(product.name)} Quantity: ${
+              product.quantity
+            } Duration: ${product.duration}`
+        )
+        .join(
+          " | "
+        )}\nCurrent Balance: ${currentBalance}\nTotal Cost: ${calculatedTotalCost}\nNew Balance: ${newBalance} \n\n________________________________`
+    )
+    logActivity(
+      `\n${personalKey} Successfully Checkout\n${selectedProducts
         .map(
           (product) =>
             `${formatProductName(product.name)} Quantity: ${
