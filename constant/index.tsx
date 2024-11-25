@@ -330,8 +330,8 @@ export const accountBadge = (badge: string) => {
 export const productsConfig = {
   PrimeVideoSharingAccess: {
     availableDataRange: "PrimeVideoSharing!A12:H",
-    expireDateColumnIndex: 4,
-    totalColumns: 8,
+    expireDateColumnIndex: 5,
+    totalColumns: 9,
   },
   PrimeVideoFamilyAccess: {
     availableDataRange: "PrimeVideoFamily!A12:G",

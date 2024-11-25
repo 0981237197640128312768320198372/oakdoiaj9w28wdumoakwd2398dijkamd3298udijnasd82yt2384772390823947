@@ -11,10 +11,10 @@ const MobileNav = () => {
   const path = usePathname()
   return (
     <Drawer>
-      <DrawerTrigger className='xl:hidden hover:bg-black/5 focus:outline-none focus:ring-0'>
+      <DrawerTrigger className='lg:hidden hover:bg-black/5 focus:outline-none focus:ring-0'>
         <IoMenuSharp className='duration-500 text-primary text-2xl' />
       </DrawerTrigger>
-      <DrawerContent className='bg-dark-800 border-t-[1px] border-dark-500 px-5 gap-10 focus:outline-none focus:ring-0'>
+      <DrawerContent className='bg-dark-800 lg:hidden border-t-[1px] border-dark-500 px-5 gap-10 focus:outline-none focus:ring-0 '>
         <div className='grid grid-cols-2 w-full h-fit gap-1'>
           {navButtons.map((nav, i) => (
             <Link
