@@ -117,14 +117,20 @@ export const convertGoogleDriveUrl = (shareableUrl: string): string => {
   }
 }
 
-export async function logActivity(logEntry: string) {
+export async function logActivity(type: string, user: string, details: any) {
+  const logEntry = {
+    type, // Type of activity (e.g., "Checkout", "Login", "Top-Up")
+    user, // Personal key or identifier of the user
+    details, // Additional structured data related to the activity
+  }
+  console.log("API KEY", process.env.NEXT_PUBLIC_LOGGING_API_KEY)
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/log_activity`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": process.env.LOGGING_API_KEY || "",
+        "x-api-key": process.env.NEXT_PUBLIC_LOGGING_API_KEY || "",
       },
       body: JSON.stringify({ logEntry }),
     }

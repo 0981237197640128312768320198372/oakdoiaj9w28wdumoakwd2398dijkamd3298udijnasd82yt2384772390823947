@@ -77,7 +77,7 @@ const Footer = () => {
             ))}
           </div>
         </div>
-        <div className='flex items-start md:items-center sm:flex-row flex-col-reverse justify-between md:p-0 px-5 pt-5 w-full border-t-[1px] border-dark-500'>
+        <div className='flex items-start md:items-center sm:flex-row flex-col-reverse justify-between xl:p-0 px-5 pt-5 w-full border-t-[1px] border-dark-500'>
           <p className='text-dark-100 font-aktivGroteskLight py-5 select-none'>
             Copyright 2022, Dokmai Store. All rights reserved.
           </p>

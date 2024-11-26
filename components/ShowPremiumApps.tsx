@@ -16,6 +16,7 @@ import Link from "next/link"
 import Loading from "@/components/Loading"
 import EmailList from "./EmailList"
 import CopyToClipboard from "./CopyToClipboard"
+import { logActivity } from "@/lib/utils"
 
 export const ShowPremiumApps = () => {
   const [inputPersonalKey, setInputPersonalKey] = useState<string>("")
@@ -135,6 +136,9 @@ export const ShowPremiumApps = () => {
       })
 
       if (userInfoRes.ok) {
+        await logActivity("Login", key, {
+          description: "Logged in successfully",
+        })
         const userInfoData = await userInfoRes.json()
         setUserInfo(userInfoData.data)
         localStorage.setItem("personalKey", key)
@@ -177,7 +181,10 @@ export const ShowPremiumApps = () => {
     }
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logActivity("Logout", personalKey || "Unknown", {
+      description: "Logged out successfully",
+    })
     localStorage.removeItem("personalKey")
     setPersonalKey(null)
     setUserInfo(null)

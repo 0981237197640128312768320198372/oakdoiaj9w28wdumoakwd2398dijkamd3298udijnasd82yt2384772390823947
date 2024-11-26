@@ -1,31 +1,45 @@
 import { NextResponse } from "next/server"
-import fs from "fs"
-import path from "path"
+import { Storage } from "@google-cloud/storage"
 
-const LOGGING_API_KEY = process.env.LOGGING_API_KEY
+const storage = new Storage({
+  projectId: process.env.GCP_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GCP_CLIENT_EMAIL,
+    private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+  },
+})
 
-export async function GET(request: Request) {
+const bucketName = process.env.GCP_BUCKET_NAME || ""
+const logFileName = "activity_logs.json"
+
+export async function GET() {
   try {
-    // Authenticate with the API key
-    const apiKey = request.headers.get("x-api-key")
-    if (!apiKey || apiKey !== LOGGING_API_KEY) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const bucket = storage.bucket(bucketName)
+    const file = bucket.file(logFileName)
+
+    const [exists] = await file.exists()
+
+    if (!exists) {
+      return NextResponse.json(
+        { message: "Log file does not exist", logs: [] },
+        { status: 404 }
+      )
     }
 
-    // Define the path to the JSON file
-    const filePath = path.join(process.cwd(), "data", "logs.json")
+    const [contents] = await file.download()
+    const logs = JSON.parse(contents.toString())
 
-    // Read the logs
-    if (!fs.existsSync(filePath)) {
-      return NextResponse.json({ logs: [] }, { status: 200 })
-    }
+    // console.log("File Contents:", contents.toString())
+    const sortedLogs = logs.sort(
+      (a: any, b: any) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    )
 
-    const fileContent = fs.readFileSync(filePath, "utf8")
-    const logs = JSON.parse(fileContent)
+    // console.log("Logs:", logs)
 
-    return NextResponse.json({ logs })
+    return NextResponse.json({ logs: sortedLogs }, { status: 200 })
   } catch (error) {
-    console.error("Error reading logs:", error)
+    console.error("Error fetching logs:", error)
     return NextResponse.json({ error: "Failed to fetch logs" }, { status: 500 })
   }
 }

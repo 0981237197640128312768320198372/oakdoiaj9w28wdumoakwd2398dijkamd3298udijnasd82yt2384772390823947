@@ -229,35 +229,19 @@ export async function POST(request: Request) {
       newBalance.toString()
     )
 
-    // console.log(
-    //   `\n${personalKey} Successfully Checkout\n${selectedProducts
-    //     .map(
-    //       (product) =>
-    //         `${formatProductName(product.name)} Quantity: ${
-    //           product.quantity
-    //         } Duration: ${product.duration}`
-    //     )
-    //     .join(
-    //       " | "
-    //     )}\nCurrent Balance: ${currentBalance}\nTotal Cost: ${calculatedTotalCost}\nNew Balance: ${newBalance} \n\n________________________________`
-    // )
-    logActivity(
-      `\n${personalKey} Successfully Checkout\n${selectedProducts
-        .map(
-          (product) =>
-            `${formatProductName(product.name)} Quantity: ${
-              product.quantity
-            } Duration: ${product.duration}`
-        )
-        .join(
-          " | "
-        )}\nCurrent Balance: ${currentBalance}\nTotal Cost: ${calculatedTotalCost}\nNew Balance: ${newBalance} \n\n________________________________`
-    )
+    await logActivity("Checkout", personalKey, {
+      items: selectedProducts.map((product) => ({
+        name: formatProductName(product.name),
+        quantity: product.quantity,
+        duration: product.duration,
+      })),
+      totalCost: calculatedTotalCost,
+      currentBalance,
+      newBalance,
+    })
+
     return NextResponse.json({
       message: "Checkout successful",
-      userContact,
-      totalCost: calculatedTotalCost,
-      newBalance,
     })
   } catch (error) {
     console.error("Error during checkout verification:", error)
