@@ -88,7 +88,7 @@ export default function ActivityLogs() {
     )
   }
   return (
-    <div className='p-5 border-[1px] border-dark-500 w-full md:w-fit'>
+    <div className='p-5 border-[1px] border-dark-500 w-full md:min-w-[500px] md:w-fit'>
       <div className='w-full flex justify-between'>
         <h1 className='flex items-center gap-2 font-bold mb-5 font-aktivGroteskBold'>
           <LuActivity />
@@ -127,22 +127,12 @@ export default function ActivityLogs() {
             >
               <div className='flex w-full justify-between items-start mb-5 border-b-[1px] border-dark-500 pb-3'>
                 <div className='font-aktivGroteskMedium flex items-center gap-2'>
-                  {log.activity.type === "Checkout" && (
-                    <IoBagCheckOutline className='text-xl' />
-                  )}
-                  {log.activity.type === "Login" && (
-                    <BiLogInCircle className='text-xl' />
-                  )}
-                  {log.activity.type === "Logout" && (
-                    <BiLogOutCircle className='text-xl' />
-                  )}
-                  {log.activity.type === "Deposit" && (
-                    <SlWallet className='text-xl' />
-                  )}
+                  {log.activity.type === "Checkout" && <IoBagCheckOutline />}
+                  {log.activity.type === "Login" && <BiLogInCircle />}
+                  {log.activity.type === "Logout" && <BiLogOutCircle />}
+                  {log.activity.type === "Deposit" && <SlWallet />}
                   <span>
-                    <p className='select-none font-aktivGroteskBold'>
-                      {log.activity.type}
-                    </p>
+                    <p className='select-none text-sm '>{log.activity.type}</p>
                   </span>
                 </div>
                 <div className='text-xs text-end text-light-100'>

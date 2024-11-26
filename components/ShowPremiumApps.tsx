@@ -16,7 +16,6 @@ import Link from "next/link"
 import Loading from "@/components/Loading"
 import EmailList from "./EmailList"
 import CopyToClipboard from "./CopyToClipboard"
-import { logActivity } from "@/lib/utils"
 
 export const ShowPremiumApps = () => {
   const [inputPersonalKey, setInputPersonalKey] = useState<string>("")
@@ -126,6 +125,29 @@ export const ShowPremiumApps = () => {
     setValidatingPersonalKey(false)
   }
 
+  async function logActivity(type: string, user: string, details: any) {
+    const logEntry = {
+      type, // Type of activity (e.g., "Checkout", "Login", "Top-Up")
+      user, // Personal key or identifier of the user
+      details, // Additional structured data related to the activity
+    }
+    // console.log("API KEY", process.env.NEXT_PUBLIC_LOGGING_API_KEY)
+    const url = process.env.NEXT_PUBLIC_API_URL
+    const response = await fetch(`${url}/api/log_activity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_LOGGING_API_KEY || "",
+      },
+      body: JSON.stringify({ logEntry }),
+    })
+
+    if (!response.ok) {
+      console.error("Failed to log activity")
+    } else {
+      console.log("Activity logged successfully")
+    }
+  }
   const validatePersonalKey = async (key: string) => {
     try {
       setError(null)
