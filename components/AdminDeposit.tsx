@@ -53,7 +53,7 @@ const AdminDeposit = () => {
   }
 
   return (
-    <div className='w-full max-w-md border-[1px] border-dark-500 p-5 shadow-md'>
+    <div className='w-full max-w-lg border-[1px] border-dark-500 p-5 shadow-md'>
       <h3 className='flex items-center gap-2 font-bold mb-5'>
         <SlWallet />
         Deposit

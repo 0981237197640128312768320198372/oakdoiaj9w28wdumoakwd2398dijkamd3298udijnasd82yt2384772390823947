@@ -24,7 +24,7 @@ const AdminPageContent = () => {
           Logout
         </button>
       </div>
-      <div className='flex justify-between items-start w-full'>
+      <div className='flex flex-col lg:flex-row justify-between items-center lg:items-start w-full gap-10'>
         <AdminDeposit />
         <ActivityLogs />
       </div>
