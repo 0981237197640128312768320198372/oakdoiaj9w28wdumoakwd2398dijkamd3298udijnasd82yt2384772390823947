@@ -85,7 +85,6 @@ export default function ActivityLogs() {
       </div>
     )
   }
-  console.log("Filtered Logs:", filteredLogs)
   return (
     <div className='p-5 border-[1px] border-dark-500 '>
       <h1 className='text-2xl font-bold mb-5'>Activity Logs</h1>

@@ -1,5 +1,4 @@
 /* @typescript-eslint/no-explicit-any */
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -15,7 +14,8 @@ const AdminPage = () => {
   const EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000 // 2 days in milliseconds
 
   const validateAuth = (authData: any) => {
-    const now = new Date().getTime()
+    const currentTime = new Date()
+    const now = currentTime.getTime()
     return authData && authData.expiration > now && authData.role
   }
 
