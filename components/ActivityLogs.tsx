@@ -90,13 +90,13 @@ export default function ActivityLogs() {
   return (
     <div className='p-5 border-[1px] border-dark-500 w-full md:min-w-[500px] md:w-fit'>
       <div className='w-full flex justify-between'>
-        <h1 className='flex items-center gap-2 font-bold mb-5 font-aktivGroteskBold'>
+        <h3 className='flex items-center gap-2 font-bold mb-5'>
           <LuActivity />
           Activity
-        </h1>
+        </h3>
         <button
           onClick={fetchLogs}
-          className='px-2 h-fit bg-primary/20 text-primary rounded hover:bg-primary/30'
+          className='px-2 h-fit rounded bg-primary/20 text-primary  hover:bg-primary/30 active:bg-primary/40'
         >
           Refresh
         </button>
@@ -126,7 +126,7 @@ export default function ActivityLogs() {
               className='flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-700 hover:shadow-lg transition duration-200'
             >
               <div className='flex w-full justify-between items-start mb-5 border-b-[1px] border-dark-500 pb-3'>
-                <div className='font-aktivGroteskMedium flex items-center gap-2'>
+                <div className='font-aktivGroteskMedium flex items-center gap-2 bg-light-100/20 border-light-100/70 text-light-100 px-1 rounded'>
                   {log.activity.type === "Checkout" && <IoBagCheckOutline />}
                   {log.activity.type === "Login" && <BiLogInCircle />}
                   {log.activity.type === "Logout" && <BiLogOutCircle />}
@@ -142,112 +142,116 @@ export default function ActivityLogs() {
                   </p>
                 </div>
               </div>
-              {Array.isArray(log.activity.details.items) && (
-                <div className='flex flex-col gap-3'>
-                  {/* Items Rendering */}
-                  {Array.isArray(log.activity.details.items) &&
-                    log.activity.details.items.map((item: any, idx: number) => (
-                      <div
-                        key={idx}
-                        className='flex justify-between items-center border-b border-dark-600 py-3 gap-14'
-                      >
-                        <div className='w-full flex gap-3 items-center'>
-                          <Image
-                            src={
-                              item.name.includes("Netflix")
-                                ? netflixpremium
-                                : primevideo
-                            }
-                            alt={`${item.name} image`}
-                            width={60}
-                            height={60}
-                            className='select-none'
-                            loading='lazy'
-                          />
-                          <div className='flex flex-col'>
-                            <p className='text-xs font-thin'>{item.name}</p>
-                            <div className='flex gap-1 items-center'>
-                              <span
-                                className={`px-1 text-sm mr-3 ${
-                                  item.name.includes("Reseller")
-                                    ? "bg-goldVIP"
-                                    : "bg-primary"
-                                } text-dark-800 font-aktivGroteskBold whitespace-nowrap`}
-                              >
-                                {item.duration}
-                              </span>
+              {log.activity.type === "Checkout" &&
+                Array.isArray(log.activity.details.items) && (
+                  <div className='flex flex-col gap-3'>
+                    {/* Items Rendering */}
+                    {Array.isArray(log.activity.details.items) &&
+                      log.activity.details.items.map(
+                        (item: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className='flex justify-between items-center border-b border-dark-600 py-3 gap-14'
+                          >
+                            <div className='w-full flex gap-3 items-center'>
+                              <Image
+                                src={
+                                  item.name.includes("Netflix")
+                                    ? netflixpremium
+                                    : primevideo
+                                }
+                                alt={`${item.name} image`}
+                                width={60}
+                                height={60}
+                                className='select-none'
+                                loading='lazy'
+                              />
+                              <div className='flex flex-col'>
+                                <p className='text-xs font-thin'>{item.name}</p>
+                                <div className='flex gap-1 items-center'>
+                                  <span
+                                    className={`px-1 text-sm mr-3 ${
+                                      item.name.includes("Reseller")
+                                        ? "bg-goldVIP"
+                                        : "bg-primary"
+                                    } text-dark-800 font-aktivGroteskBold whitespace-nowrap`}
+                                  >
+                                    {item.duration}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className='flex items-center gap-3 text-xs px-2 py-1 rounded bg-dark-700 border-[1px] border-dark-500'>
+                              x{item.quantity}
                             </div>
                           </div>
-                        </div>
-                        <div className='flex items-center gap-3 text-xs px-2 py-1 rounded bg-dark-700 border-[1px] border-dark-500'>
-                          x{item.quantity}
-                        </div>
+                        )
+                      )}
+                    {/* Balances */}
+                    {(log.activity.details.currentBalance ||
+                      log.activity.details.totalCost ||
+                      log.activity.details.newBalance) && (
+                      <div className='flex justify-between'>
+                        {log.activity.details.currentBalance && (
+                          <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                            <p className='text-xs mr-1'>Previous Balance</p>
+                            <span className='flex items-center'>
+                              <Image
+                                src={dokmaicoin}
+                                width={300}
+                                height={300}
+                                className='w-5 h-5'
+                                alt='Dokmai Coin Icon'
+                              />
+                              <p className='text-xs flex'>
+                                {log.activity.details.currentBalance}
+                              </p>
+                            </span>
+                          </div>
+                        )}
+                        {log.activity.details.totalCost && (
+                          <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                            <p className='text-xs mr-1'>Total Cost</p>
+                            <span className='flex items-center'>
+                              <Image
+                                src={dokmaicoin}
+                                width={300}
+                                height={300}
+                                className='w-5 h-5'
+                                alt='Dokmai Coin Icon'
+                              />
+                              <p className='text-xs flex'>
+                                {log.activity.details.totalCost}
+                              </p>
+                            </span>
+                          </div>
+                        )}
+                        {log.activity.details.newBalance && (
+                          <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                            <p className='text-xs mr-1'>Current Balance</p>
+                            <span className='flex items-center'>
+                              <Image
+                                src={dokmaicoin}
+                                width={300}
+                                height={300}
+                                className='w-5 h-5'
+                                alt='Dokmai Coin Icon'
+                              />
+                              <p className='text-xs flex'>
+                                {log.activity.details.newBalance}
+                              </p>
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  {/* Balances */}
-                  {(log.activity.details.currentBalance ||
-                    log.activity.details.totalCost ||
-                    log.activity.details.newBalance) && (
-                    <div className='flex justify-between'>
-                      {log.activity.details.currentBalance && (
-                        <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
-                          <p className='text-xs mr-1'>Previous Balance</p>
-                          <span className='flex items-center'>
-                            <Image
-                              src={dokmaicoin}
-                              width={300}
-                              height={300}
-                              className='w-5 h-5'
-                              alt='Dokmai Coin Icon'
-                            />
-                            <p className='text-xs flex'>
-                              {log.activity.details.currentBalance}
-                            </p>
-                          </span>
-                        </div>
-                      )}
-                      {log.activity.details.totalCost && (
-                        <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
-                          <p className='text-xs mr-1'>Total Cost</p>
-                          <span className='flex items-center'>
-                            <Image
-                              src={dokmaicoin}
-                              width={300}
-                              height={300}
-                              className='w-5 h-5'
-                              alt='Dokmai Coin Icon'
-                            />
-                            <p className='text-xs flex'>
-                              {log.activity.details.totalCost}
-                            </p>
-                          </span>
-                        </div>
-                      )}
-                      {log.activity.details.newBalance && (
-                        <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
-                          <p className='text-xs mr-1'>Current Balance</p>
-                          <span className='flex items-center'>
-                            <Image
-                              src={dokmaicoin}
-                              width={300}
-                              height={300}
-                              className='w-5 h-5'
-                              alt='Dokmai Coin Icon'
-                            />
-                            <p className='text-xs flex'>
-                              {log.activity.details.newBalance}
-                            </p>
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-              {log.activity.details && log.activity.details.description && (
-                <div className='flex w-full items-center justify-center'>
-                  <p
-                    className={`px-2 py-1 rounded border-[1px] w-full text-center 
+                    )}
+                  </div>
+                )}
+              {(log.activity.type === "Login" || "Logout") &&
+                log.activity.details.description && (
+                  <div className='flex w-full items-center justify-center'>
+                    <p
+                      className={`px-2 py-1 rounded border-[1px] w-full text-center 
                     ${
                       log.activity.type === "Login" &&
                       "bg-green-600/20 border-green-500/70 text-green-500 "
@@ -257,11 +261,51 @@ export default function ActivityLogs() {
                       "bg-red-600/20 border-red-500/70 text-red-500 "
                     }
                       `}
-                  >
-                    {log.activity.details.description}
-                  </p>
-                </div>
-              )}
+                    >
+                      {log.activity.details.description}
+                    </p>
+                  </div>
+                )}
+              {log.activity.type === "Deposit" &&
+                (log.activity.details.amount ||
+                  log.activity.details.newBalance) && (
+                  <div className='flex justify-center gap-5'>
+                    {log.activity.details.amount && (
+                      <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                        <p className='text-xs mr-1'>Deposit</p>
+                        <span className='flex items-center'>
+                          <Image
+                            src={dokmaicoin}
+                            width={300}
+                            height={300}
+                            className='w-5 h-5'
+                            alt='Dokmai Coin Icon'
+                          />
+                          <p className='text-xs flex'>
+                            {log.activity.details.amount}
+                          </p>
+                        </span>
+                      </div>
+                    )}
+                    {log.activity.details.newBalance && (
+                      <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                        <p className='text-xs mr-1'>Current Balance</p>
+                        <span className='flex items-center'>
+                          <Image
+                            src={dokmaicoin}
+                            width={300}
+                            height={300}
+                            className='w-5 h-5'
+                            alt='Dokmai Coin Icon'
+                          />
+                          <p className='text-xs flex'>
+                            {log.activity.details.newBalance}
+                          </p>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
           ))}
         </div>
