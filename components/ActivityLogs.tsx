@@ -18,7 +18,7 @@ export default function ActivityLogs() {
   const [filter, setFilter] = useState<string>("All")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [refreshInterval, setRefreshInterval] = useState<number>(30000)
+  const [refreshInterval, setRefreshInterval] = useState<number>(300000)
 
   const fetchLogs = async () => {
     try {
@@ -61,8 +61,8 @@ export default function ActivityLogs() {
       fetchLogs()
     }, refreshInterval)
 
-    return () => clearInterval(interval) // Cleanup interval on unmount
-  })
+    return () => clearInterval(interval)
+  }, [refreshInterval])
 
   useEffect(() => {
     setFilteredLogs(

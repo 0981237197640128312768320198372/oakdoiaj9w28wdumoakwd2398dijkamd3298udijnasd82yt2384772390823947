@@ -14,7 +14,6 @@ const AdminPage = () => {
 
   const EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000 // 2 days in milliseconds
 
-  // Helper to validate authentication data
   const validateAuth = (authData: any) => {
     const now = new Date().getTime()
     return authData && authData.expiration > now && authData.role
@@ -50,7 +49,7 @@ const AdminPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("auth")
     setAuthenticated(false)
-    router.push("/login") // Redirect to login on logout
+    router.push("/login")
   }
 
   if (loading) {
