@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
@@ -11,6 +12,7 @@ import dokmaicoin from "@/assets/images/dokmaicoin.png"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
 import Image from "next/image"
+import { LuActivity } from "react-icons/lu"
 
 export default function ActivityLogs() {
   const [logs, setLogs] = useState<any[]>([])
@@ -86,14 +88,26 @@ export default function ActivityLogs() {
     )
   }
   return (
-    <div className='px-5 border-[1px] border-dark-500 bg-red-500 w-full md:w-fit'>
-      <h1 className='text-2xl font-bold mb-5'>Activity Logs</h1>
-      <div className='flex gap-3 mb-5 px-5'>
+    <div className='p-5 border-[1px] border-dark-500 w-full md:w-fit'>
+      <div className='w-full flex justify-between'>
+        <h1 className='flex items-center gap-2 font-bold mb-5 font-aktivGroteskBold'>
+          <LuActivity />
+          Activity
+        </h1>
+        <button
+          onClick={fetchLogs}
+          className='px-2 h-fit bg-primary/20 text-primary rounded hover:bg-primary/30'
+        >
+          Refresh
+        </button>
+      </div>
+
+      <div className='flex gap-3 mb-5 px-5 w-full justify-center'>
         {["All", "Login", "Logout", "Checkout", "Deposit"].map((type) => (
           <button
             key={type}
             onClick={() => setFilter(type)}
-            className={`px-2 ${
+            className={`px-1 text-xs ${
               filter === type
                 ? "text-primary pb-1 border-b-[1px] border-primary"
                 : "text-light-400 "
@@ -102,13 +116,6 @@ export default function ActivityLogs() {
             {type}
           </button>
         ))}
-        {/* Manual Refresh Button */}
-        <button
-          onClick={fetchLogs}
-          className='px-2 bg-primary text-dark-800 font-aktivGroteskBold rounded hover:bg-primary/80'
-        >
-          Refresh
-        </button>
       </div>
 
       {filteredLogs.length > 0 ? (
