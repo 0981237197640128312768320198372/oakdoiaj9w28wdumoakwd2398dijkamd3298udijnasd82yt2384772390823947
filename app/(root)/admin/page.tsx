@@ -1,10 +1,16 @@
-/* @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import ActivityLogs from "@/components/ActivityLogs"
 import PageHeadline from "@/components/PageHeadline"
+
+// Define TypeScript interfaces
+interface AuthData {
+  username: string
+  role: "admin" | "staff"
+  expiration: number
+}
 
 const AdminPage = () => {
   const [authenticated, setAuthenticated] = useState(false)
@@ -13,10 +19,10 @@ const AdminPage = () => {
 
   const EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000 // 2 days in milliseconds
 
-  const validateAuth = (authData: any) => {
-    const currentTime = new Date()
-    const now = currentTime.getTime()
-    return authData && authData.expiration > now && authData.role
+  // Helper to validate authentication data
+  const validateAuth = (authData: AuthData): boolean => {
+    const now = new Date().getTime()
+    return authData.expiration > now && authData.role !== undefined
   }
 
   useEffect(() => {
@@ -24,7 +30,7 @@ const AdminPage = () => {
 
     if (authData) {
       try {
-        const parsedAuth = JSON.parse(authData)
+        const parsedAuth: AuthData = JSON.parse(authData)
 
         if (validateAuth(parsedAuth)) {
           if (parsedAuth.role === "admin") {
@@ -97,7 +103,7 @@ const AdminPage = () => {
                   throw new Error("Invalid credentials")
                 }
 
-                const data = await response.json()
+                const data: { role: "admin" | "staff" } = await response.json()
 
                 // Save to localStorage
                 const expiration = new Date().getTime() + EXPIRATION_TIME
