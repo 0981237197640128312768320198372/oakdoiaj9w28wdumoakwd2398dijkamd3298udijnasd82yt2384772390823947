@@ -78,7 +78,7 @@ export default function ActivityLogs() {
 
   if (error) {
     return (
-      <div className='flex justify-center items-center'>
+      <div className='flex justify-center items-center w-full h-full'>
         <p className='px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit'>
           {error}
         </p>
@@ -86,7 +86,7 @@ export default function ActivityLogs() {
     )
   }
   return (
-    <div className='p-5 border-[1px] border-dark-500 '>
+    <div className='px-5 border-[1px] border-dark-500 bg-red-500 w-full md:w-fit'>
       <h1 className='text-2xl font-bold mb-5'>Activity Logs</h1>
       <div className='flex gap-3 mb-5 px-5'>
         {["All", "Login", "Logout", "Checkout", "Deposit"].map((type) => (

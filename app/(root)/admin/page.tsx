@@ -132,7 +132,7 @@ const AdminPage = () => {
   }
 
   return (
-    <div className='flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-10 xl:pt-28 __container'>
+    <div className='flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-10 xl:pt-28 __container bg-blue-500'>
       <PageHeadline
         headline='Admin Panel'
         description='A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations.'
