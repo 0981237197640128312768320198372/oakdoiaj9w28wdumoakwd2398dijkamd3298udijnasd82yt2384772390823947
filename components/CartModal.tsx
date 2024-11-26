@@ -60,6 +60,7 @@ const CartModal = ({
 
       setOrderedItems(cart)
       setStatus("success")
+      isOpen = false
       clearCart()
     } catch (error: any) {
       if (error.message.includes("Insufficient balance")) {
