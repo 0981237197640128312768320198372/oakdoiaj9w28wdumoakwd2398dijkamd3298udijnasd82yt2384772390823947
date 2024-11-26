@@ -240,7 +240,7 @@ export async function POST(request: Request) {
     // })
     const logEntry = {
       type: "Checkout", // Example type
-      user: "personalKey", // Example user
+      user: personalKey, // Example user
       details: {
         items: selectedProducts.map((product) => ({
           name: formatProductName(product.name),
