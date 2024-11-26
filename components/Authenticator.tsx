@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -15,6 +16,8 @@ const EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000 // 2 days in milliseconds
 const Authenticator = ({ children }: { children: React.ReactNode }) => {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
   const validateAuth = (authData: AuthData): boolean => {
@@ -49,11 +52,13 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
     setLoading(false)
   }, [router])
 
-  const handleLogin = async () => {
-    const username = (document.getElementById("username") as HTMLInputElement)
-      .value
-    const password = (document.getElementById("password") as HTMLInputElement)
-      .value
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsSubmitting(true)
+    setError(null)
+    const formData = new FormData(event.currentTarget)
+    const username = formData.get("username") as string
+    const password = formData.get("password") as string
 
     try {
       const response = await fetch("/api/authenticate", {
@@ -81,7 +86,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (err) {
       console.error(err)
-      alert("Invalid username or password")
+      setError("Invalid username or password")
     }
   }
 
@@ -91,27 +96,32 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
 
   if (!authenticated) {
     return (
-      <div className='flex flex-col items-center justify-center h-screen'>
-        <div className='p-5 border border-dark-500 rounded shadow-lg bg-dark-700'>
-          <h2 className='text-lg font-bold mb-4'>Admin Login</h2>
-          <input
-            type='text'
-            placeholder='Username'
-            id='username'
-            className='border border-primary p-2 mb-3 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
-          />
-          <input
-            type='password'
-            placeholder='Password'
-            id='password'
-            className='border border-primary p-2 mb-3 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
-          />
-          <button
-            onClick={handleLogin}
-            className='bg-primary text-dark-800 font-aktivGroteskBold px-4 py-2 rounded w-full'
-          >
-            Login
-          </button>
+      <div className='flex flex-col items-center justify-center mt-20'>
+        <div className='p-5 border border-dark-500 w-96 bg-dark-700'>
+          {error && <p className='text-red-500 text-sm mb-3'>{error}</p>}
+          <form onSubmit={handleSubmit} className='flex flex-col  gap-3'>
+            <input
+              required
+              type='text'
+              name='username'
+              placeholder='Username'
+              className='border border-primary p-2 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
+            />
+            <input
+              required
+              type='password'
+              name='password'
+              placeholder='Password'
+              className='border border-primary p-2 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
+            />
+            <button
+              disabled={isSubmitting}
+              type='submit'
+              className='bg-primary text-dark-800 font-aktivGroteskBold px-4 py-2 w-full hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50'
+            >
+              {isSubmitting ? "Logging in..." : "Login"}
+            </button>
+          </form>
         </div>
       </div>
     )
