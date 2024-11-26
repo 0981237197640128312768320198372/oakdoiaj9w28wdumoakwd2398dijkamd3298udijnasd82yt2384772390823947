@@ -7,7 +7,6 @@ import {
 } from "@/app/api/CRUD"
 import { productsConfig } from "@/constant"
 import process from "process"
-import { logActivity } from "@/lib/utils"
 
 type SelectedProduct = {
   name: string
@@ -229,16 +228,49 @@ export async function POST(request: Request) {
       newBalance.toString()
     )
 
-    await logActivity("Checkout", personalKey, {
-      items: selectedProducts.map((product) => ({
-        name: formatProductName(product.name),
-        quantity: product.quantity,
-        duration: product.duration,
-      })),
-      totalCost: calculatedTotalCost,
-      currentBalance,
-      newBalance,
+    // await logActivity("Checkout", personalKey, {
+    //   items: selectedProducts.map((product) => ({
+    //     name: formatProductName(product.name),
+    //     quantity: product.quantity,
+    //     duration: product.duration,
+    //   })),
+    //   totalCost: calculatedTotalCost,
+    //   currentBalance,
+    //   newBalance,
+    // })
+    const logEntry = {
+      type: "Checkout", // Example type
+      user: "personalKey", // Example user
+      details: {
+        items: selectedProducts.map((product) => ({
+          name: formatProductName(product.name),
+          quantity: product.quantity,
+          duration: product.duration,
+        })),
+        totalCost: calculatedTotalCost,
+        currentBalance,
+        newBalance,
+      },
+    }
+    const mainUrl = process.env.NEXT_PUBLIC_API_URL
+    fetch(`${mainUrl}/api/log_activity`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.NEXT_PUBLIC_LOGGING_API_KEY || "",
+      },
+      body: JSON.stringify({ logEntry }),
     })
+      .then((response) => {
+        if (!response.ok) {
+          console.error("Failed to log activity")
+        } else {
+          console.log("Activity logged successfully")
+        }
+      })
+      .catch((error) => {
+        console.error("Error logging activity:", error)
+      })
 
     return NextResponse.json({
       message: "Checkout successful",
