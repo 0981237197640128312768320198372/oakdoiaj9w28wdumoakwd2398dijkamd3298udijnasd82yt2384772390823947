@@ -62,7 +62,7 @@ export default function ActivityLogs() {
     }, refreshInterval)
 
     return () => clearInterval(interval) // Cleanup interval on unmount
-  }, [refreshInterval])
+  })
 
   useEffect(() => {
     setFilteredLogs(
