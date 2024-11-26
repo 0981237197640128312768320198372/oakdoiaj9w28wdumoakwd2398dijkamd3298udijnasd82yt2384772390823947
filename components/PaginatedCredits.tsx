@@ -227,15 +227,13 @@ export default function PaginatedCredits() {
             className='relative p-5 rounded-md max-w-full max-h-full'
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
-            <button
+            {/* <button
               onClick={() => setSelectedImage(null)} // Dismiss modal by setting selectedImage to null
               className='absolute top-2 right-2 z-50 px-3 py-1 cursor-pointer bg-red-500 font-aktivGroteskBold text-light-100 text-sm rounded'
             >
               Close
-            </button>
+            </button> */}
 
-            {/* Loader */}
             <div className='absolute inset-0 flex items-center justify-center w-full h-[60%]'>
               <div className='relative flex flex-col items-center justify-center gap-3'>
                 <div className='w-10 h-10 border-y-[1px] border-y-primary/30 border-x-2 border-x-primary rounded-full animate-spin'></div>
@@ -250,7 +248,6 @@ export default function PaginatedCredits() {
               </div>
             </div>
 
-            {/* Selected Image */}
             <Image
               src={selectedImage}
               alt='Selected Credit'
