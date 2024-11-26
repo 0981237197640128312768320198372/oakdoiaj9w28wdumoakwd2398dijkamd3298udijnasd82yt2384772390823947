@@ -125,17 +125,14 @@ export async function logActivity(type: string, user: string, details: any) {
     details, // Additional structured data related to the activity
   }
   console.log("API KEY", process.env.NEXT_PUBLIC_LOGGING_API_KEY)
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/log_activity`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.NEXT_PUBLIC_LOGGING_API_KEY || "",
-      },
-      body: JSON.stringify({ logEntry }),
-    }
-  )
+  const response = await fetch("/api/log_activity", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": process.env.NEXT_PUBLIC_LOGGING_API_KEY || "",
+    },
+    body: JSON.stringify({ logEntry }),
+  })
 
   if (!response.ok) {
     console.error("Failed to log activity")
