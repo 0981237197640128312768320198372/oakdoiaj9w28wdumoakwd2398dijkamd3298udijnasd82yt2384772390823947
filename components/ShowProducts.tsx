@@ -39,7 +39,7 @@ const ShowProducts = () => {
     }
 
     fetchProducts()
-  }, [cart])
+  }, [])
   return (
     <>
       {loading ? (
@@ -56,10 +56,9 @@ const ShowProducts = () => {
                 item.id.includes("Reseller")
               )
               const hasValidResellerCondition =
-                resellerItems.some((item) => item.quantity === 2) ||
+                resellerItems.some((item) => item.quantity >= 2) ||
                 resellerItems.length > 1
 
-              // Always show the button if there are non-reseller items or valid reseller condition
               if (
                 resellerItems.length === 0 ||
                 hasValidResellerCondition ||
