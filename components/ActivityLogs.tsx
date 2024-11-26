@@ -188,50 +188,56 @@ export default function ActivityLogs() {
                   {(log.activity.details.currentBalance ||
                     log.activity.details.totalCost ||
                     log.activity.details.newBalance) && (
-                    <div>
+                    <div className='flex justify-between'>
                       {log.activity.details.currentBalance && (
-                        <div className='flex items-center'>
-                          <p className='text-xs mr-3'>Previous Balance</p>
-                          <Image
-                            src={dokmaicoin}
-                            width={300}
-                            height={300}
-                            className='w-5 h-5'
-                            alt='Dokmai Coin Icon'
-                          />
-                          <p className='text-xs flex'>
-                            {log.activity.details.currentBalance}
-                          </p>
+                        <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                          <p className='text-xs mr-1'>Previous Balance</p>
+                          <span className='flex items-center'>
+                            <Image
+                              src={dokmaicoin}
+                              width={300}
+                              height={300}
+                              className='w-5 h-5'
+                              alt='Dokmai Coin Icon'
+                            />
+                            <p className='text-xs flex'>
+                              {log.activity.details.currentBalance}
+                            </p>
+                          </span>
                         </div>
                       )}
                       {log.activity.details.totalCost && (
-                        <div className='flex items-center'>
-                          <p className='text-xs mr-3'>Total Cost</p>
-                          <Image
-                            src={dokmaicoin}
-                            width={300}
-                            height={300}
-                            className='w-5 h-5'
-                            alt='Dokmai Coin Icon'
-                          />
-                          <p className='text-xs flex'>
-                            {log.activity.details.totalCost}
-                          </p>
+                        <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                          <p className='text-xs mr-1'>Total Cost</p>
+                          <span className='flex items-center'>
+                            <Image
+                              src={dokmaicoin}
+                              width={300}
+                              height={300}
+                              className='w-5 h-5'
+                              alt='Dokmai Coin Icon'
+                            />
+                            <p className='text-xs flex'>
+                              {log.activity.details.totalCost}
+                            </p>
+                          </span>
                         </div>
                       )}
                       {log.activity.details.newBalance && (
-                        <div className='flex items-center'>
-                          <p className='text-xs mr-3'>Current Balance</p>
-                          <Image
-                            src={dokmaicoin}
-                            width={300}
-                            height={300}
-                            className='w-5 h-5'
-                            alt='Dokmai Coin Icon'
-                          />
-                          <p className='text-xs flex'>
-                            {log.activity.details.newBalance}
-                          </p>
+                        <div className='flex items-start flex-col px-2 border-s-[1px] border-dark-400'>
+                          <p className='text-xs mr-1'>Current Balance</p>
+                          <span className='flex items-center'>
+                            <Image
+                              src={dokmaicoin}
+                              width={300}
+                              height={300}
+                              className='w-5 h-5'
+                              alt='Dokmai Coin Icon'
+                            />
+                            <p className='text-xs flex'>
+                              {log.activity.details.newBalance}
+                            </p>
+                          </span>
                         </div>
                       )}
                     </div>
