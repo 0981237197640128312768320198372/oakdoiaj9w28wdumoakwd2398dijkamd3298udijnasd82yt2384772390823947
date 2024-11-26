@@ -119,7 +119,7 @@ export default function ActivityLogs() {
       </div>
 
       {filteredLogs.length > 0 ? (
-        <div className='flex flex-col overflow-y-scroll max-h-96 gap-5 w-full px-5'>
+        <div className='flex flex-col overflow-y-scroll max-h-96 gap-10 w-full px-5'>
           {filteredLogs.map((log, index) => (
             <div
               key={index}
