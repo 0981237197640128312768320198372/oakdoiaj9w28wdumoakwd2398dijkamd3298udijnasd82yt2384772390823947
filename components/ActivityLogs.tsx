@@ -191,7 +191,7 @@ export default function ActivityLogs() {
                     <div>
                       {log.activity.details.currentBalance && (
                         <div className='flex items-center'>
-                          <p className='text-xs mr-3'>Current Balance</p>
+                          <p className='text-xs mr-3'>Previous Balance</p>
                           <Image
                             src={dokmaicoin}
                             width={300}
@@ -221,7 +221,7 @@ export default function ActivityLogs() {
                       )}
                       {log.activity.details.newBalance && (
                         <div className='flex items-center'>
-                          <p className='text-xs mr-3'>New Balance</p>
+                          <p className='text-xs mr-3'>Current Balance</p>
                           <Image
                             src={dokmaicoin}
                             width={300}
