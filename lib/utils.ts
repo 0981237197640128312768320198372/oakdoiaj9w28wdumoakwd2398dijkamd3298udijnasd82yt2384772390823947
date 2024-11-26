@@ -1,4 +1,5 @@
 /* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { Metadata } from "next"
