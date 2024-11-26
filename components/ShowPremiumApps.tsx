@@ -140,6 +140,7 @@ export const ShowPremiumApps = () => {
           description: "Logged in successfully",
         })
         const userInfoData = await userInfoRes.json()
+        console.log(userInfoData)
         setUserInfo(userInfoData.data)
         localStorage.setItem("personalKey", key)
         fetchPremiumData(key)

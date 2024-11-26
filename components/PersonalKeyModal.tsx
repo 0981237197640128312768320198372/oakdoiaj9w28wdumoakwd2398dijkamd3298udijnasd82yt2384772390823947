@@ -59,7 +59,7 @@ const PersonalKeyModal: React.FC<PersonalKeyModalProps> = ({
             <input
               type='text'
               placeholder='Enter your Personal Key (#ABCD1234)'
-              className='border-[1px] border-primary/70 focus:border-primary p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
+              className='border-[1px] border-primary/70 p-2 px-3 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
               value={inputPersonalKey}
               onChange={(e) => setInputPersonalKey(e.target.value)}
             />

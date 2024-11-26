@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import ActivityLogs from "@/components/ActivityLogs"
 import PageHeadline from "@/components/PageHeadline"
+import Loading from "@/components/Loading"
 
 // Define TypeScript interfaces
 interface AuthData {
@@ -55,15 +56,10 @@ const AdminPage = () => {
   const handleLogout = () => {
     localStorage.removeItem("auth")
     setAuthenticated(false)
-    router.push("/login")
   }
 
   if (loading) {
-    return (
-      <div className='flex justify-center items-center h-screen'>
-        <p>Loading...</p>
-      </div>
-    )
+    return <Loading />
   }
 
   if (!authenticated) {
@@ -75,13 +71,13 @@ const AdminPage = () => {
             type='text'
             placeholder='Username'
             id='username'
-            className='border border-primary p-2 mb-3 w-full bg-transparent'
+            className='border border-primary p-2 mb-3 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
           />
           <input
             type='password'
             placeholder='Password'
             id='password'
-            className='border border-primary p-2 mb-3 w-full bg-transparent'
+            className='border border-primary p-2 mb-3 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm'
           />
           <button
             onClick={async () => {
