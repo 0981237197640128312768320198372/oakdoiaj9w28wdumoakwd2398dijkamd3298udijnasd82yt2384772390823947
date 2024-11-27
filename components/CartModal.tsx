@@ -220,7 +220,7 @@ const CartModal = ({
         </div>
 
         {cart.length === 0 ? (
-          <p className='text-light-200 text-center'>Your cart is empty.</p>
+          <p className='text-light-200 text-center'>ไม่มีสินค้าในตะกร้า</p>
         ) : (
           <div>
             {cart.map((item) => (
