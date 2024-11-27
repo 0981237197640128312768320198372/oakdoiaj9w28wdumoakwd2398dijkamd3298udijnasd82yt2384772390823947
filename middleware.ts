@@ -16,11 +16,19 @@ export function middleware(req: NextRequest) {
       headers: { "Content-Type": "text/html" },
     })
   }
+  const url = new URL(req.url)
+  const hostname = url.hostname
+
+  // Handle subdomain logic
+  if (hostname === "admin.dokmaistore.com") {
+    url.pathname = `/admin${url.pathname}` // Prefix all routes with `/admin`
+    return NextResponse.rewrite(url)
+  }
 
   // Allow the request for unrestricted users
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: "/:path*", // Apply the middleware to all routes
+  matcher: "/:path*",
 }
