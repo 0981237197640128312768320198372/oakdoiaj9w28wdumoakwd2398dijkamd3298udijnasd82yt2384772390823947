@@ -96,7 +96,7 @@ export default function ActivityLogs() {
         </h3>
         <button
           onClick={fetchLogs}
-          className='px-2 h-fit rounded bg-primary/20 text-primary  hover:bg-primary/30 active:bg-primary/40'
+          className='px-2 h-fit bg-primary text-dark-800 font-aktivGroteskBold  hover:bg-primary/90 active:bg-primary/80'
         >
           Refresh
         </button>

@@ -78,7 +78,7 @@ const AdminDeposit = () => {
         <button
           type='submit'
           disabled={loading}
-          className={`bg-primary text-dark-800 py-2 font-bold ${
+          className={`bg-primary text-dark-800 py-2 font-aktivGroteskBold ${
             loading ? "opacity-50 cursor-not-allowed" : "hover:bg-primary/80"
           }`}
         >

@@ -19,7 +19,7 @@ const AdminPageContent = () => {
       <div className='w-full flex items-center justify-end mb-10'>
         <button
           onClick={handleLogout}
-          className='bg-red-500/20 text-red-500 hover:bg-red-500/30 active:bg-red-500/40 px-2 py-1 rounded'
+          className='bg-red-500 text-dark-800 hover:bg-red-500/90 active:bg-red-500/80 px-1 font-aktivGroteskBold'
         >
           Logout
         </button>
