@@ -58,7 +58,7 @@ const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
 
   if (isLoading) {
     return (
-      <div className='relative w-full h-full overflow-x-scroll scrollbar-hide whitespace-nowrap __noscrollbar'>
+      <div className='relative w-full h-full overflow-x-scroll whitespace-nowrap __noscrollbar'>
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
@@ -79,7 +79,7 @@ const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
   return (
     <div
       ref={containerRef}
-      className='relative w-full h-full overflow-x-scroll scrollbar-hide whitespace-nowrap __noscrollbar'
+      className='relative w-full h-full overflow-x-scroll whitespace-nowrap __noscrollbar'
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -163,7 +163,9 @@ export default function NetflixTop10() {
   return (
     <div className='container mx-auto p-4'>
       <section>
-        <h2 className='text-xl font-semibold mb-4'>Top TV Shows</h2>
+        <h2 className='text-xl font-semibold mb-4'>
+          รายการทีวี 10 อันดับสูงสุดในไทยสัปดาห์นี้
+        </h2>
         <HorizontalAutoScrollCarousel
           items={tvItems}
           scrollSpeed={20}
@@ -172,7 +174,9 @@ export default function NetflixTop10() {
       </section>
 
       <section className='mt-8'>
-        <h2 className='text-xl font-semibold mb-4'>Top Films</h2>
+        <h2 className='text-xl font-semibold mb-4'>
+          ภาพยนตร์ 10 อันดับสูงสุดในไทยสัปดาห์นี้
+        </h2>
         <HorizontalAutoScrollCarousel
           items={filmsItems}
           scrollSpeed={50}

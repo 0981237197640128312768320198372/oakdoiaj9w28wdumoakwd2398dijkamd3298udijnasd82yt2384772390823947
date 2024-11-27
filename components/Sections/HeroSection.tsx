@@ -19,26 +19,28 @@ const HeroSection = () => {
       className='flex flex-col w-full justify-start items-center'
     >
       <DOKMAI text='DOKMAI' />
-      <div className='flex flex-col justify-start px-5 __container items-center text-center w-full'>
-        <h1 className='flex flex-col items-center text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
+      <div className='flex flex-col justify-start px-5 __container items-start text-center w-full'>
+        <h1 className='flex flex-col items-start text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-1'>
+          ดูซีรีส์มากขึ้น ใช้เงินน้อยลง
           <span className='text-sm font-mono text-light-400'>
             แพลตฟอร์มร้านบัญชีแอปพรีเมียมอันดับ 1 ในประเทศไทย
           </span>
-          ดูซีรีส์มากขึ้น ใช้เงินน้อยลง
         </h1>
-        <p className='md:text-xl text-light-200 font-mono text-xs'>
-          <Highlight text='แพลตฟอร์มสินค้า Digital' /> ที่นำเสนอ{" "}
-          <Highlight text='บัญชีแอปพรีเมียม' />, เช่น{" "}
+        <p className='md:text-xl text-light-200 text-start font-mono text-xs'>
+          <Highlight text='แพลตฟอร์มสินค้า ดิจิทัล' />
+          ที่นำเสนอ
+          <Highlight text='บัญชีแอปพรีเมียม' />
+          เช่น
           <Highlight
             text='Netflix Premium'
             bgcolor='bg-[#e50914] !text-black whitespace-nowrap'
-          />{" "}
-          และ{" "}
+          />
+          และ
           <Highlight
             text='Prime Video'
             bgcolor='bg-[#00aae4] !text-white whitespace-nowrap'
           />
-          ใน{" "}
+          ใน
           <Highlight
             text='ราคาที่จับต้องได้'
             bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
@@ -47,7 +49,7 @@ const HeroSection = () => {
           <Highlight
             text='ความน่าเชื่อถือ'
             bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
-          />{" "}
+          />
           <Highlight
             text='การตอบกลับที่รวดเร็ว'
             bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
@@ -59,16 +61,16 @@ const HeroSection = () => {
           />
           มอบความเป็นเลิศและความพึงพอใจให้กับลูกค้าทุกคน
         </p>
-        <div className='flex justify-center items-center gap-5'>
+        <div className='flex w-full justify-end items-center gap-5 mt-1'>
           <Link
             href='/products'
-            className='text-light-100 border-b-2 px-2 pt-3 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
+            className='text-light-100 border-b-2 px-2 pt-3 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
           >
             สั่งซื้อตอนนี้
           </Link>
           <Link
             href='/about-us'
-            className='text-light-100 border-b-2 px-2 pt-3 mt-5 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
+            className='text-light-100 border-b-2 px-2 pt-3 font-aktivGroteskBold xl:text-3xl border-primary hover:border-0 hover:bg-primary hover:text-dark-800 duration-500 '
           >
             เกี่ยวกับเรา
           </Link>
