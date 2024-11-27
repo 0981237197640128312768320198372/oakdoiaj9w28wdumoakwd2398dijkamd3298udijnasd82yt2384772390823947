@@ -39,17 +39,6 @@ const nextConfig = {
       },
     ]
   },
-  async rewrites() {
-    return [
-      {
-        source: "/:path*", // Redirect all paths
-        has: [
-          { type: "host", value: "admin.dokmaistore.com" }, // For admin subdomain
-        ],
-        destination: "/admin/:path*", // Serve `/admin` content
-      },
-    ]
-  },
 }
 
 export default nextConfig
