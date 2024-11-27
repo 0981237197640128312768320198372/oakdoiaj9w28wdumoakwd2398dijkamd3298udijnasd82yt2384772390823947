@@ -19,7 +19,7 @@ const HeroSection = () => {
       className='flex flex-col w-full justify-start items-center'
     >
       <DOKMAI text='DOKMAI' />
-      <div className='flex flex-col justify-start px-5 __container items-start text-center w-full'>
+      <div className='flex flex-col justify-start px-5 lg:p-0 __container items-start text-center w-full'>
         <h1 className='flex flex-col items-start text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-1'>
           ดูซีรีส์มากขึ้น ใช้เงินน้อยลง
           <span className='text-sm font-mono text-light-400'>
