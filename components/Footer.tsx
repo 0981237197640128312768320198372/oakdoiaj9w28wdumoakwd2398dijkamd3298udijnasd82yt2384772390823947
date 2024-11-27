@@ -82,9 +82,6 @@ const Footer = () => {
             Copyright 2022, Dokmai Store. All rights reserved.
           </p>
           <li className='flex gap-5 items-center'>
-            <Link href='/admin' className='flex items-center p-4 '>
-              {" "}
-            </Link>
             {contact.map((contact, i) => (
               <Link
                 href={contact.url}
