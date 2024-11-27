@@ -27,15 +27,15 @@ const fetchRecommendations = async (page: number, limit: number) => {
 
   const rawRecommendationsData = await res.json()
 
-  const recommendations = rawRecommendationsData.data
-    .map((recommendationsRow: string[]) => ({
+  const recommendations = rawRecommendationsData.data.map(
+    (recommendationsRow: string[]) => ({
       title: recommendationsRow[0],
       description: recommendationsRow[1],
       recommendationsimageUrl: convertGoogleDriveUrl(recommendationsRow[2]),
       netflixUrl: recommendationsRow[3],
       date: recommendationsRow[4],
-    }))
-    .reverse()
+    })
+  )
 
   return recommendations
 }

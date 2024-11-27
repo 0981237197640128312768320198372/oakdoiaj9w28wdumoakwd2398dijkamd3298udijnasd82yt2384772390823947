@@ -168,7 +168,15 @@ export const ShowPremiumApps = () => {
 
       if (premiumDataRes.ok) {
         const premiumAppsData = await premiumDataRes.json()
-        setPremiumData(premiumAppsData.data)
+
+        // Sort the data based on the orderDate
+        const sortedData = premiumAppsData.data.sort((a: any, b: any) => {
+          const dateA = new Date(a.orderDate).getTime()
+          const dateB = new Date(b.orderDate).getTime()
+          return dateB - dateA // Latest date first
+        })
+
+        setPremiumData(sortedData)
       } else {
         const errorData = await premiumDataRes.json()
         setError(errorData.error || "No premium data found.")
@@ -215,7 +223,7 @@ export const ShowPremiumApps = () => {
     )
   })
 
-  console.log()
+  console.log(premiumData)
   return (
     <div className='w-full justify-center items-center'>
       {checkingLocalStorage && <Loading />}
@@ -371,8 +379,9 @@ export const ShowPremiumApps = () => {
               className='mb-5  border-[1px] border-primary/40 p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
             />
             <div className='grid flex-col grid-cols-1 lg:grid-cols-2 gap-5 w-full max-h-[650px] overflow-y-scroll px-5 pb-5 border-t-0 border-[1px] border-dark-500'>
-              {(searchTerm ? filteredPremiumData : premiumData).map(
-                (item: any, index: any) => (
+              {(searchTerm ? filteredPremiumData : premiumData)
+                .reverse()
+                .map((item: any, index: any) => (
                   <div
                     key={index}
                     className='shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5'
@@ -429,8 +438,7 @@ export const ShowPremiumApps = () => {
                       </div>
                     ))}
                   </div>
-                )
-              )}
+                ))}
             </div>
             {premiumData.filter(
               (item: any) =>

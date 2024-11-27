@@ -265,7 +265,7 @@ export async function POST(request: Request) {
         if (!response.ok) {
           console.error("Failed to log activity")
         } else {
-          console.log("Activity logged successfully")
+          // console.log("Activity logged successfully")
         }
       })
       .catch((error) => {

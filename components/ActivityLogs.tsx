@@ -161,8 +161,8 @@ export default function ActivityLogs() {
                                     : primevideo
                                 }
                                 alt={`${item.name} image`}
-                                width={60}
-                                height={60}
+                                width={40}
+                                height={40}
                                 className='select-none'
                                 loading='lazy'
                               />
@@ -170,7 +170,7 @@ export default function ActivityLogs() {
                                 <p className='text-xs font-thin'>{item.name}</p>
                                 <div className='flex gap-1 items-center'>
                                   <span
-                                    className={`px-1 text-sm mr-3 ${
+                                    className={`px-1 text-xs mr-3 ${
                                       item.name.includes("Reseller")
                                         ? "bg-goldVIP"
                                         : "bg-primary"
