@@ -13,12 +13,12 @@ import Link from "next/link"
 import { generateMetadata } from "@/lib/utils"
 
 export const metadata = generateMetadata({
-  title: "วิธีการสั่งซื้อ",
+  title: "ช่วยเหลือ",
   description:
-    "เรียนรู้วิธีการสั่งซื้อบัญชีแอพพรีเมียมเช่น Netflix Premium และ Prime Video ที่ Dokmai Store พร้อมการชำระเงินที่สะดวกสบายและรับบริการลูกค้าที่ยอดเยี่ยม.",
+    "ค้นหาคำตอบสำหรับคำถามที่พบบ่อย เช่น วิธีการสั่งซื้อ วิธีการเติมเงิน วิธีการใช้งาน Netflix Premium และ Prime Video พร้อมคำแนะนำในการแก้ปัญหา เช่น เข้าระบบไม่ได้หรือข้อผิดพลาดอื่น ๆ เพื่อให้คุณใช้งานได้อย่างราบรื่นและมั่นใจ",
   url: "https://www.dokmaistore.com/help",
   keywords:
-    "วิธีการสั่งซื้อ, Netflix Premium, Prime Video, บัญชีพรีเมียม, Dokmai Store, ซื้อออนไลน์, การชำระเงินสะดวก",
+    "วิธีการสั่งซื้อ, วิธีเติมเงิน, วิธีใช้งาน Netflix Premium, วิธีใช้งาน Prime Video, แก้ปัญหา Netflix เข้าระบบไม่ได้, การใช้งานบัญชีพรีเมียม, การแก้ไขปัญหา, Dokmai Store, ซื้อออนไลน์, บัญชีพรีเมียม, ช่วยเหลือ, แก้ไข Netflix, วิธีสตรีม Prime Video, การชำระเงินสะดวก, บริการลูกค้า",
 })
 
 const page = () => {
@@ -122,8 +122,8 @@ const page = () => {
   return (
     <div className='w-full px-5 xl:px-0 mt-32 mb-96  __container'>
       <PageHeadline
-        headline='How To Order'
-        description='รับชม Netflix Premium ในราคาสุดประหยัด แต่คุณภาพเต็มขั้น เลือกแพ็กเกจที่คุ้มค่าที่สุดสำหรับคุณ พร้อมใช้งานทันที'
+        headline='ช่วยเหลือ'
+        description='ค้นหาคำตอบสำหรับคำถามที่พบบ่อย เช่น วิธีการสั่งซื้อ วิธีการเติมเงิน วิธีการใช้งาน Netflix Premium และ Prime Video พร้อมคำแนะนำในการแก้ปัญหา เช่น เข้าระบบไม่ได้หรือข้อผิดพลาดอื่น ๆ เพื่อให้คุณใช้งานได้อย่างราบรื่นและมั่นใจ'
       />
       <Timeline data={data} />
     </div>

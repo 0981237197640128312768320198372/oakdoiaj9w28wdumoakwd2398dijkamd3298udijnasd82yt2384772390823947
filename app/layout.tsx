@@ -39,9 +39,6 @@ export default function RootLayout({
             {children}
 
             <Analytics />
-            <div className='light-effect'>
-              <div className='light-element'></div>
-            </div>
           </div>
           <Footer />
         </CartProvider>

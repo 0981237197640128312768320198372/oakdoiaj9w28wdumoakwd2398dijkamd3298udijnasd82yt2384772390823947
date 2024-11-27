@@ -152,16 +152,6 @@ body::-webkit-scrollbar {
     transform: translate(0, 0) rotate(0deg); /* Matches the starting state */
   }
 }
-
-.light-effect {
-  @apply fixed inset-0 pointer-events-none overflow-hidden -z-50;
-}
-
-.light-element {
-  @apply absolute top-3/4 right-0 w-[700px] h-60 bg-primary/5 blur-3xl rounded-lg;
-  animation: float 6s infinite ease-in-out;
-}
-
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

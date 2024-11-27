@@ -13,7 +13,7 @@ export const navButtons = [
     url: "/products",
   },
   {
-    title: "help",
+    title: "ช่วยเหลือ",
     url: "/help",
   },
   {
@@ -31,7 +31,7 @@ export const navButtons = [
 ]
 export const footerButton = [
   {
-    title: "help",
+    title: "ช่วยเหลือ",
     url: "/help",
   },
   {
