@@ -70,7 +70,7 @@ const ShowProducts = () => {
                       onClick={() => setCartOpen(true)}
                       className='bg-primary text-dark-800 py-2 rounded active:bg-primary/80 font-aktivGroteskBold text-xl px-4 w-full max-w-lg'
                     >
-                      View Cart
+                      ดูตะกร้า
                     </button>
                   </div>
                 )

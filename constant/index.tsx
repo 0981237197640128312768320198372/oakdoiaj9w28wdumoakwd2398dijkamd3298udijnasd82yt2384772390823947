@@ -13,15 +13,15 @@ export const navButtons = [
     url: "/products",
   },
   {
-    title: "วิธีการสั่งซื้อ",
-    url: "/how-to-order",
+    title: "help",
+    url: "/help",
   },
   {
     title: "เกี่ยวกับเรา",
     url: "/about-us",
   },
   {
-    title: "Recommendations",
+    title: "รายการหนังแนะนำ",
     url: "/movie-series-recommendations",
   },
   {
@@ -31,8 +31,8 @@ export const navButtons = [
 ]
 export const footerButton = [
   {
-    title: "วิธีการสั่งซื้อ",
-    url: "/how-to-order",
+    title: "help",
+    url: "/help",
   },
   {
     title: "เกี่ยวกับเรา",

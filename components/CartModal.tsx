@@ -208,13 +208,14 @@ const CartModal = ({
       <div className='w-full max-w-lg bg-dark-800 p-4 rounded-t-lg border-[1px] border-dark-600'>
         <div className='flex justify-between items-center pb-4 mb-5 border-b-[1px] border-dark-600'>
           <h2 className='text-lg font-bold text-light-200 flex items-center gap-2'>
-            <PiShoppingCartLight className='text-primary text-xl' /> Your Cart
+            <PiShoppingCartLight className='text-primary text-xl' />{" "}
+            ตะกร้าของคุณ
           </h2>
           <button
             onClick={onClose}
             className='text-red-600 bg-red-600/20 active:bg-red-600/10 rounded px-2 py-1'
           >
-            Close
+            ปิด
           </button>
         </div>
 
@@ -291,11 +292,17 @@ const CartModal = ({
               </div>
             ))}
             <div className='flex justify-between items-center pt-4  gap-8'>
-              <span className='text-light-200 font-bold'>Total:</span>
-              <div className='w-full h-[1px] bg-dark-500' />
-              <span className='text-light-200 font-bold whitespace-nowrap'>
-                ฿ {total}
-              </span>
+              <span className='text-light-200'>รวม:</span>
+              <div className='text-light-200 whitespace-nowrap flex items-center'>
+                <Image
+                  src={dokmaicoin}
+                  width={70}
+                  height={70}
+                  alt='Dokmai Coin '
+                  className='w-8 h-8'
+                />{" "}
+                <p>{total}</p>
+              </div>
             </div>
             {(() => {
               const resellerItems = cart.filter((item) =>
@@ -338,7 +345,7 @@ const CartModal = ({
                         : " bg-primary active:bg-primary/80"
                     }`}
                   >
-                    {loading ? "Processing..." : "Checkout"}
+                    {loading ? "กำลังดำเนินการ..." : "ชำระเงิน"}
                   </button>
                 </div>
               )

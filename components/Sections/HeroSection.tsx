@@ -22,43 +22,42 @@ const HeroSection = () => {
       <div className='flex flex-col justify-start px-5 __container items-center text-center w-full'>
         <h1 className='flex flex-col items-center text-3xl md:text-5xl font-aktivGroteskXBoldItalic text-light-200 mb-4'>
           <span className='text-sm font-mono text-light-400'>
-            Premium Apps Account Store Platform #1 In Thailand
+            แพลตฟอร์มร้านบัญชีแอปพรีเมียมอันดับ 1 ในประเทศไทย
           </span>
-          Watch More Series, Spend Less Money
+          ดูซีรีส์มากขึ้น ใช้เงินน้อยลง
         </h1>
         <p className='md:text-xl text-light-200 font-mono text-xs'>
-          <Highlight text='Digital Products Platform' /> offering{" "}
-          <Highlight text='Premium App Accounts' />, such as{" "}
+          <Highlight text='แพลตฟอร์มสินค้า Digital' /> ที่นำเสนอ{" "}
+          <Highlight text='บัญชีแอปพรีเมียม' />, เช่น{" "}
           <Highlight
             text='Netflix Premium'
             bgcolor='bg-[#e50914] !text-black whitespace-nowrap'
           />{" "}
-          and{" "}
+          และ{" "}
           <Highlight
             text='Prime Video'
             bgcolor='bg-[#00aae4] !text-white whitespace-nowrap'
           />
-          , at{" "}
+          ใน{" "}
           <Highlight
-            text='affordable prices'
+            text='ราคาที่จับต้องได้'
             bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
           />
-          . We are known for our{" "}
+          เราเป็นที่รู้จักในด้าน
           <Highlight
-            text='reliability'
+            text='ความน่าเชื่อถือ'
+            bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
+          />{" "}
+          <Highlight
+            text='การตอบกลับที่รวดเร็ว'
             bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
           />
-          ,{" "}
+          และ
           <Highlight
-            text='fast response times'
+            text='บริการที่คุณไว้วางใจได้'
             bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
           />
-          , and{" "}
-          <Highlight
-            text='trusted service'
-            bgcolor=' bg-transparent font-aktivGroteskBold text-light-100'
-          />
-          , delivering excellence and satisfaction for every client.
+          มอบความเป็นเลิศและความพึงพอใจให้กับลูกค้าทุกคน
         </p>
         <div className='flex justify-center items-center gap-5'>
           <Link
@@ -75,6 +74,7 @@ const HeroSection = () => {
           </Link>
         </div>
       </div>
+
       <div className='pt-24 overflow-hidden relative w-full'>
         <Features text={features} />
       </div>

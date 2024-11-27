@@ -149,7 +149,9 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                               : ""
                           }`}
                         >
-                          {product.stock === 0 ? "Out of Stock" : "Add to cart"}
+                          {product.stock === 0
+                            ? "ไม่มีในสต็อก"
+                            : "เพิ่มลงตะกร้า"}
                         </button>
                       )}
                     </div>
