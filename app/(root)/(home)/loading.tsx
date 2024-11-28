@@ -1,8 +1,8 @@
-import Loading from "@/components/Loading"
+import LoadingAnimation from "@/components/Loading"
 import React from "react"
 
-const loading = () => {
-  return <Loading />
+const Loading = () => {
+  return <LoadingAnimation />
 }
 
-export default loading
+export default Loading

@@ -4,7 +4,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-// import Loading from "./Loading"
 import { IoBagCheckOutline } from "react-icons/io5"
 import { SlWallet } from "react-icons/sl"
 import { BiLogOutCircle, BiLogInCircle } from "react-icons/bi"

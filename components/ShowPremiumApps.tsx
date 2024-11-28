@@ -223,7 +223,6 @@ export const ShowPremiumApps = () => {
     )
   })
 
-  console.log(premiumData)
   return (
     <div className='w-full justify-center items-center'>
       {checkingLocalStorage && <Loading />}

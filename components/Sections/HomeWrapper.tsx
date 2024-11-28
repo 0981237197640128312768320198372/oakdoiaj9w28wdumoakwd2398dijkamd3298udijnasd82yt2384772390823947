@@ -1,7 +1,7 @@
 "use client"
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, ReactNode } from "react"
-import Loading from "@/components/Loading"
+import LoadingAnimation from "@/components/Loading"
 
 interface HomeWrapperProps {
   children: ReactNode
@@ -20,7 +20,7 @@ export const HomeWrapper: React.FC<HomeWrapperProps> = ({ children }) => {
   }, [])
 
   if (loading) {
-    return <Loading />
+    return <LoadingAnimation />
   }
 
   return <>{children}</>

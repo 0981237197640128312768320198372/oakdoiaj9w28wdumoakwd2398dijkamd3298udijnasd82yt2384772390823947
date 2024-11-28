@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import Loading from "@/components/Loading"
+import LoadingAnimation from "@/components/Loading"
 import { usePathname } from "next/navigation"
 
 interface AuthData {
@@ -98,7 +98,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (loading) {
-    return <Loading />
+    return <LoadingAnimation />
   }
 
   if (!authenticated) {

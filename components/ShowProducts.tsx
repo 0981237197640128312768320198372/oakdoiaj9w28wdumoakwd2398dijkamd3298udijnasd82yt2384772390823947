@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react"
 import { ProductsList } from "@/components/ProductsList"
 import CartModal from "@/components/CartModal"
 import PageHeadline from "./PageHeadline"
-import Loading from "@/components/Loading"
+import LoadingAnimation from "@/components/Loading"
 import { useCart } from "@/context/CartContext"
 
 const ShowProducts = () => {
@@ -43,7 +43,7 @@ const ShowProducts = () => {
   return (
     <>
       {loading ? (
-        <Loading />
+        <LoadingAnimation />
       ) : (
         <>
           <PageHeadline

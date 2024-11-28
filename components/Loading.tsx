@@ -2,7 +2,7 @@
 import Image from "next/image"
 import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
 
-const Loading = ({ text }: { text?: string }) => {
+const LoadingAnimation = ({ text }: { text?: string }) => {
   return (
     <div className='fixed top-0 left-0 z-[100] w-screen h-screen flex flex-col justify-center items-center bg-dark-800'>
       <div className='relative flex flex-col items-center justify-center gap-3'>
@@ -21,4 +21,4 @@ const Loading = ({ text }: { text?: string }) => {
   )
 }
 
-export default Loading
+export default LoadingAnimation

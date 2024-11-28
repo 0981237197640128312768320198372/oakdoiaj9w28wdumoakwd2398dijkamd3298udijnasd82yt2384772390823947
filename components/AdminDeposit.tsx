@@ -9,7 +9,6 @@ const AdminDeposit = () => {
   const [personalKey, setPersonalKey] = useState("")
   const [depositAmount, setDepositAmount] = useState<number | "">("")
   const [bonusPercentage, setBonusPercentage] = useState<number | string>(0)
-
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
