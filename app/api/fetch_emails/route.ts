@@ -14,7 +14,6 @@ const imapConfig = {
   tls: true,
 }
 
-// Map user-friendly folder names to IMAP folder paths
 const folderMap = {
   inbox: "INBOX",
   spam: "[Gmail]/Spam",
@@ -22,24 +21,21 @@ const folderMap = {
 }
 
 const decodeMimeEncodedText = (encodedText: string): string => {
-  if (!encodedText.startsWith("=?") || !encodedText.endsWith("?=")) {
-    return encodedText // Not MIME encoded
+  if (!encodedText.match(/=\?([^?]+)\?[BQ]\?([^?]+)\?=/)) {
+    return encodedText
   }
-
   const regex = /=\?([^?]+)\?([BQ])\?([^?]*)\?=/gi
   return encodedText.replace(regex, (_, charset, encoding, encodedData) => {
     if (encoding.toUpperCase() === "B") {
-      // Base64 decoding
       return Buffer.from(encodedData, "base64").toString(charset)
     } else if (encoding.toUpperCase() === "Q") {
-      // Quoted-Printable decoding
       return encodedData
         .replace(/_/g, " ")
         .replace(/=([A-Fa-f0-9]{2})/g, (_: any, hex: string) =>
           String.fromCharCode(parseInt(hex, 16))
         )
     }
-    return encodedText // Return as-is if unrecognized encoding
+    return encodedText
   })
 }
 
@@ -49,11 +45,18 @@ const fetchEmailsFromFolder = (folder: string): Promise<any[]> => {
 
     imap.once("ready", () => {
       imap.openBox(folder, true, (err, box) => {
-        if (err) return reject(err)
+        if (err) {
+          console.error(`Failed to open folder: ${folder}`, err)
+          return reject(new Error("Could not open the specified folder."))
+        }
 
-        const fetchRange = `${Math.max(box.messages.total - 49, 1)}:${
-          box.messages.total
-        }`
+        const totalMessages = box.messages?.total || 0
+        if (totalMessages === 0) {
+          resolve([])
+          return
+        }
+
+        const fetchRange = `${Math.max(totalMessages - 49, 1)}:${totalMessages}`
         const f = imap.seq.fetch(fetchRange, {
           bodies: "",
           struct: true,
@@ -79,11 +82,9 @@ const fetchEmailsFromFolder = (folder: string): Promise<any[]> => {
               stream.once("end", async () => {
                 const from = extractHeader(buffer, "From") || "Unknown"
                 const to = extractHeader(buffer, "To") || "Unknown"
-                const subject =
-                  extractHeader(buffer, "Subject") ||
-                  extractHeader(buffer, "subject") ||
-                  "No Subject"
+                const subject = extractHeader(buffer, "Subject") || "No Subject"
                 const encodedSubject = decodeMimeEncodedText(subject)
+
                 try {
                   const parsedEmail = await simpleParser(buffer)
                   const htmlBody = parsedEmail.html || parsedEmail.text || ""
@@ -102,8 +103,6 @@ const fetchEmailsFromFolder = (folder: string): Promise<any[]> => {
                       date: parsedEmail.date || "Unknown",
                       body: htmlBody,
                     })
-                    // console.log(`Subject: \n ${subject}`)
-                    // console.log(`Encoded Subject: \n ${encodedSubject}`)
                   }
                 } catch (err) {
                   console.error(`Error parsing email with UID ${uid}:`, err)
@@ -151,13 +150,12 @@ const extractHeader = (emailData: string, headerName: string) => {
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url)
-    const folderParam = url.searchParams.get("folder") || "inbox".toLowerCase() // Default to Inbox
 
-    const folder =
-      folderMap[folderParam as keyof typeof folderMap] || folderMap.inbox
+    const folderParam = url.searchParams.get("folder")?.toLowerCase() || "inbox"
+    const folder = folderMap[folderParam as keyof typeof folderMap]
 
     const emailData = await fetchEmailsFromFolder(folder)
-    console.log(`Returning ${emailData.length}`)
+    console.log(`Returning ${emailData.length} emails.`)
     const response = NextResponse.json(emailData, { status: 200 })
     response.headers.set(
       "Cache-Control",
