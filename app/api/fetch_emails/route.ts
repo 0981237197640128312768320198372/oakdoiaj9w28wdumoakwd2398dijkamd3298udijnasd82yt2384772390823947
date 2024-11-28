@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import Imap from "node-imap"
 import { simpleParser } from "mailparser"
 import { Buffer } from "buffer"
@@ -147,15 +147,14 @@ const extractHeader = (emailData: string, headerName: string) => {
   return match ? match[1].trim() : null
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const url = new URL(request.url)
-
-    const folderParam = url.searchParams.get("folder")?.toLowerCase() || "inbox"
-    const folder = folderMap[folderParam as keyof typeof folderMap]
+    const folderParam = request.nextUrl.searchParams.get("folder") || "inbox"
+    const folder =
+      folderMap[folderParam as keyof typeof folderMap] || folderMap.inbox
 
     const emailData = await fetchEmailsFromFolder(folder)
-    console.log(`Returning ${emailData.length} emails.`)
+    console.log(`Returning ${emailData.length}`)
     const response = NextResponse.json(emailData, { status: 200 })
     response.headers.set(
       "Cache-Control",
