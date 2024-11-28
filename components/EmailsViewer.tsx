@@ -7,6 +7,7 @@ import { FiInbox } from "react-icons/fi"
 import { RiSpam2Line } from "react-icons/ri"
 import { LuMails } from "react-icons/lu"
 import { TbRefresh } from "react-icons/tb"
+import { GoArrowUpRight } from "react-icons/go"
 
 interface Email {
   uid: string
@@ -158,7 +159,7 @@ const EmailsViewer = () => {
 
       <div className='w-full overflow-hidden'>
         {loading ? (
-          <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll'>
+          <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll __dokmai_scrollbar'>
             <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
               <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
               <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
@@ -202,7 +203,9 @@ const EmailsViewer = () => {
                 <p className='text-xs font-aktivGroteskThin'>
                   From: {email.from}
                 </p>
-                <p className='font-aktivGroteskBold text-sm'>{email.subject}</p>
+                <p className='font-aktivGroteskBold text-sm justify-between flex'>
+                  {email.subject} <GoArrowUpRight />
+                </p>
               </div>
             ))}
           </div>

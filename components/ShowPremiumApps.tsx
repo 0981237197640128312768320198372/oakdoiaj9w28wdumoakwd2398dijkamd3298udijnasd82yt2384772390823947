@@ -17,6 +17,7 @@ import Loading from "@/components/Loading"
 import EmailList from "./EmailList"
 import CopyToClipboard from "./CopyToClipboard"
 import { logActivity } from "@/lib/utils"
+import { parse, isValid } from "date-fns"
 
 export const ShowPremiumApps = () => {
   const [inputPersonalKey, setInputPersonalKey] = useState<string>("")
@@ -156,6 +157,35 @@ export const ShowPremiumApps = () => {
       setValidatingPersonalKey(false)
     }
   }
+  const parseDate = (dateString: string): Date | null => {
+    // Try native Date parsing
+    const parsedDate = new Date(dateString.trim())
+
+    if (isValid(parsedDate)) {
+      return parsedDate // Return valid native Date
+    }
+
+    // Try specific patterns using date-fns
+    const patterns = [
+      "dd MMMM yyyy 'at' HH:mm", // With 'at'
+      "dd MMMM yyyy HH:mm", // Without 'at'
+      "dd MMMM yyyy", // Date only
+    ]
+
+    for (const pattern of patterns) {
+      try {
+        const parsed = parse(dateString.trim(), pattern, new Date())
+        if (isValid(parsed)) {
+          return parsed // Return valid parsed Date object
+        }
+      } catch {
+        // Ignore errors and try the next pattern
+      }
+    }
+
+    console.warn(`Unrecognized date format: ${dateString}`)
+    return null // Return null for invalid dates
+  }
 
   const fetchPremiumData = async (key: string) => {
     setFetchingData(true)
@@ -169,12 +199,9 @@ export const ShowPremiumApps = () => {
       if (premiumDataRes.ok) {
         const premiumAppsData = await premiumDataRes.json()
 
-        // Sort the data based on the orderDate
         const sortedData = premiumAppsData.data.sort((a: any, b: any) => {
-          const dateA = new Date(a.orderDate).getTime()
-          const dateB = new Date(b.orderDate).getTime()
-          console.log("DATE A: ", dateA)
-          console.log("DATE B: ", dateB)
+          const dateA = parseDate(a.orderDate)?.getTime() || 0
+          const dateB = parseDate(b.orderDate)?.getTime() || 0
           return dateB - dateA // Latest date first
         })
 
