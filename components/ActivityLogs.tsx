@@ -145,7 +145,7 @@ export default function ActivityLogs() {
           </div>
         </div>
       ) : filteredLogs.length > 0 ? (
-        <div className='flex flex-col-reverse overflow-y-scroll max-h-96 gap-10 w-full bg-dark-600 p-5 __dokmai_scrollbar'>
+        <div className='flex flex-col overflow-y-scroll max-h-96 gap-10 w-full bg-dark-600 p-5 __dokmai_scrollbar'>
           {filteredLogs.map((log, index) => (
             <div
               key={index}

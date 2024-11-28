@@ -20,18 +20,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 
-  const { logEntry, activityType } = await request.json()
+  const { logEntry } = await request.json()
 
   if (!logEntry) {
     return NextResponse.json(
       { error: "Log entry is required" },
-      { status: 400 }
-    )
-  }
-
-  if (!activityType) {
-    return NextResponse.json(
-      { error: "Activity type is required" },
       { status: 400 }
     )
   }
@@ -58,7 +51,6 @@ export async function POST(request: Request) {
         throw error
       }
     }
-
     const currentDate = new Date()
     const timeStampOptions: Intl.DateTimeFormatOptions = {
       timeZone: "Asia/Bangkok",
@@ -73,11 +65,9 @@ export async function POST(request: Request) {
       "en-GB",
       timeStampOptions
     )
-
-    // Step 2: Append the new log entry with activity type
+    // Step 2: Append the new log entry
     const newLog = {
       timestamp: timeStampFormatter.format(currentDate),
-      type: activityType,
       activity: logEntry,
     }
     currentLogs.push(newLog)
@@ -90,57 +80,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ message: "Log added successfully" })
   } catch (error) {
+    console.log(bucketName)
     console.error("Error logging activity:", error)
     return NextResponse.json(
       { error: "Failed to log activity" },
       { status: 500 }
     )
-  }
-}
-
-export async function GET(request: Request) {
-  const apiKey = request.headers.get("x-api-key")
-
-  if (!apiKey || apiKey !== process.env.NEXT_PUBLIC_LOGGING_API_KEY) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
-
-  const { searchParams } = new URL(request.url)
-  const activityType = searchParams.get("type") || "all" // Default to "all" if no type is provided
-
-  try {
-    // Step 1: Get the log file from the bucket
-    const bucket = storage.bucket(bucketName)
-    const file = bucket.file(logFileName)
-
-    let currentLogs: any[] = []
-
-    try {
-      const [contents] = await file.download()
-      currentLogs = JSON.parse(contents.toString())
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        "code" in error &&
-        (error as any).code === 404
-      ) {
-        console.log("Log file not found.")
-        return NextResponse.json({ logs: [] })
-      } else {
-        console.error("Error reading log file:", error)
-        throw error
-      }
-    }
-
-    // Step 2: Filter logs by activity type if specified
-    const filteredLogs =
-      activityType === "all"
-        ? currentLogs
-        : currentLogs.filter((log) => log.type === activityType)
-
-    return NextResponse.json({ logs: filteredLogs })
-  } catch (error) {
-    console.error("Error fetching logs:", error)
-    return NextResponse.json({ error: "Failed to fetch logs" }, { status: 500 })
   }
 }
