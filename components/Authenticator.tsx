@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Loading from "@/components/Loading"
+import { usePathname } from "next/navigation"
 
 interface AuthData {
   username: string
@@ -24,6 +25,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
     const now = new Date().getTime()
     return authData.expiration > now && authData.role !== undefined
   }
+  const pathname = usePathname()
 
   useEffect(() => {
     const authData = localStorage.getItem("auth")
@@ -33,12 +35,17 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         const parsedAuth: AuthData = JSON.parse(authData)
 
         if (validateAuth(parsedAuth)) {
-          if (parsedAuth.role === "admin") {
-            setAuthenticated(true)
-          } else if (parsedAuth.role === "staff") {
-            router.push("/staff")
+          const currentPath = window.location.pathname // Use `window.location.pathname` to get the current path
+
+          if (parsedAuth.role === "admin" && currentPath.startsWith("/staff")) {
+            router.replace("/admin") // Redirect admin to /admin
+          } else if (
+            parsedAuth.role === "staff" &&
+            currentPath.startsWith("/admin")
+          ) {
+            router.replace("/staff") // Redirect staff to /staff
           } else {
-            localStorage.removeItem("auth") // Invalid data
+            setAuthenticated(true) // Only set authenticated if the user is in the correct path
           }
         } else {
           localStorage.removeItem("auth") // Expired or invalid

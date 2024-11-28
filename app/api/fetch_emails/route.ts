@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { NextResponse } from "next/server"
 import Imap from "node-imap"
 import { simpleParser } from "mailparser"
+import { Buffer } from "buffer"
 
 const imapConfig = {
   user: process.env.IMAP_USER as string,
@@ -12,12 +14,41 @@ const imapConfig = {
   tls: true,
 }
 
-const fetchLatestEmails = (): Promise<any[]> => {
+// Map user-friendly folder names to IMAP folder paths
+const folderMap = {
+  inbox: "INBOX",
+  spam: "[Gmail]/Spam",
+  all: "[Gmail]/All Mail",
+}
+
+const decodeMimeEncodedText = (encodedText: string): string => {
+  if (!encodedText.startsWith("=?") || !encodedText.endsWith("?=")) {
+    return encodedText // Not MIME encoded
+  }
+
+  const regex = /=\?([^?]+)\?([BQ])\?([^?]*)\?=/gi
+  return encodedText.replace(regex, (_, charset, encoding, encodedData) => {
+    if (encoding.toUpperCase() === "B") {
+      // Base64 decoding
+      return Buffer.from(encodedData, "base64").toString(charset)
+    } else if (encoding.toUpperCase() === "Q") {
+      // Quoted-Printable decoding
+      return encodedData
+        .replace(/_/g, " ")
+        .replace(/=([A-Fa-f0-9]{2})/g, (_: any, hex: string) =>
+          String.fromCharCode(parseInt(hex, 16))
+        )
+    }
+    return encodedText // Return as-is if unrecognized encoding
+  })
+}
+
+const fetchEmailsFromFolder = (folder: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     const imap = new Imap(imapConfig)
 
     imap.once("ready", () => {
-      imap.openBox("[Gmail]/All Mail", true, (err, box) => {
+      imap.openBox(folder, true, (err, box) => {
         if (err) return reject(err)
 
         const fetchRange = `${Math.max(box.messages.total - 49, 1)}:${
@@ -28,7 +59,7 @@ const fetchLatestEmails = (): Promise<any[]> => {
           struct: true,
         })
 
-        const matchedEmails: any[] = []
+        const fetchedEmails: any[] = []
         const emailParsingPromises: Promise<void>[] = []
 
         f.on("message", (msg) => {
@@ -48,27 +79,25 @@ const fetchLatestEmails = (): Promise<any[]> => {
               stream.once("end", async () => {
                 const from = extractHeader(buffer, "From") || "Unknown"
                 const to = extractHeader(buffer, "To") || "Unknown"
-                const subject = extractHeader(buffer, "Subject") || "No Subject"
-
+                const subject =
+                  extractHeader(buffer, "Subject") ||
+                  extractHeader(buffer, "subject") ||
+                  "No Subject"
+                const encodedSubject = decodeMimeEncodedText(subject)
                 try {
                   const parsedEmail = await simpleParser(buffer)
                   const htmlBody = parsedEmail.html || parsedEmail.text || ""
 
-                  if (
-                    htmlBody.includes("Netflix") ||
-                    htmlBody.includes("Prime Video")
-                  ) {
-                    matchedEmails.push({
-                      uid,
-                      from,
-                      to,
-                      subject,
-                      date: parsedEmail.date || "Unknown",
-                      body: htmlBody,
-                    })
-                    console.log(`Matched email with UID: ${uid}`)
-                    console.log(`Subject: \n ${subject}`)
-                  }
+                  fetchedEmails.push({
+                    uid,
+                    from,
+                    to,
+                    subject: encodedSubject,
+                    date: parsedEmail.date || "Unknown",
+                    body: htmlBody,
+                  })
+                  //   console.log(`Subject: \n ${subject}`)
+                  //   console.log(`Encoded Subject: \n ${encodedSubject}`)
                 } catch (err) {
                   console.error(`Error parsing email with UID ${uid}:`, err)
                 } finally {
@@ -86,7 +115,7 @@ const fetchLatestEmails = (): Promise<any[]> => {
           Promise.all(emailParsingPromises)
             .then(() => {
               imap.end()
-              resolve(matchedEmails)
+              resolve(fetchedEmails)
             })
             .catch(reject)
         })
@@ -112,10 +141,16 @@ const extractHeader = (emailData: string, headerName: string) => {
   return match ? match[1].trim() : null
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const emailData = await fetchLatestEmails()
-    console.log(`Returning ${emailData.length} MATCHED EMAILS!`)
+    const url = new URL(request.url)
+    const folderParam = url.searchParams.get("folder") || "inbox".toLowerCase() // Default to Inbox
+
+    const folder =
+      folderMap[folderParam as keyof typeof folderMap] || folderMap.inbox
+
+    const emailData = await fetchEmailsFromFolder(folder)
+    console.log(`Returning ${emailData.length}`)
     const response = NextResponse.json(emailData, { status: 200 })
     response.headers.set(
       "Cache-Control",

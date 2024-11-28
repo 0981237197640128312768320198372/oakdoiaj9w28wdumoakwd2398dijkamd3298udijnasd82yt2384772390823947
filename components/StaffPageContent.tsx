@@ -1,8 +1,6 @@
 "use client"
 
-import ActivityLogs from "@/components/ActivityLogs"
 import PageHeadline from "@/components/PageHeadline"
-import AdminDeposit from "./AdminDeposit"
 import EmailsViewer from "./EmailsViewer"
 
 const AdminPageContent = () => {
@@ -14,8 +12,8 @@ const AdminPageContent = () => {
   return (
     <>
       <PageHeadline
-        headline='Admin Panel'
-        description='A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations.'
+        headline='Staff Panel'
+        description='A streamlined page for Staff, and let staff easily manage any data for smooth operations.'
       />
       <div className='w-full flex items-center justify-end mb-10'>
         <button
@@ -25,13 +23,8 @@ const AdminPageContent = () => {
           Logout
         </button>
       </div>
-      <div className='flex justify-between flex-col items-center gap-10 w-full'>
-        <div className='flex flex-col lg:flex-row gap-10 justify-center items-start w-full'>
-          <EmailsViewer />
-          <AdminDeposit />
-        </div>
-
-        <ActivityLogs />
+      <div className='flex flex-col lg:flex-row gap-10 justify-center items-start w-full'>
+        <EmailsViewer />
       </div>
     </>
   )

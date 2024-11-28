@@ -53,7 +53,7 @@ const AdminDeposit = () => {
   }
 
   return (
-    <div className='w-full max-w-lg border-[1px] border-dark-500 p-5 shadow-md'>
+    <div className='w-full border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
       <h3 className='flex items-center gap-2 font-bold mb-5'>
         <SlWallet />
         Deposit
@@ -65,7 +65,7 @@ const AdminDeposit = () => {
           value={personalKey}
           onChange={(e) => setPersonalKey(e.target.value)}
           required
-          className='p-2 border border-primary bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
+          className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
         />
         <input
           type='number'
@@ -73,7 +73,7 @@ const AdminDeposit = () => {
           value={depositAmount}
           onChange={(e) => setDepositAmount(Number(e.target.value) || "")}
           required
-          className='p-2 border border-primary bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
+          className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
         />
         <button
           type='submit'
