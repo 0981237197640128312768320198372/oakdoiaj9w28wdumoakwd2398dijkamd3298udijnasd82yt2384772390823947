@@ -1,44 +1,52 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server"
 import { getGoogleSheetsData } from "@/app/api/CRUD"
-import { productsConfig } from "@/constant"
 
-interface RangeModel {
-  appName: string
-  accessType: string
-  columns: string[]
+const rangeModels: Record<
+  string,
+  { appName: string; accessType: string; columns: string[] }
+> = {
+  "RESELLERFamilyAccess!A12:E": {
+    appName: "Netflix Premium",
+    accessType: "Family Access (Seller Price)",
+    columns: ["email", "password", "expireDate", "orderDate"],
+  },
+  "RESELLERSharingWithTV!A12:G": {
+    appName: "Netflix Premium",
+    accessType: "Sharing Access With TV (Seller Price)",
+    columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
+  },
+  "RESELLERSharingNoTV!A12:G": {
+    appName: "Netflix Premium",
+    accessType: "Sharing Access No TV (Seller Price)",
+    columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
+  },
+  "FamilyAccess!A12:E": {
+    appName: "Netflix Premium",
+    accessType: "Family Access",
+    columns: ["email", "password", "expireDate", "orderDate"],
+  },
+  "SharingWithTV!A12:G": {
+    appName: "Netflix Premium",
+    accessType: "Sharing Access With TV",
+    columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
+  },
+  "SharingNoTV!A12:G": {
+    appName: "Netflix Premium",
+    accessType: "Sharing Access No TV",
+    columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
+  },
+  "PrimeVideoSharing!A12:F": {
+    appName: "Prime Video",
+    accessType: "Sharing Access",
+    columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
+  },
+  "PrimeVideoFamily!A12:E": {
+    appName: "Prime Video",
+    accessType: "Family Access",
+    columns: ["email", "password", "expireDate", "orderDate"],
+  },
 }
-
-const rangeModels: Record<string, RangeModel> = Object.entries(
-  productsConfig
-).reduce((acc, [key, value]) => {
-  const appName = key.includes("PrimeVideo") ? "Prime Video" : "Netflix Premium"
-  const accessType = key
-    .replace(/([A-Z])/g, " $1")
-    .replace(/Reseller Price/g, "(Seller Price)")
-    .trim()
-  const columns = Array.from({ length: value.totalColumns - 1 }, (_, i) => {
-    switch (i) {
-      case 0:
-        return "email"
-      case 1:
-        return "password"
-      case 2:
-        return "profile"
-      case 3:
-        return "pin"
-      case value.expireDateColumnIndex - 1:
-        return "expireDate"
-      case value.expireDateColumnIndex:
-        return "orderDate"
-      default:
-        return `column${i}`
-    }
-  }).filter(Boolean)
-
-  acc[value.availableDataRange] = { appName, accessType, columns }
-  return acc
-}, {} as Record<string, RangeModel>)
 
 export async function POST(req: NextRequest) {
   const { personalKey } = await req.json()

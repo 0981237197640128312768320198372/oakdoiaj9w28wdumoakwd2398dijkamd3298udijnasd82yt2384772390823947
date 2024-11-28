@@ -109,6 +109,9 @@ export const timeAgo = (dateString: string): string => {
 }
 
 export const convertGoogleDriveUrl = (shareableUrl: string): string => {
+  if (!shareableUrl || shareableUrl === "") {
+    throw new Error("Link is Empty")
+  }
   const fileIdMatch = shareableUrl.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/)
   if (fileIdMatch && fileIdMatch[1]) {
     const fileId = fileIdMatch[1]
@@ -120,9 +123,9 @@ export const convertGoogleDriveUrl = (shareableUrl: string): string => {
 
 export async function logActivity(type: string, user: string, details: any) {
   const logEntry = {
-    type, // Type of activity (e.g., "Checkout", "Login", "Top-Up")
-    user, // Personal key or identifier of the user
-    details, // Additional structured data related to the activity
+    type,
+    user,
+    details,
   }
   // console.log("API KEY", process.env.NEXT_PUBLIC_LOGGING_API_KEY)
   const response = await fetch("/api/log_activity", {
