@@ -52,7 +52,6 @@ export default function ActivityLogs() {
     }
   }
 
-  // Fetch logs on mount and set up periodic refresh
   useEffect(() => {
     fetchLogs()
 
@@ -119,13 +118,36 @@ export default function ActivityLogs() {
       {filteredLogs.length > 0 ? (
         <div className='flex flex-col overflow-y-scroll max-h-96 gap-10 w-full bg-dark-600 p-5'>
           {loading ? (
-            <div className='flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between'>
-              <div className='w-24 h-6 bg-dark-300 animate-pulse rounded-sm' />
-              <div className='flex flex-col items-end gap-2'>
-                <div className='w-32 h-4 bg-dark-300 animate-pulse rounded-sm ' />
-                <div className='w-16 h-5 bg-dark-300 animate-pulse rounded-sm' />
+            <>
+              <div className='flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between'>
+                <div className='w-24 h-6 bg-dark-300 animate-pulse rounded-sm' />
+                <div className='flex flex-col items-end gap-2'>
+                  <div className='w-32 h-4 bg-dark-300 animate-pulse rounded-sm ' />
+                  <div className='w-16 h-5 bg-dark-300 animate-pulse rounded-sm' />
+                </div>
               </div>
-            </div>
+              <div className='flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between'>
+                <div className='w-24 h-6 bg-dark-300 animate-pulse rounded-sm' />
+                <div className='flex flex-col items-end gap-2'>
+                  <div className='w-32 h-4 bg-dark-300 animate-pulse rounded-sm ' />
+                  <div className='w-16 h-5 bg-dark-300 animate-pulse rounded-sm' />
+                </div>
+              </div>
+              <div className='flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between'>
+                <div className='w-24 h-6 bg-dark-300 animate-pulse rounded-sm' />
+                <div className='flex flex-col items-end gap-2'>
+                  <div className='w-32 h-4 bg-dark-300 animate-pulse rounded-sm ' />
+                  <div className='w-16 h-5 bg-dark-300 animate-pulse rounded-sm' />
+                </div>
+              </div>
+              <div className='flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between'>
+                <div className='w-24 h-6 bg-dark-300 animate-pulse rounded-sm' />
+                <div className='flex flex-col items-end gap-2'>
+                  <div className='w-32 h-4 bg-dark-300 animate-pulse rounded-sm ' />
+                  <div className='w-16 h-5 bg-dark-300 animate-pulse rounded-sm' />
+                </div>
+              </div>
+            </>
           ) : (
             filteredLogs.map((log, index) => (
               <div

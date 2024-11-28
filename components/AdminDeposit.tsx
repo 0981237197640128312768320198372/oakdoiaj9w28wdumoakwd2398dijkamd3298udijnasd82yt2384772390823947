@@ -8,6 +8,7 @@ import { SlWallet } from "react-icons/sl"
 const AdminDeposit = () => {
   const [personalKey, setPersonalKey] = useState("")
   const [depositAmount, setDepositAmount] = useState<number | "">("")
+  const [bonusPercentage, setBonusPercentage] = useState<number>(0) // New state for bonus percentage
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -19,6 +20,10 @@ const AdminDeposit = () => {
     setErrorMessage(null)
 
     try {
+      // Calculate the total deposit amount with bonus
+      const bonusAmount = (Number(depositAmount) * bonusPercentage) / 100
+      const totalDepositAmount = Number(depositAmount) + bonusAmount
+
       const response = await fetch("/api/deposit_balance", {
         method: "POST",
         headers: {
@@ -26,7 +31,7 @@ const AdminDeposit = () => {
         },
         body: JSON.stringify({
           personalKey,
-          depositAmount: Number(depositAmount),
+          depositAmount: totalDepositAmount,
         }),
       })
 
@@ -40,11 +45,13 @@ const AdminDeposit = () => {
         `${data.message} New Balance ${personalKey}: ${data.newBalance}`
       )
       await logActivity("Deposit", personalKey, {
-        amount: depositAmount,
+        amount: totalDepositAmount,
         newBalance: data.newBalance,
+        bonusPercentage,
       })
       setPersonalKey("")
       setDepositAmount("")
+      setBonusPercentage(0) // Reset bonus percentage
     } catch (error: any) {
       setErrorMessage(error.message || "An unexpected error occurred")
     } finally {
@@ -58,7 +65,7 @@ const AdminDeposit = () => {
         <SlWallet />
         Deposit
       </h3>
-      <form onSubmit={handleDeposit} className='flex flex-col gap-4'>
+      <form onSubmit={handleDeposit} className='flex flex-col gap-5'>
         <input
           type='text'
           placeholder='Personal Key'
@@ -67,14 +74,29 @@ const AdminDeposit = () => {
           required
           className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
         />
-        <input
-          type='number'
-          placeholder='Deposit Amount'
-          value={depositAmount}
-          onChange={(e) => setDepositAmount(Number(e.target.value) || "")}
-          required
-          className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
-        />
+        <div className='flex gap-5 items-center'>
+          <input
+            type='number'
+            placeholder='Deposit Amount'
+            value={depositAmount}
+            onChange={(e) => setDepositAmount(Number(e.target.value) || "")}
+            required
+            className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-4/6'
+          />
+          <input
+            type='number'
+            placeholder='Bonus Percentage (default 0%)'
+            value={bonusPercentage}
+            onChange={(e) =>
+              setBonusPercentage(
+                Math.max(0, Math.min(Number(e.target.value), 100))
+              )
+            } // Restrict percentage between 0 and 100
+            className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-2/6'
+          />
+          %
+        </div>
+
         <button
           type='submit'
           disabled={loading}
