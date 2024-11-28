@@ -12,6 +12,24 @@ const imapConfig = {
   tls: true,
 }
 
+const decodeMimeEncodedText = (encodedText: string): string => {
+  if (!encodedText.match(/=\?([^?]+)\?[BQ]\?([^?]+)\?=/)) {
+    return encodedText
+  }
+  const regex = /=\?([^?]+)\?([BQ])\?([^?]*)\?=/gi
+  return encodedText.replace(regex, (_, charset, encoding, encodedData) => {
+    if (encoding.toUpperCase() === "B") {
+      return Buffer.from(encodedData, "base64").toString(charset)
+    } else if (encoding.toUpperCase() === "Q") {
+      return encodedData
+        .replace(/_/g, " ")
+        .replace(/=([A-Fa-f0-9]{2})/g, (_: any, hex: string) =>
+          String.fromCharCode(parseInt(hex, 16))
+        )
+    }
+    return encodedText
+  })
+}
 const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     const imap = new Imap(imapConfig)
@@ -51,6 +69,7 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
                 const from = extractHeader(buffer, "From") || "Unknown"
                 const to = extractHeader(buffer, "To") || "Unknown"
                 const subject = extractHeader(buffer, "Subject") || "No Subject"
+                const encodedSubject = decodeMimeEncodedText(subject)
 
                 try {
                   const parsedEmail = await simpleParser(buffer)
@@ -59,18 +78,20 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
                   if (
                     (to.includes(searchEmail) || from.includes(searchEmail)) &&
                     (htmlBody.includes("Reset your password") ||
+                      htmlBody.includes("Enter this code to sign in") ||
+                      htmlBody.includes("ป้อนรหัสนี้เพื่อเข้าสู่ระบบ") ||
                       htmlBody.includes("รีเซ็ตรหัสผ่านของคุณ"))
                   ) {
                     matchedEmails.push({
                       uid,
                       from,
                       to,
-                      subject,
+                      subject: encodedSubject,
                       date: parsedEmail.date || "Unknown",
                       body: htmlBody,
                     })
                     console.log(`Matched email with UID: ${uid}`)
-                    console.log(`Subject: \n ${subject}`)
+                    console.log(`Subject: \n ${encodedSubject}`)
                   }
                 } catch (err) {
                   console.error(`Error parsing email with UID ${uid}:`, err)
@@ -124,7 +145,7 @@ export async function GET(request: Request) {
     const response = NextResponse.json(matchedEmails, { status: 200 })
     response.headers.set(
       "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate",
+      "no-store, no-cache, must-revalidate, proxy-revalidate"
     )
     response.headers.set("Pragma", "no-cache")
     response.headers.set("Expires", "0")
@@ -133,7 +154,7 @@ export async function GET(request: Request) {
     console.error("Error fetching emails:", error)
     return NextResponse.json(
       { error: "Failed to fetch emails" },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }

@@ -173,6 +173,8 @@ export const ShowPremiumApps = () => {
         const sortedData = premiumAppsData.data.sort((a: any, b: any) => {
           const dateA = new Date(a.orderDate).getTime()
           const dateB = new Date(b.orderDate).getTime()
+          console.log("DATE A: ", dateA)
+          console.log("DATE B: ", dateB)
           return dateB - dateA // Latest date first
         })
 
@@ -449,7 +451,7 @@ export const ShowPremiumApps = () => {
                   <span className='text-dark-800 bg-primary p-1'>
                     Link Or Code
                   </span>{" "}
-                  For Reset Password Your{" "}
+                  For Your{" "}
                   <span className='text-dark-800 bg-primary p-1'>
                     Premium Apps
                   </span>{" "}
