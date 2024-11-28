@@ -84,7 +84,6 @@ const fetchEmailsFromFolder = (folder: string): Promise<any[]> => {
                   extractHeader(buffer, "subject") ||
                   "No Subject"
                 const encodedSubject = decodeMimeEncodedText(subject)
-                // console.log(encodedSubject)
                 try {
                   const parsedEmail = await simpleParser(buffer)
                   const htmlBody = parsedEmail.html || parsedEmail.text || ""
