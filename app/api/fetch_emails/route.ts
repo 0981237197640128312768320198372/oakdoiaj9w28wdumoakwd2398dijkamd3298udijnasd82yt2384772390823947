@@ -84,20 +84,28 @@ const fetchEmailsFromFolder = (folder: string): Promise<any[]> => {
                   extractHeader(buffer, "subject") ||
                   "No Subject"
                 const encodedSubject = decodeMimeEncodedText(subject)
+                // console.log(encodedSubject)
                 try {
                   const parsedEmail = await simpleParser(buffer)
                   const htmlBody = parsedEmail.html || parsedEmail.text || ""
 
-                  fetchedEmails.push({
-                    uid,
-                    from,
-                    to,
-                    subject: encodedSubject,
-                    date: parsedEmail.date || "Unknown",
-                    body: htmlBody,
-                  })
-                  //   console.log(`Subject: \n ${subject}`)
-                  //   console.log(`Encoded Subject: \n ${encodedSubject}`)
+                  if (
+                    htmlBody.includes("Netflix") ||
+                    htmlBody.includes("Microsoft") ||
+                    htmlBody.includes("Amazon") ||
+                    htmlBody.includes("Prime Video")
+                  ) {
+                    fetchedEmails.push({
+                      uid,
+                      from,
+                      to,
+                      subject: encodedSubject,
+                      date: parsedEmail.date || "Unknown",
+                      body: htmlBody,
+                    })
+                    // console.log(`Subject: \n ${subject}`)
+                    // console.log(`Encoded Subject: \n ${encodedSubject}`)
+                  }
                 } catch (err) {
                   console.error(`Error parsing email with UID ${uid}:`, err)
                 } finally {
