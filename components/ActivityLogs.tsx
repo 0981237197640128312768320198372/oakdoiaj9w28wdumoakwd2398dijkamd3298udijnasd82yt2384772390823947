@@ -72,10 +72,6 @@ export default function ActivityLogs() {
     )
   }, [filter, logs])
 
-  // if (loading) {
-  //   return <p>Loading...</p>
-  // }
-
   if (error) {
     return (
       <div className='flex justify-center items-center w-full h-full'>
@@ -92,6 +88,13 @@ export default function ActivityLogs() {
           <LuActivity />
           Activity
         </h3>
+        <button
+          onClick={() => fetchLogs("All")} // Calls the fetchEmails function for the active folder
+          className='p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800'
+          title='Refresh emails'
+        >
+          <TbRefresh className='text-xl' />
+        </button>
       </div>
 
       <div className='flex gap-3 mb-5 px-5 w-full justify-center'>
