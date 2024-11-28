@@ -146,13 +146,13 @@ export default function ActivityLogs() {
           </div>
         </div>
       ) : filteredLogs.length > 0 ? (
-        <div className='flex flex-col overflow-y-scroll max-h-96 gap-10 w-full bg-dark-600 p-5'>
+        <div className='flex flex-col-reverse overflow-y-scroll max-h-96 gap-10 w-full bg-dark-600 p-5'>
           {filteredLogs.map((log, index) => (
             <div
               key={index}
               className='flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200'
             >
-              <div className='flex w-full justify-between items-start mb-5 border-b-[1px] border-dark-500 pb-3'>
+              <div className='flex w-full justify-between items-start mb-5 border-b-[1px] border-dark-300 pb-3'>
                 <div className='font-aktivGroteskMedium flex items-center gap-2 bg-light-100/20 border-light-100/70 text-light-100 px-1 rounded'>
                   {log.activity.type === "Checkout" && <IoBagCheckOutline />}
                   {log.activity.type === "Login" && <BiLogInCircle />}
@@ -177,7 +177,7 @@ export default function ActivityLogs() {
                         (item: any, idx: number) => (
                           <div
                             key={idx}
-                            className='flex justify-between items-center border-b border-dark-600 py-3 gap-14'
+                            className='flex justify-between items-center border-b border-dark-300 py-3 gap-14'
                           >
                             <div className='w-full flex gap-3 items-center'>
                               <Image
