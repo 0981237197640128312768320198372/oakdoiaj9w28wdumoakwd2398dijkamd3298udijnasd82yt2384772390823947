@@ -96,7 +96,7 @@ export default function ActivityLogs() {
         </button>
       </div>
 
-      <div className='flex gap-3 mb-5 px-5 w-full justify-center'>
+      <div className='flex gap-3 mb-5 px-5 w-full justify-center border-b-[1px] border-dark-500 pb-3'>
         {["All", "Login", "Logout", "Checkout", "Deposit"].map((type) => (
           <button
             key={type}

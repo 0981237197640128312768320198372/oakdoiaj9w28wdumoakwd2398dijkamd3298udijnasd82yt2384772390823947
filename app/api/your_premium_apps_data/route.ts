@@ -6,42 +6,42 @@ const rangeModels: Record<
   string,
   { appName: string; accessType: string; columns: string[] }
 > = {
-  "RESELLERFamilyAccess!A12:E": {
+  "RESELLERFamilyAccess!A12:G": {
     appName: "Netflix Premium",
     accessType: "Family Access (Seller Price)",
     columns: ["email", "password", "expireDate", "orderDate"],
   },
-  "RESELLERSharingWithTV!A12:G": {
+  "RESELLERSharingWithTV!A12:I": {
     appName: "Netflix Premium",
     accessType: "Sharing Access With TV (Seller Price)",
     columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
   },
-  "RESELLERSharingNoTV!A12:G": {
+  "RESELLERSharingNoTV!A12:I": {
     appName: "Netflix Premium",
     accessType: "Sharing Access No TV (Seller Price)",
     columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
   },
-  "FamilyAccess!A12:E": {
+  "FamilyAccess!A12:G": {
     appName: "Netflix Premium",
     accessType: "Family Access",
     columns: ["email", "password", "expireDate", "orderDate"],
   },
-  "SharingWithTV!A12:G": {
+  "SharingWithTV!A12:I": {
     appName: "Netflix Premium",
     accessType: "Sharing Access With TV",
     columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
   },
-  "SharingNoTV!A12:G": {
+  "SharingNoTV!A12:I": {
     appName: "Netflix Premium",
     accessType: "Sharing Access No TV",
     columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
   },
-  "PrimeVideoSharing!A12:F": {
+  "PrimeVideoSharing!A12:H": {
     appName: "Prime Video",
     accessType: "Sharing Access",
-    columns: ["email", "password", "profile", "expireDate", "orderDate"],
+    columns: ["email", "password", "profile", "pin", "expireDate", "orderDate"],
   },
-  "PrimeVideoFamily!A12:E": {
+  "PrimeVideoFamily!A12:G": {
     appName: "Prime Video",
     accessType: "Family Access",
     columns: ["email", "password", "expireDate", "orderDate"],
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
   if (!personalKey) {
     return NextResponse.json(
       { error: "Personal key is required" },
-      { status: 400 },
+      { status: 400 }
     )
   }
 
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       const sheetData =
         (await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
-          range,
+          range
         )) || []
 
       const matchedRows = sheetData
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     if (consolidatedData.length === 0) {
       return NextResponse.json(
         { error: "No premium data found for this Personal Key" },
-        { status: 404 },
+        { status: 404 }
       )
     }
 
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
     console.error("Error reading data", error)
     return NextResponse.json(
       { error: "Failed to fetch premium apps data" },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }

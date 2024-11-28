@@ -63,7 +63,7 @@ const AdminDeposit = () => {
 
   return (
     <div className='w-full border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
-      <h3 className='flex gap-2 font-bold mb-5'>
+      <h3 className='flex gap-2 font-bold mb-5 border-b-[1px] border-dark-500 pb-3'>
         <SlWallet />
         Deposit
       </h3>
