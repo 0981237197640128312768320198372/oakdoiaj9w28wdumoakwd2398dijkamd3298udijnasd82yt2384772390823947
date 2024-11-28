@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState, useRef } from "react"
 import { MdOutlineMarkEmailUnread } from "react-icons/md"
-import Loading from "./Loading"
 import { FiInbox } from "react-icons/fi"
 import { RiSpam2Line } from "react-icons/ri"
 import { LuMails } from "react-icons/lu"
@@ -160,6 +159,26 @@ const EmailsViewer = () => {
       <div className='w-full overflow-hidden'>
         {loading ? (
           <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll'>
+            <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
+              <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-96 h-5 bg-dark-500 mt-2 animate-pulse' />
+            </div>
+            <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
+              <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-96 h-5 bg-dark-500 mt-2 animate-pulse' />
+            </div>
+            <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
+              <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-96 h-5 bg-dark-500 mt-2 animate-pulse' />
+            </div>
+            <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
+              <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
+              <div className='w-96 h-5 bg-dark-500 mt-2 animate-pulse' />
+            </div>
             <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
               <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
               <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
