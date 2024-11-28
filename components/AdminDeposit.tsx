@@ -8,7 +8,8 @@ import { SlWallet } from "react-icons/sl"
 const AdminDeposit = () => {
   const [personalKey, setPersonalKey] = useState("")
   const [depositAmount, setDepositAmount] = useState<number | "">("")
-  const [bonusPercentage, setBonusPercentage] = useState<number>(0) // New state for bonus percentage
+  const [bonusPercentage, setBonusPercentage] = useState<number | string>(0)
+
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -20,8 +21,9 @@ const AdminDeposit = () => {
     setErrorMessage(null)
 
     try {
-      // Calculate the total deposit amount with bonus
-      const bonusAmount = (Number(depositAmount) * bonusPercentage) / 100
+      const bonusPercentageNumber = Number(bonusPercentage) || 0
+
+      const bonusAmount = (Number(depositAmount) * bonusPercentageNumber) / 100
       const totalDepositAmount = Number(depositAmount) + bonusAmount
 
       const response = await fetch("/api/deposit_balance", {
@@ -87,11 +89,18 @@ const AdminDeposit = () => {
             type='number'
             placeholder='Bonus Percentage (default 0%)'
             value={bonusPercentage}
-            onChange={(e) =>
-              setBonusPercentage(
-                Math.max(0, Math.min(Number(e.target.value), 100))
-              )
-            } // Restrict percentage between 0 and 100
+            onChange={(e) => {
+              const value = e.target.value
+
+              // Allow empty input
+              if (value === "") {
+                setBonusPercentage("") // Temporarily allow empty input
+              } else {
+                // Enforce numeric input and clamp within 0-100
+                const numericValue = Math.max(0, Math.min(Number(value), 100))
+                setBonusPercentage(numericValue)
+              }
+            }}
             className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-2/6'
           />
           %
