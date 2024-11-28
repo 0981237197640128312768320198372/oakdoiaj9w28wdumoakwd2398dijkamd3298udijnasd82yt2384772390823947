@@ -6,6 +6,8 @@ import Imap from "node-imap"
 import { simpleParser } from "mailparser"
 import { Buffer } from "buffer"
 
+export const dynamic = "force-dynamic"
+
 const imapConfig = {
   user: process.env.IMAP_USER as string,
   password: process.env.IMAP_PASSWORD as string,
