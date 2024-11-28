@@ -7,6 +7,7 @@ import Loading from "./Loading"
 import { FiInbox } from "react-icons/fi"
 import { RiSpam2Line } from "react-icons/ri"
 import { LuMails } from "react-icons/lu"
+import { TbRefresh } from "react-icons/tb"
 
 interface Email {
   uid: string
@@ -18,9 +19,11 @@ interface Email {
 
 const EmailsViewer = () => {
   const [emails, setEmails] = useState<Email[]>([])
+  const [filteredEmails, setFilteredEmails] = useState<Email[]>([]) // Store filtered emails
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [folder, setFolder] = useState<string>("inbox") // Default folder
+  const [searchTerm, setSearchTerm] = useState<string>("") // Search term state
   const modalRef = useRef<HTMLDivElement | null>(null)
 
   const fetchEmails = async (folder: string) => {
@@ -32,9 +35,11 @@ const EmailsViewer = () => {
       }
       const data = await response.json()
       setEmails(data)
+      setFilteredEmails(data) // Set initial filtered emails
     } catch (error) {
       console.error("Error fetching emails:", error)
       setEmails([])
+      setFilteredEmails([])
     } finally {
       setLoading(false)
     }
@@ -43,6 +48,17 @@ const EmailsViewer = () => {
   useEffect(() => {
     fetchEmails(folder)
   }, [folder])
+
+  useEffect(() => {
+    // Dynamically filter emails based on the search term
+    const filtered = emails.filter(
+      (email) =>
+        email.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        email.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        email.body.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredEmails(filtered)
+  }, [searchTerm, emails]) // Update filtered emails when searchTerm or emails change
 
   const formatISODate = (isoDate: string): string => {
     if (!isoDate) return "Invalid Date"
@@ -99,8 +115,10 @@ const EmailsViewer = () => {
       label: "All",
     },
   ]
+
   return (
     <div className='min-h-fit w-full lg:max-w-[700px] overflow-y-scroll flex flex-col items-center p-5 text-light-100 border-[1px] border-dark-500 bg-dark-700 rounded'>
+      {/* Header */}
       <div className='w-full max-w-4xl flex justify-between items-start border-b-[1px] border-dark-500 mb-5'>
         <h3 className='flex items-center gap-2 font-bold mb-5'>
           <MdOutlineMarkEmailUnread />
@@ -121,15 +139,30 @@ const EmailsViewer = () => {
               {label}
             </button>
           ))}
+          <button
+            onClick={() => fetchEmails(folder)} // Calls the fetchEmails function for the active folder
+            className='p-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800'
+            title='Refresh emails'
+          >
+            <TbRefresh className='text-xl' />
+          </button>
         </div>
       </div>
+
+      <input
+        type='text'
+        placeholder='Search email...'
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className='w-full mb-5 border-[1px] border-primary/40 p-2 px-3 bg-dark-800 text-sm focus:outline-none focus:ring-1 focus:ring-primary'
+      />
 
       <div className='w-full overflow-hidden'>
         {loading ? (
           <Loading />
         ) : (
           <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll'>
-            {emails.map((email) => (
+            {filteredEmails.map((email) => (
               <div
                 key={email.uid}
                 className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'
@@ -146,19 +179,18 @@ const EmailsViewer = () => {
         )}
       </div>
 
-      {/* Email Popup */}
       {selectedEmail && (
         <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
-          <button
-            onClick={() => setSelectedEmail(null)}
-            className='absolute top-10 right-10 bg-red-500 rounded-sm text-dark-800 font-aktivGroteskBold px-2 py-1 text-sm'
-          >
-            Close
-          </button>
           <div
             ref={modalRef}
             className='relative w-[85%] lg:w-[60%] p-5 rounded border-[1px] border-dark-500 bg-dark-800 shadow-lg'
           >
+            <button
+              onClick={() => setSelectedEmail(null)}
+              className='absolute top-2 right-2 bg-red-500 rounded-sm text-dark-800 font-aktivGroteskBold px-2 py-1 text-sm'
+            >
+              Close
+            </button>
             <p className='font-aktivGroteskBold text-sm'>
               {selectedEmail.subject}
             </p>
