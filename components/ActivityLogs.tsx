@@ -107,7 +107,7 @@ export default function ActivityLogs() {
             className={`px-1 text-xs ${
               filter === type
                 ? "text-primary pb-1 border-b-[1px] border-primary"
-                : "text-light-400 "
+                : "text-light-400 bg-dark-800"
             }`}
           >
             {type}
@@ -115,7 +115,7 @@ export default function ActivityLogs() {
         ))}
       </div>
       {loading ? (
-        <div className='w-full flex flex-col gap-5'>
+        <div className='w-full flex flex-col gap-10 bg-dark-600 p-5'>
           <div className='flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between'>
             <div className='w-24 h-6 bg-dark-300 animate-pulse rounded-sm' />
             <div className='flex flex-col items-end gap-2'>

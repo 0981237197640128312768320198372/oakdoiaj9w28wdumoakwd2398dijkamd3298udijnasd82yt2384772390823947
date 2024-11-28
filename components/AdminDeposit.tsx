@@ -63,7 +63,7 @@ const AdminDeposit = () => {
 
   return (
     <div className='w-full border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
-      <h3 className='flex items-center gap-2 font-bold mb-5'>
+      <h3 className='flex gap-2 font-bold mb-5'>
         <SlWallet />
         Deposit
       </h3>
@@ -85,25 +85,27 @@ const AdminDeposit = () => {
             required
             className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-4/6'
           />
-          <input
-            type='number'
-            placeholder='Bonus Percentage (default 0%)'
-            value={bonusPercentage}
-            onChange={(e) => {
-              const value = e.target.value
+          <div className='flex items-center border pr-2 border-primary/70 focus:outline-none focus:ring-1 focus:ring-primary'>
+            <input
+              type='number'
+              placeholder='Bonus'
+              value={bonusPercentage}
+              onChange={(e) => {
+                const value = e.target.value
 
-              // Allow empty input
-              if (value === "") {
-                setBonusPercentage("") // Temporarily allow empty input
-              } else {
-                // Enforce numeric input and clamp within 0-100
-                const numericValue = Math.max(0, Math.min(Number(value), 100))
-                setBonusPercentage(numericValue)
-              }
-            }}
-            className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-2/6'
-          />
-          %
+                // Allow empty input
+                if (value === "") {
+                  setBonusPercentage("")
+                } else {
+                  // Enforce numeric input and clamp within 0-100
+                  const numericValue = Math.max(0, Math.min(Number(value), 100))
+                  setBonusPercentage(numericValue)
+                }
+              }}
+              className='p-2 bg-transparent focus:outline-none focus:ring-0 '
+            />
+            %
+          </div>
         </div>
 
         <button
