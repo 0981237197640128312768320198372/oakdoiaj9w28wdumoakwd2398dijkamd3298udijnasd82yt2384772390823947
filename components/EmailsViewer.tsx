@@ -195,7 +195,7 @@ const EmailsViewer = () => {
             {filteredEmails.map((email) => (
               <div
                 key={email.uid}
-                className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'
+                className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:border-s-2 hover:border-s-primary hover:bg-dark-600/40'
                 onClick={() => setSelectedEmail(email)}
               >
                 <p className='text-xs'>{formatISODate(email.date)}</p>
