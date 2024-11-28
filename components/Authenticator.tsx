@@ -75,6 +75,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       })
 
       if (!response.ok) {
+        setIsSubmitting(false)
         throw new Error("Invalid credentials")
       }
 
