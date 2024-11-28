@@ -82,9 +82,9 @@ const AdminDeposit = () => {
             value={depositAmount}
             onChange={(e) => setDepositAmount(Number(e.target.value) || "")}
             required
-            className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-4/6'
+            className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-3/4'
           />
-          <div className='flex items-center border pr-2 border-primary/70 focus:outline-none focus:ring-1 focus:ring-primary'>
+          <div className='flex items-center border  border-primary/70 focus:outline-none focus:ring-1 focus:ring-primary w-1/4'>
             <input
               type='number'
               placeholder='Bonus'
@@ -101,9 +101,9 @@ const AdminDeposit = () => {
                   setBonusPercentage(numericValue)
                 }
               }}
-              className='p-2 bg-transparent focus:outline-none focus:ring-0 '
+              className='p-2 bg-transparent w-full focus:outline-none focus:ring-0 '
             />
-            %
+            <p className='mr-2'>%</p>
           </div>
         </div>
 

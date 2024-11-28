@@ -159,3 +159,15 @@ body::-webkit-scrollbar {
     margin: 0;
   }
 }
+
+.__dokmai_scrollbar::-webkit-scrollbar {
+  @apply w-3 h-3; /* Scrollbar size */
+}
+
+.__dokmai_scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-primary hover:bg-primary/70 shadow; /* Thumb styles */
+}
+
+.__dokmai_scrollbar::-webkit-scrollbar-track {
+  @apply bg-primary/40; /* Track styles */
+}

@@ -153,7 +153,7 @@ const EmailsViewer = () => {
         placeholder='Search email...'
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className='w-full mb-5 border-[1px] border-primary/40 p-2 px-3 bg-dark-800 text-sm focus:outline-none focus:ring-1 focus:ring-primary'
+        className='w-full mb-5 border-[1px] border-primary/40 p-2 px-3 bg-dark-600 text-sm focus:outline-none focus:ring-1 focus:ring-primary'
       />
 
       <div className='w-full overflow-hidden'>
@@ -191,7 +191,7 @@ const EmailsViewer = () => {
             </div>
           </div>
         ) : (
-          <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll'>
+          <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll __dokmai_scrollbar'>
             {filteredEmails.map((email) => (
               <div
                 key={email.uid}
@@ -228,7 +228,7 @@ const EmailsViewer = () => {
               From: {selectedEmail.from}
             </p>
             <p className='text-xs'>{formatISODate(selectedEmail.date)}</p>
-            <div className='text-light-100 whitespace-pre-wrap overflow-auto max-h-[70vh] bg-dark-700 mt-5'>
+            <div className='text-light-100 whitespace-pre-wrap overflow-auto max-h-[70vh] bg-dark-700 mt-5 __dokmai_scrollbar'>
               <div dangerouslySetInnerHTML={{ __html: selectedEmail.body }} />
             </div>
           </div>
