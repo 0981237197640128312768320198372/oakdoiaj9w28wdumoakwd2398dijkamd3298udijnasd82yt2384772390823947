@@ -93,12 +93,12 @@ const ShowHelpList = () => {
       </div>
 
       {/* Helps List or Skeleton */}
-      <div className='__container bg-dark-700 flex gap-5 p-5 overflow-x-auto __dokmai_scrollbar'>
+      <div className='__container bg-dark-700 flex gap-5 p-5 overflow-x-auto w-full __dokmai_scrollbar'>
         {loading
-          ? Array.from({ length: 5 }).map((_, index) => (
+          ? Array.from({ length: 3 }).map((_, index) => (
               <div
                 key={index}
-                className='p-5 bg-dark-600 text-light-100 rounded shadow w-96 animate-pulse'
+                className='p-5 bg-dark-600 text-light-100 rounded shadow min-w-96 w-96 animate-pulse'
               >
                 <div className='h-6 bg-dark-500 rounded w-3/4 mb-2'></div>
                 <div className='h-4 bg-dark-500 rounded w-full mb-4'></div>
@@ -109,7 +109,8 @@ const ShowHelpList = () => {
                 </div>
               </div>
             ))
-          : filteredHelps.map((help) => (
+          : filteredHelps.length > 0
+          ? filteredHelps.map((help) => (
               <div
                 key={help.id}
                 className='p-5 bg-dark-600 text-light-100 rounded shadow hover:bg-dark-800 cursor-pointer w-96'
@@ -132,7 +133,8 @@ const ShowHelpList = () => {
                   ))}
                 </div>
               </div>
-            ))}
+            ))
+          : "Help Center In Progress"}
       </div>
 
       {selectedHelp && (
