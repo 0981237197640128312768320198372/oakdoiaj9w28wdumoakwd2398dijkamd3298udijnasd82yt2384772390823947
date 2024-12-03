@@ -49,25 +49,24 @@ const ManageHelps: React.FC = () => {
 
   useEffect(() => {
     const fetchHelps = async () => {
-      setLoading(true)
-      try {
-        const response = await fetch("/api/get_helps")
-        if (!response.ok) throw new Error("Failed to fetch helps.json")
+      if (loading) {
+        try {
+          const response = await fetch("/api/get_helps")
+          if (!response.ok) throw new Error("Failed to fetch helps")
 
-        const data = await response.json()
-        setHelps(data.helps)
-      } catch (error) {
-        setFeedback({
-          message: "Failed to load help data. Please try again.",
-          type: "error",
-        })
-      } finally {
-        setLoading(false)
+          const data = await response.json()
+          setHelps(data.helps) // Avoid appending to helps multiple times
+        } catch (error) {
+          console.error(error)
+          setFeedback({ message: "Failed to fetch helps", type: "error" })
+        } finally {
+          setLoading(false)
+        }
       }
     }
 
     fetchHelps()
-  }, [])
+  }, [loading]) // Only runs if loading is true
 
   const handleFeedback = (message: string, type: "success" | "error") => {
     setFeedback({ message, type })
@@ -156,6 +155,8 @@ const ManageHelps: React.FC = () => {
   }
 
   const handleAddStep = async (helpId: string, newStep: HelpStep) => {
+    if (actionLoading === "addingStep") return // Prevent duplicate actions
+
     setActionLoading("addingStep")
     try {
       const response = await fetch("/api/manage_helps", {
@@ -164,32 +165,19 @@ const ManageHelps: React.FC = () => {
         body: JSON.stringify({ action: "addStep", helpId, newStep }),
       })
 
-      if (!response.ok) {
-        throw new Error("Failed to add step")
-      }
+      if (!response.ok) throw new Error("Failed to add step")
 
-      // Update local state for selectedHelp
-      setSelectedHelp((prevSelectedHelp) => {
-        if (prevSelectedHelp && prevSelectedHelp.id === helpId) {
-          return {
-            ...prevSelectedHelp,
-            steps: [...prevSelectedHelp.steps, newStep], // Add the new step
-          }
-        }
-        return prevSelectedHelp
-      })
-
+      const updatedStep = await response.json() // Add validation here to deduplicate
       setHelps((prevHelps) =>
         prevHelps.map((help) =>
           help.id === helpId
-            ? { ...help, steps: [...help.steps, newStep] }
+            ? { ...help, steps: [...help.steps, updatedStep] }
             : help
         )
       )
-
-      setShowAddStepForm(false) // Close the form
+      handleFeedback("Step added successfully!", "success")
     } catch (error) {
-      console.error("Error adding step:", error)
+      handleFeedback("Failed to add step.", "error")
     } finally {
       setActionLoading(null)
     }
@@ -399,6 +387,13 @@ const ManageHelps: React.FC = () => {
 
           {showAddHelpForm && (
             <div className='fixed inset-0 bg-dark-800/80 backdrop-blur-xl flex justify-center items-center z-50'>
+              <button
+                type='button'
+                className='absolute top-10 right-10 bg-red-500 text-dark-800 px-2 py-1 gap-2 flex justify-center items-center font-aktivGroteskBold'
+                onClick={() => setShowAddHelpForm(false)}
+              >
+                Close
+              </button>
               <div className='bg-dark-800 p-10 w-96 rounded border-[1px] border-dark-400'>
                 <h3 className='flex items-center gap-2 mb-5 p-2 border-b-[1px] border-dark-400'>
                   <PiPlusSquare className='text-xl' />
