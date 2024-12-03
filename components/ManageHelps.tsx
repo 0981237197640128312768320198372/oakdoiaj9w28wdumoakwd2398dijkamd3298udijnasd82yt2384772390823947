@@ -325,30 +325,46 @@ const ManageHelps: React.FC = () => {
 
   return (
     <div className='w-full border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
-      {loading && <p>Loading helps...</p>}
-      {!loading && (
-        <>
-          <div className='w-full flex justify-between'>
-            <h3 className='flex items-center gap-2 font-bold mb-5'>
-              <MdOutlineLiveHelp />
-              Manage Helps
-            </h3>
-            <button
-              className={`p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800 ${
-                actionLoading && "cursor-not-allowed bg-primary/80"
-              }`}
-              onClick={() => setShowAddHelpForm(true)}
-              disabled={actionLoading === "addingHelp"}
+      <div className='w-full flex justify-between'>
+        <h3 className='flex items-center gap-2 font-bold mb-5'>
+          <MdOutlineLiveHelp />
+          Manage Helps
+        </h3>
+        <button
+          className={`p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800 ${
+            actionLoading && "cursor-not-allowed bg-primary/80"
+          }`}
+          onClick={() => setShowAddHelpForm(true)}
+          disabled={actionLoading === "addingHelp"}
+        >
+          {actionLoading === "addingHelp" ? (
+            "Adding..."
+          ) : (
+            <PiPlusSquare className='text-xl' />
+          )}
+        </button>
+      </div>
+      {loading ? (
+        <div className='flex flex-row gap-5 __container overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div
+              key={index}
+              className='p-5 bg-dark-600 text-light-100 rounded shadow min-w-96 w-96 animate-pulse'
             >
-              {actionLoading === "addingHelp" ? (
-                "Adding..."
-              ) : (
-                <PiPlusSquare className='text-xl' />
-              )}
-            </button>
-          </div>
-
-          <div className='flex flex-row __container overflow-x-auto __dokmai_scrollbar gap-5 mt-5 border-[1px] border-dark-500 p-5 rounded bg-dark-600'>
+              <div className='h-6 bg-dark-500 rounded w-3/4 mb-2'></div>
+              <div className='h-4 bg-dark-500 rounded w-full mb-4'></div>
+              <div className='flex justify-end gap-2'>
+                <div className='h-4 bg-dark-500 rounded w-1/4'></div>
+                <div className='h-4 bg-dark-500 rounded w-1/4'></div>
+                <div className='h-4 bg-dark-500 rounded w-1/4'></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className='flex flex-row gap-5 __container overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
+            {" "}
             {helps.map((help) => (
               <div
                 key={help.id}
