@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useState } from "react"
@@ -7,6 +6,8 @@ import { useRouter } from "next/navigation"
 import LoadingAnimation from "@/components/Loading"
 
 interface AuthData {
+  name: string
+  jobDesk: string
   username: string
   role: "admin" | "staff"
   expiration: number
@@ -77,11 +78,13 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         const errorData = await response.json()
         setIsSubmitting(false)
 
-        if (response.status === 429) {
-          throw new Error(errorData.error || "Too many login attempts.")
+        if (response.status === 403) {
+          // Handle blocked user
+          setError("Too many failed attempts. You are temporarily blocked.")
+        } else {
+          setError(errorData.error || "Invalid credentials. Please try again.")
         }
-
-        throw new Error(errorData.error || "Invalid credentials")
+        return
       }
 
       const data: { role: "admin" | "staff" } = await response.json()
@@ -97,9 +100,9 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       } else if (data.role === "staff") {
         router.push("/staff")
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err)
-      setError(err.message)
+      setError("An error occurred. Please try again later.")
     } finally {
       setIsSubmitting(false)
     }

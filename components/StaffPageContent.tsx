@@ -3,7 +3,7 @@
 import PageHeadline from "@/components/PageHeadline"
 import EmailsViewer from "./EmailsViewer"
 
-const AdminPageContent = () => {
+const StaffPageContent = () => {
   const handleLogout = () => {
     localStorage.removeItem("auth")
     location.reload()
@@ -30,4 +30,4 @@ const AdminPageContent = () => {
   )
 }
 
-export default AdminPageContent
+export default StaffPageContent

@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { NextResponse } from "next/server"
 import { Storage } from "@google-cloud/storage"
 
-// Environment variable validation and setup
 const { GCP_PROJECT_ID, GCP_CLIENT_EMAIL, GCP_PRIVATE_KEY, GCP_BUCKET_NAME } =
   process.env
 
@@ -23,6 +20,7 @@ const storage = new Storage({
     private_key: GCP_PRIVATE_KEY.replace(/\\n/g, "\n"),
   },
 })
+
 const bucketName = GCP_BUCKET_NAME
 const userFileName = "adminAndStaff.json"
 const blockFileName = "blocked.json"
@@ -53,11 +51,11 @@ export async function POST(req: Request) {
     // Generate a unique key for the IP + User-Agent combination
     const blockKey = `${ip}__${userAgent}`
 
-    // Check if IP and user agent combination is blocked
+    // Check if IP and user-agent combination is blocked
     if (blockedData[blockKey]?.blockedAt) {
       return NextResponse.json(
         {
-          error: "Something Wrong.",
+          error: "Too many failed attempts. Access blocked.",
         },
         { status: 403 }
       )
