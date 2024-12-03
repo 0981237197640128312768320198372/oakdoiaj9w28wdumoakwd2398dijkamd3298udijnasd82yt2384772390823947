@@ -286,7 +286,6 @@ const ManageHelps: React.FC = () => {
       setIsUploading(true)
 
       const folderName = "help_images" // Replace with your dynamic folder logic
-
       const formData = new FormData()
       formData.append("file", file)
 
@@ -299,14 +298,16 @@ const ManageHelps: React.FC = () => {
       )
 
       if (!response.ok) {
-        throw new Error(`Failed to upload picture: ${response.statusText}`)
+        const errorData = await response.json()
+        throw new Error(errorData.error || `Failed to upload picture`)
       }
 
       const data = await response.json()
-      setPictureUrl(data.url) // Save the returned URL for the form submission
+      setPictureUrl(data.publicUrl) // Save the returned URL for the form submission
     } catch (error) {
       console.error("Error uploading picture:", error)
-      alert("Failed to upload picture")
+      setPictureUrl("") // Reset picture URL on error
+      alert("Failed to upload picture. Please try again.")
     } finally {
       setIsUploading(false)
     }
@@ -622,12 +623,21 @@ const ManageHelps: React.FC = () => {
                     <form
                       onSubmit={(e) => {
                         e.preventDefault()
+                        {
+                          console.log(pictureUrl)
+                        }
+                        if (!pictureUrl) {
+                          alert("Please upload a picture before submitting.")
+                          return
+                        }
+
                         const formData = new FormData(e.currentTarget)
                         const newStep = {
                           step: formData.get("step") as string,
                           description: formData.get("description") as string,
                           picture: pictureUrl, // Use the uploaded picture URL
                         }
+
                         handleAddStep(selectedHelp.id, newStep)
                       }}
                       className='flex flex-col gap-3'
@@ -637,13 +647,13 @@ const ManageHelps: React.FC = () => {
                         name='step'
                         placeholder='Step Title'
                         required
-                        className='p-2 bg-dark-600  border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary text-white'
+                        className='p-2 bg-dark-600 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary text-white'
                       />
                       <textarea
                         name='description'
                         placeholder='Step Description'
                         required
-                        className='p-2 bg-dark-600  border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary text-white'
+                        className='p-2 bg-dark-600 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary text-white'
                       />
                       <input
                         type='file'
