@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import LoadingAnimation from "@/components/Loading"
-import { usePathname } from "next/navigation"
 
 interface AuthData {
   username: string
@@ -25,7 +24,6 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
     const now = new Date().getTime()
     return authData.expiration > now && authData.role !== undefined
   }
-  const pathname = usePathname()
 
   useEffect(() => {
     const authData = localStorage.getItem("auth")
@@ -75,8 +73,14 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       })
 
       if (!response.ok) {
+        const errorData = await response.json()
         setIsSubmitting(false)
-        throw new Error("Invalid credentials")
+
+        if (response.status === 429) {
+          throw new Error(errorData.error || "Too many login attempts.")
+        }
+
+        throw new Error(errorData.error || "Invalid credentials")
       }
 
       const data: { role: "admin" | "staff" } = await response.json()
@@ -92,9 +96,11 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       } else if (data.role === "staff") {
         router.push("/staff")
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      setError("Invalid username or password")
+      setError(err.message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 

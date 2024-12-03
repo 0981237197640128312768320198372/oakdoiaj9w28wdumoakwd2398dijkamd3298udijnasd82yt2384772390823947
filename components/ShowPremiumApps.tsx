@@ -18,6 +18,7 @@ import EmailList from "./EmailList"
 import CopyToClipboard from "./CopyToClipboard"
 import { logActivity } from "@/lib/utils"
 import { parse, isValid } from "date-fns"
+import ShowHideText from "./ShowHideText"
 
 export const ShowPremiumApps = () => {
   const [inputPersonalKey, setInputPersonalKey] = useState<string>("")
@@ -307,7 +308,7 @@ export const ShowPremiumApps = () => {
                   <span className='gap-0 text-xs'>
                     Dokmai Coin
                     <p className='text-xl font-aktivGroteskBold'>
-                      {userInfo.balance}
+                      <ShowHideText text={userInfo.balance} />
                     </p>
                   </span>
                 </div>
@@ -325,7 +326,9 @@ export const ShowPremiumApps = () => {
                 </div>
                 <div className='flex gap-2 items-center'>
                   <FaUserLock className='w-8 h-8 text-white p-2 bg-white/10 rounded-lg' />
-                  <p className='text-lg select-none'>{userInfo.personalKey}</p>
+                  <p className='text-lg select-none'>
+                    <ShowHideText text={userInfo.personalKey} />
+                  </p>
                 </div>
               </div>
               <div className='w-full flex justify-end'>

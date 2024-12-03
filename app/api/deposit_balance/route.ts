@@ -23,7 +23,8 @@ export async function POST(request: Request) {
     const userData =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        userInfoSheetRange
+        userInfoSheetRange,
+        "third"
       )) || []
 
     // Find the user by their personal key

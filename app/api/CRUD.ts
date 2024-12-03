@@ -2,7 +2,7 @@
 import { google } from "googleapis"
 
 async function authenticateGoogleSheets(
-  credentialsSet: "default" | "second" = "default"
+  credentialsSet: "default" | "second" | "third" = "default"
 ) {
   try {
     const credentials = (() => {
@@ -60,7 +60,7 @@ async function authenticateGoogleSheets(
 }
 
 async function getGoogleSheetsInstance(
-  credentialsSet: "default" | "second" = "default"
+  credentialsSet: "default" | "second" | "third" = "default"
 ) {
   const auth = await authenticateGoogleSheets(credentialsSet)
   return google.sheets({ version: "v4", auth })
@@ -69,7 +69,7 @@ async function getGoogleSheetsInstance(
 export async function getGoogleSheetsData(
   spreadsheetId: string,
   range: string,
-  credentialsSet: "default" | "second" = "default"
+  credentialsSet: "default" | "second" | "third" = "default"
 ) {
   try {
     const sheets = await getGoogleSheetsInstance(credentialsSet)

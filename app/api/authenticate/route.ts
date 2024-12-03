@@ -1,34 +1,76 @@
 import { NextResponse } from "next/server"
 import { Storage } from "@google-cloud/storage"
 
+// Environment variable validation and setup
+const { GCP_PROJECT_ID, GCP_CLIENT_EMAIL, GCP_PRIVATE_KEY, GCP_BUCKET_NAME } =
+  process.env
+
+if (
+  !GCP_PROJECT_ID ||
+  !GCP_CLIENT_EMAIL ||
+  !GCP_PRIVATE_KEY ||
+  !GCP_BUCKET_NAME
+) {
+  throw new Error("Missing required Google Cloud environment variables.")
+}
+
 const storage = new Storage({
-  projectId: process.env.GCP_PROJECT_ID,
+  projectId: GCP_PROJECT_ID,
   credentials: {
-    client_email: process.env.GCP_CLIENT_EMAIL,
-    private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    client_email: GCP_CLIENT_EMAIL,
+    private_key: GCP_PRIVATE_KEY.replace(/\\n/g, "\n"),
   },
 })
-
-const bucketName = process.env.GCP_BUCKET_NAME || ""
+const bucketName = GCP_BUCKET_NAME
 const userFileName = "users.json"
+const blockFileName = "blocked.json"
+const MAX_ATTEMPTS = 5
 
 export async function POST(req: Request) {
   try {
     const { username, password } = await req.json()
+    const ip =
+      req.headers.get("x-forwarded-for") ||
+      req.headers.get("cf-connecting-ip") ||
+      "unknown"
+    const userAgent = req.headers.get("user-agent") || "unknown"
 
-    // Fetch the JSON file from Google Storage
     const bucket = storage.bucket(bucketName)
-    const file = bucket.file(userFileName)
+    const userFile = bucket.file(userFileName)
+    const blockFile = bucket.file(blockFileName)
 
-    const [exists] = await file.exists()
-    if (!exists) {
+    // Check if the blocked file exists
+    const [blockFileExists] = await blockFile.exists()
+    let blockedData: Record<string, any> = {}
+
+    if (blockFileExists) {
+      const [blockContents] = await blockFile.download()
+      blockedData = JSON.parse(blockContents.toString())
+    }
+
+    // Generate a unique key for the IP + User-Agent combination
+    const blockKey = `${ip}__${userAgent}`
+
+    // Check if IP and user agent combination is blocked
+    if (blockedData[blockKey]?.blockedAt) {
+      return NextResponse.json(
+        {
+          error: "Something Wrong.",
+        },
+        { status: 403 }
+      )
+    }
+
+    // Fetch users
+    const [userFileExists] = await userFile.exists()
+    if (!userFileExists) {
       return NextResponse.json(
         { error: "User database not found" },
         { status: 500 }
       )
     }
 
-    const [contents] = await file.download()
+    const [contents] = await userFile.download()
     const users = JSON.parse(contents.toString())
 
     // Check credentials
@@ -38,11 +80,38 @@ export async function POST(req: Request) {
     )
 
     if (!user) {
+      // Increment failed attempts for this IP + User-Agent
+      if (!blockedData[blockKey]) {
+        blockedData[blockKey] = { attempts: 0 }
+      }
+
+      blockedData[blockKey].attempts += 1
+
+      // Block if max attempts are exceeded
+      if (blockedData[blockKey].attempts >= MAX_ATTEMPTS) {
+        blockedData[blockKey].blockedAt = Date.now()
+      }
+
+      // Update the blocked file
+      await blockFile.save(JSON.stringify(blockedData, null, 2), {
+        contentType: "application/json",
+      })
+
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        {
+          error:
+            "Invalid credentials. Too many attempts may result in a block.",
+        },
         { status: 401 }
       )
     }
+
+    // Successful authentication: Reset attempts for IP + User-Agent
+    delete blockedData[blockKey]
+
+    await blockFile.save(JSON.stringify(blockedData, null, 2), {
+      contentType: "application/json",
+    })
 
     return NextResponse.json({ role: user.role })
   } catch (error) {
