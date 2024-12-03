@@ -212,6 +212,7 @@ export const ShowPremiumApps = () => {
         setPremiumData([])
       }
     } catch (err) {
+      console.log(err)
       setError("Failed to fetch premium data. Please try again.")
     } finally {
       setFetchingData(false)
