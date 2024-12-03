@@ -6,7 +6,7 @@ export const metadata = generateMetadata({
 })
 export default function NotFound() {
   return (
-    <main className='flex flex-col justify-center items-center min-h-screen bg-dark-900 text-light-100'>
+    <div className='flex flex-col justify-center items-center min-h-screen bg-dark-900 text-light-100'>
       <h1 className='text-6xl font-bold'>404</h1>
       <p className='mt-4 text-xl'>Oops! Page not found.</p>
       <Link href='/'>
@@ -14,6 +14,6 @@ export default function NotFound() {
           Go Back Home
         </p>
       </Link>
-    </main>
+    </div>
   )
 }

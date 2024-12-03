@@ -31,7 +31,6 @@ const AdminPageContent = () => {
           <EmailsViewer />
           <AdminDeposit /> <ActivityLogs />
         </div>
-
         <ManageHelps />
       </div>
     </>
