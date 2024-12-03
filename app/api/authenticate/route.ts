@@ -1,4 +1,4 @@
-/* @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
 import { Storage } from "@google-cloud/storage"
 
