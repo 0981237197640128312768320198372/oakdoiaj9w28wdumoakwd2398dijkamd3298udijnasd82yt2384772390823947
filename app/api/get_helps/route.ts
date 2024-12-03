@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { Storage } from "@google-cloud/storage"
 
 const storage = new Storage({
@@ -12,8 +12,12 @@ const storage = new Storage({
 const bucketName = process.env.GCP_BUCKET_NAME || ""
 const fileName = "helps.json"
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    // Check if fetchall=true is present in the query string
+    const url = new URL(req.url)
+    const fetchAll = url.searchParams.get("fetchall") === "true"
+
     const bucket = storage.bucket(bucketName)
     const file = bucket.file(fileName)
 
@@ -25,8 +29,12 @@ export async function GET() {
       )
     }
 
-    const [contents] = await file.download()
-    const helps = JSON.parse(contents.toString())
+    let helps = []
+    if (fetchAll) {
+      // Always read fresh data from the storage bucket
+      const [contents] = await file.download()
+      helps = JSON.parse(contents.toString())
+    }
 
     return NextResponse.json({ helps }, { status: 200 })
   } catch (error) {

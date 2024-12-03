@@ -64,7 +64,9 @@ export async function POST(req: NextRequest) {
 
     console.log("Upload completed successfully")
 
-    const publicUrl = `https://storage.googleapis.com/${bucketName}/${destination}`
+    const publicUrl = `https://storage.googleapis.com/${bucketName}/${encodeURIComponent(
+      destination
+    )}`
     return NextResponse.json({ publicUrl })
   } catch (error) {
     console.error("Error in file upload:", error)

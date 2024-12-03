@@ -36,7 +36,7 @@ const ShowHelpList = () => {
   const fetchHelps = async () => {
     setLoading(true)
     try {
-      const response = await fetch("/api/get_helps")
+      const response = await fetch("/api/get_helps?fetchall=true")
       if (!response.ok) {
         throw new Error("Failed to fetch helps.json")
       }

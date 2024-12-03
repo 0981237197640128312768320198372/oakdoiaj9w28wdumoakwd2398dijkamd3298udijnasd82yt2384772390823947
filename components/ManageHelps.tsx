@@ -51,7 +51,7 @@ const ManageHelps: React.FC = () => {
     const fetchHelps = async () => {
       if (loading) {
         try {
-          const response = await fetch("/api/get_helps")
+          const response = await fetch("/api/get_helps?fetchall=true")
           if (!response.ok) throw new Error("Failed to fetch helps")
 
           const data = await response.json()
@@ -167,19 +167,41 @@ const ManageHelps: React.FC = () => {
 
       if (!response.ok) throw new Error("Failed to add step")
 
-      const updatedStep = await response.json() // Add validation here to deduplicate
+      const addedStep = await response.json()
+
+      // Log added step for debugging
+      console.log("Added step:", addedStep)
+
+      // Update selectedHelp state
+      setSelectedHelp((prev) =>
+        prev
+          ? {
+              ...prev,
+              steps: [...prev.steps, addedStep], // Add new step
+            }
+          : prev
+      )
+
+      // Update global helps state
       setHelps((prevHelps) =>
         prevHelps.map((help) =>
           help.id === helpId
-            ? { ...help, steps: [...help.steps, updatedStep] }
+            ? { ...help, steps: [...help.steps, addedStep] }
             : help
         )
       )
+
+      // Optional: Add delay to ensure image availability
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      // Show success feedback and close form
       handleFeedback("Step added successfully!", "success")
+      setShowAddStepForm(false) // Close the form
     } catch (error) {
+      console.error("Error adding step:", error)
       handleFeedback("Failed to add step.", "error")
     } finally {
-      setActionLoading(null)
+      setActionLoading(null) // Clear loading state
     }
   }
 
@@ -291,7 +313,7 @@ const ManageHelps: React.FC = () => {
       }
 
       const data = await response.json()
-      setPictureUrl(data.publicUrl) // Save the returned URL for the form submission
+      setPictureUrl(data.publicUrl)
     } catch (error) {
       console.error("Error uploading picture:", error)
       setPictureUrl("") // Reset picture URL on error
@@ -483,6 +505,13 @@ const ManageHelps: React.FC = () => {
       )}
       {selectedHelp && (
         <div className='fixed inset-0 bg-dark-800/80 backdrop-blur-xl flex flex-col justify-center items-center z-50 '>
+          <button
+            type='button'
+            className='absolute top-10 right-10 bg-red-500 text-dark-800 w-fit py-1 px-2 gap-2 justify-center items-center font-aktivGroteskBold border-dark-500'
+            onClick={() => setSelectedHelp(null)}
+          >
+            Close
+          </button>
           <div className='relative p-5 flex flex-col bg-dark-800 border-dark-400 border-[1px] w-[400px] h-[700px] max-h-[80vh] max-w-[80vw] overflow-y-auto __dokmai_scrollbar rounded'>
             <div
               className={`bg-dark-700 border border-dark-400 p-5 rounded ${
@@ -595,7 +624,7 @@ const ManageHelps: React.FC = () => {
                 }`}
                 onClick={() => setSelectedHelp(null)}
               >
-                Close
+                Cancel
               </button>
             </motion.div>
             {showEditSteps && (
@@ -630,7 +659,7 @@ const ManageHelps: React.FC = () => {
                         const newStep = {
                           step: formData.get("step") as string,
                           description: formData.get("description") as string,
-                          picture: pictureUrl, // Use the uploaded picture URL
+                          picture: pictureUrl,
                         }
 
                         handleAddStep(selectedHelp.id, newStep)
@@ -789,7 +818,6 @@ const ManageHelps: React.FC = () => {
                                   {step.description}
                                 </p>
                               </div>
-
                               <Image
                                 src={step.picture}
                                 alt={step.step}
