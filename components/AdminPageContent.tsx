@@ -4,6 +4,7 @@ import ActivityLogs from "@/components/ActivityLogs"
 import PageHeadline from "@/components/PageHeadline"
 import AdminDeposit from "./AdminDeposit"
 import EmailsViewer from "./EmailsViewer"
+import ManageHelps from "./ManageHelps"
 
 const AdminPageContent = () => {
   const handleLogout = () => {
@@ -31,6 +32,7 @@ const AdminPageContent = () => {
           <AdminDeposit />
         </div>
         <ActivityLogs />
+        <ManageHelps />
       </div>
     </>
   )

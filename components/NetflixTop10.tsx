@@ -113,7 +113,7 @@ const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
                 className='bg-primary py-1 px-2 text-dark-800 text-xs font-aktivGroteskBold w-fit rounded-sm flex items-center justify-center'
                 target='_blank'
               >
-                Watch Now
+                ดูตอนนี้
                 <GoChevronRight className='text-lg' />
               </Link>
             </div>
@@ -172,7 +172,6 @@ export default function NetflixTop10() {
           isLoading={isLoading}
         />
       </section>
-
       <section className='mt-8'>
         <h2 className='text-xl font-semibold mb-4'>
           ภาพยนตร์ 10 อันดับสูงสุดในไทยสัปดาห์นี้

@@ -108,8 +108,8 @@ const CreditsSection = () => {
   return (
     <section id='Testimonials' className='mt-24'>
       <SubTitle
-        title='Credits'
-        buttonMore='View More Credits'
+        title='เครดิต'
+        buttonMore='เครดิตเพิ่มเติม'
         urlButtonMore={"/testimonials"}
         className='mb-16'
       />
@@ -153,7 +153,7 @@ const CreditsSection = () => {
                   <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100'>
                     {credit.date}
                   </p>
-                  <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
+                  <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-[7px] lg:text-xs -mt-1 '>
                     {credit.item}
                   </p>
                 </span>

@@ -41,7 +41,7 @@ const fetchRecommendations = async (page: number, limit: number) => {
 }
 
 const SkeletonLoader = () => (
-  <div className='relative flex flex-col items-center h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg w-[400px] md:w-[500px] animate-pulse'>
+  <div className='relative flex flex-col items-center w-full h-full justify-center select-none p-3 border-[1px] border-dark-500 rounded-lg animate-pulse'>
     <div className='w-full h-full min-h-[500px] bg-dark-400 rounded-md'>
       <div className='relative flex items-center justify-center h-full'>
         <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
@@ -118,12 +118,12 @@ const RecomendationsSection = () => {
       className='w-full __container mt-24 justify-center h-full items-center'
     >
       <SubTitle
-        title='Recommendations'
-        buttonMore='View More Recommendations'
+        title='รายการหนังแนะนำ'
+        buttonMore='ดูรายการแนะนำเพิ่มเติม'
         urlButtonMore={"/movie-series-recommendations"}
         className='mb-16'
       />
-      <div className='w-full h-full grid lg:grid-cols-2 gap-5 px-5 lg:px-0 pb-10 justify-center'>
+      <div className='w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-5 px-5 lg:px-0 pb-10 justify-center'>
         {loading
           ? Array.from({ length: limit }).map((_, index) => (
               <SkeletonLoader key={index} />
@@ -165,7 +165,7 @@ const RecomendationsSection = () => {
                   <p className='flex justify-start font-aktivGroteskBold px-2 py-1 text-light-100 text-xl'>
                     {recommendation.title}
                   </p>
-                  <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1'>
+                  <p className='flex justify-start font-aktivGroteskLight px-2 py-1 text-light-100 text-xs -mt-1 '>
                     {recommendation.description}
                   </p>
                 </span>
@@ -175,7 +175,7 @@ const RecomendationsSection = () => {
                     className='bg-primary py-1 px-2 text-dark-800 font-aktivGroteskBold rounded-sm flex items-center justify-center gap-1'
                     target='_blank'
                   >
-                    Watch Now
+                    ดูตอนนี้
                     <GoChevronRight className='text-2xl' />
                   </Link>
                 </div>

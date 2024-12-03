@@ -70,7 +70,7 @@ const AdminDeposit = () => {
         <input
           type='text'
           placeholder='Personal Key'
-          value={personalKey}
+          value={personalKey.toUpperCase()}
           onChange={(e) => setPersonalKey(e.target.value)}
           required
           className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary'
@@ -84,7 +84,7 @@ const AdminDeposit = () => {
             required
             className='p-2 border border-primary/70 bg-transparent focus:outline-none focus:ring-1 focus:ring-primary w-3/4'
           />
-          <div className='flex items-center border  border-primary/70 focus:outline-none focus:ring-1 focus:ring-primary w-1/4'>
+          <div className='flex items-center border border-primary/70 focus:outline-none focus:ring-1 focus:ring-primary w-1/4'>
             <input
               type='number'
               placeholder='Bonus'
@@ -119,15 +119,19 @@ const AdminDeposit = () => {
       </form>
 
       {successMessage && (
-        <p className='mt-4 text-green-500 bg-green-500/10 p-2 border border-green-500'>
-          {successMessage}
-        </p>
+        <div className='fixed bg-dark-800 top-20 xl:top-40 right-5 xl:right-10 px-4 py-2 rounded shadow'>
+          <p className='mt-4 text-green-500 bg-green-500/10 p-2 border border-green-500'>
+            {successMessage}
+          </p>
+        </div>
       )}
 
       {errorMessage && (
-        <p className='mt-4 text-red-500 bg-red-500/10 p-2 border border-red-500'>
-          {errorMessage}
-        </p>
+        <div className='fixed bg-dark-800 top-20 xl:top-40 right-5 xl:right-10 px-4 py-2 rounded shadow'>
+          <p className='mt-4 text-red-500 bg-red-500/10 p-2 border border-red-500'>
+            {errorMessage}
+          </p>
+        </div>
       )}
     </div>
   )

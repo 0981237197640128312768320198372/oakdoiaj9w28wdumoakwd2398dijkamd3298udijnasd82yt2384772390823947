@@ -271,7 +271,6 @@ export const FiveStarsReview2 = [
     date: "30 March 2024",
   },
 ]
-
 export const Terms = [
   {
     title: "1. บทนำ",

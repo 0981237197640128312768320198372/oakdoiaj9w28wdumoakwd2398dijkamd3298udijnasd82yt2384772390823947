@@ -22,6 +22,16 @@ const nextConfig = {
         hostname: "www.netflix.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.dokmaistore.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+        pathname: "**",
+      },
     ],
   },
   reactStrictMode: true,

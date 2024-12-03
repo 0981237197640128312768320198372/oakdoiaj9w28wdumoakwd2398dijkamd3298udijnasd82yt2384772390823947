@@ -5,10 +5,10 @@ import NetflixTop10 from "../NetflixTop10"
 const WeeklyTop10Section = () => {
   return (
     <section
-      id='WeeklyTop10'
+      id='10 อันดับประจำสัปดาห์'
       className='w-full __container mt-24 flex flex-col'
     >
-      <SubTitle title='Weekly Top 10' className='mb-16' />
+      <SubTitle title='10 อันดับประจำสัปดาห์' className='mb-16' />
 
       <NetflixTop10 />
     </section>

@@ -50,6 +50,12 @@ const EmailsViewer = () => {
   }, [folder])
 
   useEffect(() => {
+    if (selectedEmail && modalRef.current) {
+      modalRef.current.focus() // Automatically focus the modal
+    }
+  }, [selectedEmail])
+
+  useEffect(() => {
     // Dynamically filter emails based on the search term
     const filtered = emails.filter(
       (email) =>
@@ -118,7 +124,6 @@ const EmailsViewer = () => {
 
   return (
     <div className='min-h-fit w-full lg:max-w-[700px] overflow-y-scroll flex flex-col items-center p-5 text-light-100 border-[1px] border-dark-500 bg-dark-700 rounded'>
-      {/* Header */}
       <div className='w-full max-w-4xl flex justify-between items-start border-b-[1px] border-dark-500 mb-5'>
         <h3 className='flex items-center gap-2 font-bold mb-5'>
           <MdOutlineMarkEmailUnread />
@@ -159,7 +164,7 @@ const EmailsViewer = () => {
 
       <div className='w-full overflow-hidden'>
         {loading ? (
-          <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll __dokmai_scrollbar'>
+          <div className='w-full max-h-96 flex flex-col overflow-y-scroll __dokmai_scrollbar'>
             <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
               <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
               <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
@@ -192,8 +197,8 @@ const EmailsViewer = () => {
             </div>
           </div>
         ) : (
-          <div className='w-full max-h-96 flex flex-col-reverse overflow-y-scroll __dokmai_scrollbar'>
-            {filteredEmails.map((email) => (
+          <div className='w-full max-h-96 flex flex-col overflow-y-scroll __dokmai_scrollbar'>
+            {filteredEmails.reverse().map((email) => (
               <div
                 key={email.uid}
                 className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:border-s-2 hover:border-s-primary hover:bg-dark-600/40'
@@ -213,14 +218,23 @@ const EmailsViewer = () => {
       </div>
 
       {selectedEmail && (
-        <div className='fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center'>
+        <div
+          className='fixed inset-0 z-50 bg-black/70 backdrop-blur flex items-center justify-center focus:outline-none focus:outline-0 focus:right-0  focus:ring-0 '
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setSelectedEmail(null)
+            }
+          }}
+          tabIndex={-1} // Makes the div focusable for keydown events
+          ref={modalRef}
+        >
           <div
             ref={modalRef}
             className='relative w-[85%] lg:w-[60%] p-5 rounded border-[1px] border-dark-500 bg-dark-800 shadow-lg'
           >
             <button
               onClick={() => setSelectedEmail(null)}
-              className='absolute top-2 right-2 bg-red-500 rounded-sm text-dark-800 font-aktivGroteskBold px-2 py-1 text-sm'
+              className='absolute top-2 right-2 bg-red-500/20 hover:bg-red-500/30 rounded-sm text-red-500 font-aktivGroteskBold px-2 py-1 text-sm'
             >
               Close
             </button>
@@ -231,7 +245,10 @@ const EmailsViewer = () => {
               From: {selectedEmail.from}
             </p>
             <p className='text-xs'>{formatISODate(selectedEmail.date)}</p>
-            <div className='text-light-100 whitespace-pre-wrap overflow-auto max-h-[70vh] bg-dark-700 mt-5 __dokmai_scrollbar'>
+            <div
+              className='text-light-100 whitespace-pre-wrap overflow-auto max-h-[70vh] bg-dark-700 mt-5 __dokmai_scrollbar'
+              ref={modalRef}
+            >
               <div dangerouslySetInnerHTML={{ __html: selectedEmail.body }} />
             </div>
           </div>

@@ -55,7 +55,6 @@ export async function GET(request: Request) {
         // Match product details based on config name
         const matchedDetails = detailsMap[name] || []
 
-        // Fetch available data for the product
         const availableData = await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
           ranges.availableDataRange,

@@ -5,26 +5,41 @@ async function authenticateGoogleSheets(
   credentialsSet: "default" | "second" = "default"
 ) {
   try {
-    const credentials =
-      credentialsSet === "default"
-        ? {
-            projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-            private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
-              /\\n/g,
-              "\n"
-            ),
-            client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-            client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
-          }
-        : {
-            projectId: process.env.GOOGLE_SHEETS_PROJECT_ID_2,
-            private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY_2?.replace(
-              /\\n/g,
-              "\n"
-            ),
-            client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL_2,
-            client_id: process.env.GOOGLE_SHEETS_CLIENT_ID_2,
-          }
+    const credentials = (() => {
+      if (credentialsSet === "default") {
+        return {
+          projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
+          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(
+            /\\n/g,
+            "\n"
+          ),
+          client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
+          client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
+        }
+      } else if (credentialsSet === "second") {
+        return {
+          projectId: process.env.GOOGLE_SHEETS_PROJECT_ID_2,
+          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY_2?.replace(
+            /\\n/g,
+            "\n"
+          ),
+          client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL_2,
+          client_id: process.env.GOOGLE_SHEETS_CLIENT_ID_2,
+        }
+      } else if (credentialsSet === "third") {
+        return {
+          projectId: process.env.GOOGLE_SHEETS_PROJECT_ID_3,
+          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY_3?.replace(
+            /\\n/g,
+            "\n"
+          ),
+          client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL_3,
+          client_id: process.env.GOOGLE_SHEETS_CLIENT_ID_3,
+        }
+      } else {
+        throw new Error("Invalid credentialsSet value")
+      }
+    })()
 
     return await google.auth.getClient({
       projectId: credentials.projectId,
