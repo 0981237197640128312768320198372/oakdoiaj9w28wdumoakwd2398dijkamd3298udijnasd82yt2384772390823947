@@ -78,7 +78,7 @@ const ShowHelpList = () => {
   }, [])
 
   return (
-    <div className='w-full px-5 xl:px-0 mt-32 mb-50 __container'>
+    <div className='w-full px-5 xl:px-0 mt-10 mb-50 __container'>
       {error && <p className='text-red-500'>{error}</p>}
 
       {/* Search Bar */}
