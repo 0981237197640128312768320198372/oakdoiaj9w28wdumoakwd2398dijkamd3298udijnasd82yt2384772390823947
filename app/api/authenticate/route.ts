@@ -22,7 +22,7 @@ const storage = new Storage({
   },
 })
 const bucketName = GCP_BUCKET_NAME
-const userFileName = "users.json"
+const userFileName = "adminAndStaff.json"
 const blockFileName = "blocked.json"
 const MAX_ATTEMPTS = 5
 
