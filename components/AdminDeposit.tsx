@@ -13,6 +13,15 @@ const AdminDeposit = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
+  const showTemporaryMessage = (
+    setMessage: React.Dispatch<React.SetStateAction<string | null>>,
+    message: string,
+    duration = 15000
+  ) => {
+    setMessage(message)
+    setTimeout(() => setMessage(null), duration)
+  }
+
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -42,9 +51,11 @@ const AdminDeposit = () => {
       }
 
       const data = await response.json()
-      setSuccessMessage(
+      showTemporaryMessage(
+        setSuccessMessage,
         `${data.message} New Balance ${personalKey}: ${data.newBalance}`
       )
+
       await logActivity("Deposit", personalKey, {
         amount: totalDepositAmount,
         newBalance: data.newBalance,
@@ -54,7 +65,10 @@ const AdminDeposit = () => {
       setDepositAmount("")
       setBonusPercentage(0) // Reset bonus percentage
     } catch (error: any) {
-      setErrorMessage(error.message || "An unexpected error occurred")
+      showTemporaryMessage(
+        setErrorMessage,
+        error.message || "An unexpected error occurred"
+      )
     } finally {
       setLoading(false)
     }
