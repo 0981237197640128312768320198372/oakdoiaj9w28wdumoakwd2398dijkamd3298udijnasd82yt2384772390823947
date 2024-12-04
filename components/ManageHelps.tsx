@@ -364,7 +364,6 @@ const ManageHelps: React.FC = () => {
       ) : (
         <>
           <div className='flex flex-row gap-5 overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
-            {" "}
             {helps.map((help) => (
               <div
                 key={help.id}

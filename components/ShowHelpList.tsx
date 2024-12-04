@@ -93,7 +93,7 @@ const ShowHelpList = () => {
       </div>
 
       {/* Helps List or Skeleton */}
-      <div className='flex flex-row __container __dokmai_scrollbar mt-5 border-[1px] border-dark-5005 rounded bg-dark-700 gap-5 p-5 overflow-x-auto w-full __dokmai_scrollbar'>
+      <div className='flex flex-row __container __dokmai_scrollbar mt-5 border-[1px] border-dark-500 rounded bg-dark-700 gap-5 p-5 overflow-x-auto w-full __dokmai_scrollbar'>
         {loading
           ? Array.from({ length: 3 }).map((_, index) => (
               <div
