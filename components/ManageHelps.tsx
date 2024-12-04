@@ -345,7 +345,7 @@ const ManageHelps: React.FC = () => {
         </button>
       </div>
       {loading ? (
-        <div className='flex flex-row gap-5 __container overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
+        <div className='flex flex-row gap-5 overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
           {Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
@@ -363,7 +363,7 @@ const ManageHelps: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className='flex flex-row gap-5 __container overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
+          <div className='flex flex-row gap-5 overflow-x-auto __dokmai_scrollbar border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
             {" "}
             {helps.map((help) => (
               <div
