@@ -15,5 +15,6 @@
       "src": "/icons/favicon.png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "scope": "/"
 }
