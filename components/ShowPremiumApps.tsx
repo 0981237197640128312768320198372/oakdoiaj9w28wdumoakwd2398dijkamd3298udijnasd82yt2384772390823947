@@ -5,7 +5,7 @@
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
+// import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
 import dokmaicoin from "@/assets/images/dokmaicoin.png"
 import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
 import { FaUserLock } from "react-icons/fa6"
@@ -296,7 +296,7 @@ export const ShowPremiumApps = () => {
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
         <div className='flex gap-5 flex-col lg:flex-row'>
           <div className='bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group md:w-fit w-full'>
-            <div className='bg-gradient-to-tl from-white/5 to-dark-800 rounded-lg p-5 w-full'>
+            <div className='bg-gradient-to-tl from-light-400/5 to-dark-800 rounded p-5 w-full border-[1px] border-dark-500'>
               <div className='flex gap-2 items-start select-none w-full justify-between mb-10'>
                 <div className='flex gap-2 h-14 items-center'>
                   <Image
@@ -318,7 +318,7 @@ export const ShowPremiumApps = () => {
                   className='flex gap-2 items-center bg-primary text-xs hover:bg-primary/90 text-dark-800 rounded p-1 z-30 font-bold'
                 >
                   <PiWallet className='w-5 h-5 ' />
-                  Deposit
+                  เติมเงิน
                 </Link>
               </div>
               <div className='flex flex-col items-start justify-center gap-2'>
@@ -401,8 +401,8 @@ export const ShowPremiumApps = () => {
         premiumData.length > 0 && (
           <div className='mt-32 w-full max-md:justify-center'>
             <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
-              Your Ordered{" "}
-              <span className='text-dark-800 bg-primary p-1'>Premium Apps</span>
+              <span className='text-dark-800 bg-primary p-1'>แอพพรีเมียม</span>{" "}
+              ที่สั่งซื้อแล้ว
             </h2>
             <input
               type='text'
