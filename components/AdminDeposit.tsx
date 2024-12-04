@@ -2,7 +2,7 @@
 "use client"
 
 import { logActivity } from "@/lib/utils"
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { SlWallet } from "react-icons/sl"
 
 const AdminDeposit = () => {
@@ -10,17 +10,8 @@ const AdminDeposit = () => {
   const [depositAmount, setDepositAmount] = useState<number | "">("")
   const [bonusPercentage, setBonusPercentage] = useState<number | string>(0)
   const [loading, setLoading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<ReactNode | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  const showTemporaryMessage = (
-    setMessage: React.Dispatch<React.SetStateAction<string | null>>,
-    message: string,
-    duration = 15000
-  ) => {
-    setMessage(message)
-    setTimeout(() => setMessage(null), duration)
-  }
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,11 +42,21 @@ const AdminDeposit = () => {
       }
 
       const data = await response.json()
-      showTemporaryMessage(
-        setSuccessMessage,
-        `${data.message} New Balance ${personalKey}: ${data.newBalance}`
-      )
 
+      setSuccessMessage(
+        <>
+          <p className='font-aktivGroteskBold text-primary'>{data.message}</p>
+          <p className='font-aktivGroteskBold text-primary'>{personalKey}</p>
+          <p className='font-light text-light-500'>Deposit: {depositAmount}</p>
+          <p className='font-light text-light-500'>Bonus: {bonusAmount}</p>
+          <p className='font-light text-light-500'>
+            Total deposit: {totalDepositAmount}
+          </p>
+          <p className='font-light text-light-500'>
+            Balance: {data.newBalance}
+          </p>
+        </>
+      )
       await logActivity("Deposit", personalKey, {
         amount: totalDepositAmount,
         newBalance: data.newBalance,
@@ -65,10 +66,7 @@ const AdminDeposit = () => {
       setDepositAmount("")
       setBonusPercentage(0) // Reset bonus percentage
     } catch (error: any) {
-      showTemporaryMessage(
-        setErrorMessage,
-        error.message || "An unexpected error occurred"
-      )
+      setErrorMessage(error.message || "An unexpected error occurred")
     } finally {
       setLoading(false)
     }
@@ -133,10 +131,20 @@ const AdminDeposit = () => {
       </form>
 
       {successMessage && (
-        <div className='fixed bg-dark-800 top-20 xl:top-40 right-5 xl:right-10 px-4 py-2 rounded shadow'>
-          <p className='mt-4 text-green-500 bg-green-500/10 p-2 border border-green-500'>
-            {successMessage}
-          </p>
+        <div className='fixed inset-0 h-screen w-screen bg-dark-800/80 backdrop-blur top-0 right-0 z-40 flex flex-col justify-center items-center rounded shadow'>
+          <div className='w-fit p-5 bg-dark-700 border-[1px] border-dark-600 rounded-sm'>
+            <div className='flex flex-col w-full'>
+              {successMessage}
+              <button
+                onClick={() => {
+                  setSuccessMessage(null)
+                }}
+                className='self-end bg-red-500 font-aktivGroteskBold hover:bg-red-500/90 active:bg-red-500/80 py-1 px-2 text-dark-800'
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
