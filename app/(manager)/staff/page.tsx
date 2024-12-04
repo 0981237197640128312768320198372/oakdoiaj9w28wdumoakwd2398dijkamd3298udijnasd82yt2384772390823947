@@ -1,4 +1,3 @@
-import Authenticator from "@/components/Authenticator"
 import StaffPageContent from "@/components/StaffPageContent"
 import { generateMetadata } from "@/lib/utils"
 
@@ -8,9 +7,5 @@ export const metadata = generateMetadata({
     "A streamlined page for Staff, and let staff easily manage any data for smooth operations.",
 })
 export default function StaffPage() {
-  return (
-    <Authenticator>
-      <StaffPageContent />
-    </Authenticator>
-  )
+  return <StaffPageContent />
 }

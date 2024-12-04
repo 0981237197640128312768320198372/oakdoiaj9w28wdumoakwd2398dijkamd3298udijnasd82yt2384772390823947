@@ -100,8 +100,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json(
         {
-          error:
-            "Invalid credentials. Too many attempts may result in a block.",
+          error: "Invalid credentials..",
         },
         { status: 401 }
       )

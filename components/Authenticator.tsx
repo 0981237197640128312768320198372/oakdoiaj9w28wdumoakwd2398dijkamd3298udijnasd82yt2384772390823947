@@ -6,8 +6,6 @@ import { useRouter } from "next/navigation"
 import LoadingAnimation from "@/components/Loading"
 
 interface AuthData {
-  name: string
-  jobDesk: string
   username: string
   role: "admin" | "staff"
   expiration: number

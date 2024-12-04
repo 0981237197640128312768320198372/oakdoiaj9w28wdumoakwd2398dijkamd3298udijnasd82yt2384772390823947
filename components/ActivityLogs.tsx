@@ -29,7 +29,7 @@ export default function ActivityLogs() {
       if (!response.ok) throw new Error("Failed to fetch logs")
 
       const data = await response.json()
-      console.log(`Fetched logs for type '${type}':`, data)
+      // console.log(`Fetched logs for type '${type}':`, data)
 
       const sortedLogs = Array.isArray(data.logs)
         ? data.logs.sort(
