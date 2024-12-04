@@ -123,7 +123,7 @@ const EmailsViewer = () => {
   ]
 
   return (
-    <div className='min-h-fit w-full lg:max-w-[700px] overflow-y-scroll flex flex-col items-center p-5 text-light-100 border-[1px] border-dark-500 bg-dark-700 rounded'>
+    <div className='min-h-fit w-full lg:max-w-[700px] flex flex-col items-center p-5 text-light-100 border-[1px] border-dark-500 bg-dark-700 rounded'>
       <div className='w-full max-w-4xl flex justify-between items-start border-b-[1px] border-dark-500 mb-5'>
         <h3 className='flex items-center gap-2 font-bold mb-5'>
           <MdOutlineMarkEmailUnread />
@@ -164,7 +164,7 @@ const EmailsViewer = () => {
 
       <div className='w-full overflow-hidden'>
         {loading ? (
-          <div className='w-full max-h-96 flex flex-col overflow-y-scroll __dokmai_scrollbar'>
+          <div className='w-full max-h-96 flex flex-col overflow-y-auto __dokmai_scrollbar'>
             <div className='border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40'>
               <div className='w-52 h-5 bg-dark-500 mt-2 animate-pulse' />
               <div className='w-80 h-5 bg-dark-500 mt-2 animate-pulse' />
@@ -197,7 +197,7 @@ const EmailsViewer = () => {
             </div>
           </div>
         ) : (
-          <div className='w-full max-h-96 flex flex-col overflow-y-scroll __dokmai_scrollbar'>
+          <div className='w-full max-h-96 flex flex-col overflow-y-auto __dokmai_scrollbar'>
             {filteredEmails.reverse().map((email) => (
               <div
                 key={email.uid}

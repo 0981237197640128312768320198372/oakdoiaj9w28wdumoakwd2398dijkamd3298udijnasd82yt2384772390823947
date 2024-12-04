@@ -32,17 +32,24 @@ const AdminPageContent = () => {
       </div>
       <div className='flex justify-between flex-col items-center gap-10 w-full'>
         <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
-          <LineChart
-            labels={labels}
-            dataPoints={dataPoints}
-            lineColor='#b8fe13'
-            gradientColorStart='rgba(184, 254, 19, 0.4)'
-            gradientColorEnd='rgba(184, 254, 19, 0)'
-          />
-          <AdminDeposit />
+          <div className='w-full lg:w-[70%]'>
+            <LineChart
+              labels={labels}
+              dataPoints={dataPoints}
+              lineColor='#b8fe13'
+              gradientColorStart='rgba(184, 254, 19, 0.4)'
+              gradientColorEnd='rgba(184, 254, 19, 0)'
+              className='w-full min-h-96'
+            />
+          </div>
+
+          <div className='w-full lg:w-[30%]'>
+            <AdminDeposit />
+          </div>
         </div>
         <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
-          <EmailsViewer /> <ActivityLogs />
+          <EmailsViewer />
+          <ActivityLogs />
         </div>
 
         <ManageHelps />

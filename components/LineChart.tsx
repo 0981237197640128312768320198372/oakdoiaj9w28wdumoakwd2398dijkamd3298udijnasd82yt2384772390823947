@@ -22,6 +22,7 @@ ChartJS.register(
 )
 
 interface LineChartProps {
+  className?: string
   labels: string[]
   dataPoints: number[]
   lineColor: string
@@ -30,6 +31,7 @@ interface LineChartProps {
 }
 
 const LineChartWithGradient: React.FC<LineChartProps> = ({
+  className,
   labels,
   dataPoints,
   lineColor,
@@ -90,7 +92,11 @@ const LineChartWithGradient: React.FC<LineChartProps> = ({
     ],
   }
 
-  return <Line options={options} data={data} />
+  return (
+    <div className={className}>
+      <Line options={options} data={data} className='w-full' />
+    </div>
+  )
 }
 
 export default LineChartWithGradient
