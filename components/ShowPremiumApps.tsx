@@ -296,7 +296,7 @@ export const ShowPremiumApps = () => {
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
         <div className='flex gap-5 flex-col lg:flex-row'>
           <div className='bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group md:w-fit w-full'>
-            <div className='bg-gradient-to-tl from-light-400/5 to-dark-800 rounded p-5 w-full border-[1px] border-dark-500'>
+            <div className='bg-gradient-to-tl from-light-400/5 to-dark-800 rounded-lg p-5 w-full border-[1px] border-dark-500'>
               <div className='flex gap-2 items-start select-none w-full justify-between mb-10'>
                 <div className='flex gap-2 h-14 items-center'>
                   <Image
