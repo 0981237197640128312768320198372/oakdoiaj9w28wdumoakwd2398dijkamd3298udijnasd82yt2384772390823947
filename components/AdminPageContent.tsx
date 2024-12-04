@@ -14,7 +14,7 @@ const AdminPageContent = () => {
   }
 
   const labels = ["Jan", "Feb", "Mar", "Apr", "May"]
-  const dataPoints = [10, 20, 15, 25, 30]
+  const dataPoints = [10, 5, 30, 120, 50]
 
   return (
     <>
@@ -32,12 +32,6 @@ const AdminPageContent = () => {
       </div>
       <div className='flex justify-between flex-col items-center gap-10 w-full'>
         <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
-          <EmailsViewer />
-          <AdminDeposit />
-          <ActivityLogs />
-        </div>
-        <div className='chart-container'>
-          <h2>Daily Deposit Amount</h2>
           <LineChart
             labels={labels}
             dataPoints={dataPoints}
@@ -45,7 +39,12 @@ const AdminPageContent = () => {
             gradientColorStart='rgba(184, 254, 19, 0.4)'
             gradientColorEnd='rgba(184, 254, 19, 0)'
           />
+          <AdminDeposit />
         </div>
+        <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
+          <EmailsViewer /> <ActivityLogs />
+        </div>
+
         <ManageHelps />
       </div>
     </>
