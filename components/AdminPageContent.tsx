@@ -5,12 +5,16 @@ import PageHeadline from "@/components/PageHeadline"
 import AdminDeposit from "./AdminDeposit"
 import EmailsViewer from "./EmailsViewer"
 import ManageHelps from "./ManageHelps"
+import LineChart from "./LineChart"
 
 const AdminPageContent = () => {
   const handleLogout = () => {
     localStorage.removeItem("auth")
     location.reload()
   }
+
+  const labels = ["Jan", "Feb", "Mar", "Apr", "May"]
+  const dataPoints = [10, 20, 15, 25, 30]
 
   return (
     <>
@@ -29,7 +33,18 @@ const AdminPageContent = () => {
       <div className='flex justify-between flex-col items-center gap-10 w-full'>
         <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
           <EmailsViewer />
-          <AdminDeposit /> <ActivityLogs />
+          <AdminDeposit />
+          <ActivityLogs />
+        </div>
+        <div className='chart-container'>
+          <h2>Daily Deposit Amount</h2>
+          <LineChart
+            labels={labels}
+            dataPoints={dataPoints}
+            lineColor='#b8fe13'
+            gradientColorStart='rgba(184, 254, 19, 0.4)'
+            gradientColorEnd='rgba(184, 254, 19, 0)'
+          />
         </div>
         <ManageHelps />
       </div>

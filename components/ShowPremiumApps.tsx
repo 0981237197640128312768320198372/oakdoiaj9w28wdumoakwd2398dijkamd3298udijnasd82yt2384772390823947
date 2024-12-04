@@ -7,6 +7,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
 import dokmaicoin from "@/assets/images/dokmaicoin.png"
+import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
 import { FaUserLock } from "react-icons/fa6"
 import { accountBadge } from "@/constant"
 import netflixpremiumlogo from "@/assets/images/netflixpremiumuhd.png"
@@ -308,13 +309,13 @@ export const ShowPremiumApps = () => {
                   <span className='gap-0 text-xs'>
                     Dokmai Coin
                     <p className='text-xl font-aktivGroteskBold'>
-                      <ShowHideText text={userInfo.balance} />
+                      {userInfo.balance}
                     </p>
                   </span>
                 </div>
                 <Link
                   href='/deposit'
-                  className='flex gap-2 items-center bg-white/10 text-xs hover:bg-primary/10 hover:text-primary rounded p-1 z-30'
+                  className='flex gap-2 items-center bg-primary text-xs hover:bg-primary/90 text-dark-800 rounded p-1 z-30 font-bold'
                 >
                   <PiWallet className='w-5 h-5 ' />
                   Deposit
@@ -334,17 +335,17 @@ export const ShowPremiumApps = () => {
               <div className='w-full flex justify-end'>
                 <button
                   onClick={handleLogout}
-                  className=' bg-red-500/20 hover:bg-red-500/40 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskRegular border-[1px] border-red-500/40'
+                  className=' bg-red-500 hover:bg-red-500/90 text-dark-800 text-xs rounded px-2 py-1 font-aktivGroteskBold'
                 >
                   Logout
                 </button>
               </div>
               <Image
-                src={dokmaithinoutlinelogo}
+                src={dokmaicoin3d}
                 alt='Dokmai Store Logo'
                 width={300}
                 height={300}
-                className='absolute -bottom-5 -right-5 opacity-30 group-hover:opacity-50 select-none duration-1000 -z-40'
+                className='absolute -bottom-20 -right-5 opacity-90 group-hover:opacity-100 select-none duration-1000 -z-40'
               />
             </div>
           </div>
@@ -410,7 +411,7 @@ export const ShowPremiumApps = () => {
               placeholder='Search your premium apps...'
               className='mb-5  border-[1px] border-primary/40 p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm'
             />
-            <div className='grid flex-col grid-cols-1 lg:grid-cols-2 gap-5 w-full max-h-[650px] overflow-y-scroll px-5 pb-5 border-t-0 border-[1px] border-dark-500 __dokmai_scrollbar'>
+            <div className='grid flex-col grid-cols-1 lg:grid-cols-2 gap-5 w-full max-h-[650px] overflow-y-auto px-5 pb-5 border-t-0 border-[1px] border-dark-500 __dokmai_scrollbar'>
               {(searchTerm ? filteredPremiumData : premiumData)
                 .reverse()
                 .map((item: any, index: any) => (
@@ -458,7 +459,7 @@ export const ShowPremiumApps = () => {
                           {String(label) !== "accessType" &&
                           String(label) !== "appName" ? (
                             <>
-                              {String(value)}{" "}
+                              {String(value)}
                               {String(label) !== "accessType" &&
                               String(label) !== "orderDate" &&
                               String(label) !== "appName" ? (
