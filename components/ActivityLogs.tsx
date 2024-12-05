@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { IoBagCheckOutline } from "react-icons/io5"
 import { SlWallet } from "react-icons/sl"
 import { BiLogOutCircle, BiLogInCircle } from "react-icons/bi"
-import dokmaicoin from "@/assets/images/dokmaicoin.png"
+import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
 import Image from "next/image"
@@ -221,7 +221,7 @@ export default function ActivityLogs() {
                             <p className='text-xs mr-1'>Previous Balance</p>
                             <span className='flex items-center'>
                               <Image
-                                src={dokmaicoin}
+                                src={dokmaicoin3d}
                                 width={300}
                                 height={300}
                                 className='w-5 h-5'
@@ -238,7 +238,7 @@ export default function ActivityLogs() {
                             <p className='text-xs mr-1'>Total Cost</p>
                             <span className='flex items-center'>
                               <Image
-                                src={dokmaicoin}
+                                src={dokmaicoin3d}
                                 width={300}
                                 height={300}
                                 className='w-5 h-5'
@@ -255,7 +255,7 @@ export default function ActivityLogs() {
                             <p className='text-xs mr-1'>Current Balance</p>
                             <span className='flex items-center'>
                               <Image
-                                src={dokmaicoin}
+                                src={dokmaicoin3d}
                                 width={300}
                                 height={300}
                                 className='w-5 h-5'
@@ -299,7 +299,7 @@ export default function ActivityLogs() {
                         <p className='text-xs mr-1'>Deposit</p>
                         <span className='flex items-center'>
                           <Image
-                            src={dokmaicoin}
+                            src={dokmaicoin3d}
                             width={300}
                             height={300}
                             className='w-5 h-5'
@@ -316,7 +316,7 @@ export default function ActivityLogs() {
                         <p className='text-xs mr-1'>Current Balance</p>
                         <span className='flex items-center'>
                           <Image
-                            src={dokmaicoin}
+                            src={dokmaicoin3d}
                             width={300}
                             height={300}
                             className='w-5 h-5'

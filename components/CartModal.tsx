@@ -11,7 +11,7 @@ import primevideo from "@/assets/images/amazonprimevideo.png"
 import Link from "next/link"
 import PersonalKeyModal from "@/components/PersonalKeyModal"
 import { MdOutlineAccountBalanceWallet } from "react-icons/md"
-import dokmaicoin from "@/assets/images/dokmaicoin.png"
+import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
 import Loading from "./Loading"
 
 const CartModal = ({
@@ -113,7 +113,7 @@ const CartModal = ({
                       {item.duration}
                     </span>
                     <Image
-                      src={dokmaicoin}
+                      src={dokmaicoin3d}
                       width={70}
                       height={70}
                       alt='Dokmai Coin '
@@ -256,7 +256,7 @@ const CartModal = ({
                         {item.duration}
                       </span>
                       <Image
-                        src={dokmaicoin}
+                        src={dokmaicoin3d}
                         width={70}
                         height={70}
                         alt='Dokmai Coin '
@@ -295,7 +295,7 @@ const CartModal = ({
               <span className='text-light-200'>รวม:</span>
               <div className='text-light-200 whitespace-nowrap flex items-center'>
                 <Image
-                  src={dokmaicoin}
+                  src={dokmaicoin3d}
                   width={70}
                   height={70}
                   alt='Dokmai Coin '

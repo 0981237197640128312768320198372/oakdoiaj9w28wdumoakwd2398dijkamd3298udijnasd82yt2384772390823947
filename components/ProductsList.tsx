@@ -4,7 +4,7 @@ import Image from "next/image"
 import netflixpremium from "@/assets/images/netflixpremiumuhd.png"
 import primevideo from "@/assets/images/amazonprimevideo.png"
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
-import dokmaicoin from "@/assets/images/dokmaicoin.png"
+import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
 
 export const ProductsList = ({ priceData }: { priceData: any[] }) => {
   const { addToCart, updateQuantity, getCartItemQuantity, removeFromCart } =
@@ -87,7 +87,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                         {price.duration}
                       </span>
                       <Image
-                        src={dokmaicoin}
+                        src={dokmaicoin3d}
                         width={70}
                         height={70}
                         alt='Dokmai Coin '

@@ -6,8 +6,8 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 // import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
-import dokmaicoin from "@/assets/images/dokmaicoin.png"
 import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
+import dokmaicoin3d2 from "@/assets/images/dokmaicoin3d2.png"
 import { FaUserLock } from "react-icons/fa6"
 import { accountBadge } from "@/constant"
 import netflixpremiumlogo from "@/assets/images/netflixpremiumuhd.png"
@@ -300,7 +300,7 @@ export const ShowPremiumApps = () => {
               <div className='flex gap-2 items-start select-none w-full justify-between mb-10'>
                 <div className='flex gap-2 h-14 items-center'>
                   <Image
-                    src={dokmaicoin}
+                    src={dokmaicoin3d}
                     width={300}
                     height={300}
                     className='w-10 h-10'
@@ -341,7 +341,7 @@ export const ShowPremiumApps = () => {
                 </button>
               </div>
               <Image
-                src={dokmaicoin3d}
+                src={dokmaicoin3d2}
                 alt='Dokmai Store Logo'
                 width={300}
                 height={300}
