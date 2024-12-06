@@ -143,3 +143,40 @@ export async function logActivity(type: string, user: string, details: any) {
     console.log("Activity logged successfully")
   }
 }
+
+export const updateStatistic = async (
+  type: "depositAmount" | "spentAmount" | "productsSold" | "userLogins",
+  value: number
+) => {
+  const time = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }) // Format: HH:mm
+  const date = new Date().toISOString().split("T")[0] // Format: YYYY-MM-DD
+
+  const payload: Record<string, any> = { time, date, [type]: value } // Dynamically set the type and value
+
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/update_statistic`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    )
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error(`Failed to update ${type}:`, errorData)
+    } else {
+      const data = await response.json()
+      console.log(`${type} updated successfully:`, data.message)
+    }
+  } catch (error) {
+    console.error(`Error updating ${type}:`, error)
+  }
+}

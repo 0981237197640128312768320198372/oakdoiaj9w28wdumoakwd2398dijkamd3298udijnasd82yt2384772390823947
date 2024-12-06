@@ -139,9 +139,9 @@ export const ShowPremiumApps = () => {
       })
 
       if (userInfoRes.ok) {
-        await logActivity("Login", key, {
-          description: "Logged in successfully",
-        })
+        // await logActivity("Login", key, {
+        //   description: "Logged in successfully",
+        // })
         const userInfoData = await userInfoRes.json()
         setUserInfo(userInfoData.data)
         localStorage.setItem("personalKey", key)

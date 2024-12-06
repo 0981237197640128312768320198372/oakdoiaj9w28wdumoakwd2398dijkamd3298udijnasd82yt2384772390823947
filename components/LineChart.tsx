@@ -11,7 +11,6 @@ import {
 } from "chart.js"
 import { Line } from "react-chartjs-2"
 
-// Register required Chart.js elements
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -28,6 +27,7 @@ interface LineChartProps {
   lineColor: string
   gradientColorStart: string
   gradientColorEnd: string
+  datasetLabel: string
 }
 
 const LineChart: React.FC<LineChartProps> = ({
@@ -37,10 +37,12 @@ const LineChart: React.FC<LineChartProps> = ({
   lineColor,
   gradientColorStart,
   gradientColorEnd,
+  datasetLabel,
 }) => {
   // Chart.js options
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     animation: {
       duration: 5000,
     },
@@ -56,7 +58,12 @@ const LineChart: React.FC<LineChartProps> = ({
       },
       y: {
         grid: { display: false },
-        ticks: { color: "#fff" },
+        ticks: {
+          color: "#fff",
+          font: {
+            size: 10, // Set font size for Y-axis
+          },
+        },
       },
     },
   }
@@ -66,7 +73,7 @@ const LineChart: React.FC<LineChartProps> = ({
     labels,
     datasets: [
       {
-        label: "Deposit Amount",
+        label: datasetLabel,
         data: dataPoints,
         fill: true,
         borderColor: lineColor,
@@ -86,7 +93,7 @@ const LineChart: React.FC<LineChartProps> = ({
           return chart.gradient
         },
         tension: 0.5,
-        pointRadius: 4,
+        pointRadius: 7,
         pointBackgroundColor: "#0f0f0f",
         pointBorderWidth: 2,
         borderWidth: 2,

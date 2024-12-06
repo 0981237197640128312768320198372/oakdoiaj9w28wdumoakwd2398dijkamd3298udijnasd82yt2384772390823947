@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
 import {
@@ -7,6 +8,7 @@ import {
 } from "@/app/api/CRUD"
 import { productsConfig } from "@/constant"
 import process from "process"
+import { updateStatistic } from "@/lib/utils"
 
 type SelectedProduct = {
   name: string
@@ -97,6 +99,7 @@ export async function POST(request: Request) {
     }
 
     let calculatedTotalCost = 0
+    let calculatedTotalQty = 0
     const unavailableProducts: string[] = []
     const batchUpdates: Record<string, any[]> = {}
 
@@ -111,9 +114,9 @@ export async function POST(request: Request) {
       }
 
       calculatedTotalCost += price * quantity
-
+      calculatedTotalQty += quantity
       // console.log("PRICE", price)
-      // console.log("QUANTITY", quantity)
+
       // console.log("CALCULATED COST", calculatedTotalCost)
       const sheetName = productConfig.availableDataRange.split("!")[0]
       const expireDateColumnIndex = productConfig.expireDateColumnIndex
@@ -181,7 +184,7 @@ export async function POST(request: Request) {
         })
       }
     }
-
+    await updateStatistic("productsSold", calculatedTotalQty)
     if (unavailableProducts.length > 0) {
       return NextResponse.json(
         { error: "Some products are out of stock", unavailableProducts },
@@ -219,6 +222,7 @@ export async function POST(request: Request) {
 
     // Update user balance
     const newBalance = currentBalance - calculatedTotalCost
+    await updateStatistic("spentAmount", calculatedTotalCost)
     await updateUserField(
       process.env.___SPREADSHEET_ID as string,
       "UserInfo",

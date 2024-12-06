@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { getGoogleSheetsData, updateUserField } from "@/app/api/CRUD"
 import process from "process"
+import { logActivity, updateStatistic } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
     // Calculate the new balance
     const newBalance = currentBalance + depositAmount
 
-    // Update the user's balance in the Google Sheets
+    await updateStatistic("depositAmount", depositAmount)
     await updateUserField(
       process.env.___SPREADSHEET_ID as string,
       "UserInfo",
@@ -48,8 +49,11 @@ export async function POST(request: Request) {
       "B",
       newBalance.toString()
     )
+    await logActivity("Deposit", personalKey, {
+      amount: depositAmount,
+      newBalance: newBalance,
+    })
 
-    // Return success response
     return NextResponse.json({
       message: "Balance deposited successfully",
       newBalance,

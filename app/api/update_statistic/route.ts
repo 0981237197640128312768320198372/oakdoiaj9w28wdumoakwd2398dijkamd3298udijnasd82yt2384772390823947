@@ -14,7 +14,6 @@ const storage = new Storage({
 
 const bucketName = process.env.GCP_BUCKET_NAME || ""
 const fileName = "statistics.json"
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -48,29 +47,46 @@ export async function POST(req: NextRequest) {
       data.daily[date] = []
     }
 
-    // Append new entry to daily data
-    data.daily[date].push({
-      time,
-      depositAmount,
-      spentAmount,
-      productsSold,
-      userLogins,
-    })
+    // Find if an entry already exists for the same `time`
+    const existingIndex = data.daily[date].findIndex(
+      (entry: { time: string }) => entry.time === time
+    )
+
+    if (existingIndex !== -1) {
+      // Entry exists: Append the values
+      const existingEntry = data.daily[date][existingIndex]
+      data.daily[date][existingIndex] = {
+        ...existingEntry,
+        depositAmount: existingEntry.depositAmount + depositAmount,
+        spentAmount: existingEntry.spentAmount + spentAmount,
+        productsSold: existingEntry.productsSold + productsSold,
+        userLogins: existingEntry.userLogins + userLogins,
+      }
+    } else {
+      // Entry doesn't exist: Add a new entry
+      data.daily[date].push({
+        time,
+        depositAmount,
+        spentAmount,
+        productsSold,
+        userLogins,
+      })
+    }
 
     // Summarize daily totals
     const dailyTotals = data.daily[date].reduce(
       (
         totals: {
-          depositAmount: any
-          spentAmount: any
-          productsSold: any
-          userLogins: any
+          depositAmount: number
+          spentAmount: number
+          productsSold: number
+          userLogins: number
         },
         entry: {
-          depositAmount: any
-          spentAmount: any
-          productsSold: any
-          userLogins: any
+          depositAmount: number
+          spentAmount: number
+          productsSold: number
+          userLogins: number
         }
       ) => {
         totals.depositAmount += entry.depositAmount || 0
@@ -89,7 +105,7 @@ export async function POST(req: NextRequest) {
     }
 
     const dayIndex = data.monthly[month].findIndex(
-      (entry: { date: any }) => entry.date === date
+      (entry: { date: string }) => entry.date === date
     )
     if (dayIndex !== -1) {
       // Update existing daily summary in monthly

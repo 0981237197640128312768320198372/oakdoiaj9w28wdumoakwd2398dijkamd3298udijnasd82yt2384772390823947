@@ -47,11 +47,26 @@ const Statistics = () => {
       return
     }
 
+    // Filter and process data based on the active metric
+    const filteredData = statistics.filter((entry) => {
+      switch (activeData) {
+        case "deposit":
+          return entry.depositAmount > 0
+        case "spent":
+          return entry.spentAmount > 0
+        case "products":
+          return entry.productsSold > 0
+        case "users":
+          return entry.userLogins > 0
+        default:
+          return false
+      }
+    })
+
     if (view === "daily") {
-      // Map daily statistics for the active data type
-      setLabels(statistics.map((entry: { time: string }) => entry.time)) // Hourly labels
+      setLabels(filteredData.map((entry) => entry.time)) // Filtered hourly labels
       setDataPoints(
-        statistics.map((entry: any) => {
+        filteredData.map((entry) => {
           switch (activeData) {
             case "deposit":
               return entry.depositAmount
@@ -67,10 +82,9 @@ const Statistics = () => {
         })
       )
     } else if (view === "monthly") {
-      // Use the monthly statistics directly
-      setLabels(statistics.map((entry: { date: string }) => entry.date)) // Date labels
+      setLabels(filteredData.map((entry) => entry.date)) // Filtered daily labels
       setDataPoints(
-        statistics.map((entry: any) => {
+        filteredData.map((entry) => {
           switch (activeData) {
             case "deposit":
               return entry.depositAmount
@@ -100,7 +114,7 @@ const Statistics = () => {
           <button
             key={type}
             onClick={() => setActiveData(type as typeof activeData)}
-            className={`px-2 py-1 rounded-sm text-xs ${
+            className={`px-2 py-1 rounded-sm text-start text-xs ${
               activeData === type
                 ? "bg-primary text-dark-800"
                 : "bg-dark-600 text-light-800"
@@ -118,7 +132,7 @@ const Statistics = () => {
       </div>
       <div className='min-h-fit w-full'>
         {loading ? (
-          <div className='pt-10 h-full w-full '>
+          <div className='pt-10 h-full w-full'>
             <div className='relative flex items-center justify-center h-full w-full'>
               <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
               <Image
@@ -134,6 +148,15 @@ const Statistics = () => {
         ) : labels.length > 0 ? (
           <LineChart
             labels={labels}
+            datasetLabel={
+              activeData === "deposit"
+                ? "Deposit Amount"
+                : activeData === "spent"
+                ? "Spent Amount"
+                : activeData === "products"
+                ? "Products Sold"
+                : "Users Login"
+            }
             dataPoints={dataPoints}
             lineColor='#b8fe13'
             gradientColorStart='rgba(184, 254, 19, 0.4)'
