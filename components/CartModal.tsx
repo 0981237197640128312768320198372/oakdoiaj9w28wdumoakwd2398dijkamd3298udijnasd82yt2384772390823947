@@ -293,7 +293,7 @@ const CartModal = ({
             ))}
             <div className='flex justify-between items-center pt-4  gap-8'>
               <span className='text-light-200'>รวม:</span>
-              <div className='text-light-200 whitespace-nowrap flex items-center'>
+              <div className='text-light-200 whitespace-nowrap flex items-center gap-2'>
                 <Image
                   src={dokmaicoin3d}
                   width={70}

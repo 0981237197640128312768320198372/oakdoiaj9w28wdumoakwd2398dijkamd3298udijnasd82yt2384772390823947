@@ -33,7 +33,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         const parsedAuth: AuthData = JSON.parse(authData)
 
         if (validateAuth(parsedAuth)) {
-          const currentPath = window.location.pathname // Use `window.location.pathname` to get the current path
+          const currentPath = window.location.pathname
 
           if (parsedAuth.role === "admin" && currentPath.startsWith("/staff")) {
             router.replace("/admin") // Redirect admin to /admin

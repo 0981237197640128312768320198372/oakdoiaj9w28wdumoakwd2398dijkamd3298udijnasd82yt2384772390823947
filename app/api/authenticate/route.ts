@@ -49,14 +49,12 @@ export async function POST(req: Request) {
       blockedData = JSON.parse(blockContents.toString())
     }
 
-    // Generate a unique key for the IP + User-Agent combination
     const blockKey = `${ip}__${userAgent}`
 
-    // Check if IP and user-agent combination is blocked
     if (blockedData[blockKey]?.blockedAt) {
       return NextResponse.json(
         {
-          error: "Too many failed attempts. Access blocked.",
+          error: "Something Wrong.",
         },
         { status: 403 }
       )
@@ -100,7 +98,7 @@ export async function POST(req: Request) {
 
       return NextResponse.json(
         {
-          error: "Invalid credentials..",
+          error: "Invalid credentials.",
         },
         { status: 401 }
       )
@@ -113,11 +111,12 @@ export async function POST(req: Request) {
       contentType: "application/json",
     })
 
+    // Only send non-sensitive user information
     return NextResponse.json({ role: user.role })
   } catch (error) {
     console.error("Error authenticating user:", error)
     return NextResponse.json(
-      { error: "Authentication failed" },
+      { error: "Authentication failed." },
       { status: 500 }
     )
   }

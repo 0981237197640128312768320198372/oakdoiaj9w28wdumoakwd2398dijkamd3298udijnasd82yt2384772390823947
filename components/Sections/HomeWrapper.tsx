@@ -14,7 +14,7 @@ export const HomeWrapper: React.FC<HomeWrapperProps> = ({ children }) => {
     // Simulating a loading delay or data fetching
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 2000) // Adjust the duration as needed
+    }, 8000) // Adjust the duration as needed
 
     return () => clearTimeout(timer) // Cleanup the timer on unmount
   }, [])

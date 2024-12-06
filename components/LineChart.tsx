@@ -23,14 +23,14 @@ ChartJS.register(
 
 interface LineChartProps {
   className?: string
-  labels: string[]
+  labels?: string[]
   dataPoints: number[]
   lineColor: string
   gradientColorStart: string
   gradientColorEnd: string
 }
 
-const LineChartWithGradient: React.FC<LineChartProps> = ({
+const LineChart: React.FC<LineChartProps> = ({
   className,
   labels,
   dataPoints,
@@ -41,6 +41,9 @@ const LineChartWithGradient: React.FC<LineChartProps> = ({
   // Chart.js options
   const options = {
     responsive: true,
+    animation: {
+      duration: 5000,
+    },
     plugins: {
       tooltip: {
         enabled: true,
@@ -49,7 +52,7 @@ const LineChartWithGradient: React.FC<LineChartProps> = ({
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: "#fff" },
+        ticks: { display: false },
       },
       y: {
         grid: { display: false },
@@ -75,19 +78,19 @@ const LineChartWithGradient: React.FC<LineChartProps> = ({
           } = chart
 
           if (!chart.gradient) {
-            // Create gradient
             const gradient = ctx.createLinearGradient(0, top, 0, bottom)
             gradient.addColorStop(0, gradientColorStart)
             gradient.addColorStop(1, gradientColorEnd)
-            chart.gradient = gradient // Cache the gradient
+            chart.gradient = gradient
           }
           return chart.gradient
         },
-        tension: 0.4, // Smooth curve
-        pointRadius: 3,
+        tension: 0.5,
+        pointRadius: 4,
         pointBackgroundColor: "#0f0f0f",
-        pointBorderWidth: 1,
-        borderWidth: 1,
+        pointBorderWidth: 2,
+        borderWidth: 2,
+        Tooltip: true,
       },
     ],
   }
@@ -99,4 +102,4 @@ const LineChartWithGradient: React.FC<LineChartProps> = ({
   )
 }
 
-export default LineChartWithGradient
+export default LineChart
