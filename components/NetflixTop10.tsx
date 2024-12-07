@@ -21,12 +21,14 @@ interface CarouselProps {
   items: MergedEntry[]
   scrollSpeed: number
   isLoading: boolean
+  scrollDirection?: "left" | "right" // Add direction control
 }
 
 const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
   items,
   scrollSpeed,
   isLoading,
+  scrollDirection = "left", // Default to left
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
@@ -38,23 +40,32 @@ const HorizontalAutoScrollCarousel: React.FC<CarouselProps> = ({
     if (!container) return
 
     const autoScroll = () => {
-      if (
-        !isHovered &&
-        container.scrollLeft + container.clientWidth < container.scrollWidth
-      ) {
-        container.scrollLeft += 1
-      } else if (
-        container.scrollLeft + container.clientWidth >=
-        container.scrollWidth
-      ) {
-        container.scrollLeft = 0
+      if (!isHovered) {
+        if (scrollDirection === "left") {
+          // Scroll left
+          if (
+            container.scrollLeft + container.clientWidth <
+            container.scrollWidth
+          ) {
+            container.scrollLeft += 1
+          } else {
+            container.scrollLeft = 0
+          }
+        } else {
+          // Scroll right
+          if (container.scrollLeft > 0) {
+            container.scrollLeft -= 1
+          } else {
+            container.scrollLeft = container.scrollWidth - container.clientWidth
+          }
+        }
       }
     }
 
     const scrollInterval = setInterval(autoScroll, scrollSpeed)
 
     return () => clearInterval(scrollInterval)
-  }, [isHovered, scrollSpeed, isLoading])
+  }, [isHovered, scrollSpeed, scrollDirection, isLoading])
 
   if (isLoading) {
     return (
@@ -169,6 +180,7 @@ export default function NetflixTop10() {
         <HorizontalAutoScrollCarousel
           items={tvItems}
           scrollSpeed={20}
+          scrollDirection='left' // Scroll left
           isLoading={isLoading}
         />
       </section>
@@ -179,6 +191,7 @@ export default function NetflixTop10() {
         <HorizontalAutoScrollCarousel
           items={filmsItems}
           scrollSpeed={50}
+          scrollDirection='right' // Scroll right
           isLoading={isLoading}
         />
       </section>
