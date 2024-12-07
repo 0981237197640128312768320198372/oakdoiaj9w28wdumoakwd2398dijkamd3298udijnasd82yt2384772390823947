@@ -18,13 +18,7 @@ const StatisticCards = () => {
       if (!response.ok) throw new Error("Failed to fetch statistics")
       const data = await response.json()
 
-      // Flatten any nested objects if necessary
-      const flattenedData = Object.keys(data).reduce((acc, key) => {
-        acc[key] = typeof data[key] === "object" ? null : data[key] // Handle nested objects gracefully
-        return acc
-      }, {} as Record<string, number | null>)
-
-      setStatistics(flattenedData)
+      setStatistics(data) // Assume data is already in a flat format
     } catch (err: any) {
       console.error("Error fetching statistics:", err)
       setError(err.message || "An error occurred")
@@ -86,21 +80,29 @@ const StatisticCards = () => {
   ]
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5'>
-      {statsMapping.map(({ label, key }) => (
-        <div
-          key={key}
-          className='p-4 bg-dark-700 border border-dark-500 rounded shadow'
-        >
-          <h3 className='text-sm text-light-800'>{label}</h3>
-          <p className='text-lg font-bold text-primary'>
-            {statistics[key] !== undefined && statistics[key] !== null
-              ? `$${Number(statistics[key]).toLocaleString()}`
-              : statistics[key]}
-          </p>
-        </div>
-      ))}
-    </div>
+    <>
+      <button
+        onClick={fetchStatistics}
+        className='px-4 py-2 bg-primary text-dark-800 font-bold rounded hover:bg-primary/90 active:bg-primary/80 transition-all'
+      >
+        Refresh
+      </button>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5'>
+        {statsMapping.map(({ label, key }) => (
+          <div
+            key={key}
+            className='p-4 bg-dark-700 border border-dark-500 rounded shadow'
+          >
+            <h3 className='text-sm text-light-800'>{label}</h3>
+            <p className='text-lg font-bold text-primary'>
+              {statistics[key] !== undefined && statistics[key] !== null
+                ? Number(statistics[key]).toLocaleString() // Format number
+                : "N/A"}
+            </p>
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 

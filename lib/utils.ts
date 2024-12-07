@@ -148,12 +148,21 @@ export const updateStatistic = async (
   type: "depositAmount" | "spentAmount" | "productsSold" | "userLogins",
   value: number
 ) => {
-  const time = new Date().toLocaleTimeString([], {
+  const time = new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  }) // Format: HH:mm
-  const date = new Date().toISOString().split("T")[0] // Format: YYYY-MM-DD
+    timeZone: "Asia/Bangkok", // Explicitly set to Bangkok GMT+7
+  }).format(new Date()) // Format: HH:mm
+
+  const date = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Bangkok", // Explicitly set to Bangkok GMT+7
+  }).format(new Date()) // Format: YYYY-MM-DD
+
+  console.log({ time, date }) // Example output: { time: "15:30", date: "2024-12-06" }
 
   const payload: Record<string, any> = { time, date, [type]: value } // Dynamically set the type and value
 
