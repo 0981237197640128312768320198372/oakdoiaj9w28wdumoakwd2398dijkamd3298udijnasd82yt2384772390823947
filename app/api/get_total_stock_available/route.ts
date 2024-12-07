@@ -7,55 +7,65 @@ import process from "process"
 
 export async function GET() {
   try {
-    const spreadsheetId = process.env.___SPREADSHEET_ID as string
+    // Fetch all product details from Google Sheets
+    const allDetails =
+      (await getGoogleSheetsData(
+        process.env.___SPREADSHEET_ID as string,
+        "PRODUCTS!A2:D"
+      )) || []
 
-    // Fetch all product details in one go
-    const allDetailsPromise = getGoogleSheetsData(
-      spreadsheetId,
-      "PRODUCTS!A2:D"
-    )
+    // Transform details to map with productConfig keys
+    const detailsMap = allDetails.reduce((map: Record<string, any[]>, row) => {
+      const [appName, typeAccess, duration, price] = row
 
-    // Fetch available data for all products
-    const productStocksPromises = Object.entries(productsConfig).map(
-      async ([_, ranges]) =>
-        getGoogleSheetsData(spreadsheetId, ranges.availableDataRange, "second")
-    )
+      if (!appName || !typeAccess || !duration || !price) return map // Skip invalid rows
 
-    const [allDetails, ...allProductsData] = await Promise.all([
-      allDetailsPromise,
-      ...productStocksPromises,
-    ])
-
-    // Map product details to configurations
-    const detailsMap = (allDetails || []).reduce(
-      (map: Record<string, any[]>, row) => {
-        const [appName, typeAccess, duration, price] = row
-        if (!appName || !typeAccess || !duration || !price) return map
-
-        const configKey = `${appName.trim()}${typeAccess.trim()}`.replace(
-          /\s+/g,
-          ""
-        )
-        if (!map[configKey]) map[configKey] = []
-        map[configKey].push({ duration, price })
-        return map
-      },
-      {}
-    )
-
-    // Calculate total stock
-    const totalStock = allProductsData.reduce((total, productData, index) => {
-      const ranges = Object.entries(productsConfig)[index][1]
-      const normalizedAvailableData = (productData || []).filter(
-        (row: any[]) =>
-          row[0] === "" && row[ranges.expireDateColumnIndex] === ""
+      // Generate key matching ProductConfig name (remove spaces, combine appName + typeAccess)
+      const configKey = `${appName.trim()}${typeAccess.trim()}`.replace(
+        /\s+/g,
+        ""
       )
 
-      console.log("AVAILABLE DATA LENGHT:", normalizedAvailableData.length)
-      return total + normalizedAvailableData.length
-    }, 0)
+      if (!map[configKey]) map[configKey] = []
+      map[configKey].push({ duration, price }) // Push matching details under the key
+      return map
+    }, {})
 
-    console.log("STOCK:", totalStock)
+    // Process all products and calculate total stock
+    const productDataPromises = Object.entries(productsConfig).map(
+      async ([name, ranges]) => {
+        // Fetch available data for the product
+        const availableData = await getGoogleSheetsData(
+          process.env.___SPREADSHEET_ID as string,
+          ranges.availableDataRange,
+          "second"
+        )
+
+        // Normalize available data
+        const normalizedAvailableData = (availableData || []).map(
+          (row: any[]) => {
+            while (row.length < ranges.totalColumns) {
+              row.push("")
+            }
+            return row
+          }
+        )
+
+        // Filter available accounts
+        const filteredAvailableData = normalizedAvailableData.filter(
+          (row: any[]) =>
+            row[0] === "" && row[ranges.expireDateColumnIndex] === ""
+        )
+
+        return filteredAvailableData.length // Return stock count for this product
+      }
+    )
+
+    const stockCounts = await Promise.all(productDataPromises)
+
+    // Calculate the total stock
+    const totalStock = stockCounts.reduce((total, stock) => total + stock, 0)
+    // console.log("STOCK:", totalStock)
     return NextResponse.json({ totalStock })
   } catch (error) {
     console.error("Error fetching total stock:", error)

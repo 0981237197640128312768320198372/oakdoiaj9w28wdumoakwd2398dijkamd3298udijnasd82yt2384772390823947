@@ -18,13 +18,7 @@ export async function GET(req: NextRequest) {
     const url = new URL(req.url)
     const dateType = url.searchParams.get("type") || "daily"
     const date = url.searchParams.get("date")
-
-    if (!date) {
-      return NextResponse.json(
-        { error: "Missing 'date' parameter" },
-        { status: 400 }
-      )
-    }
+    const fetchAll = url.searchParams.get("fetchAll") === "true"
 
     const bucket = storage.bucket(bucketName)
     const file = bucket.file(fileName)
@@ -39,6 +33,28 @@ export async function GET(req: NextRequest) {
 
     const [contents] = await file.download()
     const data = JSON.parse(contents.toString())
+
+    if (fetchAll) {
+      // Return all data for the selected date type
+      if (dateType === "monthly") {
+        return NextResponse.json({ data: data.monthly || {} })
+      } else if (dateType === "daily") {
+        return NextResponse.json({ data: data.daily || {} })
+      } else {
+        return NextResponse.json(
+          { error: "Invalid 'type' parameter" },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Fetch data for a specific date if fetchAll is not true
+    if (!date) {
+      return NextResponse.json(
+        { error: "Missing 'date' parameter" },
+        { status: 400 }
+      )
+    }
 
     if (dateType === "monthly") {
       const monthlyData = data.monthly[date] || []

@@ -162,7 +162,8 @@ export const updateStatistic = async (
     timeZone: "Asia/Bangkok", // Explicitly set to Bangkok GMT+7
   }).format(new Date()) // Format: YYYY-MM-DD
 
-  console.log({ time, date }) // Example output: { time: "15:30", date: "2024-12-06" }
+  // console.log({ time, date })
+  // Example output: { time: "15:30", date: "2024-12-06" }
 
   const payload: Record<string, any> = { time, date, [type]: value } // Dynamically set the type and value
 

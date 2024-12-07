@@ -29,14 +29,14 @@ const AdminPageContent = () => {
         </button>
       </div>
       <div className='flex justify-between flex-col items-center gap-10 w-full'>
-        <StatisticCards />
         <div className='flex flex-col lg:flex-row gap-10 justify-center items-start w-full'>
           <div className='flex flex-col-reverse md:flex-col gap-10 w-full lg:w-1/2'>
+            <StatisticCards />
             <Statistics />
-            <EmailsViewer />
+            <AdminDeposit />
           </div>
           <div className='flex flex-col gap-10 w-full lg:w-1/2'>
-            <AdminDeposit />
+            <EmailsViewer />
             <ActivityLogs />
             <ManageHelps />
           </div>
