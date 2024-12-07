@@ -311,10 +311,10 @@ export const ShowPremiumApps = () => {
                     src={dokmaicoin3d}
                     width={300}
                     height={300}
-                    className='w-10 h-10'
+                    className='w-8 h-w-8'
                     alt='Dokmai Coin Icon'
                   />
-                  <span className='gap-0 text-xs'>
+                  <span className='gap-0 text-xs font-aktivGroteskMedium'>
                     Dokmai Coin
                     <p className='text-xl font-aktivGroteskBold'>
                       {userInfo.balance}
@@ -411,11 +411,15 @@ export const ShowPremiumApps = () => {
             <h2 className='font-aktivGroteskBold text-2xl text-light-100 mb-24'>
               <span className='text-dark-800 bg-primary p-1'>แอพพรีเมียม</span>{" "}
               ที่สั่งซื้อแล้ว
+              <br />
+              <span className='font-aktivGroteskMedium text-xs'>
+                แอพพรีเมียมทั้งหมด{" "}
+                <strong className='font-aktivGroteskMedium text-sm'>
+                  {premiumData.length}
+                </strong>{" "}
+                รายการ
+              </span>
             </h2>
-            <span className=''>
-              แอพพรีเมียมทั้งหมด
-              <strong>{premiumData.length}</strong>รายการ
-            </span>
 
             <input
               type='text'

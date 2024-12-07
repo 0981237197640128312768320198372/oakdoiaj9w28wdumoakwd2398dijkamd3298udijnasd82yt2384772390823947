@@ -106,7 +106,7 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      <div className='lg:hidden fixed bottom-16 -right-1 py-3 pl-3 pr-4 flex flex-col gap-5 z-50 bg-dark-800/30 items-center backdrop-blur-sm border-[1px] border-dark-500 rounded shadow-2xl shadow-black'>
+      <div className='lg:hidden fixed bottom-0 right-0 p-3 mb-10 mr-10 flex flex-col gap-5 z-50 bg-dark-500/80 items-center backdrop-blur-sm border-[1px] border-dark-200 rounded shadow-2xl shadow-black'>
         <button
           onClick={scrollToTop}
           className='duration-500 text-primary text-2xl'
