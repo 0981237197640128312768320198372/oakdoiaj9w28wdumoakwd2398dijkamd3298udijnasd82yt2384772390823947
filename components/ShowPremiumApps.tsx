@@ -343,7 +343,7 @@ export const ShowPremiumApps = () => {
               <div className='w-full flex justify-end'>
                 <button
                   onClick={handleLogout}
-                  className=' bg-red-500 hover:bg-red-500/90 text-dark-800 text-xs rounded px-2 py-1 font-aktivGroteskBold'
+                  className=' bg-red-500/40 hover:bg-red-500/90 text-red-600 hover:text-dark-800 text-xs rounded px-2 py-1 font-aktivGroteskBold'
                 >
                   Logout
                 </button>
@@ -353,7 +353,7 @@ export const ShowPremiumApps = () => {
                 alt='Dokmai Store Logo'
                 width={300}
                 height={300}
-                className='absolute -bottom-20 -right-5 opacity-90 group-hover:opacity-100 select-none duration-1000 -z-40'
+                className='absolute -bottom-20 -right-3 opacity-90 group-hover:opacity-100 select-none duration-1000 -z-40'
               />
             </div>
           </div>
@@ -412,7 +412,11 @@ export const ShowPremiumApps = () => {
               <span className='text-dark-800 bg-primary p-1'>แอพพรีเมียม</span>{" "}
               ที่สั่งซื้อแล้ว
             </h2>
-            {/* <p>{premiumData.length}</p> */}
+            <span className=''>
+              แอพพรีเมียมทั้งหมด
+              <strong>{premiumData.length}</strong>รายการ
+            </span>
+
             <input
               type='text'
               value={searchTerm}
