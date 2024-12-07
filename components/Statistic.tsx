@@ -4,8 +4,6 @@
 
 import React, { useEffect, useState } from "react"
 import LineChart from "@/components/LineChart"
-import Image from "next/image"
-import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
 import { PiChartLine } from "react-icons/pi"
 import { TbRefresh } from "react-icons/tb"
 
@@ -109,6 +107,14 @@ const Statistics = () => {
     fetchStatistics()
   }, [view, activeData])
 
+  const SkeletonLoader = () => (
+    <div className='animate-pulse flex flex-col gap-3'>
+      <div className='h-6 w-32 bg-dark-600 rounded-md'></div>
+      <div className='h-40 md:h-52 lg:h-96 w-full bg-dark-600 rounded-md'></div>
+      <div className='h-6 w-16 bg-dark-600 rounded-md'></div>
+    </div>
+  )
+
   return (
     <div className='flex flex-col justify-start items-start gap-5 p-5 rounded border-[1px] w-full h-fit bg-dark-700 border-dark-500'>
       <div className='flex justify-between items-start w-full border-b-[1px] border-dark-500 pb-3'>
@@ -147,17 +153,7 @@ const Statistics = () => {
       <div className='min-h-fit w-full'>
         {loading ? (
           <div className='pt-10 h-full w-full'>
-            <div className='relative flex items-center justify-center h-full w-full'>
-              <div className='w-10 h-10 border-2 border-b-transparent border-primary rounded-full animate-spin'></div>
-              <Image
-                src={dokmailogosquare}
-                alt='Loading Logo | Dokmai Store'
-                width={25}
-                height={25}
-                loading='lazy'
-                className='absolute'
-              />
-            </div>
+            <SkeletonLoader />
           </div>
         ) : labels.length > 0 ? (
           <LineChart

@@ -14,7 +14,6 @@ const LoadingAnimation = ({ text }: { text?: string }) => {
           height={100}
           loading='lazy'
           className='w-32 h-auto'
-          unoptimized
         />
       </div>
       <p className='mt-2'>{text}</p>

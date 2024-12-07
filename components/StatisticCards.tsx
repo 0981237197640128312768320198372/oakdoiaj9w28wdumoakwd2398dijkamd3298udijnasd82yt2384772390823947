@@ -77,7 +77,7 @@ const StatisticCards = () => {
   if (loading) {
     return (
       <div className='flex flex-col w-full gap-5 bg-dark-700 p-5 border-[1px] border-dark-500 rounded-md'>
-        <div className='flex justify-between items-start'>
+        <div className='flex justify-between items-start w-full border-b-[1px] border-dark-500 pb-3'>
           <h3 className='flex items-center gap-2 font-bold mb-5'>
             <AiOutlineProduct />
             Statistic Data
