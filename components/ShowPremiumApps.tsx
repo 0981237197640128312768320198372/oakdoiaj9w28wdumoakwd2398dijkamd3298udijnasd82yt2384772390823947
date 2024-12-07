@@ -159,34 +159,40 @@ export const ShowPremiumApps = () => {
       setValidatingPersonalKey(false)
     }
   }
-  const parseDate = (dateString: string): Date | null => {
-    // Try native Date parsing
-    const parsedDate = new Date(dateString.trim())
-
-    if (isValid(parsedDate)) {
-      return parsedDate // Return valid native Date
+  const parseDate = (dateString: string | undefined | null): Date | null => {
+    if (!dateString || typeof dateString !== "string") {
+      console.warn(`Invalid date string: ${dateString}`)
+      return null // Return null if dateString is invalid
     }
 
-    // Try specific patterns using date-fns
+    const trimmedDateString = dateString.trim() // Safe to trim now
+
+    // Native Date parsing
+    const parsedDate = new Date(trimmedDateString)
+    if (isValid(parsedDate)) {
+      return parsedDate
+    }
+
+    // Try specific patterns
     const patterns = [
-      "dd MMMM yyyy 'at' HH:mm", // With 'at'
-      "dd MMMM yyyy HH:mm", // Without 'at'
-      "dd MMMM yyyy", // Date only
+      "dd MMMM yyyy 'at' HH:mm",
+      "dd MMMM yyyy HH:mm",
+      "dd MMMM yyyy",
     ]
 
     for (const pattern of patterns) {
       try {
-        const parsed = parse(dateString.trim(), pattern, new Date())
+        const parsed = parse(trimmedDateString, pattern, new Date())
         if (isValid(parsed)) {
-          return parsed // Return valid parsed Date object
+          return parsed
         }
       } catch {
-        // Ignore errors and try the next pattern
+        // Ignore errors and try next pattern
       }
     }
 
     console.warn(`Unrecognized date format: ${dateString}`)
-    return null // Return null for invalid dates
+    return null
   }
 
   const fetchPremiumData = async (key: string) => {
@@ -202,9 +208,11 @@ export const ShowPremiumApps = () => {
         const premiumAppsData = await premiumDataRes.json()
 
         const sortedData = premiumAppsData.data.sort((a: any, b: any) => {
+          console.log("orderDate for a:", a.orderDate) // Debugging
+          console.log("orderDate for b:", b.orderDate) // Debugging
           const dateA = parseDate(a.orderDate)?.getTime() || 0
           const dateB = parseDate(b.orderDate)?.getTime() || 0
-          return dateB - dateA // Latest date first
+          return dateB - dateA
         })
 
         setPremiumData(sortedData)
@@ -214,7 +222,7 @@ export const ShowPremiumApps = () => {
         setPremiumData([])
       }
     } catch (err) {
-      console.log(err)
+      console.log("ERROR", err)
       setError("Failed to fetch premium data. Please try again.")
     } finally {
       setFetchingData(false)
@@ -404,6 +412,7 @@ export const ShowPremiumApps = () => {
               <span className='text-dark-800 bg-primary p-1'>แอพพรีเมียม</span>{" "}
               ที่สั่งซื้อแล้ว
             </h2>
+            {/* <p>{premiumData.length}</p> */}
             <input
               type='text'
               value={searchTerm}

@@ -140,7 +140,7 @@ export async function logActivity(type: string, user: string, details: any) {
   if (!response.ok) {
     console.error("Failed to log activity")
   } else {
-    console.log("Activity logged successfully")
+    // console.log("Activity logged successfully")
   }
 }
 
