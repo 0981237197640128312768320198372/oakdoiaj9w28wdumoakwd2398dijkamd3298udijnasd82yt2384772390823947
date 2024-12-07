@@ -208,8 +208,8 @@ export const ShowPremiumApps = () => {
         const premiumAppsData = await premiumDataRes.json()
 
         const sortedData = premiumAppsData.data.sort((a: any, b: any) => {
-          console.log("orderDate for a:", a.orderDate) // Debugging
-          console.log("orderDate for b:", b.orderDate) // Debugging
+          // console.log("orderDate for a:", a.orderDate) // Debugging
+          // console.log("orderDate for b:", b.orderDate) // Debugging
           const dateA = parseDate(a.orderDate)?.getTime() || 0
           const dateB = parseDate(b.orderDate)?.getTime() || 0
           return dateB - dateA
