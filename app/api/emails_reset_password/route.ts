@@ -30,6 +30,7 @@ const decodeMimeEncodedText = (encodedText: string): string => {
     return encodedText
   })
 }
+
 const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     const imap = new Imap(imapConfig)
@@ -90,8 +91,6 @@ const fetchLatestEmails = (searchEmail: string): Promise<any[]> => {
                       date: parsedEmail.date || "Unknown",
                       body: htmlBody,
                     })
-                    console.log(`Matched email with UID: ${uid}`)
-                    console.log(`Subject: \n ${encodedSubject}`)
                   }
                 } catch (err) {
                   console.error(`Error parsing email with UID ${uid}:`, err)
