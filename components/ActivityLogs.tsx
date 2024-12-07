@@ -13,6 +13,7 @@ import primevideo from "@/assets/images/amazonprimevideo.png"
 import Image from "next/image"
 import { LuActivity } from "react-icons/lu"
 import { TbRefresh } from "react-icons/tb"
+import ShowHideText from "./ShowHideText"
 
 export default function ActivityLogs() {
   const [logs, setLogs] = useState<any[]>([])
@@ -103,9 +104,9 @@ export default function ActivityLogs() {
               setFilter(type)
               fetchLogs(type) // Fetch logs for the specific type
             }}
-            className={`px-1 text-xs ${
+            className={`py-1 px-2 rounded-sm hover:bg-primary/90 hover:text-dark-800 text-xs ${
               filter === type
-                ? "text-primary pb-1 border-b-[1px] border-primary"
+                ? "text-dark-800 bg-primary"
                 : "text-light-400 bg-dark-800"
             }`}
           >
@@ -161,10 +162,10 @@ export default function ActivityLogs() {
                     <p className='select-none text-sm '>{log.activity.type}</p>
                   </span>
                 </div>
-                <div className='text-xs text-end text-light-100'>
+                <div className='text-xs flex flex-col items-end text-light-100'>
                   {log.timestamp}
                   <p className='select-none font-aktivGroteskLight text-xs'>
-                    {log.activity.user}
+                    <ShowHideText text={log.activity.user} />
                   </p>
                 </div>
               </div>

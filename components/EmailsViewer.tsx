@@ -123,8 +123,8 @@ const EmailsViewer = () => {
   ]
 
   return (
-    <div className='min-h-fit w-full lg:max-w-[700px] flex flex-col items-center p-5 text-light-100 border-[1px] border-dark-500 bg-dark-700 rounded'>
-      <div className='w-full max-w-4xl flex justify-between items-start border-b-[1px] border-dark-500 mb-5'>
+    <div className='min-h-fit w-full lg:max-w-7xl flex flex-col items-center p-5 text-light-100 border-[1px] border-dark-500 bg-dark-700 rounded'>
+      <div className='w-full flex justify-between items-start border-b-[1px] border-dark-500 mb-5'>
         <h3 className='flex items-center gap-2 font-bold mb-5'>
           <MdOutlineMarkEmailUnread />
           Email
@@ -137,7 +137,7 @@ const EmailsViewer = () => {
               className={`px-2 py-1 text-sm rounded-sm font-aktivGroteskBold items-center ${
                 btnFolder === folder
                   ? "bg-primary text-dark-800"
-                  : "bg-dark-800 text-light-100 hover:bg-primary/70 hover:text-dark-800"
+                  : "bg-dark-800 text-light-100 hover:bg-primary/90 hover:text-dark-800"
               }`}
             >
               {icon}
@@ -146,7 +146,7 @@ const EmailsViewer = () => {
           ))}
           <button
             onClick={() => fetchEmails(folder)} // Calls the fetchEmails function for the active folder
-            className='p-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800'
+            className='p-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/90 hover:text-dark-800'
             title='Refresh emails'
           >
             <TbRefresh className='text-xl' />

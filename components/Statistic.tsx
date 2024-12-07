@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react"
 import LineChart from "@/components/LineChart"
 import Image from "next/image"
 import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
+import { PiChartLine } from "react-icons/pi"
 
 const Statistics = () => {
   const [view, setView] = useState<"daily" | "monthly">("daily") // Daily or Monthly
@@ -109,15 +110,16 @@ const Statistics = () => {
 
   return (
     <div className='flex flex-col justify-start items-start gap-5 p-5 rounded border-[1px] w-full h-fit bg-dark-700 border-dark-500'>
-      <div className='flex items-center justify-start gap-2'>
+      <div className='flex items-center justify-start gap-2 w-full font-bold mb-5 border-b-[1px] border-dark-500 pb-3'>
+        <PiChartLine className='text-xl' />
         {["deposit", "spent", "products", "users"].map((type) => (
           <button
             key={type}
             onClick={() => setActiveData(type as typeof activeData)}
-            className={`px-2 py-1 rounded-sm text-start text-xs ${
+            className={`px-2 py-1 rounded-sm text-start text-xs hover:text-dark-800 hover:bg-primary/90 bg-dark-800 ${
               activeData === type
                 ? "bg-primary text-dark-800"
-                : "bg-dark-600 text-light-800"
+                : "bg-dark-600 text-light-600"
             }`}
           >
             {type === "deposit"
@@ -161,7 +163,7 @@ const Statistics = () => {
             lineColor='#b8fe13'
             gradientColorStart='rgba(184, 254, 19, 0.4)'
             gradientColorEnd='rgba(184, 254, 19, 0)'
-            className='w-full min-h-fit'
+            className='w-full h-full'
           />
         ) : (
           !loading && <p className='text-light-800'>No data available</p>
@@ -172,13 +174,13 @@ const Statistics = () => {
           <button
             key={type}
             onClick={() => setView(type as typeof view)}
-            className={`px-2 py-1 rounded-sm text-xs ${
+            className={`px-2 py-1 rounded-sm text-start  text-xs hover:text-dark-800 hover:bg-primary/90 bg-dark-800 ${
               view === type
                 ? "bg-primary text-dark-800"
                 : "bg-dark-600 text-light-800"
             }`}
           >
-            {type === "daily" ? "Daily" : "Monthly"}
+            {type === "daily" ? "Today" : "Monthly"}
           </button>
         ))}
       </div>

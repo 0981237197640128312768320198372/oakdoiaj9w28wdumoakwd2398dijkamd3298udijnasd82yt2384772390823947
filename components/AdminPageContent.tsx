@@ -6,6 +6,7 @@ import AdminDeposit from "./AdminDeposit"
 import EmailsViewer from "./EmailsViewer"
 import ManageHelps from "./ManageHelps"
 import Statistics from "./Statistic"
+import StatisticCards from "./StatisticCards"
 
 const AdminPageContent = () => {
   const handleLogout = () => {
@@ -28,18 +29,21 @@ const AdminPageContent = () => {
         </button>
       </div>
       <div className='flex justify-between flex-col items-center gap-10 w-full'>
-        <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
-          <div className='flex flex-col gap-10 w-full lg:w-1/2'>
-            <Statistics /> <ManageHelps />
+        <StatisticCards />
+        <div className='flex flex-col lg:flex-row gap-10 justify-center items-start w-full'>
+          <div className='flex flex-col-reverse md:flex-col gap-10 w-full lg:w-1/2'>
+            <Statistics />
+            <EmailsViewer />
           </div>
           <div className='flex flex-col gap-10 w-full lg:w-1/2'>
             <AdminDeposit />
             <ActivityLogs />
+            <ManageHelps />
           </div>
         </div>
-        <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
-          <EmailsViewer />
-        </div>
+        {/* <div className='flex flex-col-reverse lg:flex-row gap-10 justify-center items-start w-full'>
+          
+        </div> */}
       </div>
     </>
   )

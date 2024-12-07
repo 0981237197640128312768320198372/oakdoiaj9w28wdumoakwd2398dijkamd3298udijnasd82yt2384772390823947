@@ -367,7 +367,7 @@ const ManageHelps: React.FC = () => {
             {helps.map((help) => (
               <div
                 key={help.id}
-                className='bg-dark-500 p-4 min-w-96 flex flex-col justify-start gap-5 rounded-md'
+                className='bg-dark-600 p-4 min-w-96 flex flex-col justify-start gap-5 rounded-md'
               >
                 <div>
                   <h2 className='text-lg font-aktivGroteskBold truncate'>

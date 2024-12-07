@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-// import { logActivity } from "@/lib/utils"
+import { logActivity } from "@/lib/utils"
 import { ReactNode, useState } from "react"
 import { SlWallet } from "react-icons/sl"
 
@@ -57,11 +57,11 @@ const AdminDeposit = () => {
           </p>
         </>
       )
-      // await logActivity("Deposit", personalKey, {
-      //   amount: totalDepositAmount,
-      //   newBalance: data.newBalance,
-      //   bonusPercentage,
-      // })
+      await logActivity("Deposit", personalKey, {
+        amount: totalDepositAmount,
+        newBalance: data.newBalance,
+        bonusPercentage,
+      })
       setPersonalKey("")
       setDepositAmount("")
       setBonusPercentage(0) // Reset bonus percentage
@@ -74,7 +74,7 @@ const AdminDeposit = () => {
 
   return (
     <div className='w-full border-[1px] border-dark-500 p-5 rounded bg-dark-700'>
-      <h3 className='flex gap-2 font-bold mb-5 border-b-[1px] border-dark-500 pb-3'>
+      <h3 className='flex gap-2 font-aktivGroteskBold mb-5 border-b-[1px] border-dark-500 pb-3'>
         <SlWallet />
         Deposit
       </h3>

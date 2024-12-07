@@ -93,7 +93,7 @@ const LineChart: React.FC<LineChartProps> = ({
           return chart.gradient
         },
         tension: 0.5,
-        pointRadius: 7,
+        pointRadius: 4,
         pointBackgroundColor: "#0f0f0f",
         pointBorderWidth: 2,
         borderWidth: 2,

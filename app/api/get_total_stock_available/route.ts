@@ -1,16 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server"
 import { getGoogleSheetsData } from "@/app/api/CRUD"
 import { productsConfig } from "@/constant"
 import process from "process"
 
-type ProductName = keyof typeof productsConfig
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url)
-  const productName = searchParams.get("name") as ProductName | null
-  const fetchAll = searchParams.get("all") === "true"
-
+export async function GET() {
   try {
     // Fetch all product details from Google Sheets
     const allDetails =
@@ -36,25 +31,10 @@ export async function GET(request: Request) {
       return map
     }, {})
 
-    const selectedProducts = fetchAll
-      ? productsConfig
-      : productName
-      ? { [productName]: productsConfig[productName] }
-      : {}
-
-    if (Object.keys(selectedProducts).length === 0) {
-      return NextResponse.json(
-        { error: "No valid product found" },
-        { status: 400 }
-      )
-    }
-
-    // Process each selected product
-    const productDataPromises = Object.entries(selectedProducts).map(
+    // Process all products and calculate total stock
+    const productDataPromises = Object.entries(productsConfig).map(
       async ([name, ranges]) => {
-        // Match product details based on config name
-        const matchedDetails = detailsMap[name] || []
-
+        // Fetch available data for the product
         const availableData = await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
           ranges.availableDataRange,
@@ -72,33 +52,25 @@ export async function GET(request: Request) {
         )
 
         // Filter available accounts
-        const filteredAvailableData = normalizedAvailableData
-          .map((row: any[], index: number) => ({
-            data: row,
-            row: index + 12,
-          }))
-          .filter(
-            (item) =>
-              item.data[0] === "" &&
-              item.data[ranges.expireDateColumnIndex] === ""
-          )
-        // console.log("STOCK: ", filteredAvailableData.length)
-        return {
-          name,
-          details: matchedDetails,
-          stock: filteredAvailableData.length,
-          expireDateColumnIndex: ranges.expireDateColumnIndex,
-          totalColumns: ranges.totalColumns,
-        }
+        const filteredAvailableData = normalizedAvailableData.filter(
+          (row: any[]) =>
+            row[0] === "" && row[ranges.expireDateColumnIndex] === ""
+        )
+
+        return filteredAvailableData.length // Return stock count for this product
       }
     )
 
-    const productsData = await Promise.all(productDataPromises)
-    return NextResponse.json(productsData)
+    const stockCounts = await Promise.all(productDataPromises)
+
+    // Calculate the total stock
+    const totalStock = stockCounts.reduce((total, stock) => total + stock, 0)
+
+    return NextResponse.json({ totalStock })
   } catch (error) {
-    console.error("Error fetching products data:", error)
+    console.error("Error fetching total stock:", error)
     return NextResponse.json(
-      { error: "Failed to fetch product data" },
+      { error: "Failed to fetch total stock" },
       { status: 500 }
     )
   }

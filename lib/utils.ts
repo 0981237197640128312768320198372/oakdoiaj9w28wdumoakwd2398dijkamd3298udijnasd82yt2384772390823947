@@ -172,10 +172,11 @@ export const updateStatistic = async (
     if (!response.ok) {
       const errorData = await response.json()
       console.error(`Failed to update ${type}:`, errorData)
-    } else {
-      const data = await response.json()
-      console.log(`${type} updated successfully:`, data.message)
     }
+    // else {
+    //   const data = await response.json()
+    //   console.log(`${type} updated successfully:`, data.message)
+    // }
   } catch (error) {
     console.error(`Error updating ${type}:`, error)
   }

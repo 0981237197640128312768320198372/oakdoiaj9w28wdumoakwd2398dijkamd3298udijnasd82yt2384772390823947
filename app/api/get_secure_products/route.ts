@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const allDetails =
       (await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        "PRODUCTS!A2:D",
+        "PRODUCTS!A2:D"
       )) || []
 
     // Transform details to map with productConfig keys
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
       const configKey = `${appName.trim()}${typeAccess.trim()}`.replace(
         /\s+/g,
-        "",
+        ""
       )
 
       if (!map[configKey]) map[configKey] = []
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
       async ([name, ranges]) => {
         const availableData = await getGoogleSheetsData(
           process.env.___SPREADSHEET_ID as string,
-          ranges.availableDataRange,
+          ranges.availableDataRange
         )
 
         const normalizedAvailableData = (availableData || []).map(
@@ -50,7 +50,7 @@ export async function GET(request: Request) {
               row.push("")
             }
             return row
-          },
+          }
         )
 
         const filteredAvailableData = normalizedAvailableData
@@ -61,18 +61,18 @@ export async function GET(request: Request) {
           .filter(
             (item) =>
               item.data[0] === "" &&
-              item.data[ranges.expireDateColumnIndex] === "",
+              item.data[ranges.expireDateColumnIndex] === ""
           )
 
         return {
           name,
           details: detailsMap[name] || [],
           stock: filteredAvailableData.length,
-          availableAccounts: filteredAvailableData, // Includes sensitive data
+          availableAccounts: filteredAvailableData,
           expireDateColumnIndex: ranges.expireDateColumnIndex,
           totalColumns: ranges.totalColumns,
         }
-      },
+      }
     )
 
     const productsData = await Promise.all(productDataPromises)
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
     console.error("Error fetching secure product data:", error)
     return NextResponse.json(
       { error: "Failed to fetch secure product data" },
-      { status: 500 },
+      { status: 500 }
     )
   }
 }
