@@ -117,9 +117,21 @@ const Statistics = () => {
 
   return (
     <div className='flex flex-col justify-start items-start gap-5 p-5 rounded border-[1px] w-full h-fit bg-dark-700 border-dark-500'>
-      <div className='flex justify-between items-start w-full border-b-[1px] border-dark-500 pb-3'>
-        <div className='flex items-center justify-start gap-2 font-bold mb-5'>
-          <PiChartLine className='text-xl' />
+      <div className='flex flex-col justify-between items-center w-full border-b-[1px] border-dark-500 pb-3'>
+        <div className='flex justify-between w-full items-start'>
+          <h3 className='flex gap-2 font-aktivGroteskBold'>
+            <PiChartLine className='text-xl' /> Chart Statistic
+          </h3>
+          <button
+            onClick={() => fetchStatistics()}
+            className='p-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/90 hover:text-dark-800'
+            title='Refresh emails'
+          >
+            <TbRefresh className='text-xl' />
+          </button>
+        </div>
+
+        <div className='flex items-center justify-center gap-2 font-bold my-3'>
           {["deposit", "spent", "products", "users"].map((type) => (
             <button
               key={type}
@@ -140,14 +152,6 @@ const Statistics = () => {
             </button>
           ))}
         </div>
-
-        <button
-          onClick={() => fetchStatistics()}
-          className='p-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/90 hover:text-dark-800'
-          title='Refresh emails'
-        >
-          <TbRefresh className='text-xl' />
-        </button>
       </div>
 
       <div className='min-h-fit w-full'>
