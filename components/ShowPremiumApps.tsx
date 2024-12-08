@@ -5,7 +5,6 @@
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
-// import dokmaithinoutlinelogo from "@/assets/images/dokmaithinoutline.png"
 import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
 import dokmaicoin3d2 from "@/assets/images/dokmaicoin3d2.png"
 import { FaUserLock } from "react-icons/fa6"

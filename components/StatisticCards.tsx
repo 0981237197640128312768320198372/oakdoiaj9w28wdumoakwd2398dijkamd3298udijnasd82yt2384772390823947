@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
+import Image from "next/image"
 import React, { useEffect, useState } from "react"
 import { AiOutlineProduct } from "react-icons/ai"
 import { TbRefresh } from "react-icons/tb"
+import dokmaicoin3d from "@/assets/images/dokmaicoin3d.png"
+import { MdOutlineChecklistRtl, MdOutlineSell } from "react-icons/md"
+import { BiLogInCircle } from "react-icons/bi"
 
 const StatisticCards = () => {
   const [statistics, setStatistics] = useState<Record<string, number | null>>(
@@ -144,42 +148,90 @@ const StatisticCards = () => {
           <TbRefresh className='text-xl' />
         </button>
       </div>
-      <div>
-        <h2 className='text-lg font-bold text-light-800 mb-4'>
+      <div className='bg-dark-600 p-5 rounded-sm'>
+        <h2 className='text-lg font-bold text-light-500 mb-4'>
           Today's Statistics
         </h2>
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-5'>
           {todayStats.map(({ label, key }) => (
             <div
               key={key}
-              className='p-4 bg-dark-600 border border-dark-500 rounded shadow'
+              className='flex flex-col p-4 bg-dark-500 border border-dark-300 rounded shadow gap-2'
             >
               <h3 className='text-sm text-light-800'>{label}</h3>
-              <p className='text-lg font-bold text-primary'>
-                {statistics[key] !== undefined && statistics[key] !== null
-                  ? Number(statistics[key]).toLocaleString() // Format number
-                  : "N/A"}
-              </p>
+              <div className='flex gap-2 items-center text-primary'>
+                {label === "Total Deposit" && (
+                  <Image
+                    src={dokmaicoin3d}
+                    width={300}
+                    height={300}
+                    className='w-5 h-w-5'
+                    alt='Dokmai Coin Icon'
+                  />
+                )}
+                {label === "Total Spent" && (
+                  <Image
+                    src={dokmaicoin3d}
+                    width={300}
+                    height={300}
+                    className='w-5 h-w-5'
+                    alt='Dokmai Coin Icon'
+                  />
+                )}
+                {label === "Users Login" && <BiLogInCircle />}
+                {label === "Total Products Sold" && <MdOutlineSell />}
+
+                <p className='text-lg font-bold text-primary'>
+                  {statistics[key] !== undefined && statistics[key] !== null
+                    ? Number(statistics[key]).toLocaleString()
+                    : "N/A"}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </div>
-      <div>
-        <h2 className='text-lg font-bold text-light-800 mb-4'>
+      <div className='bg-dark-600 p-5 rounded-sm'>
+        <h2 className='text-lg font-bold text-light-500 mb-4'>
           All Time Statistics
         </h2>
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-5'>
           {allTimeStats.map(({ label, key }) => (
             <div
               key={key}
-              className='p-4 bg-dark-600 border border-dark-500 rounded shadow'
+              className='flex flex-col p-4 bg-dark-500 border border-dark-300 rounded shadow gap-2'
             >
               <h3 className='text-sm text-light-800'>{label}</h3>
-              <p className='text-lg font-bold text-primary'>
-                {statistics[key] !== undefined && statistics[key] !== null
-                  ? Number(statistics[key]).toLocaleString() // Format number
-                  : "N/A"}
-              </p>
+
+              <div className='flex gap-2 items-center text-primary'>
+                {label === "Total Deposit" && (
+                  <Image
+                    src={dokmaicoin3d}
+                    width={300}
+                    height={300}
+                    className='w-5 h-w-5'
+                    alt='Dokmai Coin Icon'
+                  />
+                )}
+                {label === "Total Spent" && (
+                  <Image
+                    src={dokmaicoin3d}
+                    width={300}
+                    height={300}
+                    className='w-5 h-w-5'
+                    alt='Dokmai Coin Icon'
+                  />
+                )}
+                {label === "Stock Available" && <MdOutlineChecklistRtl />}
+                {label === "Users Login" && <BiLogInCircle />}
+                {label === "Total Products Sold" && <MdOutlineSell />}
+
+                <p className='text-lg font-bold text-primary'>
+                  {statistics[key] !== undefined && statistics[key] !== null
+                    ? Number(statistics[key]).toLocaleString()
+                    : "N/A"}
+                </p>
+              </div>
             </div>
           ))}
         </div>
