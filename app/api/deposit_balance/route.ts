@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { getGoogleSheetsData, updateUserField } from "@/app/api/CRUD"
 import process from "process"
-import { updateStatistic } from "@/lib/utils"
 
 export async function POST(request: Request) {
   try {
@@ -39,8 +38,6 @@ export async function POST(request: Request) {
 
     // Calculate the new balance
     const newBalance = currentBalance + depositAmount
-
-    await updateStatistic("depositAmount", depositAmount)
 
     await updateUserField(
       process.env.___SPREADSHEET_ID as string,

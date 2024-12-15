@@ -4,6 +4,7 @@
 import { logActivity } from "@/lib/utils"
 import { ReactNode, useState } from "react"
 import { SlWallet } from "react-icons/sl"
+import { updateStatistic } from "@/lib/utils"
 
 const AdminDeposit = () => {
   const [personalKey, setPersonalKey] = useState("")
@@ -35,7 +36,7 @@ const AdminDeposit = () => {
           depositAmount: totalDepositAmount,
         }),
       })
-
+      await updateStatistic("depositAmount", Number(depositAmount))
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error || "Failed to deposit balance")
