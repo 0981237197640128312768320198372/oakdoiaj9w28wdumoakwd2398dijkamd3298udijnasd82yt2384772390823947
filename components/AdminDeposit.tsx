@@ -33,10 +33,13 @@ const AdminDeposit = () => {
         },
         body: JSON.stringify({
           personalKey,
-          depositAmount: totalDepositAmount,
+          totalDepositAmount: totalDepositAmount,
+          depositAmount: depositAmount,
         }),
       })
+
       await updateStatistic("depositAmount", Number(depositAmount))
+
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error || "Failed to deposit balance")
