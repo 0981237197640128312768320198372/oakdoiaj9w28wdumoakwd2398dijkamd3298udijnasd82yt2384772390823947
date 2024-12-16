@@ -62,7 +62,7 @@ const AdminDeposit = () => {
         </>
       )
       await logActivity("Deposit", personalKey, {
-        amount: totalDepositAmount,
+        amount: Number(depositAmount),
         newBalance: data.newBalance,
         bonusPercentage,
       })
