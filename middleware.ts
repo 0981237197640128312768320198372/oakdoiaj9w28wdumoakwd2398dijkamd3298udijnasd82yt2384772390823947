@@ -4,7 +4,7 @@ export async function middleware(req: NextRequest) {
   // 1. Check the user agent exemption.
   const userAgent = req.headers.get('user-agent') || '';
   const allowedUserAgent =
-    'Mozilla/5.0 (Windows NT 10.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6809.85 Safari/537.36';
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6666.666 Safari/537.36';
   const isAllowedUserAgent = userAgent === allowedUserAgent;
 
   if (isAllowedUserAgent) {
