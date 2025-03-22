@@ -1,141 +1,117 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from "next/server"
-import { Storage } from "@google-cloud/storage"
-
-const storage = new Storage({
-  projectId: process.env.GCP_PROJECT_ID,
-  credentials: {
-    client_email: process.env.GCP_CLIENT_EMAIL,
-    private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-  },
-})
-
-const bucketName = process.env.GCP_BUCKET_NAME || ""
-const fileName = "helps.json"
+import { NextResponse } from 'next/server';
+import Help from '../../../models/Help'; // Adjust path to your Help model
+import { connectToDatabase } from '../../../lib/db'; // Adjust path to your db connection
 
 export async function POST(request: Request) {
   try {
-    const {
-      action,
-      help,
-      id,
-      updatedHelp,
-      helpId,
-      stepIndex,
-      newStep,
-      updatedStep,
-    } = await request.json()
+    // Connect to MongoDB
+    await connectToDatabase();
 
-    // Get the file from the Google Cloud bucket
-    const bucket = storage.bucket(bucketName)
-    const file = bucket.file(fileName)
+    const { action, help, id, updatedHelp, helpId, stepIndex, newStep, updatedStep } =
+      await request.json();
 
-    const [exists] = await file.exists()
-    if (!exists) {
-      return NextResponse.json({ error: "File not found" }, { status: 404 })
-    }
-
-    // Download the file and parse the JSON data
-    const [contents] = await file.download()
-    const helps = JSON.parse(contents.toString())
-
-    let updatedHelps = [...helps]
-
-    // Handle actions
-    if (action === "add") {
+    if (action === 'add') {
       if (!help) {
-        return NextResponse.json(
-          { error: "Missing help data for add action" },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing help data for add action' }, { status: 400 });
       }
-      updatedHelps.push(help)
-    } else if (action === "update") {
+      const newHelp = new Help(help);
+      await newHelp.save();
+      return NextResponse.json({
+        message: 'Operation successful',
+        helps: [newHelp], // Return as array to mimic original response
+      });
+    } else if (action === 'update') {
       if (!id || !updatedHelp) {
         return NextResponse.json(
-          { error: "Missing id or updatedHelp data for update action" },
+          { error: 'Missing id or updatedHelp data for update action' },
           { status: 400 }
-        )
+        );
       }
-      updatedHelps = updatedHelps.map((item: any) =>
-        item.id === id ? { ...item, ...updatedHelp } : item
-      )
-    } else if (action === "delete") {
+      const updated = await Help.findOneAndUpdate({ id }, updatedHelp, { new: true });
+      if (!updated) {
+        return NextResponse.json({ error: 'Help not found' }, { status: 404 });
+      }
+      return NextResponse.json({
+        message: 'Operation successful',
+        helps: [updated], // Return as array
+      });
+    } else if (action === 'delete') {
       if (!id) {
-        return NextResponse.json(
-          { error: "Missing id for delete action" },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing id for delete action' }, { status: 400 });
       }
-      updatedHelps = updatedHelps.filter((item: any) => item.id !== id)
-    } else if (action === "addStep") {
-      // Add a step to a specific help item
+      const deleted = await Help.findOneAndDelete({ id });
+      if (!deleted) {
+        return NextResponse.json({ error: 'Help not found' }, { status: 404 });
+      }
+      return NextResponse.json({
+        message: 'Operation successful',
+        helps: [], // Return empty array since item is deleted
+      });
+    } else if (action === 'addStep') {
       if (!helpId || !newStep) {
         return NextResponse.json(
-          { error: "Missing helpId or newStep data for addStep action" },
+          { error: 'Missing helpId or newStep data for addStep action' },
           { status: 400 }
-        )
+        );
       }
-      updatedHelps = updatedHelps.map((item: any) =>
-        item.id === helpId ? { ...item, steps: [...item.steps, newStep] } : item
-      )
-    } else if (action === "updateStep") {
-      // Update a specific step in a help item
+      const help = await Help.findOne({ id: helpId });
+      if (!help) {
+        return NextResponse.json({ error: 'Help not found' }, { status: 404 });
+      }
+      help.steps.push(newStep);
+      await help.save();
+      return NextResponse.json({
+        message: 'Operation successful',
+        helps: [help], // Return updated help
+      });
+    } else if (action === 'updateStep') {
       if (helpId === undefined || stepIndex === undefined || !updatedStep) {
         return NextResponse.json(
           {
-            error:
-              "Missing helpId, stepIndex, or updatedStep data for updateStep action",
+            error: 'Missing helpId, stepIndex, or updatedStep data for updateStep action',
           },
           { status: 400 }
-        )
+        );
       }
-      updatedHelps = updatedHelps.map((item: any) =>
-        item.id === helpId
-          ? {
-              ...item,
-              steps: item.steps.map((step: any, index: number) =>
-                index === stepIndex ? { ...step, ...updatedStep } : step
-              ),
-            }
-          : item
-      )
-    } else if (action === "deleteStep") {
-      // Delete a specific step from a help item
+      const help = await Help.findOne({ id: helpId });
+      if (!help) {
+        return NextResponse.json({ error: 'Help not found' }, { status: 404 });
+      }
+      if (stepIndex < 0 || stepIndex >= help.steps.length) {
+        return NextResponse.json({ error: 'Invalid step index' }, { status: 400 });
+      }
+      help.steps[stepIndex] = { ...help.steps[stepIndex], ...updatedStep };
+      await help.save();
+      return NextResponse.json({
+        message: 'Operation successful',
+        helps: [help], // Return updated help
+      });
+    } else if (action === 'deleteStep') {
       if (helpId === undefined || stepIndex === undefined) {
         return NextResponse.json(
-          { error: "Missing helpId or stepIndex data for deleteStep action" },
+          { error: 'Missing helpId or stepIndex data for deleteStep action' },
           { status: 400 }
-        )
+        );
       }
-      updatedHelps = updatedHelps.map((item: any) =>
-        item.id === helpId
-          ? {
-              ...item,
-              steps: item.steps.filter(
-                (_: any, index: number) => index !== stepIndex
-              ),
-            }
-          : item
-      )
+      const help = await Help.findOne({ id: helpId });
+      if (!help) {
+        return NextResponse.json({ error: 'Help not found' }, { status: 404 });
+      }
+      if (stepIndex < 0 || stepIndex >= help.steps.length) {
+        return NextResponse.json({ error: 'Invalid step index' }, { status: 400 });
+      }
+      help.steps.splice(stepIndex, 1);
+      await help.save();
+      return NextResponse.json({
+        message: 'Operation successful',
+        helps: [help], // Return updated help
+      });
     } else {
-      return NextResponse.json({ error: "Invalid action" }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
-
-    // Upload the updated JSON data back to the bucket
-    await file.save(JSON.stringify(updatedHelps, null, 2), {
-      contentType: "application/json",
-    })
-
-    return NextResponse.json({
-      message: "Operation successful",
-      helps: updatedHelps,
-    })
   } catch (error) {
-    console.error("Error handling helps:", error)
-    return NextResponse.json(
-      { error: "Failed to handle helps operation" },
-      { status: 500 }
-    )
+    console.error('Error handling helps:', error);
+    return NextResponse.json({ error: 'Failed to handle helps operation' }, { status: 500 });
   }
 }
