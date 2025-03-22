@@ -1,32 +1,26 @@
-import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db';
-import { ObjectId } from 'mongodb';
+// import mongoose from 'mongoose';
+// import { GridFSBucket } from 'mongodb';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-): Promise<NextResponse> {
-  const { id } = params;
+// interface DatabaseConnection {
+//   gridFSBucket: GridFSBucket;
+// }
 
-  if (!id || !ObjectId.isValid(id)) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
-  }
+// let cachedConnection: DatabaseConnection | null = null;
 
-  try {
-    const { gridFSBucket } = await connectToDatabase();
-    const downloadStream = gridFSBucket.openDownloadStream(new ObjectId(id));
+// export async function connectToDatabase(): Promise<DatabaseConnection> {
+//   if (cachedConnection) {
+//     return cachedConnection;
+//   }
 
-    downloadStream.on('error', () => {
-      return NextResponse.json({ error: 'Image not found' }, { status: 404 });
-    });
+//   const MONGODB_URI = process.env.MONGODB_URI;
+//   if (!MONGODB_URI) {
+//     throw new Error('MONGODB_URI is not defined in environment variables');
+//   }
 
-    return new NextResponse(downloadStream, {
-      headers: {
-        'Content-Type': 'image/jpeg', // Adjust based on actual file type if available
-      },
-    });
-  } catch (error) {
-    console.error('Error in get_image:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
+//   await mongoose.connect(MONGODB_URI);
+//   const db = mongoose.connection.db;
+//   const gridFSBucket = new GridFSBucket(db, { bucketName: 'images' });
+
+//   cachedConnection = { gridFSBucket };
+//   return cachedConnection;
+// }
