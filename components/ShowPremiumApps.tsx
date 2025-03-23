@@ -20,6 +20,7 @@ import { logActivity } from '@/lib/utils';
 import { parse, isValid } from 'date-fns';
 import ShowHideText from './ShowHideText';
 import SearchableDropdown from './SearchableDropdown';
+import dokmaicoin from '@/assets/images/dokmaicoin.gif';
 
 interface PremiumApp {
   accessType?: string;
@@ -52,7 +53,7 @@ export const ShowPremiumApps = () => {
   const [lastSearchedEmail, setLastSearchedEmail] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [loadingEmail, setLoadingEmail] = useState(false);
-  const [refreshCountdown, setRefreshCountdown] = useState(120);
+  const [refreshCountdown, setRefreshCountdown] = useState(60);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -87,7 +88,7 @@ export const ShowPremiumApps = () => {
       setError(null);
       fetchEmails(searchEmail);
       setLastSearchedEmail(searchEmail);
-      setRefreshCountdown(120);
+      setRefreshCountdown(15);
     } else {
       setError('This email is not allowed for reset.');
     }
@@ -104,7 +105,7 @@ export const ShowPremiumApps = () => {
         setRefreshCountdown((prevCountdown) => {
           if (prevCountdown === 1) {
             fetchEmails(searchEmail);
-            return 120;
+            return 15;
           } else {
             return prevCountdown - 1;
           }
@@ -512,24 +513,33 @@ export const ShowPremiumApps = () => {
                     </form>
                     <div className="flex w-full h-full">
                       {loadingEmail ? (
-                        <Loading text="กรุณารอสักครู่..." />
+                        // <Loading text="กรุณารอสักครู่..." />
+                        <div className="relative flex flex-col mt-20 w-full items-center justify-center gap-3">
+                          <Image
+                            src={dokmaicoin}
+                            alt="Dokmai Coin Logo | Dokmai Store"
+                            width={100}
+                            height={100}
+                            loading="lazy"
+                            className="w-32 h-auto"
+                          />
+                        </div>
                       ) : (
                         <>
                           {hasSearched ? (
                             <div className="w-full">
                               <div className="flex items-center justify-between mb-2">
-                                {/* Display countdown timer */}
                                 <p className="text-gray-500">
                                   Refreshing ({lastSearchedEmail})
                                   <br className="md:hidden" /> in {refreshCountdown} seconds...
                                 </p>
-                                {/* Show "Refreshing..." message when refreshing */}
                                 {isRefreshing && (
                                   <p className="text-blue-500 animate-pulse">
                                     Refreshing emails...
                                   </p>
                                 )}
                               </div>
+
                               <EmailList emails={emails} />
                             </div>
                           ) : null}
