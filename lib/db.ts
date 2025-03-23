@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GridFSBucket } from 'mongoose/node_modules/mongodb'; // Import from Mongoose's mongodb
+import { GridFSBucket } from 'mongodb'; // Import from Mongoose's mongodb
 
 // Ensure MONGODB_URI is defined
 const MONGODB_URI = process.env.MONGODB_URI as string;
