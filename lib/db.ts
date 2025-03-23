@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { GridFSBucket } from 'mongodb';
+import { GridFSBucket } from 'mongoose/node_modules/mongodb'; // Import from Mongoose's mongodb
 
 // Ensure MONGODB_URI is defined
 const MONGODB_URI = process.env.MONGODB_URI as string;
@@ -32,7 +32,6 @@ export async function connectToDatabase(): Promise<DatabaseConnection> {
     throw new Error('Failed to connect to database: db is undefined');
   }
 
-  // Create GridFSBucket with the db instance from Mongoose
   gridFSBucket = new GridFSBucket(db);
 
   return { connection: cachedConnection, gridFSBucket };
