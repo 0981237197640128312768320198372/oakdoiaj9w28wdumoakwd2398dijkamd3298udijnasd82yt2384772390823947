@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 
 const useImageUpload = () => {
@@ -33,3 +34,5 @@ const useImageUpload = () => {
 
   return { handlePictureUpload, isUploading, pictureId };
 };
+
+export default useImageUpload;
