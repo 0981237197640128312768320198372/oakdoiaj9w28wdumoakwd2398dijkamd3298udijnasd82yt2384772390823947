@@ -1,34 +1,53 @@
-import mongoose from 'mongoose';
-import { GridFSBucket } from 'mongodb';
+// app/lib/db.ts
+import mongoose, { Connection } from 'mongoose';
 
+// Ensure MONGODB_URI is defined in your environment variables
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
+  throw new Error('Please define the MONGODB_URI environment variable in your .env file');
 }
 
-interface DatabaseConnection {
-  connection: mongoose.Connection;
-  gridFSBucket: GridFSBucket;
+// Define the structure of the cached connection
+interface CachedConnection {
+  connection: Connection | null;
 }
 
-let cachedConnection: mongoose.Connection | null = null;
-let gridFSBucket: GridFSBucket | null = null;
+const cached: CachedConnection = {
+  connection: null,
+};
 
-export async function connectToDatabase(): Promise<DatabaseConnection> {
-  if (cachedConnection && gridFSBucket) {
-    return { connection: cachedConnection, gridFSBucket };
+/**
+ * Connects to MongoDB using Mongoose and caches the connection.
+ * @returns The Mongoose Connection object
+ */
+export async function connectToDatabase(): Promise<Connection> {
+  // Return cached connection if it exists
+  if (cached.connection) {
+    return cached.connection;
   }
 
-  const connection = await mongoose.connect(MONGODB_URI);
-  cachedConnection = connection.connection;
+  try {
+    const mongooseConnection = await mongoose.connect(MONGODB_URI);
+    cached.connection = mongooseConnection.connection;
 
-  const db = cachedConnection.db;
-  if (!db) {
-    throw new Error('Failed to connect to database: db is undefined');
+    console.log('MongoDB connected successfully');
+    return cached.connection;
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw new Error('Failed to connect to MongoDB');
   }
-
-  gridFSBucket = new GridFSBucket(db);
-
-  return { connection: cachedConnection, gridFSBucket };
 }
+
+// Optional: Listen for connection events (useful for debugging)
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
