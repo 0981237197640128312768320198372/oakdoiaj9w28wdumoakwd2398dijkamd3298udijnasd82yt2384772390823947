@@ -36,7 +36,7 @@ const AdminPageContent = () => {
     { button: 'ManageHelps', title: 'Manage Helps' },
   ];
   return (
-    <>
+    <div className="max-w-6xl">
       <PageHeadline
         headline="Admin Panel"
         description="A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
@@ -63,21 +63,7 @@ const AdminPageContent = () => {
       <div className="flex justify-between flex-col items-center gap-10 w-full">
         {sections[currentSection] || <div className="p-5">Section not found</div>}
       </div>
-      {/* <div className="flex justify-between flex-col items-center gap-10 w-full">
-        <div className="flex flex-col lg:flex-row gap-10 justify-center items-start w-full">
-          <div className="flex flex-col-reverse md:flex-col gap-10 w-full lg:w-1/2">
-            <StatisticCards />
-            <Statistics />
-            <AdminDeposit />
-          </div>
-          <div className="flex flex-col gap-10 w-full lg:w-1/2">
-            <EmailsViewer />
-            <ActivityLogs />
-            <ManageHelps />
-          </div>
-        </div>
-      </div> */}
-    </>
+    </div>
   );
 };
 

@@ -47,10 +47,6 @@ const Footer = () => {
               loading="lazy"
             />
             <p className="text-xs font-aktivGroteskLight select-none">
-              {/* <strong>Netflix Premium</strong> คุณภาพสูง ราคาถูก
-              พร้อมรับประกันตลอดชีพจาก <br />
-              <strong>Dokmai Store</strong> แพลตฟอร์มดิจิทัลชั้นนำของไทย
-              <strong>บริการรวดเร็ว</strong> ดูหนังและซีรีส์ได้เต็มอิ่มทุกเวลา */}
               <strong>
                 ยินดีต้อนรับสู่ดอกไม้สโตร์ แพลตฟอร์มที่คุณไว้วางใจสำหรับบัญชีแอปพรีเมียม เช่น
                 Netflix Premium, Amazon Prime Video

@@ -1,14 +1,11 @@
-// app/lib/db.ts
 import mongoose, { Connection } from 'mongoose';
 
-// Ensure MONGODB_URI is defined in your environment variables
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable in your .env file');
 }
 
-// Define the structure of the cached connection
 interface CachedConnection {
   connection: Connection | null;
 }
@@ -17,12 +14,7 @@ const cached: CachedConnection = {
   connection: null,
 };
 
-/**
- * Connects to MongoDB using Mongoose and caches the connection.
- * @returns The Mongoose Connection object
- */
 export async function connectToDatabase(): Promise<Connection> {
-  // Return cached connection if it exists
   if (cached.connection) {
     return cached.connection;
   }
@@ -39,7 +31,6 @@ export async function connectToDatabase(): Promise<Connection> {
   }
 }
 
-// Optional: Listen for connection events (useful for debugging)
 mongoose.connection.on('connected', () => {
   console.log('Mongoose connected to MongoDB');
 });

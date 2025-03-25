@@ -3,7 +3,7 @@
   "version": "09172320846892321037124821093821936123892831263209178",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
