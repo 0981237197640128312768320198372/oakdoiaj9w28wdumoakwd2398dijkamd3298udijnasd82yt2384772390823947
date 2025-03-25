@@ -21,6 +21,7 @@ import { parse, isValid } from 'date-fns';
 import ShowHideText from './ShowHideText';
 import SearchableDropdown from './SearchableDropdown';
 import dokmaicoin from '@/assets/images/dokmaicoin.gif';
+import dokmaioutline from '@/assets/images/dokmaioutline.png';
 
 interface PremiumApp {
   accessType?: string;
@@ -211,8 +212,6 @@ export const ShowPremiumApps = () => {
         const premiumAppsData = await premiumDataRes.json();
 
         const sortedData = premiumAppsData.data.sort((a: any, b: any) => {
-          // console.log("orderDate for a:", a.orderDate) // Debugging
-          // console.log("orderDate for b:", b.orderDate) // Debugging
           const dateA = parseDate(a.orderDate)?.getTime() || 0;
           const dateB = parseDate(b.orderDate)?.getTime() || 0;
           return dateB - dateA;
@@ -413,7 +412,7 @@ export const ShowPremiumApps = () => {
                 .map((item: any, index: any) => (
                   <div
                     key={index}
-                    className="shadow pt-5 pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5">
+                    className="shadow pt-5 relative pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5">
                     <div className="w-full flex flex-row-reverse items-start justify-between">
                       {Object.entries(item).map(([label, value], idx) => (
                         <>
@@ -456,6 +455,27 @@ export const ShowPremiumApps = () => {
                         </p>
                       </div>
                     ))}
+                    <div className="mt-3 w-full justify-end flex gap-2 z-20">
+                      <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                        Copy All
+                      </p>
+                      <CopyToClipboard
+                        textToCopy={Object.entries(item)
+                          .filter(
+                            ([label]) => !['accessType', 'orderDate', 'appName'].includes(label)
+                          )
+                          .map(([label, value]) => `${getLabelDisplayName(label)}: ${value}`)
+                          .join('\n')}
+                      />
+                    </div>
+                    <Image
+                      draggable="false"
+                      src={dokmaioutline}
+                      width={400}
+                      height={400}
+                      className="opacity-5 absolute bottom-2 right-2 w-[50%] h-auto select-none"
+                      alt="Dokmai Logo Outline"
+                    />
                   </div>
                 ))}
             </div>
