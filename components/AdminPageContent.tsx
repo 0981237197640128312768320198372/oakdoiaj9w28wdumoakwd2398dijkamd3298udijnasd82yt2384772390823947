@@ -36,12 +36,12 @@ const AdminPageContent = () => {
     { button: 'ManageHelps', title: 'Manage Helps' },
   ];
   return (
-    <div className="max-w-6xl">
+    <div className="w-full max-w-[1140px] flex flex-col justify-center items-center">
       <PageHeadline
         headline="Admin Panel"
         description="A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
       />
-      <div className="w-full flex items-center justify-between mb-10">
+      <div className="w-full max-w-4xl flex items-center justify-between mb-10">
         <div className="flex items-center justify-start gap-5">
           {sectionsButton.map((item, i) => (
             <button
@@ -60,7 +60,7 @@ const AdminPageContent = () => {
           Logout
         </button>
       </div>
-      <div className="flex justify-between flex-col items-center gap-10 w-full">
+      <div className="flex justify-between flex-col items-center gap-10 w-full max-w-4xl">
         {sections[currentSection] || <div className="p-5">Section not found</div>}
       </div>
     </div>

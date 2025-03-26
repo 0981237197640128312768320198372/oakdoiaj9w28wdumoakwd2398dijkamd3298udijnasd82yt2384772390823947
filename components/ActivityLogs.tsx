@@ -75,7 +75,7 @@ export default function ActivityLogs() {
     );
   }
   return (
-    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full md:min-w-[500px] rounded">
+    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full md:min-w-[500px] rounded ">
       <div className="w-full flex justify-between">
         <h3 className="flex items-center gap-2 font-bold mb-5">
           <LuActivity />
