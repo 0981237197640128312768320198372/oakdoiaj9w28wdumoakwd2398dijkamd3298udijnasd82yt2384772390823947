@@ -294,12 +294,26 @@ export const ShowPremiumApps = () => {
       return;
     }
 
-    const problem = textareaRef.current.value;
+    const problemDescription = textareaRef.current.value;
 
-    if (!problem) {
+    if (!problemDescription) {
       console.log('Please describe the problem before submitting.');
       return;
     }
+
+    const now = new Date();
+
+    const formattedDateTime = now
+      .toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+      .replace(/ at /, ', ');
+
+    const problem = `${formattedDateTime} | ${problemDescription}`;
 
     try {
       const response = await fetch('/api/v2/report_problem', {
@@ -368,7 +382,9 @@ export const ShowPremiumApps = () => {
             <div
               className={`bg-gradient-to-br from-black/20 to-black rounded-xl p-5 w-full border-[1px] ${
                 userInfo.badge === 'VIP' && 'border-goldVIP'
-              } ${userInfo.badge === 'VVIP' && 'border-purpleVVIP'}`}>
+              } ${userInfo.badge === 'VVIP' && 'border-purpleVVIP'} ${
+                (userInfo.badge !== 'VIP' || 'VVIP') && 'border-dark-300/70'
+              }`}>
               <div className="flex gap-2 items-start select-none w-full justify-between mb-10">
                 <div className="flex gap-2 h-14 items-center">
                   <Image
