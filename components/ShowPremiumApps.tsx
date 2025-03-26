@@ -384,13 +384,19 @@ export const ShowPremiumApps = () => {
         <div className="flex gap-5 lg:gap-10 flex-col lg:flex-row">
           <div
             className={`bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group md:w-fit w-full shadow-xl ${
-              userInfo.badge === 'VIP' && 'shadow-goldVIP/20'
-            } ${userInfo.badge === 'VVIP' && 'shadow-purpleVVIP/20'}`}>
+              userInfo.badge === 'VIP'
+                ? 'shadow-goldVIP/20'
+                : userInfo.badge === 'VVIP'
+                ? 'shadow-purpleVVIP/20'
+                : ''
+            }`}>
             <div
               className={`bg-gradient-to-br from-black/20 to-black rounded-xl p-5 w-full border-[1px] ${
-                userInfo.badge === 'VIP' && 'border-goldVIP'
-              } ${userInfo.badge === 'VVIP' && 'border-purpleVVIP'} ${
-                (userInfo.badge !== 'VIP' || 'VVIP') && 'border-dark-300/70'
+                userInfo.badge === 'VIP'
+                  ? 'border-goldVIP'
+                  : userInfo.badge === 'VVIP'
+                  ? 'border-purpleVVIP'
+                  : 'border-dark-300/70'
               }`}>
               <div className="flex gap-2 items-start select-none w-full justify-between mb-10">
                 <div className="flex gap-2 h-14 items-center">
@@ -503,7 +509,11 @@ export const ShowPremiumApps = () => {
                   return (
                     <div
                       key={index}
-                      className="shadow pt-5 relative pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5">
+                      className={`shadow pt-5 relative pb-10 flex flex-col gap-2 px-5 ${
+                        hasProblem
+                          ? 'border-[1px] border-red-500/20 bg-red-500/15'
+                          : 'border-b-[1px] border-white/20 bg-dark-700'
+                      }`}>
                       <div className="w-full flex flex-row-reverse items-start justify-between">
                         {Object.entries(item).map(([label, value], idx) => (
                           <>
