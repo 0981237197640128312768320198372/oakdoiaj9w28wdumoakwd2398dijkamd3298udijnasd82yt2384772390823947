@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
-import { getGoogleSheetsData } from '@/app/api/CRUD';
+import { getGoogleSheetsData } from '@/lib/CRUD';
 import { productsConfig } from '@/constant';
 import process from 'process';
 
@@ -12,21 +12,18 @@ export async function GET(request: Request) {
   const fetchAll = searchParams.get('all') === 'true';
 
   try {
-    // Fetch all product details from Google Sheets
     const allDetails =
       (await getGoogleSheetsData(process.env.___SPREADSHEET_ID as string, 'PRODUCTS!A2:D')) || [];
 
-    // Transform details to map with productConfig keys
     const detailsMap = allDetails.reduce((map: Record<string, any[]>, row) => {
       const [appName, typeAccess, duration, price] = row;
 
-      if (!appName || !typeAccess || !duration || !price) return map; // Skip invalid rows
+      if (!appName || !typeAccess || !duration || !price) return map;
 
-      // Generate key matching ProductConfig name (remove spaces, combine appName + typeAccess)
       const configKey = `${appName.trim()}${typeAccess.trim()}`.replace(/\s+/g, '');
 
       if (!map[configKey]) map[configKey] = [];
-      map[configKey].push({ duration, price }); // Push matching details under the key
+      map[configKey].push({ duration, price });
       return map;
     }, {});
 
@@ -40,18 +37,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'No valid product found' }, { status: 400 });
     }
 
-    // Process each selected product
     const productDataPromises = Object.entries(selectedProducts).map(async ([name, ranges]) => {
-      // Match product details based on config name
       const matchedDetails = detailsMap[name] || [];
 
       const availableData = await getGoogleSheetsData(
         process.env.___SPREADSHEET_ID as string,
-        ranges.availableDataRange,
-        'second'
+        ranges.availableDataRange
       );
 
-      // Normalize available data
       const normalizedAvailableData = (availableData || []).map((row: any[]) => {
         while (row.length < ranges.totalColumns) {
           row.push('');
@@ -59,14 +52,12 @@ export async function GET(request: Request) {
         return row;
       });
 
-      // Filter available accounts
       const filteredAvailableData = normalizedAvailableData
         .map((row: any[], index: number) => ({
           data: row,
           row: index + 12,
         }))
         .filter((item) => item.data[0] === '' && item.data[ranges.expireDateColumnIndex] === '');
-      // console.log("STOCK: ", filteredAvailableData.length)
       return {
         name,
         details: matchedDetails,

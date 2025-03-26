@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGoogleSheetsData, updateUserField } from '@/app/api/CRUD';
+import { getGoogleSheetsData, updateUserField } from '@/lib/CRUD';
 import process from 'process';
 import { updateStatistic } from '@/lib/utils';
 
@@ -19,11 +19,8 @@ export async function POST(request: Request) {
     const userInfoSheetRange = 'UserInfo!A2:D';
 
     const userData =
-      (await getGoogleSheetsData(
-        process.env.___SPREADSHEET_ID as string,
-        userInfoSheetRange,
-        'third'
-      )) || [];
+      (await getGoogleSheetsData(process.env.___SPREADSHEET_ID as string, userInfoSheetRange)) ||
+      [];
 
     const userRow = userData.findIndex((row) => row[0] === personalKey);
 

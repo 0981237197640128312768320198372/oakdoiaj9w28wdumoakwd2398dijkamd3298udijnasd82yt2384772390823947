@@ -1,72 +1,80 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { google } from 'googleapis';
+import fs from 'fs';
+import CryptoJS from 'crypto-js';
+import path from 'path'; // Add this import
 
-async function authenticateGoogleSheets(
-  credentialsSet: 'default' | 'second' | 'third' = 'default'
-) {
-  // console.log('\n\n\n\n=================================');
-  // console.log(process.env.GOOGLE_SHEETS_PRIVATE_KEY);
-  // console.log(process.env.GOOGLE_SHEETS_PRIVATE_KEY_2);
-  // console.log(process.env.GOOGLE_SHEETS_PRIVATE_KEY_3);
-  // console.log('=================================\n\n\n\n');
+const secretKey = process.env.CREDENTIALS_SECRET_KEY;
+if (!secretKey) {
+  throw new Error('SECRET_KEY is not defined in environment variables');
+}
+
+let credentialsArray: any;
+
+try {
+  const filePath = path.join(process.cwd(), 'lib', 'encrypted.creds');
+  console.log('AWKAOWKOAKWOAK', filePath);
+  if (!fs.existsSync(filePath)) {
+    throw new Error('Encrypted credentials file not found');
+  }
+  const encryptedData = fs.readFileSync(filePath, 'utf8');
+  const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
+  const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  credentialsArray = JSON.parse(decryptedData);
+} catch (error) {
+  throw new Error('Failed to decrypt credentials: ' + error);
+}
+
+if (!credentialsArray || credentialsArray.length === 0) {
+  throw new Error('No credentials found after decryption');
+}
+
+let currentIndex = 0;
+
+function rotateCredentials() {
+  if (credentialsArray.length === 0) {
+    throw new Error('No credentials available in the array');
+  }
+  const credentials = credentialsArray[currentIndex];
+  currentIndex = (currentIndex + 1) % credentialsArray.length;
+  return credentials;
+}
+
+async function authenticateGoogleSheets() {
   try {
-    const credentials = (() => {
-      if (credentialsSet === 'default') {
-        return {
-          projectId: process.env.GOOGLE_SHEETS_PROJECT_ID,
-          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-          client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-          client_id: process.env.GOOGLE_SHEETS_CLIENT_ID,
-        };
-      } else if (credentialsSet === 'second') {
-        return {
-          projectId: process.env.GOOGLE_SHEETS_PROJECT_ID_2,
-          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY_2?.replace(/\\n/g, '\n'),
-          client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL_2,
-          client_id: process.env.GOOGLE_SHEETS_CLIENT_ID_2,
-        };
-      } else if (credentialsSet === 'third') {
-        return {
-          projectId: process.env.GOOGLE_SHEETS_PROJECT_ID_3,
-          private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY_3?.replace(/\\n/g, '\n'),
-          client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL_3,
-          client_id: process.env.GOOGLE_SHEETS_CLIENT_ID_3,
-        };
-      } else {
-        throw new Error('Invalid credentialsSet value');
-      }
-    })();
-
+    const credentials = rotateCredentials();
+    console.log('\n\n\n\n=================================');
+    console.log(credentials.projectId);
+    // console.log(credentials.privateKey);
+    console.log(credentials.clientEmail);
+    // console.log(credentials.clientId);
+    console.log('=================================\n\n\n\n');
     return await google.auth.getClient({
       projectId: credentials.projectId,
       credentials: {
         type: 'service_account',
-        private_key: credentials.private_key,
-        client_email: credentials.client_email,
-        client_id: credentials.client_id,
+        private_key: credentials.privateKey,
+        client_email: credentials.clientEmail,
+        client_id: credentials.clientId,
         token_url: 'https://oauth2.googleapis.com/token',
         universe_domain: 'googleapis.com',
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
   } catch (error) {
-    console.error('Error during authentication', error);
+    console.error('Error during authentication:', error);
     throw new Error('Google Sheets authentication failed');
   }
 }
 
-async function getGoogleSheetsInstance(credentialsSet: 'default' | 'second' | 'third' = 'default') {
-  const auth = await authenticateGoogleSheets(credentialsSet);
+async function getGoogleSheetsInstance() {
+  const auth = await authenticateGoogleSheets();
   return google.sheets({ version: 'v4', auth });
 }
 
-export async function getGoogleSheetsData(
-  spreadsheetId: string,
-  range: string,
-  credentialsSet: 'default' | 'second' | 'third' = 'default'
-) {
+export async function getGoogleSheetsData(spreadsheetId: string, range: string) {
   try {
-    const sheets = await getGoogleSheetsInstance(credentialsSet);
+    const sheets = await getGoogleSheetsInstance();
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
       range: range,

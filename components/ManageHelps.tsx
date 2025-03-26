@@ -55,7 +55,7 @@ const ManageHelps: React.FC = () => {
           if (!response.ok) throw new Error('Failed to fetch helps');
 
           const data = await response.json();
-          setHelps(data.helps); // Avoid appending to helps multiple times
+          setHelps(data.helps);
         } catch (error) {
           console.error(error);
           setFeedback({ message: 'Failed to fetch helps', type: 'error' });
@@ -94,7 +94,7 @@ const ManageHelps: React.FC = () => {
       if (!response.ok) throw new Error('Failed to add new help');
 
       const data = await response.json();
-      const newHelpFromServer = data.helps[0]; // API returns { message, helps: [newHelp] }
+      const newHelpFromServer = data.helps[0];
 
       setHelps((prev) => [...prev, newHelpFromServer]);
       handleFeedback('Help added successfully!', 'success');
@@ -118,7 +118,7 @@ const ManageHelps: React.FC = () => {
       if (!response.ok) throw new Error('Failed to update help');
 
       const data = await response.json();
-      const updatedHelpFromServer = data.helps[0]; // API returns { message, helps: [updatedHelp] }
+      const updatedHelpFromServer = data.helps[0];
 
       setHelps((prev) => prev.map((help) => (help.id === id ? updatedHelpFromServer : help)));
       setSelectedHelp(updatedHelpFromServer);
@@ -165,7 +165,7 @@ const ManageHelps: React.FC = () => {
       if (!response.ok) throw new Error('Failed to add step');
 
       const data = await response.json();
-      const updatedHelp = data.helps[0]; // API returns { message, helps: [updatedHelp] }
+      const updatedHelp = data.helps[0];
 
       setSelectedHelp(updatedHelp);
       setHelps((prevHelps) => prevHelps.map((help) => (help.id === helpId ? updatedHelp : help)));
@@ -196,7 +196,7 @@ const ManageHelps: React.FC = () => {
       if (!response.ok) throw new Error('Failed to update step');
 
       const data = await response.json();
-      const updatedHelp = data.helps[0]; // API returns { message, helps: [updatedHelp] }
+      const updatedHelp = data.helps[0];
 
       setHelps((prevHelps) => prevHelps.map((help) => (help.id === helpId ? updatedHelp : help)));
       setSelectedHelp(updatedHelp);
@@ -221,7 +221,7 @@ const ManageHelps: React.FC = () => {
       if (!response.ok) throw new Error('Failed to delete step');
 
       const data = await response.json();
-      const updatedHelp = data.helps[0]; // API returns { message, helps: [updatedHelp] }
+      const updatedHelp = data.helps[0];
 
       setSelectedHelp(updatedHelp);
       setHelps((prevHelps) => prevHelps.map((help) => (help.id === helpId ? updatedHelp : help)));

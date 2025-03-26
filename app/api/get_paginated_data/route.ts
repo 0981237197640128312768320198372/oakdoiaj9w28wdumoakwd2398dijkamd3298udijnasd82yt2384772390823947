@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { NextRequest, NextResponse } from 'next/server';
-import { getGoogleSheetsData } from '@/app/api/CRUD';
+import { getGoogleSheetsData } from '@/lib/CRUD';
 
 export async function GET(req: NextRequest) {
   const apiKey = req.headers.get('x-api-key');
@@ -27,8 +27,7 @@ export async function GET(req: NextRequest) {
   try {
     const data = await getGoogleSheetsData(
       process.env.WORK_WORK_WORK_WORK_SPREADSHEET_ID as string,
-      `${sheetName}!${range}`,
-      'second'
+      `${sheetName}!${range}`
     );
 
     let processedData = data || [];

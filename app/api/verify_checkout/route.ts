@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
-import { getGoogleSheetsData, manageProductData, updateUserField } from '@/app/api/CRUD';
+import { getGoogleSheetsData, manageProductData, updateUserField } from '@/lib/CRUD';
 import { productsConfig } from '@/constant';
 import process from 'process';
 import { updateStatistic } from '@/lib/utils';

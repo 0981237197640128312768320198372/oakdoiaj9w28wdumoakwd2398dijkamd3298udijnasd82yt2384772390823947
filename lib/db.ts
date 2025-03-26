@@ -23,22 +23,23 @@ export async function connectToDatabase(): Promise<Connection> {
     const mongooseConnection = await mongoose.connect(MONGODB_URI);
     cached.connection = mongooseConnection.connection;
 
-    console.log('MongoDB connected successfully');
+    // console.log('MongoDB connected successfully');
     return cached.connection;
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    // console.error('MongoDB connection error:', error);
+    console.error('MongoDB connection error');
     throw new Error('Failed to connect to MongoDB');
   }
 }
 
-mongoose.connection.on('connected', () => {
-  console.log('Mongoose connected to MongoDB');
-});
+// mongoose.connection.on('connected', () => {
+//   console.log('Mongoose connected to MongoDB');
+// });
 
-mongoose.connection.on('error', (err) => {
-  console.error('Mongoose connection error:', err);
-});
+// mongoose.connection.on('error', (err) => {
+//   console.error('Mongoose connection error:', err);
+// });
 
-mongoose.connection.on('disconnected', () => {
-  console.log('Mongoose disconnected');
-});
+// mongoose.connection.on('disconnected', () => {
+//   console.log('Mongoose disconnected');
+// });

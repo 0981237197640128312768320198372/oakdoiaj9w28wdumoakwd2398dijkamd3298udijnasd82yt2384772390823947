@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
-import Help from '../../../models/Help'; // Adjust path to your Help model
-import { connectToDatabase } from '../../../lib/db'; // Adjust path to your db connection
+import Help from '../../../models/Help';
+import { connectToDatabase } from '../../../lib/db';
 
 export async function POST(request: Request) {
   try {
-    // Connect to MongoDB
     await connectToDatabase();
 
     const { action, help, id, updatedHelp, helpId, stepIndex, newStep, updatedStep } =
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
       await newHelp.save();
       return NextResponse.json({
         message: 'Operation successful',
-        helps: [newHelp], // Return as array to mimic original response
+        helps: [newHelp],
       });
     } else if (action === 'update') {
       if (!id || !updatedHelp) {
@@ -34,7 +33,7 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({
         message: 'Operation successful',
-        helps: [updated], // Return as array
+        helps: [updated],
       });
     } else if (action === 'delete') {
       if (!id) {
@@ -46,7 +45,7 @@ export async function POST(request: Request) {
       }
       return NextResponse.json({
         message: 'Operation successful',
-        helps: [], // Return empty array since item is deleted
+        helps: [],
       });
     } else if (action === 'addStep') {
       if (!helpId || !newStep) {
@@ -63,7 +62,7 @@ export async function POST(request: Request) {
       await help.save();
       return NextResponse.json({
         message: 'Operation successful',
-        helps: [help], // Return updated help
+        helps: [help],
       });
     } else if (action === 'updateStep') {
       if (helpId === undefined || stepIndex === undefined || !updatedStep) {
@@ -85,7 +84,7 @@ export async function POST(request: Request) {
       await help.save();
       return NextResponse.json({
         message: 'Operation successful',
-        helps: [help], // Return updated help
+        helps: [help],
       });
     } else if (action === 'deleteStep') {
       if (helpId === undefined || stepIndex === undefined) {
@@ -105,7 +104,7 @@ export async function POST(request: Request) {
       await help.save();
       return NextResponse.json({
         message: 'Operation successful',
-        helps: [help], // Return updated help
+        helps: [help],
       });
     } else {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
