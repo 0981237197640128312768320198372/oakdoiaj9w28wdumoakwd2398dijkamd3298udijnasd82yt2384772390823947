@@ -3,6 +3,7 @@ import { google } from 'googleapis';
 import fs from 'fs';
 import CryptoJS from 'crypto-js';
 import path from 'path';
+import { convertGoogleDriveUrl } from './utils';
 
 const secretKey = process.env.CREDENTIALS_SECRET_KEY;
 if (!secretKey) {
@@ -81,6 +82,39 @@ export async function getGoogleSheetsData(spreadsheetId: string, range: string) 
     throw new Error('Failed to fetch data from Google Sheets');
   }
 }
+export const CreditsOrTestimonialsDataModels = async () => {
+  const rawCreditsData =
+    (await getGoogleSheetsData(
+      process.env.___SPREADSHEET_ID as string,
+      process.env.CREDITS_OR_TESTIMONIALS_SHEETS as string
+    )) || [];
+
+  return rawCreditsData
+    .map((creditsRow: string[]) => ({
+      creditsimageUrl: convertGoogleDriveUrl(creditsRow[0]),
+      item: creditsRow[1],
+      posted: creditsRow[2],
+    }))
+    .reverse();
+};
+
+export const Recommendations = async () => {
+  const rawRecommendationsData =
+    (await getGoogleSheetsData(
+      process.env.___SPREADSHEET_ID as string,
+      process.env.MOVIE_RECOMMENDATIONS_SHEETS as string
+    )) || [];
+
+  return rawRecommendationsData
+    .map((recommendationsRow: string[]) => ({
+      title: recommendationsRow[0],
+      description: recommendationsRow[1],
+      recommendationsimageUrl: convertGoogleDriveUrl(recommendationsRow[2]),
+      netflixUrl: recommendationsRow[3],
+      date: recommendationsRow[4],
+    }))
+    .reverse();
+};
 
 export async function appendGoogleSheetsData(spreadsheetId: string, range: string, values: any[]) {
   try {

@@ -1,6 +1,6 @@
-import { CreditsOrTestimonialsDataModels } from '@/lib/GoogleSheetAPI';
 import PageHeadline from '@/components/PageHeadline';
 import PaginatedCredits from '@/components/PaginatedCredits';
+import { CreditsOrTestimonialsDataModels } from '@/lib/CRUD';
 import { generateMetadata } from '@/lib/utils';
 import React from 'react';
 

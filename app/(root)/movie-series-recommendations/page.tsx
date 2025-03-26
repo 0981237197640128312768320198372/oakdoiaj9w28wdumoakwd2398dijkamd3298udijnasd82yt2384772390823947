@@ -1,6 +1,6 @@
-import { Recommendations } from '@/lib/GoogleSheetAPI';
 import PageHeadline from '@/components/PageHeadline';
 import PaginatedRecommendations from '@/components/PaginatedRecommendations';
+import { Recommendations } from '@/lib/CRUD';
 import { generateMetadata } from '@/lib/utils';
 import React from 'react';
 const getRecommendationsTitles = async (): Promise<string> => {
