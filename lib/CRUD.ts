@@ -12,7 +12,7 @@ if (!secretKey) {
 let credentialsArray: any;
 
 try {
-  const filePath = path.join(process.cwd(), 'lib', 'encrypted.creds');
+  const filePath = path.join(process.cwd(), 'lib', 'encrypted.hands');
   if (!fs.existsSync(filePath)) {
     throw new Error('Encrypted credentials file not found');
   }
@@ -44,9 +44,6 @@ async function authenticateGoogleSheets() {
     const credentials = rotateCredentials();
     console.log('\n\n\n\n=================================');
     console.log(credentials.projectId);
-    // console.log(credentials.privateKey);
-    console.log(credentials.clientEmail);
-    // console.log(credentials.clientId);
     console.log('=================================\n\n\n\n');
     return await google.auth.getClient({
       projectId: credentials.projectId,
