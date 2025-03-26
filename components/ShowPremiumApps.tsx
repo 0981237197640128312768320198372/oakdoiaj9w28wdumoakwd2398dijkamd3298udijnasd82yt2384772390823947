@@ -624,14 +624,14 @@ export const ShowPremiumApps = () => {
                       </div>
 
                       {hasProblem ? (
-                        <MdReportGmailerrorred className="absolute -bottom-5 text-red-600/5 -right-5 w-[50%] h-auto select-none" />
+                        <MdReportGmailerrorred className="absolute -bottom-5 text-red-600/5 -right-5 w-[80%] lg:w-[50%] h-auto  select-none" />
                       ) : (
                         <Image
                           draggable="false"
                           src={dokmaioutline}
                           width={400}
                           height={400}
-                          className="opacity-5 absolute bottom-2 right-2 w-[50%] h-auto select-none"
+                          className="opacity-5 absolute bottom-2 right-2 w-[80%] lg:w-[50%] h-auto select-none"
                           alt="Dokmai Logo Outline"
                         />
                       )}
