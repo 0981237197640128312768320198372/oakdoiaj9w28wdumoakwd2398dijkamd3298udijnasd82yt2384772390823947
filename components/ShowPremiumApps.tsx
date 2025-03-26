@@ -544,32 +544,40 @@ export const ShowPremiumApps = () => {
                         ))}
                       </div>
 
-                      {Object.entries(item).map(([label, value], idx) => (
-                        <div className="flex flex-col" key={idx}>
-                          <p className="font-aktivGroteskMedium text-white/60 text-[7px] md:text-xs ">
-                            {getLabelDisplayName(String(label))}
-                          </p>
-                          <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
-                            {String(label) !== 'accessType' &&
-                            String(label) !== 'appName' &&
-                            String(label) !== 'problem' &&
-                            String(label) !== 'contact' &&
-                            String(label) !== 'buyVia' ? (
-                              <>
-                                {String(value)}
-                                {String(label) !== 'accessType' &&
-                                String(label) !== 'orderDate' &&
-                                String(label) !== 'problem' &&
-                                String(label) !== 'contact' &&
-                                String(label) !== 'buyVia' &&
-                                String(label) !== 'appName' ? (
-                                  <CopyToClipboard textToCopy={String(value)} />
-                                ) : null}
-                              </>
-                            ) : null}
-                          </p>
-                        </div>
-                      ))}
+                      {Object.entries(item).map(([label, value], idx) => {
+                        const labelStr = String(label);
+                        const valueStr = String(value);
+
+                        const excludeValueLabels = [
+                          'accessType',
+                          'appName',
+                          'problem',
+                          'contact',
+                          'buyVia',
+                        ];
+                        const excludeCopyLabels = [
+                          'accessType',
+                          'orderDate',
+                          'problem',
+                          'contact',
+                          'buyVia',
+                          'appName',
+                        ];
+
+                        return (
+                          <div className="flex flex-col" key={idx}>
+                            <p className="font-aktivGroteskMedium text-white/60 text-[7px] md:text-xs">
+                              {getLabelDisplayName(labelStr)}
+                            </p>
+                            <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                              {!excludeValueLabels.includes(labelStr) && valueStr}
+                              {!excludeCopyLabels.includes(labelStr) && (
+                                <CopyToClipboard textToCopy={valueStr} />
+                              )}
+                            </p>
+                          </div>
+                        );
+                      })}
                       <div className="mt-3 w-full justify-between flex gap-2 z-20">
                         <div className="flex gap-2 z-20 items-center">
                           <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
@@ -578,7 +586,15 @@ export const ShowPremiumApps = () => {
                           <CopyToClipboard
                             textToCopy={Object.entries(item)
                               .filter(
-                                ([label]) => !['accessType', 'orderDate', 'appName'].includes(label)
+                                ([label]) =>
+                                  ![
+                                    'accessType',
+                                    'orderDate',
+                                    'appName',
+                                    'contact',
+                                    'problem',
+                                    'buyVia',
+                                  ].includes(label)
                               )
                               .map(([label, value]) => `${getLabelDisplayName(label)}: ${value}`)
                               .join('\n')}
