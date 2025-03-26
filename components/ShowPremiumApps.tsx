@@ -511,8 +511,8 @@ export const ShowPremiumApps = () => {
                       key={index}
                       className={`shadow pt-5 relative pb-10 flex flex-col gap-2 px-5 ${
                         hasProblem
-                          ? 'border-[1px] border-red-500/20 bg-red-500/15'
-                          : 'border-b-[1px] border-white/20 bg-dark-700'
+                          ? 'border-b-[1px] border-red-500 bg-red-500/15'
+                          : 'border-b-[1px] border-white/30 bg-dark-700'
                       }`}>
                       <div className="w-full flex flex-row-reverse items-start justify-between">
                         {Object.entries(item).map(([label, value], idx) => (
