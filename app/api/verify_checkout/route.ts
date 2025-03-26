@@ -25,7 +25,7 @@ async function retryOperation<T>(
       return await operation();
     } catch (error: any) {
       if (attempt === retries || !error.message.includes('Quota exceeded for quota metric')) {
-        throw error; // Throw the error if retries are exhausted or it's not a quota error
+        throw error;
       }
       console.warn(`Retrying operation after error: ${error.message}`);
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -101,9 +101,6 @@ export async function POST(request: Request) {
 
       calculatedTotalCost += price * quantity;
       calculatedTotalQty += quantity;
-      // console.log("PRICE", price)
-
-      // console.log("CALCULATED COST", calculatedTotalCost)
       const sheetName = productConfig.availableDataRange.split('!')[0];
       const expireDateColumnIndex = productConfig.expireDateColumnIndex;
 
@@ -183,7 +180,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Perform batch updates
     await Promise.all(
       Object.entries(batchUpdates).map(([sheetName, updates]) =>
         Promise.all(
@@ -200,7 +196,6 @@ export async function POST(request: Request) {
       )
     );
 
-    // Update user balance
     const newBalance = currentBalance - calculatedTotalCost;
     await updateStatistic('spentAmount', calculatedTotalCost);
     await updateUserField(
@@ -213,8 +208,8 @@ export async function POST(request: Request) {
     );
 
     const logEntry = {
-      type: 'Checkout', // Example type
-      user: personalKey, // Example user
+      type: 'Checkout',
+      user: personalKey,
       details: {
         items: selectedProducts.map((product) => ({
           name: formatProductName(product.name),
@@ -239,7 +234,7 @@ export async function POST(request: Request) {
         if (!response.ok) {
           console.error('Failed to log activity');
         } else {
-          // console.log("Activity logged successfully")
+          console.log('Activity logged successfully');
         }
       })
       .catch((error) => {

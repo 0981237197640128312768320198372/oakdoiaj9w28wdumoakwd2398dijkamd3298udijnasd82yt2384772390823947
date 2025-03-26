@@ -26,6 +26,7 @@
     "framer-motion": "^12.4.10",
     "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "mailparser": "^3.7.1",
     "mongodb": "^6.14.2",
     "mongoose": "^8.12.1",

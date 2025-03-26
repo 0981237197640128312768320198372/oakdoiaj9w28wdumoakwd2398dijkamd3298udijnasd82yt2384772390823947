@@ -2,9 +2,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-
+import { MdReportProblem } from 'react-icons/md';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
 import dokmaicoin3d2 from '@/assets/images/dokmaicoin3d2.png';
 import { FaUserLock } from 'react-icons/fa6';
@@ -22,6 +22,7 @@ import ShowHideText from './ShowHideText';
 import SearchableDropdown from './SearchableDropdown';
 import dokmaicoin from '@/assets/images/dokmaicoin.gif';
 import dokmaioutline from '@/assets/images/dokmaioutline.png';
+import { TbUrgent } from 'react-icons/tb';
 
 interface PremiumApp {
   accessType?: string;
@@ -57,6 +58,9 @@ export const ShowPremiumApps = () => {
   const [refreshCountdown, setRefreshCountdown] = useState(60);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showReportForm, setShowReportForm] = useState(false);
+  const [selectedApp, setSelectedApp] = useState<PremiumApp | null>(null);
+  const [problemDescription, setProblemDescription] = useState('');
 
   const fetchEmails = async (email: string) => {
     setLoadingEmail(true);
@@ -268,6 +272,62 @@ export const ShowPremiumApps = () => {
     .filter((item: any) => item.accessType && item.accessType.includes('Family Access'))
     .map((item: any) => item.email)
     .filter((email: string | undefined) => email !== undefined) as string[];
+
+  const handleOpenReportForm = (app: PremiumApp) => {
+    setSelectedApp(app);
+    setShowReportForm(true);
+  };
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleCloseReportForm = () => {
+    setShowReportForm(false);
+    setSelectedApp(null);
+    setProblemDescription('');
+  };
+
+  const handleReportProblem = async () => {
+    if (!selectedApp) return;
+
+    if (!textareaRef.current) {
+      console.log('Textarea is not available. Please try again.');
+      return;
+    }
+
+    const problem = textareaRef.current.value;
+
+    if (!problem) {
+      console.log('Please describe the problem before submitting.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/v2/report_problem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          personalKey: userInfo?.personalKey,
+          appName: selectedApp.appName,
+          accessType: selectedApp.accessType,
+          Email: selectedApp.email,
+          Password: selectedApp.password,
+          orderDate: selectedApp.orderDate,
+          problem,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to report problem');
+      }
+
+      handleCloseReportForm();
+      textareaRef.current.value = '';
+    } catch (error) {
+      console.error('Error reporting problem:', error);
+    }
+  };
+
   return (
     <div className="w-full justify-center items-center">
       {checkingLocalStorage && <Loading />}
@@ -300,9 +360,15 @@ export const ShowPremiumApps = () => {
       )}
       {validatingPersonalKey && <Loading text="กำลังเช็คข้อมูลของคุณ..." />}
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
-        <div className="flex gap-5 flex-col lg:flex-row">
-          <div className="bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group md:w-fit w-full">
-            <div className="bg-gradient-to-br from-light-300/10 to-dark-800 rounded-lg p-5 w-full border-[1px] border-dark-500">
+        <div className="flex gap-5 lg:gap-10 flex-col lg:flex-row">
+          <div
+            className={`bg-white/10 relative rounded-lg overflow-hidden md:min-w-96 h-fit group md:w-fit w-full shadow-xl ${
+              userInfo.badge === 'VIP' && 'shadow-goldVIP/20'
+            } ${userInfo.badge === 'VVIP' && 'shadow-purpleVVIP/20'}`}>
+            <div
+              className={`bg-gradient-to-br from-black/20 to-black rounded-xl p-5 w-full border-[1px] ${
+                userInfo.badge === 'VIP' && 'border-goldVIP'
+              } ${userInfo.badge === 'VVIP' && 'border-purpleVVIP'}`}>
               <div className="flex gap-2 items-start select-none w-full justify-between mb-10">
                 <div className="flex gap-2 h-14 items-center">
                   <Image
@@ -325,9 +391,9 @@ export const ShowPremiumApps = () => {
                 </Link>
               </div>
               <div className="flex flex-col items-start justify-center gap-2">
-                <div className="flex gap-2 items-center">{accountBadge(userInfo.badge)}</div>
-                <div className="flex gap-2 items-center">
-                  <FaUserLock className="w-8 h-8 text-white p-2 bg-white/10 rounded-lg" />
+                {accountBadge(userInfo.badge)}
+                <div className="flex gap-2 items-center mt-1">
+                  <FaUserLock className="w-8 h-8 text-white p-2 bg-white/10 rounded-lg mr-1" />
                   <p className="text-lg select-none">
                     <ShowHideText text={userInfo.personalKey} />
                   </p>
@@ -336,7 +402,7 @@ export const ShowPremiumApps = () => {
               <div className="w-full flex justify-end">
                 <button
                   onClick={handleLogout}
-                  className=" bg-red-500/40 hover:bg-red-500/90 text-red-600 hover:text-dark-800 text-xs rounded px-2 py-1 font-aktivGroteskBold">
+                  className=" bg-red-500/10 hover:bg-red-500/30 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskBold">
                   Logout
                 </button>
               </div>
@@ -393,8 +459,8 @@ export const ShowPremiumApps = () => {
               <span className="text-dark-800 bg-primary p-1">แอพพรีเมียม</span> ที่สั่งซื้อแล้ว
               <br />
               <span className="font-aktivGroteskMedium text-xs">
-                แอพพรีเมียมทั้งหมด{' '}
-                <strong className="font-aktivGroteskMedium text-sm">{premiumData.length}</strong>{' '}
+                แอพพรีเมียมทั้งหมด
+                <strong className="font-aktivGroteskMedium text-sm">{premiumData.length}</strong>
                 รายการ
               </span>
             </h2>
@@ -468,6 +534,16 @@ export const ShowPremiumApps = () => {
                           .join('\n')}
                       />
                     </div>
+                    <div className="mt-2 w-full justify-end flex gap-2 z-20">
+                      <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                        Report Problem
+                      </p>
+                      <button
+                        onClick={() => handleOpenReportForm(item)}
+                        className="bg-red-500/20 text-red-500 px-2 py-1 rounded flex gap-1 items-center ">
+                        <MdReportProblem className="text-lg" />
+                      </button>
+                    </div>
                     <Image
                       draggable="false"
                       src={dokmaioutline}
@@ -492,34 +568,6 @@ export const ShowPremiumApps = () => {
                     <form
                       onSubmit={onSubmitForm}
                       className="w-full flex border-[1px] border-primary/40 rounded-sm">
-                      {/* <select
-                        required
-                        value={searchEmail}
-                        onChange={(e) => setSearchEmail(e.target.value)}
-                        className="px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm">
-                        <option value="" disabled>
-                          Select an email
-                        </option>
-                        {premiumData
-                          .filter(
-                            (item: any) =>
-                              item.accessType && item.accessType.includes('Family Access')
-                          )
-                          .map((item: any, index: number) => {
-                            const email = item.email;
-                            return email ? (
-                              <option key={index} value={email}>
-                                {email}
-                              </option>
-                            ) : null;
-                          })}
-                      </select>
-                      <button
-                        type="submit"
-                        className="ml-4 bg-primary hover:bg-primary/70 active:bg-primary/50 text-sm text-dark-800 px-4 py-2 font-aktivGroteskBold">
-                        Submit
-                      </button> */}
-
                       <SearchableDropdown
                         emails={emailOptions}
                         selectedEmail={searchEmail}
@@ -533,7 +581,6 @@ export const ShowPremiumApps = () => {
                     </form>
                     <div className="flex w-full h-full">
                       {loadingEmail ? (
-                        // <Loading text="กรุณารอสักครู่..." />
                         <div className="relative flex flex-col mt-20 w-full items-center justify-center gap-3">
                           <Image
                             src={dokmaicoin}
@@ -566,6 +613,32 @@ export const ShowPremiumApps = () => {
                         </>
                       )}
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showReportForm && selectedApp && (
+              <div className="fixed inset-0 bg-black/50 backdrop-blur flex items-center justify-center z-50">
+                <div className="bg-dark-700 p-5 rounded-lg shadow-lg text-white w-full max-w-md">
+                  <p className="mb-3 text-sm">อธิบาย/ชี้แจงปัญหาที่พบ :</p>
+                  <textarea
+                    ref={textareaRef}
+                    defaultValue=""
+                    className="w-full p-2 border border-white/20 rounded mb-3 bg-dark-800 text-white text-sm focus:border-primary/50 focus:outline-none focus:ring-0 "
+                    rows={4}
+                    placeholder="Describe the problem here..."
+                  />
+                  <div className="flex justify-between w-full">
+                    <button
+                      onClick={handleCloseReportForm}
+                      className="bg-dark-500  text-white/50 px-3 py-1 items-center flex rounded text-sm">
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleReportProblem}
+                      className="bg-red-500/30 border-[1px] border-red-500/50 text-red-500 px-3 py-1 gap-2 items-center flex rounded text-sm">
+                      <TbUrgent className="text-lg" /> ส่ง
+                    </button>
                   </div>
                 </div>
               </div>

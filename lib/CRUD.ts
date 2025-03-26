@@ -2,18 +2,17 @@
 import { google } from 'googleapis';
 import fs from 'fs';
 import CryptoJS from 'crypto-js';
-import path from 'path'; // Add this import
+import path from 'path';
 
 const secretKey = process.env.CREDENTIALS_SECRET_KEY;
 if (!secretKey) {
-  throw new Error('SECRET_KEY is not defined in environment variables');
+  throw new Error('CREDENTIALS_SECRET_KEY is not defined in environment variables');
 }
 
 let credentialsArray: any;
 
 try {
   const filePath = path.join(process.cwd(), 'lib', 'encrypted.creds');
-  console.log('AWKAOWKOAKWOAK', filePath);
   if (!fs.existsSync(filePath)) {
     throw new Error('Encrypted credentials file not found');
   }
@@ -67,7 +66,7 @@ async function authenticateGoogleSheets() {
   }
 }
 
-async function getGoogleSheetsInstance() {
+export async function getGoogleSheetsInstance() {
   const auth = await authenticateGoogleSheets();
   return google.sheets({ version: 'v4', auth });
 }
