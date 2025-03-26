@@ -586,11 +586,11 @@ export const ShowPremiumApps = () => {
                         </div>
                         <div className="flex gap-2 z-20 items-center">
                           {hasProblem ? (
-                            <div className="flex flex-col items-start w-full">
+                            <div className="flex flex-col items-end w-full">
                               <p className="font-aktivGroteskBold text-[10px] md:text-sm text-red-500">
                                 แจ้งปัญหาแล้ว
                               </p>
-                              <p className="text-lg text-white">{item.problem}</p>
+                              <p className="text-sm text-white">{item.problem}</p>
                             </div>
                           ) : (
                             <>
