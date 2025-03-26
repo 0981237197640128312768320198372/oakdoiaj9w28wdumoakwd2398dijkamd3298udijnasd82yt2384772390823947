@@ -587,9 +587,9 @@ export const ShowPremiumApps = () => {
                         {hasProblem ? (
                           <div className="flex flex-col items-start w-full">
                             <p className="font-aktivGroteskBold text-[10px] md:text-sm text-red-500">
-                              Problem Reported:
+                              แจ้งปัญหาแล้ว
                             </p>
-                            <p className="text-[10px] md:text-sm text-white">{item.problem}</p>
+                            <p className="text-lg text-white">{item.problem}</p>
                           </div>
                         ) : (
                           <>
