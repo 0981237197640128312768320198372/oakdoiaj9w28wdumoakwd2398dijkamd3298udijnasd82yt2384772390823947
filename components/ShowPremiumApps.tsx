@@ -579,7 +579,7 @@ export const ShowPremiumApps = () => {
                         );
                       })}
                       <div className="mt-3 w-full justify-between flex gap-2 z-20">
-                        <div className="flex gap-2 z-20 items-center">
+                        <div className="flex gap-2 z-20 items-end">
                           <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
                             Copy All
                           </p>
@@ -622,7 +622,6 @@ export const ShowPremiumApps = () => {
                           )}
                         </div>
                       </div>
-
                       {hasProblem ? (
                         <MdReportGmailerrorred className="absolute -bottom-5 text-red-600/5 -right-5 w-[80%] lg:w-[50%] h-auto  select-none" />
                       ) : (
