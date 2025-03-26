@@ -181,60 +181,6 @@ export async function findAndUpdateRow(
   }
 }
 
-export async function findAndDeleteRow(sheetName: string, searchValue: string) {
-  try {
-    const sheets = await getGoogleSheetsInstance();
-
-    const spreadsheet = await sheets.spreadsheets.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-    });
-    const sheet = spreadsheet.data.sheets?.find((sheet) => sheet.properties?.title === sheetName);
-    const sheetId = sheet?.properties?.sheetId;
-
-    if (!sheetId) {
-      throw new Error(`Sheet with name ${sheetName} not found.`);
-    }
-
-    const getData = await sheets.spreadsheets.values.get({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      range: `${sheetName}`,
-    });
-
-    const rows = getData.data.values || [];
-
-    const rowIndex = rows.findIndex((row) => row.includes(searchValue));
-
-    if (rowIndex === -1) {
-      throw new Error('Search value not found in the sheet.');
-    }
-
-    const batchUpdateRequest = {
-      requests: [
-        {
-          deleteDimension: {
-            range: {
-              sheetId: sheetId,
-              dimension: 'ROWS',
-              startIndex: rowIndex,
-              endIndex: rowIndex + 1,
-            },
-          },
-        },
-      ],
-    };
-
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: process.env.SPREADSHEET_ID,
-      requestBody: batchUpdateRequest,
-    });
-
-    return { message: 'Row successfully deleted' };
-  } catch (error) {
-    console.error('ERROR in finding and deleting row: \n', error);
-    throw error;
-  }
-}
-
 export async function updateUserField(
   spreadsheetId: string,
   sheetName: string,
