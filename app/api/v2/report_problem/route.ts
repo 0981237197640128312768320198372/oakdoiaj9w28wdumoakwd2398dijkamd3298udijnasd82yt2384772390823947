@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No matching row found' }, { status: 404 });
     }
 
-    const problemIndex = orderDateIndex + 4;
+    const problemIndex = orderDateIndex + 3;
     const problemColumnLetter = indexToColumnLetter(problemIndex);
 
     const startRow = parseInt(rangePart.split(':')[0].slice(1));
