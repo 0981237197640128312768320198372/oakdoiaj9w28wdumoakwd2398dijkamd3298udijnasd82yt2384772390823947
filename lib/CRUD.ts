@@ -29,7 +29,7 @@ if (!credentialsArray || credentialsArray.length === 0) {
   throw new Error('No credentials found after decryption');
 }
 
-let currentIndex = 0;
+let currentIndex = Math.floor(Math.random() * credentialsArray.length);
 
 function rotateCredentials() {
   if (credentialsArray.length === 0) {
@@ -44,6 +44,8 @@ async function authenticateGoogleSheets() {
   try {
     const credentials = rotateCredentials();
     console.log('\n\n\n\n=================================');
+    console.log('Total Hands', credentialsArray.length);
+    console.log('Current Hand', currentIndex);
     console.log(credentials.projectId);
     console.log('=================================\n\n\n\n');
     return await google.auth.getClient({
