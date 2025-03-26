@@ -334,6 +334,13 @@ export const ShowPremiumApps = () => {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to report problem');
       }
+      setPremiumData((prevData) =>
+        prevData.map((app) =>
+          app.email === selectedApp.email && app.appName === selectedApp.appName
+            ? { ...app, problem }
+            : app
+        )
+      );
 
       handleCloseReportForm();
       textareaRef.current.value = '';
@@ -491,85 +498,113 @@ export const ShowPremiumApps = () => {
             <div className="grid flex-col grid-cols-1 lg:grid-cols-2 gap-5 w-full max-h-[650px] overflow-y-auto px-5 pb-5 border-t-0 border-[1px] border-dark-500 __dokmai_scrollbar">
               {(searchTerm ? filteredPremiumData : premiumData)
                 .reverse()
-                .map((item: any, index: any) => (
-                  <div
-                    key={index}
-                    className="shadow pt-5 relative pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5">
-                    <div className="w-full flex flex-row-reverse items-start justify-between">
-                      {Object.entries(item).map(([label, value], idx) => (
-                        <>
-                          {String(label) === 'accessType' ? (
-                            <span className="text-xs font-aktivGroteskThin text-white/70" key={idx}>
-                              {String(value)}
-                            </span>
-                          ) : null}
-                          {String(value) === 'Netflix Premium' ? (
-                            <Image
-                              src={netflixpremiumlogo}
-                              alt="Netflix Premium Ultra HD Icon"
-                              width={50}
-                              height={50}
-                            />
-                          ) : null}
-                          {String(value) === 'Prime Video' ? (
-                            <Image src={primevideo} alt="Prime Video Icon" width={75} height={75} />
-                          ) : null}
-                        </>
-                      ))}
-                    </div>
-
-                    {Object.entries(item).map(([label, value], idx) => (
-                      <div className="flex flex-col" key={idx}>
-                        <p className="font-aktivGroteskMedium text-white/60 text-[7px] md:text-xs ">
-                          {getLabelDisplayName(String(label))}
-                        </p>
-                        <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
-                          {String(label) !== 'accessType' && String(label) !== 'appName' ? (
-                            <>
-                              {String(value)}
-                              {String(label) !== 'accessType' &&
-                              String(label) !== 'orderDate' &&
-                              String(label) !== 'appName' ? (
-                                <CopyToClipboard textToCopy={String(value)} />
-                              ) : null}
-                            </>
-                          ) : null}
-                        </p>
+                .map((item: any, index: any) => {
+                  const hasProblem = item.hasOwnProperty('problem');
+                  return (
+                    <div
+                      key={index}
+                      className="shadow pt-5 relative pb-10 flex flex-col gap-2 border-b-[1px] border-white/20 bg-dark-700 px-5">
+                      <div className="w-full flex flex-row-reverse items-start justify-between">
+                        {Object.entries(item).map(([label, value], idx) => (
+                          <>
+                            {String(label) === 'accessType' ? (
+                              <span
+                                className="text-xs font-aktivGroteskThin text-white/70"
+                                key={idx}>
+                                {String(value)}
+                              </span>
+                            ) : null}
+                            {String(value) === 'Netflix Premium' ? (
+                              <Image
+                                src={netflixpremiumlogo}
+                                alt="Netflix Premium Ultra HD Icon"
+                                width={50}
+                                height={50}
+                              />
+                            ) : null}
+                            {String(value) === 'Prime Video' ? (
+                              <Image
+                                src={primevideo}
+                                alt="Prime Video Icon"
+                                width={75}
+                                height={75}
+                              />
+                            ) : null}
+                          </>
+                        ))}
                       </div>
-                    ))}
-                    <div className="mt-3 w-full justify-end flex gap-2 z-20">
-                      <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
-                        Copy All
-                      </p>
-                      <CopyToClipboard
-                        textToCopy={Object.entries(item)
-                          .filter(
-                            ([label]) => !['accessType', 'orderDate', 'appName'].includes(label)
-                          )
-                          .map(([label, value]) => `${getLabelDisplayName(label)}: ${value}`)
-                          .join('\n')}
+
+                      {Object.entries(item).map(([label, value], idx) => (
+                        <div className="flex flex-col" key={idx}>
+                          <p className="font-aktivGroteskMedium text-white/60 text-[7px] md:text-xs ">
+                            {getLabelDisplayName(String(label))}
+                          </p>
+                          <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                            {String(label) !== 'accessType' &&
+                            String(label) !== 'appName' &&
+                            String(label) !== 'problem' &&
+                            String(label) !== 'contact' &&
+                            String(label) !== 'buyVia' ? (
+                              <>
+                                {String(value)}
+                                {String(label) !== 'accessType' &&
+                                String(label) !== 'orderDate' &&
+                                String(label) !== 'problem' &&
+                                String(label) !== 'contact' &&
+                                String(label) !== 'buyVia' &&
+                                String(label) !== 'appName' ? (
+                                  <CopyToClipboard textToCopy={String(value)} />
+                                ) : null}
+                              </>
+                            ) : null}
+                          </p>
+                        </div>
+                      ))}
+                      <div className="mt-3 w-full justify-end flex gap-2 z-20">
+                        <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                          Copy All
+                        </p>
+                        <CopyToClipboard
+                          textToCopy={Object.entries(item)
+                            .filter(
+                              ([label]) => !['accessType', 'orderDate', 'appName'].includes(label)
+                            )
+                            .map(([label, value]) => `${getLabelDisplayName(label)}: ${value}`)
+                            .join('\n')}
+                        />
+                      </div>
+                      <div className="mt-2 w-full justify-end flex gap-2 z-20">
+                        {hasProblem ? (
+                          <div className="flex flex-col items-start w-full">
+                            <p className="font-aktivGroteskBold text-[10px] md:text-sm text-red-500">
+                              Problem Reported:
+                            </p>
+                            <p className="text-[10px] md:text-sm text-white">{item.problem}</p>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                              Report Problem
+                            </p>
+                            <button
+                              onClick={() => handleOpenReportForm(item)}
+                              className="bg-red-500/20 text-red-500 px-2 py-1 rounded flex gap-1 items-center">
+                              <MdReportProblem className="text-lg" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      <Image
+                        draggable="false"
+                        src={dokmaioutline}
+                        width={400}
+                        height={400}
+                        className="opacity-5 absolute bottom-2 right-2 w-[50%] h-auto select-none"
+                        alt="Dokmai Logo Outline"
                       />
                     </div>
-                    <div className="mt-2 w-full justify-end flex gap-2 z-20">
-                      <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
-                        Report Problem
-                      </p>
-                      <button
-                        onClick={() => handleOpenReportForm(item)}
-                        className="bg-red-500/20 text-red-500 px-2 py-1 rounded flex gap-1 items-center ">
-                        <MdReportProblem className="text-lg" />
-                      </button>
-                    </div>
-                    <Image
-                      draggable="false"
-                      src={dokmaioutline}
-                      width={400}
-                      height={400}
-                      className="opacity-5 absolute bottom-2 right-2 w-[50%] h-auto select-none"
-                      alt="Dokmai Logo Outline"
-                    />
-                  </div>
-                ))}
+                  );
+                })}
             </div>
             {premiumData.filter(
               (item: any) => item.accessType && item.accessType.includes('Family Access')
