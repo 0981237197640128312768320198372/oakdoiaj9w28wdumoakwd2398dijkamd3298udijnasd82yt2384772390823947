@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import { MdReportProblem } from 'react-icons/md';
+import { MdReportGmailerrorred, MdReportProblem } from 'react-icons/md';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
@@ -570,48 +570,55 @@ export const ShowPremiumApps = () => {
                           </p>
                         </div>
                       ))}
-                      <div className="mt-3 w-full justify-end flex gap-2 z-20">
-                        <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
-                          Copy All
-                        </p>
-                        <CopyToClipboard
-                          textToCopy={Object.entries(item)
-                            .filter(
-                              ([label]) => !['accessType', 'orderDate', 'appName'].includes(label)
-                            )
-                            .map(([label, value]) => `${getLabelDisplayName(label)}: ${value}`)
-                            .join('\n')}
+                      <div className="mt-3 w-full justify-between flex gap-2 z-20">
+                        <div className="flex gap-2 z-20 items-center">
+                          <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                            Copy All
+                          </p>
+                          <CopyToClipboard
+                            textToCopy={Object.entries(item)
+                              .filter(
+                                ([label]) => !['accessType', 'orderDate', 'appName'].includes(label)
+                              )
+                              .map(([label, value]) => `${getLabelDisplayName(label)}: ${value}`)
+                              .join('\n')}
+                          />
+                        </div>
+                        <div className="flex gap-2 z-20 items-center">
+                          {hasProblem ? (
+                            <div className="flex flex-col items-start w-full">
+                              <p className="font-aktivGroteskBold text-[10px] md:text-sm text-red-500">
+                                แจ้งปัญหาแล้ว
+                              </p>
+                              <p className="text-lg text-white">{item.problem}</p>
+                            </div>
+                          ) : (
+                            <>
+                              <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
+                                Report Problem
+                              </p>
+                              <button
+                                onClick={() => handleOpenReportForm(item)}
+                                className="bg-red-500/20 text-red-500 px-2 py-1 rounded flex gap-1 items-center">
+                                <MdReportProblem className="text-lg" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {hasProblem ? (
+                        <MdReportGmailerrorred className="absolute -bottom-5 text-red-600/5 -right-5 w-[50%] h-auto select-none" />
+                      ) : (
+                        <Image
+                          draggable="false"
+                          src={dokmaioutline}
+                          width={400}
+                          height={400}
+                          className="opacity-5 absolute bottom-2 right-2 w-[50%] h-auto select-none"
+                          alt="Dokmai Logo Outline"
                         />
-                      </div>
-                      <div className="mt-2 w-full justify-end flex gap-2 z-20">
-                        {hasProblem ? (
-                          <div className="flex flex-col items-start w-full">
-                            <p className="font-aktivGroteskBold text-[10px] md:text-sm text-red-500">
-                              แจ้งปัญหาแล้ว
-                            </p>
-                            <p className="text-lg text-white">{item.problem}</p>
-                          </div>
-                        ) : (
-                          <>
-                            <p className="font-aktivGroteskBold flex gap-2 text-[10px] md:text-sm items-center">
-                              Report Problem
-                            </p>
-                            <button
-                              onClick={() => handleOpenReportForm(item)}
-                              className="bg-red-500/20 text-red-500 px-2 py-1 rounded flex gap-1 items-center">
-                              <MdReportProblem className="text-lg" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                      <Image
-                        draggable="false"
-                        src={dokmaioutline}
-                        width={400}
-                        height={400}
-                        className="opacity-5 absolute bottom-2 right-2 w-[50%] h-auto select-none"
-                        alt="Dokmai Logo Outline"
-                      />
+                      )}
                     </div>
                   );
                 })}
