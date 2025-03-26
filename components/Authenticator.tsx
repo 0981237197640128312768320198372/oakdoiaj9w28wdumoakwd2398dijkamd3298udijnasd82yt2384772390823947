@@ -7,6 +7,7 @@ import LoadingAnimation from '@/components/Loading';
 
 interface AuthData {
   username: string;
+  name: string;
   role: 'admin' | 'staff';
   expiration: number;
 }
@@ -36,18 +37,18 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
           const currentPath = window.location.pathname;
 
           if (parsedAuth.role === 'admin' && currentPath.startsWith('/staff')) {
-            router.replace('/admin'); // Redirect admin to /admin
+            router.replace('/admin');
           } else if (parsedAuth.role === 'staff' && currentPath.startsWith('/admin')) {
-            router.replace('/staff'); // Redirect staff to /staff
+            router.replace('/staff');
           } else {
-            setAuthenticated(true); // Only set authenticated if the user is in the correct path
+            setAuthenticated(true);
           }
         } else {
-          localStorage.removeItem('auth'); // Expired or invalid
+          localStorage.removeItem('auth');
         }
       } catch (error) {
         console.error('Error parsing auth data:', error);
-        localStorage.removeItem('auth'); // Cleanup invalid auth data
+        localStorage.removeItem('auth');
       }
     }
 
@@ -63,7 +64,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
     const password = formData.get('password') as string;
 
     try {
-      const response = await fetch('/api/authenticate', {
+      const response = await fetch('/api/v2/authenticate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
@@ -74,7 +75,6 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         setIsSubmitting(false);
 
         if (response.status === 403) {
-          // Handle blocked user
           setError('Too many failed attempts. You are temporarily blocked.');
         } else {
           setError(errorData.error || 'Invalid credentials. Please try again.');
@@ -82,10 +82,13 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const data: { role: 'admin' | 'staff' } = await response.json();
+      const data: { role: 'admin' | 'staff'; name: string } = await response.json();
 
       const expiration = new Date().getTime() + EXPIRATION_TIME;
-      localStorage.setItem('auth', JSON.stringify({ username, role: data.role, expiration }));
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({ username, name: data.name, role: data.role, expiration })
+      );
 
       if (data.role === 'admin') {
         setAuthenticated(true);
@@ -97,6 +100,8 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       setError('An error occurred. Please try again later.');
     } finally {
       setIsSubmitting(false);
+
+      window.location.reload();
     }
   };
 
@@ -109,7 +114,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
       <div className="flex flex-col items-center justify-center mt-20">
         <div className="p-5 border border-dark-500 w-96 bg-dark-700">
           {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-          <form onSubmit={handleSubmit} className="flex flex-col  gap-3">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             <input
               required
               type="text"

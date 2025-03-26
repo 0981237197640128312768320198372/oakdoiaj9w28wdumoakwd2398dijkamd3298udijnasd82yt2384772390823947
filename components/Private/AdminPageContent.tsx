@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import ActivityLogs from '@/components/ActivityLogs';
+import ActivityLogs from '@/components/Private/ActivityLogs';
 import PageHeadline from '@/components/PageHeadline';
 import AdminDeposit from './AdminDeposit';
-import EmailsViewer from './EmailsViewer';
-import ManageHelps from './ManageHelps';
-import Statistics from './Statistic';
-import StatisticCards from './StatisticCards';
+import EmailsViewer from '../EmailsViewer';
+import ManageHelps from '../ManageHelps';
+import Statistics from '../Statistic';
+import StatisticCards from '../StatisticCards';
 import { useState } from 'react';
 import { title } from 'process';
+import { ManageUsers } from './ManageUser';
 
 const AdminPageContent = () => {
   const handleLogout = () => {
@@ -19,6 +20,9 @@ const AdminPageContent = () => {
 
   const [currentSection, setCurrentSection] = useState('AdminDeposit');
 
+  const authData = JSON.parse(localStorage.getItem('auth') || '{}');
+  const userName = authData.name || 'You';
+
   const sections: Record<string, JSX.Element> = {
     StatisticCards: <StatisticCards />,
     Statistics: <Statistics />,
@@ -26,6 +30,7 @@ const AdminPageContent = () => {
     EmailsViewer: <EmailsViewer />,
     ActivityLogs: <ActivityLogs />,
     ManageHelps: <ManageHelps />,
+    ManageUsers: <ManageUsers />,
   };
   const sectionsButton = [
     { button: 'StatisticCards', title: 'Statistic Cards' },
@@ -34,12 +39,13 @@ const AdminPageContent = () => {
     { button: 'EmailsViewer', title: 'Email' },
     { button: 'ActivityLogs', title: 'Activity' },
     { button: 'ManageHelps', title: 'Manage Helps' },
+    { button: 'ManageUsers', title: 'Manage Users' },
   ];
   return (
     <div className="w-full max-w-[1140px] flex flex-col justify-center items-center">
       <PageHeadline
-        headline="Admin Panel"
-        description="A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
+        headline={`Hi, ${userName}`}
+        description="Welcome to A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
       />
       <div className="w-full max-w-4xl flex items-center justify-between mb-10">
         <div className="flex items-center justify-start gap-5">

@@ -1,4 +1,3 @@
-// models/DailyStatistics.ts
 import { Schema, model, models } from 'mongoose';
 
 const DailyStatisticsSchema = new Schema({
