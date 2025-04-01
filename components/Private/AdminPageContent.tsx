@@ -50,8 +50,8 @@ const AdminPageContent = () => {
         headline={`Hi, ${userName}`}
         description="Welcome to A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
       />
-      <div className="w-full max-w-4xl flex items-center justify-between mb-10">
-        <div className="flex items-center justify-start gap-5">
+      <div className="w-full max-w-4xl max-md:flex-col flex items-center justify-between mb-10">
+        <div className="lg:flex lg:items-center lg:justify-center grid grid-cols-2 md:grid-cols-3 gap-5 w-full">
           {sectionsButton.map((item, i) => (
             <button
               key={i}
@@ -65,7 +65,7 @@ const AdminPageContent = () => {
         </div>
         <button
           onClick={handleLogout}
-          className="bg-red-500 text-dark-800 hover:bg-red-500/90 active:bg-red-500/80 px-1 font-aktivGroteskBold">
+          className="bg-red-500 text-dark-800 hover:bg-red-500/90 active:bg-red-500/80 px-1 font-aktivGroteskBol mt-10 md:m-0">
           Logout
         </button>
       </div>
