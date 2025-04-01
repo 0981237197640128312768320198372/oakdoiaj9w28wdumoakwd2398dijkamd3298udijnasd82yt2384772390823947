@@ -43,11 +43,11 @@ function rotateCredentials() {
 async function authenticateGoogleSheets() {
   try {
     const credentials = rotateCredentials();
-    console.log('\n\n\n\n=================================');
-    console.log('Total Hands', credentialsArray.length);
-    console.log('Current Hand', currentIndex);
-    console.log(credentials.projectId);
-    console.log('=================================\n\n\n\n');
+    // console.log('\n\n\n\n=================================');
+    // console.log('Total Hands', credentialsArray.length);
+    // console.log('Current Hand', currentIndex);
+    // console.log(credentials.projectId);
+    // console.log('=================================\n\n\n\n');
     return await google.auth.getClient({
       projectId: credentials.projectId,
       credentials: {

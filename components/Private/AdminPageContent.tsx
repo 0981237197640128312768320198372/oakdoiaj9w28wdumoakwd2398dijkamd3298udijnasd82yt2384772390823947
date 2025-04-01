@@ -11,6 +11,7 @@ import StatisticCards from '../StatisticCards';
 import { useState } from 'react';
 import { title } from 'process';
 import { ManageUsers } from './ManageUser';
+import DataRemain from './DataRemain';
 
 const AdminPageContent = () => {
   const handleLogout = () => {
@@ -31,6 +32,7 @@ const AdminPageContent = () => {
     ActivityLogs: <ActivityLogs />,
     ManageHelps: <ManageHelps />,
     ManageUsers: <ManageUsers />,
+    DataRemain: <DataRemain />,
   };
   const sectionsButton = [
     { button: 'StatisticCards', title: 'Statistic Cards' },
@@ -40,6 +42,7 @@ const AdminPageContent = () => {
     { button: 'ActivityLogs', title: 'Activity' },
     { button: 'ManageHelps', title: 'Manage Helps' },
     { button: 'ManageUsers', title: 'Manage Users' },
+    { button: 'DataRemain', title: 'Data Remain' },
   ];
   return (
     <div className="w-full max-w-[1140px] flex flex-col justify-center items-center">
