@@ -57,7 +57,7 @@ const DataRemain = () => {
 
   return (
     <div className="p-5">
-      <h2 className="text-2xl font-bold mb-5">Dat Remain</h2>
+      <h2 className="text-2xl font-bold mb-5">Data Remain</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {Object.entries(sheetLengths).map(([sheetName, length]) => (
           <div key={sheetName} className="p-4 border rounded-lg shadow-sm bg-gray-800 text-white">
