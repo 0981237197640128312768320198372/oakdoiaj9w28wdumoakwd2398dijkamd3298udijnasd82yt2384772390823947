@@ -75,16 +75,11 @@ export function AdminSidebar({
   onLogout,
   userName,
 }: AdminSidebarProps) {
-  const [searchQuery, setSearchQuery] = React.useState('');
-
   const filteredSections = React.useMemo(() => {
     const sections = Object.keys(sectionTitles);
-    if (!searchQuery.trim()) return sections;
 
-    return sections.filter((section) =>
-      sectionTitles[section].toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [searchQuery]);
+    return sections.filter((section) => sectionTitles[section].toLowerCase());
+  }, []);
 
   return (
     <SidebarProvider>

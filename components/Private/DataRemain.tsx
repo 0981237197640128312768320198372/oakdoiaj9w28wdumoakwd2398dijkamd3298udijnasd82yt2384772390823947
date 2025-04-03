@@ -12,7 +12,6 @@ const DataRemain = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch sheet lengths, reusable for refresh
   const fetchSheetLengths = async () => {
     try {
       setLoading(true);
@@ -37,12 +36,10 @@ const DataRemain = () => {
     }
   };
 
-  // Fetch data on component mount
   useEffect(() => {
     fetchSheetLengths();
   }, []);
 
-  // Skeleton loading placeholder, matching StatisticCards
   const renderSkeleton = (count: number) =>
     Array.from({ length: count }).map((_, index) => (
       <div
@@ -54,7 +51,7 @@ const DataRemain = () => {
     ));
 
   return (
-    <div className="flex flex-col w-full gap-5 bg-dark-700 p-5 border-[1px] border-dark-500 rounded-md">
+    <div className="flex flex-col w-full max-w-4xl gap-5 bg-dark-700 p-5 border-[1px] border-dark-500 rounded-md">
       <div className="flex justify-between items-start w-full border-b-[1px] border-dark-500 pb-3">
         <h3 className="flex items-center gap-2 font-bold mb-5">
           <TbDatabase />
@@ -72,7 +69,7 @@ const DataRemain = () => {
       </div>
 
       {loading ? (
-        <div className="bg-dark-600 p-5 rounded-sm gap-2">
+        <div className="flex flex-col gap-5">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">{renderSkeleton(4)}</div>
         </div>
       ) : error ? (
@@ -84,15 +81,15 @@ const DataRemain = () => {
           <p>No data available</p>
         </div>
       ) : (
-        <div className="bg-dark-600 p-5 rounded-sm">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className=" rounded-sm">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
             {Object.entries(sheetLengths).map(([sheetName, length]) => (
               <div
                 key={sheetName}
-                className="flex flex-col p-5 bg-dark-500 border border-dark-300 rounded shadow gap-2">
-                <h3 className="text-sm text-light-800">{sheetName}</h3>
+                className="flex flex-col p-2 bg-dark-500 border border-dark-300 rounded ">
+                <h3>{sheetName.replace('READY_TO_USE_', 'DATA ')}</h3>
                 <div className="flex gap-2 items-center text-primary">
-                  <p className="text-lg  text-primary">{length}</p>
+                  <p className=" text-primary">{length}</p>
                 </div>
               </div>
             ))}
