@@ -182,7 +182,6 @@ export function AdminSidebar({
           />
           <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-6">
             <SidebarTrigger />
-
             <Separator orientation="vertical" className="h-6 bg-dark-500 text-white" />
             <Breadcrumb>
               <BreadcrumbList>
