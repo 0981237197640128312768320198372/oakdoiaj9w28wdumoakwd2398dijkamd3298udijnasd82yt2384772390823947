@@ -441,7 +441,6 @@ export const ManageUsers = () => {
                   </TableHeader>
                   <TableBody>
                     {isLoading ? (
-                      // Skeleton loading state
                       Array.from({ length: 5 }).map((_, index) => <TableRowSkeleton key={index} />)
                     ) : users.length === 0 ? (
                       <TableRow className="border-dark-500 hover:bg-dark-600">
