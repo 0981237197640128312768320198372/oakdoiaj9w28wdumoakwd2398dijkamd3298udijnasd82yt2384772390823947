@@ -32,7 +32,7 @@ const TheBotActivity = () => {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         });
-
+        console.log(response);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Failed to fetch licenses');
@@ -130,6 +130,7 @@ const TheBotActivity = () => {
           <option value="error">Error</option>
           <option value="success">Success</option>
           <option value="status">Status</option>
+          <option value="info">Status</option>
         </select>
       </div>
 
