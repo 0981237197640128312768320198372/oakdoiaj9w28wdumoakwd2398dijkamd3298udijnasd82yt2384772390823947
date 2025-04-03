@@ -33,7 +33,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -100,7 +99,7 @@ export function AdminSidebar({
     <SidebarProvider>
       <div className="flex min-h-screen bg-dark-800 text-white w-full">
         <Sidebar variant="floating" className="border-r border-dark-500">
-          <SidebarHeader className="px-4 py-3">
+          <SidebarHeader className="px-5 py-5">
             <div className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-md">
                 <Image
@@ -127,7 +126,6 @@ export function AdminSidebar({
           <SidebarContent>
             <ScrollArea className="h-[calc(100vh-12rem)]">
               <SidebarGroup>
-                <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {filteredSections.map((section) => {
@@ -136,9 +134,11 @@ export function AdminSidebar({
                         <SidebarMenuItem key={section}>
                           <SidebarMenuButton
                             isActive={currentSection === section}
-                            className="transition-all duration-200"
+                            className={`transition-all duration-300  ${
+                              currentSection === section ? 'bg-primary text-black ' : ''
+                            }`}
                             onClick={() => onSectionChange(section)}>
-                            <Icon className="h-4 w-4" />
+                            <Icon className="h-5 w-5" />
                             <span>{sectionTitles[section]}</span>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -149,7 +149,7 @@ export function AdminSidebar({
               </SidebarGroup>
             </ScrollArea>
           </SidebarContent>
-          <SidebarFooter className="border-t border-dark-500 p-4">
+          <SidebarFooter className="border-t border-dark-500 p-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-dark-800 flex items-center justify-center text-dark-800">
@@ -168,8 +168,8 @@ export function AdminSidebar({
               </div>
               <button
                 onClick={onLogout}
-                className="p-2 rounded-md bg-red-500 text-dark-800 hover:bg-red-500/90 transition-colors">
-                <LogOut className="h-4 w-4" />
+                className="p-2 rounded-md bg-red-500/30 text-red-500 hover:bg-red-500/50 transition-colors">
+                <LogOut className="h-5 w-5" />
               </button>
             </div>
           </SidebarFooter>

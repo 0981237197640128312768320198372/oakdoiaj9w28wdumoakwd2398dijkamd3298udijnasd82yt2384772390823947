@@ -4,6 +4,7 @@
 
 import { formatTime } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { TbRefresh } from 'react-icons/tb';
 
 interface BotLog {
   timestamp: string;
@@ -181,13 +182,12 @@ const TheBotActivity = () => {
     <div className="p-5">
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-2xl font-bold">Bot Activity Logs</h2>
+
         <button
           onClick={handleRefresh}
-          disabled={isRefreshing}
-          className={`px-4 py-2 rounded text-white ${
-            isRefreshing ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
-          }`}>
-          {isRefreshing ? 'Refreshing...' : 'Refresh'}
+          className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
+          title="Refresh emails">
+          <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
         </button>
       </div>
 

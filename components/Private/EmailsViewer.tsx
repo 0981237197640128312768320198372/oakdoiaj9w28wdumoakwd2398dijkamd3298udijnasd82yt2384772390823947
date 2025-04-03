@@ -161,7 +161,7 @@ const EmailsViewer = () => {
 
       <div className="w-full overflow-hidden">
         {loading ? (
-          <div className="w-full max-h-96 flex flex-col overflow-y-auto __dokmai_scrollbar">
+          <div className="w-full max-h-[700px] flex flex-col overflow-y-auto __dokmai_scrollbar">
             <div className="border-b-[1px] border-dark-500 px-5 py-2 text-xs cursor-pointer bg-dark-600 hover:bg-dark-600/40">
               <div className="w-52 h-5 bg-dark-500 mt-2 animate-pulse" />
               <div className="w-80 h-5 bg-dark-500 mt-2 animate-pulse" />
@@ -194,7 +194,7 @@ const EmailsViewer = () => {
             </div>
           </div>
         ) : (
-          <div className="w-full max-h-96 flex flex-col overflow-y-auto __dokmai_scrollbar">
+          <div className="w-full max-h-[700px] flex flex-col overflow-y-auto __dokmai_scrollbar">
             {filteredEmails.reverse().map((email) => (
               <div
                 key={email.uid}
@@ -219,7 +219,7 @@ const EmailsViewer = () => {
               setSelectedEmail(null);
             }
           }}
-          tabIndex={-1} // Makes the div focusable for keydown events
+          tabIndex={-1}
           ref={modalRef}>
           <div
             ref={modalRef}
