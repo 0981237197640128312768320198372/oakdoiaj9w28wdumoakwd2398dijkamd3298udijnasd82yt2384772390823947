@@ -5,6 +5,8 @@
 import { formatTime } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { TbRefresh } from 'react-icons/tb';
+import { RxActivityLog } from 'react-icons/rx';
+import { RiDeleteBin7Line } from 'react-icons/ri';
 
 interface BotLog {
   timestamp: string;
@@ -22,6 +24,38 @@ interface LicenseData {
   lastActivity: string | null;
 }
 
+const RealTimeClock = () => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const formattedDate = currentTime.toLocaleDateString('en-GB', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  const formattedTime = currentTime.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+
+  return (
+    <div className="flex flex-col items-end text-light-500 text-sm">
+      <span>{formattedDate}</span>
+      <span>{formattedTime}</span>
+    </div>
+  );
+};
+
 const TheBotActivity = () => {
   const [licenseData, setLicenseData] = useState<LicenseData[]>([]);
   const [licenseLogs, setLicenseLogs] = useState<{ [key: string]: BotLog[] }>({});
@@ -31,7 +65,6 @@ const TheBotActivity = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch licenses and last activity timestamps
   const fetchLicenses = async () => {
     try {
       setLoadingLicenses(true);
@@ -56,14 +89,8 @@ const TheBotActivity = () => {
     }
   };
 
-  // Fetch licenses when the component mounts
-  useEffect(() => {
-    fetchLicenses();
-  }, []);
-
-  // Fetch logs for a specific license when clicked
   const fetchLogs = async (license: string) => {
-    if (licenseLogs[license]) return; // Skip if logs are already fetched
+    if (licenseLogs[license]) return;
 
     try {
       setLoadingLogs((prev) => ({ ...prev, [license]: true }));
@@ -80,7 +107,6 @@ const TheBotActivity = () => {
       }
 
       const data = await response.json();
-      // Sort logs by timestamp (descending) and take the latest 2
       const sortedLogs = data.logs
         .sort(
           (a: BotLog, b: BotLog) =>
@@ -130,15 +156,37 @@ const TheBotActivity = () => {
     }
   };
 
+  const getBotStatusCounts = (licenseData: LicenseData[]) => {
+    const onlineCount = licenseData.filter(
+      ({ lastActivity }) =>
+        lastActivity && new Date().getTime() - new Date(lastActivity).getTime() <= 5 * 60 * 1000
+    ).length;
+
+    const offlineCount = licenseData.length - onlineCount;
+
+    return (
+      <div className="flex flex-col md:flex-row gap-1 text-sm text-light-500">
+        <span className="flex">
+          Online: <span className="px-1 text-green-500">{onlineCount}</span>
+        </span>
+        <span className="flex">
+          Offline: <span className="px-1 text-red-500">{offlineCount}</span>
+        </span>
+      </div>
+    );
+  };
+
   const handleRefresh = () => {
     setIsRefreshing(true);
     setLicenseLogs({});
     setActiveLicense(null);
     fetchLicenses();
   };
+
   useEffect(() => {
     fetchLicenses();
   }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setIsRefreshing(true);
@@ -149,6 +197,7 @@ const TheBotActivity = () => {
 
     return () => clearInterval(interval);
   }, []);
+
   const toggleLicense = (license: string) => {
     if (activeLicense === license) {
       setActiveLicense(null);
@@ -169,107 +218,101 @@ const TheBotActivity = () => {
       const fiveMinutesInMs = 5 * 60 * 1000;
 
       if (currentTime - lastActivityTime <= fiveMinutesInMs) {
-        return <span className="text-sm text-green-500">Online</span>;
+        return <span className="text-sm text-green-500 px-2 py-1 bg-green-500/20">Online</span>;
       } else {
-        return <span className="text-sm text-red-500">Offline</span>;
+        return <span className="text-sm text-red-500 px-2 py-1 bg-red-500/20">Offline</span>;
       }
     } catch {
-      return <span className="text-sm text-red-500">Offline</span>;
+      return <span className="text-sm text-red-500 px-2 py-1 bg-red-500/20">Offline</span>;
     }
   };
 
   return (
-    <div className="p-5">
-      <div className="flex justify-between items-center mb-5">
-        <h2 className="text-2xl font-bold">Bot Activity Logs</h2>
-
+    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px]">
+      <div className="w-full flex justify-between items-start gap-5">
+        <h3 className="flex items-center gap-2 font-bold mb-5">
+          <RxActivityLog />
+          TheBot Activity
+        </h3>
         <button
           onClick={handleRefresh}
+          disabled={isRefreshing}
           className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
-          title="Refresh emails">
+          title="Refresh data">
           <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
-        </button>
+        </button>{' '}
+      </div>
+      <div className="w-full flex justify-between items-start pb-3 gap-5">
+        {getBotStatusCounts(licenseData)}
+        <RealTimeClock />
       </div>
 
-      {loadingLicenses && (
-        <div className="space-y-2">
+      {loadingLicenses ? (
+        <div className="w-full flex flex-col gap-5 bg-dark-600 p-5">
           {[...Array(3)].map((_, index) => (
-            <div key={index} className="animate-pulse">
-              <div className="h-10 bg-gray-700 rounded w-full"></div>
+            <div
+              key={index}
+              className="flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between">
+              <div className="w-24 h-6 bg-dark-300 animate-pulse rounded-sm" />
+              <div className="flex flex-col items-end gap-2">
+                <div className="w-32 h-4 bg-dark-300 animate-pulse rounded-sm" />
+                <div className="w-16 h-5 bg-dark-300 animate-pulse rounded-sm" />
+              </div>
             </div>
           ))}
         </div>
-      )}
-
-      {error && <p className="text-red-500 mb-3">{error}</p>}
-
-      {!loadingLicenses && licenseData.length > 0 && (
-        <div className="space-y-2">
+      ) : error ? (
+        <div className="flex justify-center items-center w-full h-full">
+          <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
+            {error}
+          </p>
+        </div>
+      ) : licenseData.length > 0 ? (
+        <div className="flex flex-col overflow-y-scroll max-h-[700px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
           {licenseData.map(({ license, lastActivity }) => (
-            <div key={license} className="__nofocus">
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={() => toggleLicense(license)}
-                  className="w-full text-left flex justify-between items-center py-4 __nofocus">
-                  <span className="text-xl font-aktivGroteskRegular text-light-300 __nofocus">
-                    {license}{' '}
-                    <span className="text-sm text-gray-400">({formatTime(lastActivity)})</span>{' '}
-                    {getOnlineStatus(lastActivity)}
-                  </span>
+            <button
+              key={license}
+              onClick={() => toggleLicense(license)}
+              className="flex flex-col border border-dark-400 shadow-md px-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 text-left w-full">
+              <div className="flex justify-between w-full items-center py-3 lg:gap-10">
+                <span className="text-light-100">
+                  {license}
+                  <br />
+                  <span className="text-xs text-light-800">{formatTime(lastActivity)}</span>
+                </span>
+                <div className="gap-3 flex items-center">
+                  {getOnlineStatus(lastActivity)}
                   <button
-                    onClick={() => deleteLogs(license)}
-                    className="ml-2 text-red-500 hover:text-red-600 text-sm">
-                    Delete
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent the outer button's click event
+                      deleteLogs(license);
+                    }}
+                    className="p-2 rounded-md bg-red-500/30 text-red-500 hover:bg-red-500/50 transition-colors">
+                    <RiDeleteBin7Line className="h-5 w-5" />
                   </button>
-                  <span className="text-light-500 transition-all duration-700">
-                    {activeLicense === license ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
+                </div>
               </div>
               {activeLicense === license && (
                 <div
-                  className={`px-7 pb-4 text-light-600 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
-                    activeLicense === license ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+                  className={`my-5 text-light-700 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
+                    activeLicense === license ? 'max-h-screen block' : 'max-h-0 hidden'
                   }`}>
                   {loadingLogs[license] ? (
                     <p className="text-gray-500">Loading logs...</p>
                   ) : licenseLogs[license] && licenseLogs[license].length > 0 ? (
-                    <div>
+                    <div className="flex flex-col gap-5">
                       {licenseLogs[license].map((log, index) => (
-                        <div key={index} className="mb-4">
-                          <p>
-                            <strong>Timestamp:</strong> {formatTime(log.timestamp)}
-                          </p>
-                          <p>
-                            <strong>Type:</strong> {log.type}
-                          </p>
-                          <p>
-                            <strong>Message:</strong> {log.message}
-                          </p>
+                        <div
+                          key={index}
+                          className="border-l-[1px] border-light-100 bg-dark-400 p-5">
+                          <div className="flex w-full justify-between mb-5">
+                            <p className="px-2 bg-light-100/10 w-fit text-light-400 rounded">
+                              {log.type}
+                            </p>
+                            <p>{formatTime(log.timestamp)}</p>
+                          </div>
+
+                          <p className="text-xs md:text-md">{log.message}</p>
                           {log.details && (
                             <p>
                               <strong>Details:</strong>
@@ -294,14 +337,13 @@ const TheBotActivity = () => {
                   )}
                 </div>
               )}
-            </div>
+            </button>
           ))}
         </div>
-      )}
-
-      {/* No Licenses Message */}
-      {!loadingLicenses && licenseData.length === 0 && (
-        <p className="text-gray-500">No licenses found.</p>
+      ) : (
+        <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
+          No licenses found.
+        </p>
       )}
     </div>
   );

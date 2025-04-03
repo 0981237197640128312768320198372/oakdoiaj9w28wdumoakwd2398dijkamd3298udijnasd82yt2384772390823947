@@ -81,7 +81,7 @@ const StatisticCards = () => {
         <div className="flex justify-between items-start w-full border-b-[1px] border-dark-500 pb-3">
           <h3 className="flex items-center gap-2 font-bold mb-5">
             <AiOutlineProduct />
-            Statistic Data
+            Statistic Cards Data
           </h3>
           <button
             disabled

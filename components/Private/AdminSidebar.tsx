@@ -1,21 +1,13 @@
 'use client';
 
 import * as React from 'react';
-import {
-  Activity,
-  BarChart3,
-  Database,
-  HelpCircle,
-  Home,
-  LogOut,
-  Mail,
-  Search,
-  Users,
-  Wallet,
-} from 'lucide-react';
+import { Activity, BarChart3, HelpCircle, Home, LogOut, Search, Users, Wallet } from 'lucide-react';
+import { TbDatabase } from 'react-icons/tb';
 import { RiRobot2Line } from 'react-icons/ri';
 import { RxActivityLog } from 'react-icons/rx';
 import DokmaiIcon from '@/assets/images/dokmailogosquare.png';
+
+import { MdOutlineMarkEmailUnread } from 'react-icons/md';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -49,11 +41,11 @@ const sectionIcons: Record<string, React.ElementType> = {
   StatisticCards: BarChart3,
   Statistics: Activity,
   AdminDeposit: Wallet,
-  EmailsViewer: Mail,
+  EmailsViewer: MdOutlineMarkEmailUnread,
   ActivityLogs: RxActivityLog,
   ManageHelps: HelpCircle,
   ManageUsers: Users,
-  DataRemain: Database,
+  DataRemain: TbDatabase,
   TheBotActivity: RiRobot2Line,
 };
 
@@ -197,7 +189,7 @@ export function AdminSidebar({
               </BreadcrumbList>
             </Breadcrumb>
           </header>
-          <main className="flex-1 p-6 bg-dark-800">{children}</main>
+          <main className="flex-1 bg-dark-800">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>

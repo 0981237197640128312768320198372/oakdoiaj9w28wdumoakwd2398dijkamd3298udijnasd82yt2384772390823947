@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { TbDatabase, TbRefresh } from 'react-icons/tb';
 
 interface SheetLengths {
   [key: string]: number;
@@ -8,64 +9,96 @@ interface SheetLengths {
 
 const DataRemain = () => {
   const [sheetLengths, setSheetLengths] = useState<SheetLengths>({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch sheet lengths when the component mounts
-  useEffect(() => {
-    const fetchSheetLengths = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('/api/v2/data_remain', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
+  // Function to fetch sheet lengths, reusable for refresh
+  const fetchSheetLengths = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch('/api/v2/data_remain', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch sheet lengths');
-        }
-
-        const data = await response.json();
-        setSheetLengths(data.sheetLengths);
-      } catch (err) {
-        setError('Failed to load sheet lengths. Please try again later.');
-        console.error(err);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch sheet lengths');
       }
-    };
 
+      const data = await response.json();
+      setSheetLengths(data.sheetLengths);
+    } catch (err) {
+      setError('Failed to load sheet lengths. Please try again later.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch data on component mount
+  useEffect(() => {
     fetchSheetLengths();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center p-5">
-        <p className="text-gray-500">Loading Data...</p>
+  // Skeleton loading placeholder, matching StatisticCards
+  const renderSkeleton = (count: number) =>
+    Array.from({ length: count }).map((_, index) => (
+      <div
+        key={index}
+        className="p-5 bg-dark-600 border border-dark-500 rounded shadow animate-pulse">
+        <div className="h-4 bg-dark-500 rounded mb-2 w-3/4"></div>
+        <div className="h-6 bg-dark-500 rounded w-1/2"></div>
       </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-5">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
+    ));
 
   return (
-    <div className="p-5">
-      <h2 className="text-2xl font-bold mb-5">Data Remain</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {Object.entries(sheetLengths).map(([sheetName, length]) => (
-          <div key={sheetName} className="p-4 border rounded-lg shadow-sm bg-gray-800 text-white">
-            <h3 className="text-lg font-semibold">{sheetName}</h3>
-            <p className="text-sm">Data Remaining: {length}</p>
-          </div>
-        ))}
+    <div className="flex flex-col w-full gap-5 bg-dark-700 p-5 border-[1px] border-dark-500 rounded-md">
+      <div className="flex justify-between items-start w-full border-b-[1px] border-dark-500 pb-3">
+        <h3 className="flex items-center gap-2 font-bold mb-5">
+          <TbDatabase />
+          Data Remain
+        </h3>
+        <button
+          onClick={fetchSheetLengths}
+          disabled={loading}
+          className={`p-1 text-sm rounded-sm h-fit font-aktivGroteskBold w-fit bg-primary text-dark-800 ${
+            loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/70 hover:text-dark-800'
+          }`}
+          title="Refresh data">
+          <TbRefresh className="text-xl" />
+        </button>
       </div>
+
+      {loading ? (
+        <div className="bg-dark-600 p-5 rounded-sm gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">{renderSkeleton(4)}</div>
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center">
+          <p className="text-red-500">{error}</p>
+        </div>
+      ) : Object.keys(sheetLengths).length === 0 ? (
+        <div className="flex items-center justify-center">
+          <p>No data available</p>
+        </div>
+      ) : (
+        <div className="bg-dark-600 p-5 rounded-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {Object.entries(sheetLengths).map(([sheetName, length]) => (
+              <div
+                key={sheetName}
+                className="flex flex-col p-5 bg-dark-500 border border-dark-300 rounded shadow gap-2">
+                <h3 className="text-sm text-light-800">{sheetName}</h3>
+                <div className="flex gap-2 items-center text-primary">
+                  <p className="text-lg  text-primary">{length}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
