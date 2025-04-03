@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
-import getBotUpdateModel from '@/models/TheBot';
+import getTheBotModel from '@/models/TheBot';
 
 export async function POST(request: NextRequest) {
   const apiKey = request.headers.get('x-api-key');
@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    const BotUpdate = getBotUpdateModel(license);
+    const TheBot = getTheBotModel(license);
 
-    const newUpdate = new BotUpdate({
+    const newUpdate = new TheBot({
       timestamp,
       type,
       message,
