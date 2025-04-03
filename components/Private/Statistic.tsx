@@ -4,7 +4,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import LineChart from '@/components/LineChart';
+import LineChart from '@/components/Private/LineChart';
 import { PiChartLine } from 'react-icons/pi';
 import { TbRefresh } from 'react-icons/tb';
 

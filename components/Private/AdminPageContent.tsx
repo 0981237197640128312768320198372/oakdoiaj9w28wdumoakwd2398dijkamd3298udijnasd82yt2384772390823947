@@ -1,26 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import ActivityLogs from '@/components/Private/ActivityLogs';
-import PageHeadline from '@/components/PageHeadline';
-import AdminDeposit from './AdminDeposit';
-import EmailsViewer from '../EmailsViewer';
-import ManageHelps from '../ManageHelps';
-import Statistics from '../Statistic';
-import StatisticCards from '../StatisticCards';
 import { useState } from 'react';
-import { title } from 'process';
+import ActivityLogs from '@/components/Private/ActivityLogs';
+import AdminDeposit from './AdminDeposit';
+import EmailsViewer from './EmailsViewer';
+import ManageHelps from './ManageHelps';
+import Statistics from './Statistic';
+import StatisticCards from './StatisticCards';
 import { ManageUsers } from './ManageUser';
 import DataRemain from './DataRemain';
 import TheBotActivity from './TheBotActivity';
+import { AdminSidebar } from './AdminSidebar';
 
 const AdminPageContent = () => {
+  const [currentSection, setCurrentSection] = useState('AdminDeposit');
+
   const handleLogout = () => {
     localStorage.removeItem('auth');
     location.reload();
   };
-
-  const [currentSection, setCurrentSection] = useState('AdminDeposit');
 
   const authData = JSON.parse(localStorage.getItem('auth') || '{}');
   const userName = authData.name || 'You';
@@ -36,46 +34,19 @@ const AdminPageContent = () => {
     DataRemain: <DataRemain />,
     TheBotActivity: <TheBotActivity />,
   };
-  const sectionsButton = [
-    { button: 'StatisticCards', title: 'Statistic Cards' },
-    { button: 'Statistics', title: 'Statistics Chart' },
-    { button: 'AdminDeposit', title: 'Deposit' },
-    { button: 'EmailsViewer', title: 'Email' },
-    { button: 'ActivityLogs', title: 'Activity' },
-    { button: 'ManageHelps', title: 'Manage Helps' },
-    { button: 'ManageUsers', title: 'Manage Users' },
-    { button: 'DataRemain', title: 'Data Remain' },
-    { button: 'TheBotActivity', title: 'TheBot Activity' },
-  ];
+
   return (
-    <div className="w-full max-w-[1140px] flex flex-col justify-center items-center">
-      <PageHeadline
-        headline={`Hi, ${userName}`}
-        description="Welcome to A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
-      />
-      <div className="w-full max-w-4xl max-md:flex-col flex items-center justify-between mb-10">
-        <div className="lg:flex lg:items-center lg:justify-center grid grid-cols-2 md:grid-cols-3 gap-5 w-full">
-          {sectionsButton.map((item, i) => (
-            <button
-              key={i}
-              className={`px-2 py-1 rounded-sm text-center text-xs bg-dark-500 ${
-                currentSection === item.button ? 'bg-primary text-dark-800' : 'text-white'
-              } text-dark-800`}
-              onClick={() => setCurrentSection(item.button)}>
-              {item.title}
-            </button>
-          ))}
+    <AdminSidebar
+      currentSection={currentSection}
+      onSectionChange={setCurrentSection}
+      onLogout={handleLogout}
+      userName={userName}>
+      <div className="w-full flex flex-col justify-center items-center ">
+        <div className="flex justify-between flex-col items-center gap-10 w-full mt-6 ">
+          {sections[currentSection] || <div className="p-5 ">Section not found</div>}
         </div>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-dark-800 hover:bg-red-500/90 active:bg-red-500/80 px-1 font-aktivGroteskBol mt-10 md:m-0">
-          Logout
-        </button>
       </div>
-      <div className="flex justify-between flex-col items-center gap-10 w-full max-w-4xl">
-        {sections[currentSection] || <div className="p-5">Section not found</div>}
-      </div>
-    </div>
+    </AdminSidebar>
   );
 };
 

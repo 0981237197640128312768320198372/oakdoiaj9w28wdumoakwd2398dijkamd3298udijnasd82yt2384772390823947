@@ -11,9 +11,10 @@ import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
 import netflixpremium from '@/assets/images/netflixpremiumuhd.png';
 import primevideo from '@/assets/images/amazonprimevideo.png';
 import Image from 'next/image';
-import { LuActivity } from 'react-icons/lu';
+import { RxActivityLog } from 'react-icons/rx';
 import { TbRefresh } from 'react-icons/tb';
 import ShowHideText from '../ShowHideText';
+import { formatTime } from '@/lib/utils';
 
 export default function ActivityLogs() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -75,11 +76,11 @@ export default function ActivityLogs() {
     );
   }
   return (
-    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full md:min-w-[500px] rounded ">
+    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px] ">
       <div className="w-full flex justify-between">
         <h3 className="flex items-center gap-2 font-bold mb-5">
-          <LuActivity />
-          Activity
+          <RxActivityLog />
+          User Activity
         </h3>
         <button
           onClick={() => fetchLogs('All')} // Calls the fetchEmails function for the active folder
@@ -136,7 +137,7 @@ export default function ActivityLogs() {
           </div>
         </div>
       ) : filteredLogs.length > 0 ? (
-        <div className="flex flex-col overflow-y-scroll max-h-96 gap-10 w-full bg-dark-600 p-5 __dokmai_scrollbar">
+        <div className="flex flex-col overflow-y-scroll max-h-[700px] gap-10 w-full bg-dark-600 p-5 __dokmai_scrollbar">
           {filteredLogs.map((log, index) => (
             <div
               key={index}
@@ -152,7 +153,8 @@ export default function ActivityLogs() {
                   </span>
                 </div>
                 <div className="text-xs flex flex-col items-end text-light-100">
-                  {log.timestamp}
+                  {formatTime(log.timestamp)}
+
                   <div className="select-none font-aktivGroteskLight text-xs">
                     <ShowHideText text={log.activity.user} />
                   </div>

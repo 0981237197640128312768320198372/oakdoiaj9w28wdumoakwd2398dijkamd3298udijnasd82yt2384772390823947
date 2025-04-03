@@ -1,7 +1,7 @@
 'use client';
 
 import PageHeadline from '@/components/PageHeadline';
-import EmailsViewer from '../EmailsViewer';
+import EmailsViewer from './EmailsViewer';
 
 const StaffPageContent = () => {
   const handleLogout = () => {

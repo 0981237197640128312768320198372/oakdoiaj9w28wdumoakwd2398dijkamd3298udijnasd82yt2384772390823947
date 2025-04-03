@@ -264,7 +264,7 @@ const ManageHelps: React.FC = () => {
   };
 
   return (
-    <div className="w-full border-[1px] border-dark-500 p-5 rounded bg-dark-700">
+    <div className="w-full lg:max-w-7xl border-[1px] border-dark-500 p-5 rounded bg-dark-700">
       <div className="w-full flex justify-between">
         <h3 className="flex items-center gap-2 font-bold mb-5">
           <MdOutlineLiveHelp />

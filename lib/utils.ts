@@ -174,3 +174,20 @@ export const updateStatistic = async (
     console.error(`Error updating ${type}:`, error);
   }
 };
+
+export const formatTime = (timestamp: string | null) => {
+  if (!timestamp) return 'No activity';
+  try {
+    return new Date(timestamp)
+      .toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
+      .replace(' at ', ', ');
+  } catch {
+    return 'N/A';
+  }
+};
