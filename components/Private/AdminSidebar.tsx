@@ -33,7 +33,6 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import PageHeadline from '../PageHeadline';
 import Image from 'next/image';
 
 const sectionIcons: Record<string, React.ElementType> = {
@@ -152,11 +151,7 @@ export function AdminSidebar({
           <SidebarRail />
         </Sidebar>
         <SidebarInset>
-          <PageHeadline
-            headline={`Hi, ${userName}`}
-            description="Welcome to A streamlined page for tracking client activities, sales stats, transactions, and deposits, with easy management tools for smooth operations."
-          />
-          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-6">
+          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-5">
             <SidebarTrigger />
             <Separator orientation="vertical" className="h-6 bg-dark-500 text-white" />
             <Breadcrumb>
