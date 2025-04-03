@@ -24,7 +24,6 @@ const TheBotActivity = () => {
   const [licenses, setLicenses] = useState<string[]>([]);
   const [loadingLicenses, setLoadingLicenses] = useState(true);
 
-  // Fetch licenses when the component mounts
   useEffect(() => {
     const fetchLicenses = async () => {
       try {
@@ -52,14 +51,13 @@ const TheBotActivity = () => {
     fetchLicenses();
   }, []);
 
-  // Fetch logs when license or logType changes
   const fetchLogs = async () => {
     if (!license) return;
 
     try {
       setLoading(true);
       setError(null);
-      const url = `/api/v2/get_thebot_update?license=${encodeURIComponent(
+      const url = `/api/v2/get_thebot_log?license=${encodeURIComponent(
         license
       )}&type=${encodeURIComponent(logType)}`;
       const response = await fetch(url, {
@@ -82,17 +80,14 @@ const TheBotActivity = () => {
     }
   };
 
-  // Fetch logs when license or logType changes
   useEffect(() => {
     fetchLogs();
   }, [license, logType]);
 
-  // Handle license selection
   const handleLicenseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLicense(e.target.value);
   };
 
-  // Handle log type filter change
   const handleLogTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLogType(e.target.value);
   };
@@ -123,7 +118,6 @@ const TheBotActivity = () => {
           </select>
         )}
 
-        {/* Log Type Filter */}
         <label htmlFor="logType" className="text-sm font-medium">
           Filter by Type:
         </label>
@@ -139,17 +133,14 @@ const TheBotActivity = () => {
         </select>
       </div>
 
-      {/* Error Message */}
       {error && <p className="text-red-500 mb-3">{error}</p>}
 
-      {/* Loading State */}
       {loading && (
         <div className="flex justify-center items-center">
           <p className="text-gray-500">Loading logs...</p>
         </div>
       )}
 
-      {/* Logs Table */}
       {!loading && license && logs.length > 0 && (
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse border border-gray-600">
@@ -185,12 +176,10 @@ const TheBotActivity = () => {
         </div>
       )}
 
-      {/* No Logs Message */}
       {!loading && license && logs.length === 0 && (
         <p className="text-gray-500">No logs found for this license.</p>
       )}
 
-      {/* Prompt to Select License */}
       {!license && !loading && !loadingLicenses && (
         <p className="text-gray-500">Please select a license to view logs.</p>
       )}

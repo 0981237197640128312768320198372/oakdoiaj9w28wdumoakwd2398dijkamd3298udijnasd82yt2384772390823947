@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
-import getBotUpdateModel from '@/models/BotUpdate';
+import getTheBotModel from '@/models/TheBot';
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,9 +14,9 @@ export async function GET(request: NextRequest) {
 
     await connectToDatabase();
 
-    const BotUpdate = getBotUpdateModel(license);
+    const TheBot = getTheBotModel(license);
 
-    let query = BotUpdate.find();
+    let query = TheBot.find();
     if (type !== 'All') {
       query = query.where('type').equals(type);
     }

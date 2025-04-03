@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // Define the schema for bot updates
-const botUpdateSchema = new mongoose.Schema({
+const TheBotSchema = new mongoose.Schema({
   timestamp: { type: String, required: true },
   type: { type: String, required: true, enum: ['error', 'success', 'status'] },
   message: { type: String, required: true },
@@ -12,12 +12,11 @@ const botUpdateSchema = new mongoose.Schema({
   },
 });
 
-const getBotUpdateModel = (license: string) => {
-  const collectionName = `BotUpdate_${license}`;
+const getTheBotModel = (license: string) => {
+  const collectionName = `TheBot_${license}`;
   return (
-    mongoose.models[collectionName] ||
-    mongoose.model(collectionName, botUpdateSchema, collectionName)
+    mongoose.models[collectionName] || mongoose.model(collectionName, TheBotSchema, collectionName)
   );
 };
 
-export default getBotUpdateModel;
+export default getTheBotModel;
