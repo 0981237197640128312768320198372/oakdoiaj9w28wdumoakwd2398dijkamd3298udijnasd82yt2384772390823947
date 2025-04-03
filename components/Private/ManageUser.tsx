@@ -429,10 +429,10 @@ export const ManageUsers = () => {
                   <TableHeader className="bg-dark-600">
                     <TableRow className="border-dark-500 hover:bg-dark-500">
                       <TableHead className="text-light-300">User</TableHead>
+                      <TableHead className="text-light-300">Role</TableHead>
                       <TableHead className="text-light-300 hidden md:table-cell">
                         Username
                       </TableHead>
-                      <TableHead className="text-light-300">Role</TableHead>
                       <TableHead className="text-light-300 hidden sm:table-cell">
                         Password
                       </TableHead>
@@ -467,9 +467,7 @@ export const ManageUsers = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="text-light-200 hidden md:table-cell">
-                            {user.username}
-                          </TableCell>
+
                           <TableCell>
                             <Badge
                               className={`${getRoleBadgeColor(
@@ -477,6 +475,9 @@ export const ManageUsers = () => {
                               )} transition-colors duration-200`}>
                               {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                             </Badge>
+                          </TableCell>
+                          <TableCell className="text-light-200 hidden md:table-cell">
+                            {user.username}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             <div className="flex items-center gap-2">
