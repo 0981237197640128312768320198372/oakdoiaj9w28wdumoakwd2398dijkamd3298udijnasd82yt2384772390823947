@@ -5,8 +5,8 @@
 import { formatTime } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { TbRefresh } from 'react-icons/tb';
-import { RxActivityLog } from 'react-icons/rx';
 import { RiDeleteBin7Line } from 'react-icons/ri';
+import { PiCodeBold } from 'react-icons/pi';
 
 interface BotLog {
   timestamp: string;
@@ -231,7 +231,7 @@ const TheBotActivity = () => {
     <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px]">
       <div className="w-full flex justify-between items-start gap-5">
         <h3 className="flex items-center gap-2 font-bold mb-5">
-          <RxActivityLog />
+          <PiCodeBold />
           TheBot Activity
         </h3>
         <button

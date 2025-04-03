@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Activity, BarChart3, HelpCircle, Home, LogOut, Search, Users, Wallet } from 'lucide-react';
+import { Activity, BarChart3, HelpCircle, Home, LogOut, Users, Wallet } from 'lucide-react';
 import { TbDatabase } from 'react-icons/tb';
 import { RiRobot2Line } from 'react-icons/ri';
 import { RxActivityLog } from 'react-icons/rx';
@@ -16,7 +16,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -103,16 +102,6 @@ export function AdminSidebar({
                 />
               </div>
               <div className="font-semibold">Dokmai Store</div>
-            </div>
-            <div className="mt-3 relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search..."
-                className="w-full pl-8 bg-dark-500 border-dark-500 text-white"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
             </div>
           </SidebarHeader>
           <SidebarContent>
