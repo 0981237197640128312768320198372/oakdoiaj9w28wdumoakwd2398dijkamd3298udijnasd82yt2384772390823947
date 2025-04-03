@@ -10,13 +10,12 @@ import {
   LogOut,
   Mail,
   Search,
-  Settings,
   Users,
   Wallet,
 } from 'lucide-react';
 import { RiRobot2Line } from 'react-icons/ri';
 import { RxActivityLog } from 'react-icons/rx';
-
+import DokmaiIcon from '@/assets/images/dokmailogosquare.png';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -45,6 +44,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import PageHeadline from '../PageHeadline';
+import Image from 'next/image';
 
 const sectionIcons: Record<string, React.ElementType> = {
   StatisticCards: BarChart3,
@@ -63,7 +63,7 @@ const sectionTitles: Record<string, string> = {
   Statistics: 'Statistics Chart',
   AdminDeposit: 'Deposit',
   EmailsViewer: 'Email',
-  ActivityLogs: 'UserActivity',
+  ActivityLogs: 'User Activity',
   ManageHelps: 'Manage Helps',
   ManageUsers: 'Manage Users',
   DataRemain: 'Data Remain',
@@ -102,10 +102,16 @@ export function AdminSidebar({
         <Sidebar variant="floating" className="border-r border-dark-500">
           <SidebarHeader className="px-4 py-3">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-dark-800">
-                <Settings className="h-4 w-4" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-md">
+                <Image
+                  src={DokmaiIcon}
+                  alt="Dokmai Icon"
+                  width={100}
+                  height={100}
+                  className="h-8 w-8"
+                />
               </div>
-              <div className="font-semibold">Admin Dashboard</div>
+              <div className="font-semibold">Dokmai Store</div>
             </div>
             <div className="mt-3 relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -146,12 +152,18 @@ export function AdminSidebar({
           <SidebarFooter className="border-t border-dark-500 p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-dark-800">
-                  {userName.charAt(0).toUpperCase()}
+                <div className="h-8 w-8 rounded-full bg-dark-800 flex items-center justify-center text-dark-800">
+                  {/* {userName.charAt(0).toUpperCase()} */}
+                  <Image
+                    src={DokmaiIcon}
+                    alt="Dokmai Icon"
+                    width={100}
+                    height={100}
+                    className="h-5 w-5"
+                  />
                 </div>
                 <div className="flex flex-col text-sm">
                   <span className="font-medium">{userName}</span>
-                  <span className="text-xs text-muted-foreground">Admin</span>
                 </div>
               </div>
               <button
