@@ -24,10 +24,16 @@ export async function middleware(req: NextRequest) {
       headers: { 'Content-Type': 'text/html' },
     });
   }
+  const hostname = req.headers.get('host')?.toLowerCase();
+  const path = req.nextUrl.pathname;
+
+  if (hostname === 'admin.dokmaistore.com') {
+    return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
+  }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: '/:path*',
+  matcher: ['/:path*', '/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
