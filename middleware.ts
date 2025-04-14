@@ -20,7 +20,6 @@ export async function middleware(req: GeoRequest) {
   const userCountry = req.geo?.country || '';
   const isRestrictedCountry = userCountry === 'ID';
 
-  // Consider removing or refining this block if not required
   if (isRestrictedLanguage || isRestrictedCountry) {
     return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
   }
@@ -28,11 +27,7 @@ export async function middleware(req: GeoRequest) {
   const hostname = req.headers.get('host')?.toLowerCase();
   const path = req.nextUrl.pathname;
 
-  if (
-    hostname === 'admin.dokmaistore.com' ||
-    hostname === 'localhost' ||
-    hostname?.startsWith('localhost:')
-  ) {
+  if (hostname === 'admin.dokmaistore.com' || hostname?.includes('localhost')) {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
   }
 
