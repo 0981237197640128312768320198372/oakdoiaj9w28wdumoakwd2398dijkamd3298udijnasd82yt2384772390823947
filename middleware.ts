@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
   const hostname = req.headers.get('host')?.toLowerCase();
   const path = req.nextUrl.pathname;
 
-  if (hostname === 'admin.dokmaistore.com') {
+  if (hostname === 'admin.dokmaistore.com' || hostname?.includes('localhost')) {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
   }
 
