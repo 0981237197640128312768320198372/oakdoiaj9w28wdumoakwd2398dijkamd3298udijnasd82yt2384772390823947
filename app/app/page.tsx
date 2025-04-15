@@ -3,7 +3,7 @@ import { generateMetadata } from '@/lib/utils';
 import React from 'react';
 
 export const metadata = generateMetadata({
-  title: 'Dashboard',
+  title: 'App',
   description:
     'ยินดีต้อนรับสู่แดชบอร์ดส่วนตัว ซึ่งเป็นพื้นที่ที่คุณสามารถเข้าถึงข้อมูลสำคัญได้อย่างสะดวกและปลอดภัย.',
   url: 'https://app.dokmaistore.com',
