@@ -27,8 +27,16 @@ export async function middleware(req: GeoRequest) {
   const hostname = req.headers.get('host')?.toLowerCase();
   const path = req.nextUrl.pathname;
 
-  if (hostname === 'admin.dokmaistore.com' || hostname?.includes('localhost')) {
+  if (hostname === 'dokmaistore.com' && path.startsWith('/admin')) {
+    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
+  }
+
+  if (hostname === 'admin.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
+  }
+
+  if (hostname?.includes('localhost') && path.startsWith('/admin')) {
+    return NextResponse.next();
   }
 
   return NextResponse.next();
