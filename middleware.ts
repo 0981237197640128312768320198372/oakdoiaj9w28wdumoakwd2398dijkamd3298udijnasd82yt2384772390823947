@@ -35,23 +35,19 @@ export async function middleware(req: GeoRequest) {
   ) {
     return NextResponse.next();
   }
-
-  // Block direct access to /admin on any domain except admin.dokmaistore.com and localhost
   if (
-    hostname !== 'admin.dokmaistore.com' && // Allow admin.dokmaistore.com
-    !hostname?.includes('localhost') && // Allow localhost
-    hostname?.endsWith('dokmaistore.com') && // Match dokmaistore.com or its subdomains
+    hostname !== 'admin.dokmaistore.com' &&
+    !hostname?.includes('localhost') &&
+    hostname?.endsWith('dokmaistore.com') &&
     path.startsWith('/admin')
   ) {
     return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
   }
 
-  // Rewrite for admin.dokmaistore.com
   if (hostname === 'admin.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
   }
 
-  // Allow direct access to /admin on localhost for testing
   if (hostname?.includes('localhost') && path.startsWith('/admin')) {
     return NextResponse.next();
   }
