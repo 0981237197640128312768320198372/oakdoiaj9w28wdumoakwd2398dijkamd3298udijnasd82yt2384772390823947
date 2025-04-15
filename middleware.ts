@@ -21,7 +21,7 @@ export async function middleware(req: GeoRequest) {
   const isRestrictedCountry = userCountry === 'ID';
 
   if (isRestrictedLanguage || isRestrictedCountry) {
-    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
+    return new Response(null, { status: 404, headers: { 'Content-Type': 'text/html' } });
   }
 
   const hostname = req.headers.get('host')?.toLowerCase();
