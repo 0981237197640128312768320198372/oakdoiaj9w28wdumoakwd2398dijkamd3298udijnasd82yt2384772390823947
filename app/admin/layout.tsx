@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Authenticator from '@/components/Authenticator';
 import '@/styles/globals.css';
-import Image from 'next/image';
 
 export default function RootLayout({
   children,

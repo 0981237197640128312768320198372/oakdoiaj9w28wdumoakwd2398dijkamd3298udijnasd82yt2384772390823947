@@ -28,9 +28,8 @@ export async function middleware(req: GeoRequest) {
   const path = req.nextUrl.pathname;
 
   if (
-    path === '/manifest.json' ||
-    path === '/manifest-admin.json' ||
-    path === '/favicon.ico' ||
+    path.startsWith('/favicon') ||
+    path.startsWith('/manifest') ||
     path.startsWith('/images') ||
     path.startsWith('/icons') ||
     path.startsWith('/_next/static') ||
