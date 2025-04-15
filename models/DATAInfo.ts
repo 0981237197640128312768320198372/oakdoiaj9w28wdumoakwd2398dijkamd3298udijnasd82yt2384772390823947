@@ -7,9 +7,9 @@ const DATAInfoSchema = new mongoose.Schema({
   street: { type: String, required: true },
   zipCode: { type: String, required: true },
   city: { type: String, required: true },
-  date: { type: Date, default: Date.now },
   license: { type: String, required: true },
   type: { type: String, enum: ['Used', 'Bad', 'Unused'], required: true },
+  date: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.DATAInfo || mongoose.model('DATAInfo', DATAInfoSchema);
+module.exports = mongoose.models.DATAInfo || mongoose.model('DATAInfo', DATAInfoSchema);
