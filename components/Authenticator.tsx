@@ -37,8 +37,8 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
           const currentPath = window.location.pathname;
 
           if (parsedAuth.role === 'admin' && currentPath.startsWith('/staff')) {
-            router.replace('/admin');
-          } else if (parsedAuth.role === 'staff' && currentPath.startsWith('/admin')) {
+            router.replace('/');
+          } else if (parsedAuth.role === 'staff' && currentPath.startsWith('/')) {
             router.replace('/staff');
           } else {
             setAuthenticated(true);
