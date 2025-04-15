@@ -28,7 +28,7 @@ export async function middleware(req: GeoRequest) {
   const path = req.nextUrl.pathname;
 
   if (hostname === 'dokmaistore.com' && path.startsWith('/admin')) {
-    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
+    return new Response(null, { status: 404, headers: { 'Content-Type': 'text/html' } });
   }
 
   if (hostname === 'admin.dokmaistore.com') {
