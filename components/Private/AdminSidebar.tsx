@@ -128,7 +128,6 @@ export function AdminSidebar({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-dark-800 flex items-center justify-center text-dark-800">
-                  {/* {userName.charAt(0).toUpperCase()} */}
                   <Image
                     src={DokmaiIcon}
                     alt="Dokmai Icon"

@@ -19,9 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TbRefresh } from 'react-icons/tb';
-import { RxActivityLog } from 'react-icons/rx';
-import RealTimeClock from './RealTimeClock';
 
 interface IBANEntry {
   _id: string;
@@ -41,25 +38,6 @@ interface LicenseData {
   lastActivity: string | null;
 }
 
-const getBotStatusCounts = (licenseData: LicenseData[]) => {
-  const onlineCount = licenseData.filter(
-    ({ lastActivity }) =>
-      lastActivity && new Date().getTime() - new Date(lastActivity).getTime() <= 5 * 60 * 1000
-  ).length;
-
-  const offlineCount = licenseData.length - onlineCount;
-
-  return (
-    <div className="flex flex-col md:flex-row gap-1 text-sm text-light-500">
-      <span className="flex">
-        Online: <span className="px-1 text-green-500">{onlineCount}</span>
-      </span>
-      <span className="flex">
-        Offline: <span className="px-1 text-red-500">{offlineCount}</span>
-      </span>
-    </div>
-  );
-};
 const DATAManagement = () => {
   const [licenseData, setLicenseData] = useState<LicenseData[]>([]);
   const [entries, setEntries] = useState<IBANEntry[]>([]);
@@ -80,7 +58,7 @@ const DATAManagement = () => {
 
   const fetchLicenses = async () => {
     try {
-      const response = await fetch('/api/v2/licenses');
+      const response = await fetch('/api/v2/get_thebot_licenses');
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to fetch licenses');
       setLicenseData(data.licenses);
@@ -92,7 +70,7 @@ const DATAManagement = () => {
   const fetchEntries = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`//api/v2/DATA?type=${filterType}`);
+      const response = await fetch(`/api/v2/DATAManagement?type=${filterType}`);
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to fetch entries');
       setEntries(data.entries);
@@ -112,7 +90,7 @@ const DATAManagement = () => {
   }, [filterType]);
   const handleAdd = async () => {
     try {
-      const response = await fetch('//api/v2/DATA', {
+      const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'add', data: [newEntry] }),
@@ -137,7 +115,7 @@ const DATAManagement = () => {
 
   const handleUpdate = async (updates: Partial<IBANEntry>[]) => {
     try {
-      const response = await fetch('//api/v2/DATA', {
+      const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'update', data: updates }),
@@ -153,7 +131,7 @@ const DATAManagement = () => {
 
   const handleRemove = async (ids: string[]) => {
     try {
-      const response = await fetch('//api/v2/DATA', {
+      const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'remove', data: ids }),
@@ -183,21 +161,6 @@ const DATAManagement = () => {
 
   return (
     <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px]">
-      <div className="w-full flex justify-between items-start border-b-[1px] border-dark-500 pb-3 gap-5">
-        <h3 className="flex items-center gap-2 font-bold mb-5">
-          <RxActivityLog />
-          IBAN Management
-        </h3>
-        {getBotStatusCounts(licenseData)}
-        <RealTimeClock />
-        <button
-          onClick={() => fetchEntries()}
-          disabled={loading}
-          className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800">
-          <TbRefresh className={`text-xl ${loading ? 'animate-spin' : ''}`} />
-        </button>
-      </div>
-
       <div className="bg-dark-600 p-5 rounded-sm mt-5">
         <h4 className="text-lg font-bold text-light-500 mb-4">Add New IBAN Entry</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -258,7 +221,6 @@ const DATAManagement = () => {
         </Button>
       </div>
 
-      {/* Mass Actions */}
       {selectedRows.length > 0 && (
         <div className="bg-dark-600 p-5 rounded-sm mt-5 flex gap-2">
           <DropdownMenu>

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const DATAInfoSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  DATA: { type: String, required: true, unique: true },
+  iban: { type: String, required: true, unique: true },
   street: { type: String, required: true },
   zipCode: { type: String, required: true },
   city: { type: String, required: true },

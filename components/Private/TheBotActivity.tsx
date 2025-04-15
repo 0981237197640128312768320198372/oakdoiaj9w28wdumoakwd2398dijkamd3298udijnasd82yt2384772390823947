@@ -8,6 +8,7 @@ import { TbRefresh } from 'react-icons/tb';
 import { RiDeleteBin7Line } from 'react-icons/ri';
 import { PiCodeBold } from 'react-icons/pi';
 import RealTimeClock from './RealTimeClock';
+import DATAManagement from './DATAManagement';
 
 interface BotLog {
   timestamp: string;
@@ -314,6 +315,7 @@ const TheBotActivity = () => {
           No licenses found.
         </p>
       )}
+      <DATAManagement />
     </div>
   );
 };
