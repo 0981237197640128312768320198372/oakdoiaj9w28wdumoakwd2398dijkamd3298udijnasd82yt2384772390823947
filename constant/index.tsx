@@ -25,8 +25,8 @@ export const navButtons = [
     url: '/movie-series-recommendations',
   },
   {
-    title: 'Dashboard',
-    url: '/your-premium-apps',
+    title: 'App Dokmai Store',
+    url: 'https://app.dokmaistore.com',
   },
 ];
 export const footerButton = [
