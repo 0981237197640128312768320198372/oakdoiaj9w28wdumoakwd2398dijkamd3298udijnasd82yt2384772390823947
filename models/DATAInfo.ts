@@ -12,4 +12,4 @@ const DATAInfoSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.models.DATAInfo || mongoose.model('DATAInfo', DATAInfoSchema);
+export default mongoose.models.DATAInfo || mongoose.model('DATAInfo', DATAInfoSchema);
