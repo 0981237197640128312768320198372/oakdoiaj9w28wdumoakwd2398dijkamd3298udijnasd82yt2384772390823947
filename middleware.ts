@@ -27,14 +27,31 @@ export async function middleware(req: GeoRequest) {
   const hostname = req.headers.get('host')?.toLowerCase();
   const path = req.nextUrl.pathname;
 
-  if (hostname === 'dokmaistore.com' && path.startsWith('/admin')) {
-    return new Response(null, { status: 404, headers: { 'Content-Type': 'text/html' } });
+  if (
+    path === '/manifest.json' ||
+    path === '/favicon.ico' ||
+    path.startsWith('/_next/static') ||
+    path.startsWith('/_next/image')
+  ) {
+    return NextResponse.next();
   }
 
+  // Block direct access to /admin on any domain except admin.dokmaistore.com and localhost
+  if (
+    hostname !== 'admin.dokmaistore.com' && // Allow admin.dokmaistore.com
+    !hostname?.includes('localhost') && // Allow localhost
+    hostname?.endsWith('dokmaistore.com') && // Match dokmaistore.com or its subdomains
+    path.startsWith('/admin')
+  ) {
+    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
+  }
+
+  // Rewrite for admin.dokmaistore.com
   if (hostname === 'admin.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
   }
 
+  // Allow direct access to /admin on localhost for testing
   if (hostname?.includes('localhost') && path.startsWith('/admin')) {
     return NextResponse.next();
   }
