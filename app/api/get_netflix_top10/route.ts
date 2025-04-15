@@ -15,9 +15,9 @@ interface DataItem {
 export async function GET() {
   try {
     const [dataRes, namesRes, boxartRes] = await Promise.all([
-      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250126-data.json'),
-      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250126-en-names.json'),
-      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250126-th-boxart.json'),
+      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250406-data.json'),
+      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250406-en-names.json'),
+      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250406-th-boxart.json'),
     ]);
 
     const dataJson = await dataRes.json();
