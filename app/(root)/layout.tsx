@@ -1,23 +1,20 @@
 /* eslint-disable @next/next/next-script-for-ga */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import "@/styles/globals.css"
-import Navbar from "@/components/Navbar"
-import Footer from "@/components/Footer"
-import { Analytics } from "@vercel/analytics/react"
-import { CartProvider } from "@/context/CartContext"
+import '@/styles/globals.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { Analytics } from '@vercel/analytics/react';
+import { CartProvider } from '@/context/CartContext';
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
-        <script
-          async
-          src='https://www.googletagmanager.com/gtag/js?id=G-X6ZTVB6G8L'
-        ></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-X6ZTVB6G8L"></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -28,12 +25,11 @@ export default function RootLayout({
             `,
           }}
         />
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </head>
-      <body className='font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/10 selection:text-primary'>
+      <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/10 selection:text-primary">
         <CartProvider>
           <Navbar />
-          <div className='flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20'>
+          <div className="flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20">
             {children}
 
             <Analytics />
@@ -50,5 +46,5 @@ export default function RootLayout({
         </div> */}
       </body>
     </html>
-  )
+  );
 }

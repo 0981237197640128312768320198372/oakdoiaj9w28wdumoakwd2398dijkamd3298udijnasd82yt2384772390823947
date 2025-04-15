@@ -37,6 +37,7 @@ export async function middleware(req: GeoRequest) {
   ) {
     return NextResponse.next();
   }
+
   if (
     hostname !== 'admin.dokmaistore.com' &&
     !hostname?.includes('localhost') &&
@@ -46,11 +47,24 @@ export async function middleware(req: GeoRequest) {
     return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
   }
 
+  if (
+    hostname !== 'app.dokmaistore.com' &&
+    !hostname?.includes('localhost') &&
+    hostname?.endsWith('dokmaistore.com') &&
+    path.startsWith('/app')
+  ) {
+    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
+  }
+
   if (hostname === 'admin.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
   }
 
-  if (hostname?.includes('localhost') && path.startsWith('/admin')) {
+  if (hostname === 'app.dokmaistore.com') {
+    return NextResponse.rewrite(new URL(`/app${path}`, req.url));
+  }
+
+  if (hostname?.includes('localhost') && (path.startsWith('/admin') || path.startsWith('/app'))) {
     return NextResponse.next();
   }
 
