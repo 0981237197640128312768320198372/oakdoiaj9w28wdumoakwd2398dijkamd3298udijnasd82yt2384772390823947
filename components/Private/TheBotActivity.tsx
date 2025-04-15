@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { TbRefresh } from 'react-icons/tb';
 import { RiDeleteBin7Line } from 'react-icons/ri';
 import { PiCodeBold } from 'react-icons/pi';
+import RealTimeClock from './RealTimeClock';
 
 interface BotLog {
   timestamp: string;
@@ -24,34 +25,22 @@ interface LicenseData {
   lastActivity: string | null;
 }
 
-const RealTimeClock = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
+const getBotStatusCounts = (licenseData: LicenseData[]) => {
+  const onlineCount = licenseData.filter(
+    ({ lastActivity }) =>
+      lastActivity && new Date().getTime() - new Date(lastActivity).getTime() <= 5 * 60 * 1000
+  ).length;
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const formattedDate = currentTime.toLocaleDateString('en-GB', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-  const formattedTime = currentTime.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  });
+  const offlineCount = licenseData.length - onlineCount;
 
   return (
-    <div className="flex flex-col items-end text-light-500 text-sm">
-      <span>{formattedDate}</span>
-      <span>{formattedTime}</span>
+    <div className="flex flex-col md:flex-row gap-1 text-sm text-light-500">
+      <span className="flex">
+        Online: <span className="px-1 text-green-500">{onlineCount}</span>
+      </span>
+      <span className="flex">
+        Offline: <span className="px-1 text-red-500">{offlineCount}</span>
+      </span>
     </div>
   );
 };
@@ -154,26 +143,6 @@ const TheBotActivity = () => {
       setError(`Failed to delete logs for ${license}. Please try again later.`);
       console.error(err);
     }
-  };
-
-  const getBotStatusCounts = (licenseData: LicenseData[]) => {
-    const onlineCount = licenseData.filter(
-      ({ lastActivity }) =>
-        lastActivity && new Date().getTime() - new Date(lastActivity).getTime() <= 5 * 60 * 1000
-    ).length;
-
-    const offlineCount = licenseData.length - onlineCount;
-
-    return (
-      <div className="flex flex-col md:flex-row gap-1 text-sm text-light-500">
-        <span className="flex">
-          Online: <span className="px-1 text-green-500">{onlineCount}</span>
-        </span>
-        <span className="flex">
-          Offline: <span className="px-1 text-red-500">{offlineCount}</span>
-        </span>
-      </div>
-    );
   };
 
   const handleRefresh = () => {
