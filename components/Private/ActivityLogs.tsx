@@ -55,7 +55,6 @@ export default function ActivityLogs() {
     fetchLogs();
 
     const interval = setInterval(() => {
-      console.log('Auto-refreshing logs...');
       fetchLogs();
     }, refreshInterval);
 

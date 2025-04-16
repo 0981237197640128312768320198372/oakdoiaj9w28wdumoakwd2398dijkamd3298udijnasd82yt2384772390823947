@@ -150,7 +150,7 @@ export function AdminSidebar({
           <SidebarRail />
         </Sidebar>
         <SidebarInset>
-          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-5">
+          <header className="sticky top-0 z-10 flex w-full h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-5">
             <SidebarTrigger />
             <Separator orientation="vertical" className="h-6 bg-dark-500 text-white" />
             <Breadcrumb>
@@ -167,6 +167,7 @@ export function AdminSidebar({
               </BreadcrumbList>
             </Breadcrumb>
           </header>
+
           <main className="flex-1 bg-dark-800">{children}</main>
         </SidebarInset>
       </div>

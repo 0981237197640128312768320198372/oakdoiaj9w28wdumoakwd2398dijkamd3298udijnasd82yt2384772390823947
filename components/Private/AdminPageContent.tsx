@@ -11,6 +11,7 @@ import { ManageUsers } from './ManageUser';
 import DataRemain from './DataRemain';
 import TheBot from './TheBot';
 import { AdminSidebar } from './AdminSidebar';
+import RealTimeClock from './RealTimeClock';
 
 const AdminPageContent = () => {
   const [currentSection, setCurrentSection] = useState('AdminDeposit');
@@ -42,7 +43,8 @@ const AdminPageContent = () => {
       onLogout={handleLogout}
       userName={userName}>
       <div className="w-full flex flex-col justify-center items-center ">
-        <div className="flex flex-col items-start w-full p-5 min-w-fit">
+        <div className="flex flex-col items-start w-full p-5 min-w-fit gap-5">
+          <RealTimeClock />
           {sections[currentSection] || <div>Section not found</div>}
         </div>
       </div>

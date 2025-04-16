@@ -80,6 +80,7 @@ const DATAManagement = () => {
     license: '',
     type: 'Unused' as 'Used' | 'Bad' | 'Unused',
   });
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -100,6 +101,7 @@ const DATAManagement = () => {
   };
 
   const fetchEntries = async () => {
+    setIsRefreshing(true);
     try {
       setLoading(true);
       const response = await fetch(`/api/v2/DATAManagement?type=${filterType}`);
@@ -111,6 +113,7 @@ const DATAManagement = () => {
       setError((err as Error).message || 'Failed to fetch entries');
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -304,9 +307,6 @@ const DATAManagement = () => {
         <Skeleton className="h-4 w-16" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-4 w-16" />
-      </TableCell>
-      <TableCell>
         <Skeleton className="h-8 w-8" />
       </TableCell>
     </TableRow>
@@ -327,7 +327,7 @@ const DATAManagement = () => {
               onClick={fetchEntries}
               className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
               title="Refresh data">
-              <TbRefresh className="text-xl" />
+              <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
           </div>
           <div className="flex gap-2 w-full justify-between">
@@ -554,54 +554,60 @@ const DATAManagement = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {entries.map((entry) => (
-                  <TableRow key={entry._id} className="border-dark-500 hover:bg-dark-600">
-                    <TableCell>
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(entry._id)}
-                        onChange={() => handleRowSelect(entry._id)}
-                      />
-                    </TableCell>
-                    <TableCell>{formatTime(entry.date)}</TableCell>
-                    <TableCell>{entry.iban}</TableCell>
-                    <TableCell>
-                      <Badge className={getTypeBadgeColor(entry.type)}>{entry.type}</Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-light-300 hover:text-light-100 hover:bg-dark-500">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-dark-500 border-dark-400 text-light-100">
-                          <DropdownMenuItem
-                            onClick={() => handleViewDetails(entry)}
-                            className="hover:bg-dark-400">
-                            <Eye className="mr-2 h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleEditClick(entry)}
-                            className="hover:bg-dark-400">
-                            <Pencil className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteClick(entry)}
-                            className="text-red-400 hover:text-red-400 hover:bg-dark-400">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, index) => <TableRowSkeleton key={index} />)
+                ) : entries.length === 0 ? (
+                  <TableRow>...</TableRow>
+                ) : (
+                  entries.map((entry) => (
+                    <TableRow key={entry._id} className="border-dark-500 hover:bg-dark-600">
+                      <TableCell>
+                        <input
+                          type="checkbox"
+                          checked={selectedRows.includes(entry._id)}
+                          onChange={() => handleRowSelect(entry._id)}
+                        />
+                      </TableCell>
+                      <TableCell>{formatTime(entry.date)}</TableCell>
+                      <TableCell>{entry.iban}</TableCell>
+                      <TableCell>
+                        <Badge className={getTypeBadgeColor(entry.type)}>{entry.type}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="text-light-300 hover:text-light-100 hover:bg-dark-500">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="bg-dark-500 border-dark-400 text-light-100">
+                            <DropdownMenuItem
+                              onClick={() => handleViewDetails(entry)}
+                              className="hover:bg-dark-400">
+                              <Eye className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleEditClick(entry)}
+                              className="hover:bg-dark-400">
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteClick(entry)}
+                              className="text-red-400 hover:text-red-400 hover:bg-dark-400">
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>

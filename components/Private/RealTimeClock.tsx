@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FaRegClock } from 'react-icons/fa';
 
 const RealTimeClock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -25,7 +26,8 @@ const RealTimeClock = () => {
   });
 
   return (
-    <div className="flex flex-col items-end text-light-500 text-sm">
+    <div className="flex items-center gap-3 bg-primary/20 px-2 py-1 rounded-sm text-primary text-sm">
+      <FaRegClock />
       <span>{formattedDate}</span>
       <span>{formattedTime}</span>
     </div>

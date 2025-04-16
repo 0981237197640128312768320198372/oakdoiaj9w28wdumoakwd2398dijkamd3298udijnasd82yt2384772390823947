@@ -7,13 +7,15 @@ import { useState, useEffect } from 'react';
 import { TbRefresh } from 'react-icons/tb';
 import { RiDeleteBin7Line } from 'react-icons/ri';
 import { PiCodeBold } from 'react-icons/pi';
-import RealTimeClock from './RealTimeClock';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface BotLog {
   timestamp: string;
-  type: string;
+  type: 'error' | 'success' | 'status' | 'info';
   message: string;
-  details: {
+  details?: {
     email?: string;
     errorCode?: string;
     stack?: string;
@@ -30,15 +32,13 @@ const getBotStatusCounts = (licenseData: LicenseData[]) => {
     ({ lastActivity }) =>
       lastActivity && new Date().getTime() - new Date(lastActivity).getTime() <= 5 * 60 * 1000
   ).length;
-
   const offlineCount = licenseData.length - onlineCount;
-
   return (
     <div className="flex flex-col md:flex-row gap-1 text-sm text-light-500">
-      <span className="flex">
+      <span>
         Online: <span className="px-1 text-green-500">{onlineCount}</span>
       </span>
-      <span className="flex">
+      <span>
         Offline: <span className="px-1 text-red-500">{offlineCount}</span>
       </span>
     </div>
@@ -53,6 +53,8 @@ const BotActivity = () => {
   const [loadingLogs, setLoadingLogs] = useState<{ [key: string]: boolean }>({});
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [licenseToDelete, setLicenseToDelete] = useState<string | null>(null);
 
   const fetchLicenses = async () => {
     try {
@@ -66,7 +68,6 @@ const BotActivity = () => {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to fetch licenses');
       }
-
       const data = await response.json();
       setLicenseData(data.licenses);
     } catch (err) {
@@ -80,7 +81,6 @@ const BotActivity = () => {
 
   const fetchLogs = async (license: string) => {
     if (licenseLogs[license]) return;
-
     try {
       setLoadingLogs((prev) => ({ ...prev, [license]: true }));
       setError(null);
@@ -89,12 +89,10 @@ const BotActivity = () => {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Failed to fetch logs for ${license}`);
       }
-
       const data = await response.json();
       const sortedLogs = data.logs
         .sort(
@@ -112,8 +110,6 @@ const BotActivity = () => {
   };
 
   const deleteLogs = async (license: string) => {
-    if (!confirm(`Are you sure you want to delete all logs for ${license}?`)) return;
-
     try {
       setError(null);
       const response = await fetch('/api/v2/delete_thebot_log', {
@@ -124,12 +120,10 @@ const BotActivity = () => {
         },
         body: JSON.stringify({ license }),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Failed to delete logs for ${license}`);
       }
-
       setLicenseData((prev) => prev.filter((data) => data.license !== license));
       setLicenseLogs((prev) => {
         const newLogs = { ...prev };
@@ -163,7 +157,6 @@ const BotActivity = () => {
       setActiveLicense(null);
       fetchLicenses();
     }, 60 * 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -180,12 +173,10 @@ const BotActivity = () => {
     if (!lastActivity) {
       return <span className="text-sm text-red-500">Offline</span>;
     }
-
     try {
       const lastActivityTime = new Date(lastActivity).getTime();
       const currentTime = new Date().getTime();
       const fiveMinutesInMs = 5 * 60 * 1000;
-
       if (currentTime - lastActivityTime <= fiveMinutesInMs) {
         return <span className="text-sm text-green-500 px-2 py-1 bg-green-500/20">Online</span>;
       } else {
@@ -207,14 +198,13 @@ const BotActivity = () => {
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
+            className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70"
             title="Refresh data">
             <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
-          </button>{' '}
+          </button>
         </div>
         <div className="w-full flex justify-between items-start pb-3 gap-5">
           {getBotStatusCounts(licenseData)}
-          <RealTimeClock />
         </div>
 
         {loadingLicenses ? (
@@ -223,20 +213,20 @@ const BotActivity = () => {
               <div
                 key={index}
                 className="flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between">
-                <div className="w-24 h-6 bg-dark-300 animate-pulse rounded-sm" />
+                <Skeleton className="w-24 h-6 bg-dark-300 rounded-sm" />
                 <div className="flex flex-col items-end gap-2">
-                  <div className="w-32 h-4 bg-dark-300 animate-pulse rounded-sm" />
-                  <div className="w-16 h-5 bg-dark-300 animate-pulse rounded-sm" />
+                  <Skeleton className="w-32 h-4 bg-dark-300 rounded-sm" />
+                  <Skeleton className="w-16 h-5 bg-dark-300 rounded-sm" />
                 </div>
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="flex justify-center items-center w-full h-full">
-            <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
-              {error}
-            </p>
-          </div>
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         ) : licenseData.length > 0 ? (
           <div className="flex flex-col overflow-y-scroll max-h-[700px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
             {licenseData.map(({ license, lastActivity }) => (
@@ -254,8 +244,9 @@ const BotActivity = () => {
                     {getOnlineStatus(lastActivity)}
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent the outer button's click event
-                        deleteLogs(license);
+                        e.stopPropagation();
+                        setLicenseToDelete(license);
+                        setIsConfirmDialogOpen(true);
                       }}
                       className="p-2 rounded-md bg-red-500/30 text-red-500 hover:bg-red-500/50 transition-colors">
                       <RiDeleteBin7Line className="h-5 w-5" />
@@ -281,22 +272,17 @@ const BotActivity = () => {
                               </p>
                               <p>{formatTime(log.timestamp)}</p>
                             </div>
-
                             <p className="text-xs md:text-md">{log.message}</p>
                             {log.details && (
                               <p>
                                 <strong>Details:</strong>
-                                {log.details ? (
-                                  <ul className="list-disc ml-5">
-                                    {log.details.email && <li>Email: {log.details.email}</li>}
-                                    {log.details.errorCode && (
-                                      <li>Error Code: {log.details.errorCode}</li>
-                                    )}
-                                    {log.details.stack && <li>Stack: {log.details.stack}</li>}
-                                  </ul>
-                                ) : (
-                                  ' No details'
-                                )}
+                                <ul className="list-disc ml-5">
+                                  {log.details.email && <li>Email: {log.details.email}</li>}
+                                  {log.details.errorCode && (
+                                    <li>Error Code: {log.details.errorCode}</li>
+                                  )}
+                                  {log.details.stack && <li>Stack: {log.details.stack}</li>}
+                                </ul>
                               </p>
                             )}
                           </div>
@@ -314,6 +300,38 @@ const BotActivity = () => {
           <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
             No licenses found.
           </p>
+        )}
+
+        {isConfirmDialogOpen && (
+          <Alert
+            variant="destructive"
+            className="fixed inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur">
+            <AlertTitle className="text-xl">Are You Sure?</AlertTitle>
+            <AlertDescription className="text-white/80">
+              Are you sure you want to delete all logs for {licenseToDelete}?
+            </AlertDescription>
+            <div className="flex gap-5 mt-5">
+              <button
+                onClick={() => {
+                  setIsConfirmDialogOpen(false);
+                  setLicenseToDelete(null);
+                }}
+                className="px-4 py-2 bg-gray-500 text-white rounded">
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (licenseToDelete) {
+                    await deleteLogs(licenseToDelete);
+                  }
+                  setIsConfirmDialogOpen(false);
+                  setLicenseToDelete(null);
+                }}
+                className="px-4 py-2 bg-red-500 text-white rounded">
+                Delete
+              </button>
+            </div>
+          </Alert>
         )}
       </div>
     </div>
