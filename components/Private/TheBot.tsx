@@ -46,7 +46,7 @@ const getBotStatusCounts = (licenseData: LicenseData[]) => {
   );
 };
 
-const TheBotActivity = () => {
+const TheBot = () => {
   const [licenseData, setLicenseData] = useState<LicenseData[]>([]);
   const [licenseLogs, setLicenseLogs] = useState<{ [key: string]: BotLog[] }>({});
   const [activeLicense, setActiveLicense] = useState<string | null>(null);
@@ -198,126 +198,129 @@ const TheBotActivity = () => {
   };
 
   return (
-    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px]">
-      <div className="w-full flex justify-between items-start gap-5">
-        <h3 className="flex items-center gap-2 font-bold mb-5">
-          <PiCodeBold />
-          TheBot Activity
-        </h3>
-        <button
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-          className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
-          title="Refresh data">
-          <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
-        </button>{' '}
-      </div>
-      <div className="w-full flex justify-between items-start pb-3 gap-5">
-        {getBotStatusCounts(licenseData)}
-        <RealTimeClock />
-      </div>
+    <div className="flex flex-col gap-10">
+      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px]">
+        <div className="w-full flex justify-between items-start gap-5">
+          <h3 className="flex items-center gap-2 font-bold mb-5">
+            <PiCodeBold />
+            TheBot Activity
+          </h3>
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
+            title="Refresh data">
+            <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
+          </button>{' '}
+        </div>
+        <div className="w-full flex justify-between items-start pb-3 gap-5">
+          {getBotStatusCounts(licenseData)}
+          <RealTimeClock />
+        </div>
 
-      {loadingLicenses ? (
-        <div className="w-full flex flex-col gap-5 bg-dark-600 p-5">
-          {[...Array(3)].map((_, index) => (
-            <div
-              key={index}
-              className="flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between">
-              <div className="w-24 h-6 bg-dark-300 animate-pulse rounded-sm" />
-              <div className="flex flex-col items-end gap-2">
-                <div className="w-32 h-4 bg-dark-300 animate-pulse rounded-sm" />
-                <div className="w-16 h-5 bg-dark-300 animate-pulse rounded-sm" />
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : error ? (
-        <div className="flex justify-center items-center w-full h-full">
-          <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
-            {error}
-          </p>
-        </div>
-      ) : licenseData.length > 0 ? (
-        <div className="flex flex-col overflow-y-scroll max-h-[700px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
-          {licenseData.map(({ license, lastActivity }) => (
-            <button
-              key={license}
-              onClick={() => toggleLicense(license)}
-              className="flex flex-col border border-dark-400 shadow-md px-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 text-left w-full">
-              <div className="flex justify-between w-full items-center py-3 lg:gap-10">
-                <span className="text-light-100">
-                  {license}
-                  <br />
-                  <span className="text-xs text-light-800">{formatTime(lastActivity)}</span>
-                </span>
-                <div className="gap-3 flex items-center">
-                  {getOnlineStatus(lastActivity)}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent the outer button's click event
-                      deleteLogs(license);
-                    }}
-                    className="p-2 rounded-md bg-red-500/30 text-red-500 hover:bg-red-500/50 transition-colors">
-                    <RiDeleteBin7Line className="h-5 w-5" />
-                  </button>
+        {loadingLicenses ? (
+          <div className="w-full flex flex-col gap-5 bg-dark-600 p-5">
+            {[...Array(3)].map((_, index) => (
+              <div
+                key={index}
+                className="flex border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 justify-between">
+                <div className="w-24 h-6 bg-dark-300 animate-pulse rounded-sm" />
+                <div className="flex flex-col items-end gap-2">
+                  <div className="w-32 h-4 bg-dark-300 animate-pulse rounded-sm" />
+                  <div className="w-16 h-5 bg-dark-300 animate-pulse rounded-sm" />
                 </div>
               </div>
-              {activeLicense === license && (
-                <div
-                  className={`my-5 text-light-700 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
-                    activeLicense === license ? 'max-h-screen block' : 'max-h-0 hidden'
-                  }`}>
-                  {loadingLogs[license] ? (
-                    <p className="text-gray-500">Loading logs...</p>
-                  ) : licenseLogs[license] && licenseLogs[license].length > 0 ? (
-                    <div className="flex flex-col gap-5">
-                      {licenseLogs[license].map((log, index) => (
-                        <div
-                          key={index}
-                          className="border-l-[1px] border-light-100 bg-dark-400 p-5">
-                          <div className="flex w-full justify-between mb-5">
-                            <p className="px-2 bg-light-100/10 w-fit text-light-400 rounded">
-                              {log.type}
-                            </p>
-                            <p>{formatTime(log.timestamp)}</p>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="flex justify-center items-center w-full h-full">
+            <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
+              {error}
+            </p>
+          </div>
+        ) : licenseData.length > 0 ? (
+          <div className="flex flex-col overflow-y-scroll max-h-[700px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
+            {licenseData.map(({ license, lastActivity }) => (
+              <button
+                key={license}
+                onClick={() => toggleLicense(license)}
+                className="flex flex-col border border-dark-400 shadow-md px-5 rounded bg-dark-500 hover:shadow-lg transition duration-200 text-left w-full">
+                <div className="flex justify-between w-full items-center py-3 lg:gap-10">
+                  <span className="text-light-100">
+                    {license}
+                    <br />
+                    <span className="text-xs text-light-800">{formatTime(lastActivity)}</span>
+                  </span>
+                  <div className="gap-3 flex items-center">
+                    {getOnlineStatus(lastActivity)}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent the outer button's click event
+                        deleteLogs(license);
+                      }}
+                      className="p-2 rounded-md bg-red-500/30 text-red-500 hover:bg-red-500/50 transition-colors">
+                      <RiDeleteBin7Line className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+                {activeLicense === license && (
+                  <div
+                    className={`my-5 text-light-700 font-aktivGroteskThin transition-all duration-300 ease-in-out ${
+                      activeLicense === license ? 'max-h-screen block' : 'max-h-0 hidden'
+                    }`}>
+                    {loadingLogs[license] ? (
+                      <p className="text-gray-500">Loading logs...</p>
+                    ) : licenseLogs[license] && licenseLogs[license].length > 0 ? (
+                      <div className="flex flex-col gap-5">
+                        {licenseLogs[license].map((log, index) => (
+                          <div
+                            key={index}
+                            className="border-l-[1px] border-light-100 bg-dark-400 p-5">
+                            <div className="flex w-full justify-between mb-5">
+                              <p className="px-2 bg-light-100/10 w-fit text-light-400 rounded">
+                                {log.type}
+                              </p>
+                              <p>{formatTime(log.timestamp)}</p>
+                            </div>
+
+                            <p className="text-xs md:text-md">{log.message}</p>
+                            {log.details && (
+                              <p>
+                                <strong>Details:</strong>
+                                {log.details ? (
+                                  <ul className="list-disc ml-5">
+                                    {log.details.email && <li>Email: {log.details.email}</li>}
+                                    {log.details.errorCode && (
+                                      <li>Error Code: {log.details.errorCode}</li>
+                                    )}
+                                    {log.details.stack && <li>Stack: {log.details.stack}</li>}
+                                  </ul>
+                                ) : (
+                                  ' No details'
+                                )}
+                              </p>
+                            )}
                           </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-400">No recent activities.</p>
+                    )}
+                  </div>
+                )}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
+            No licenses found.
+          </p>
+        )}
+      </div>
 
-                          <p className="text-xs md:text-md">{log.message}</p>
-                          {log.details && (
-                            <p>
-                              <strong>Details:</strong>
-                              {log.details ? (
-                                <ul className="list-disc ml-5">
-                                  {log.details.email && <li>Email: {log.details.email}</li>}
-                                  {log.details.errorCode && (
-                                    <li>Error Code: {log.details.errorCode}</li>
-                                  )}
-                                  {log.details.stack && <li>Stack: {log.details.stack}</li>}
-                                </ul>
-                              ) : (
-                                ' No details'
-                              )}
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-400">No recent activities.</p>
-                  )}
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-      ) : (
-        <p className="px-2 py-1 bg-red-600/20 rounded border-[1px] border-red-500/70 text-red-500 w-fit">
-          No licenses found.
-        </p>
-      )}
       <DATAManagement />
     </div>
   );
 };
 
-export default TheBotActivity;
+export default TheBot;

@@ -44,7 +44,7 @@ const sectionIcons: Record<string, React.ElementType> = {
   ManageHelps: HelpCircle,
   ManageUsers: Users,
   DataRemain: TbDatabase,
-  TheBotActivity: RiRobot2Line,
+  TheBot: RiRobot2Line,
 };
 
 const sectionTitles: Record<string, string> = {
@@ -56,7 +56,7 @@ const sectionTitles: Record<string, string> = {
   ManageHelps: 'Manage Helps',
   ManageUsers: 'Manage Users',
   DataRemain: 'Data Remain',
-  TheBotActivity: 'TheBot Activity',
+  TheBot: 'TheBot',
 };
 
 interface AdminSidebarProps {

@@ -9,7 +9,7 @@ import Statistics from './Statistic';
 import StatisticCards from './StatisticCards';
 import { ManageUsers } from './ManageUser';
 import DataRemain from './DataRemain';
-import TheBotActivity from './TheBotActivity';
+import TheBot from './TheBot';
 import { AdminSidebar } from './AdminSidebar';
 
 const AdminPageContent = () => {
@@ -32,7 +32,7 @@ const AdminPageContent = () => {
     ManageHelps: <ManageHelps />,
     ManageUsers: <ManageUsers />,
     DataRemain: <DataRemain />,
-    TheBotActivity: <TheBotActivity />,
+    TheBot: <TheBot />,
   };
 
   return (
