@@ -295,19 +295,19 @@ const DATAManagement = () => {
   const TableRowSkeleton = () => (
     <TableRow className="border-dark-500">
       <TableCell>
-        <Skeleton className="h-4 w-4" />
+        <Skeleton className="h-4 w-4 bg-dark-400 animate-pulse" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-24 bg-dark-400 animate-pulse" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-4 w-32 bg-dark-400 animate-pulse" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-4 w-16" />
+        <Skeleton className="h-4 w-16 bg-dark-400 animate-pulse" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8 bg-dark-400 animate-pulse" />
       </TableCell>
     </TableRow>
   );
@@ -555,7 +555,7 @@ const DATAManagement = () => {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  Array.from({ length: 5 }).map((_, index) => <TableRowSkeleton key={index} />)
+                  Array.from({ length: 10 }).map((_, index) => <TableRowSkeleton key={index} />)
                 ) : entries.length === 0 ? (
                   <TableRow>...</TableRow>
                 ) : (

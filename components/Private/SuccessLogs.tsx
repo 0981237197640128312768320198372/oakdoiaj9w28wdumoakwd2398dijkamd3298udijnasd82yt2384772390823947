@@ -153,9 +153,8 @@ const SuccessLogs = () => {
               <div
                 key={index}
                 className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
-                <div className="flex w-full justify-between mb-5">
-                  <p className="px-2 bg-light-100/10 w-fit text-light-400 rounded">{log.type}</p>
-                  <p>{formatTime(log.timestamp)}</p>
+                <div className="flex w-full justify-end">
+                  <p className="text-sm text-light-800">{formatTime(log.timestamp)}</p>
                 </div>
                 <p className="text-xs md:text-md">{log.message}</p>
                 <p className="text-sm text-light-800">License: {log.license}</p>
