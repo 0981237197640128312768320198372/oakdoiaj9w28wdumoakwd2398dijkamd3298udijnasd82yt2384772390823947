@@ -42,6 +42,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Pencil, Trash2, Check, AlertCircle, Loader2, MoreHorizontal, Eye } from 'lucide-react';
 import { formatTime } from '@/lib/utils';
+import { TbRefresh } from 'react-icons/tb';
 
 interface IBANEntry {
   _id: string;
@@ -316,23 +317,25 @@ const DATAManagement = () => {
   const badCount = entries.filter((entry) => entry.type === 'Bad').length;
 
   return (
-    <Card className="w-full bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
+    <Card className="min-w-screen w-fit bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
       <CardHeader>
         <div className="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-4">
-          <div>
+          <div className=" w-full flex justify-between">
             <CardTitle className="text-light-100 text-lg sm:text-xl">Manage IBAN</CardTitle>
+
+            <button
+              onClick={fetchEntries}
+              className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
+              title="Refresh data">
+              <TbRefresh className="text-xl" />
+            </button>
+          </div>
+          <div className="flex gap-2 w-full justify-between">
             <div className="flex gap-4 mt-2">
               <span className="text-light-300">Used: {usedCount}</span>
               <span className="text-light-300">Unused: {unusedCount}</span>
               <span className="text-light-300">Bad: {badCount}</span>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={fetchEntries}
-              className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200">
-              Refresh
-            </Button>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200">
@@ -546,7 +549,6 @@ const DATAManagement = () => {
                   <TableHead className="text-light-300">Select</TableHead>
                   <TableHead className="text-light-300">Time</TableHead>
                   <TableHead className="text-light-300">IBAN</TableHead>
-                  <TableHead className="text-light-300">License</TableHead>
                   <TableHead className="text-light-300">Type</TableHead>
                   <TableHead className="text-light-300 text-right">Actions</TableHead>
                 </TableRow>
@@ -572,7 +574,6 @@ const DATAManagement = () => {
                       </TableCell>
                       <TableCell>{formatTime(entry.date)}</TableCell>
                       <TableCell>{entry.iban}</TableCell>
-                      <TableCell>{entry.license}</TableCell>
                       <TableCell>
                         <Badge className={getTypeBadgeColor(entry.type)}>{entry.type}</Badge>
                       </TableCell>
