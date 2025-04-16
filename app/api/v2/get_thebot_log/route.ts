@@ -13,19 +13,27 @@ export async function GET(request: NextRequest) {
     }
 
     await connectToDatabase();
-
     const TheBot = getTheBotModel(license);
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoISO = sevenDaysAgo.toISOString();
+
+    await TheBot.deleteMany({
+      timestamp: { $lt: sevenDaysAgoISO },
+      'activity.type': { $ne: 'success' },
+    });
 
     let query = TheBot.find();
     if (type !== 'All') {
-      query = query.where('type').equals(type);
+      query = query.where('activity.type').equals(type);
     }
 
     const logs = await query.sort({ timestamp: 1 }).lean().exec();
 
     return NextResponse.json({ logs }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching bot logs:', error);
-    return NextResponse.json({ error: 'Failed to fetch bot logs' }, { status: 500 });
+    console.error('Error fetching or cleaning bot logs:', error);
+    return NextResponse.json({ error: 'Failed to fetch or clean bot logs' }, { status: 500 });
   }
 }

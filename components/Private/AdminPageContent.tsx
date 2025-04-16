@@ -42,7 +42,7 @@ const AdminPageContent = () => {
       onLogout={handleLogout}
       userName={userName}>
       <div className="w-full flex flex-col justify-center items-center ">
-        <div className="flex flex-col items-start w-full mt-10 p-5 min-w-fit">
+        <div className="flex flex-col items-start w-full p-5 min-w-fit">
           {sections[currentSection] || <div>Section not found</div>}
         </div>
       </div>
