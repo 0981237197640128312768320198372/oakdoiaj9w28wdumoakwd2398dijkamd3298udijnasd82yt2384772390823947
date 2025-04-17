@@ -2,9 +2,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import DATAInfo from '@/models/DATAInfo';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'perspicacity';
+
+const validateJwt = (request: NextRequest) => {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return { valid: false, error: 'Unauthorization' };
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    jwt.verify(token, JWT_SECRET);
+    return { valid: true };
+  } catch (error) {
+    return { valid: false, error: 'Invalid or expired token' };
+  }
+};
 
 export async function POST(request: NextRequest) {
   try {
+    const { valid, error } = validateJwt(request);
+    if (!valid) {
+      return NextResponse.json({ error: error || 'Unauthorized' }, { status: 401 });
+    }
+
     await connectToDatabase();
     const { action, data } = await request.json();
 
@@ -58,6 +81,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Validate JWT
+    const { valid, error } = validateJwt(request);
+    if (!valid) {
+      return NextResponse.json({ error: error || 'Unauthorized' }, { status: 401 });
+    }
+
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'All';

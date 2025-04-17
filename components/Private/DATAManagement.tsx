@@ -89,6 +89,20 @@ const DATAManagement = () => {
   const [entryToDelete, setEntryToDelete] = useState<IBANEntry | null>(null);
   const [selectedViewEntry, setSelectedViewEntry] = useState<IBANEntry | null>(null);
 
+  const getToken = () => {
+    const authDataString = localStorage.getItem('auth');
+    if (!authDataString) {
+      return null;
+    }
+    try {
+      const authData = JSON.parse(authDataString);
+      return authData.token || null;
+    } catch (error) {
+      console.error('Error parsing authData:', error);
+      return null;
+    }
+  };
+
   const fetchLicenses = async () => {
     try {
       const response = await fetch('/api/v2/get_thebot_licenses');
@@ -104,7 +118,14 @@ const DATAManagement = () => {
     setIsRefreshing(true);
     try {
       setLoading(true);
-      const response = await fetch(`/api/v2/DATAManagement?type=${filterType}`);
+      const token = getToken();
+      if (!token) throw new Error('No authentication token found');
+
+      const response = await fetch(`/api/v2/DATAManagement?type=${filterType}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to fetch entries');
       setEntries(data.entries);
@@ -125,9 +146,15 @@ const DATAManagement = () => {
   const handleAdd = async () => {
     setLoading(true);
     try {
+      const token = getToken();
+      if (!token) throw new Error('No authentication token found');
+
       const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ action: 'add', data: [newEntry] }),
       });
       const data = await response.json();
@@ -158,9 +185,15 @@ const DATAManagement = () => {
     if (!selectedEntry) return;
     setLoading(true);
     try {
+      const token = getToken();
+      if (!token) throw new Error('No authentication token found');
+
       const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           action: 'update',
           data: [{ _id: selectedEntry._id, ...newEntry }],
@@ -184,9 +217,15 @@ const DATAManagement = () => {
     if (!entryToDelete) return;
     setLoading(true);
     try {
+      const token = getToken();
+      if (!token) throw new Error('No authentication token found');
+
       const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ action: 'remove', data: [entryToDelete._id] }),
       });
       const data = await response.json();
@@ -207,9 +246,15 @@ const DATAManagement = () => {
     const updates = selectedRows.map((id) => ({ _id: id, type }));
     setLoading(true);
     try {
+      const token = getToken();
+      if (!token) throw new Error('No authentication token found');
+
       const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ action: 'update', data: updates }),
       });
       const data = await response.json();
@@ -229,9 +274,15 @@ const DATAManagement = () => {
   const handleMassDelete = async () => {
     setLoading(true);
     try {
+      const token = getToken();
+      if (!token) throw new Error('No authentication token found');
+
       const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ action: 'remove', data: selectedRows }),
       });
       const data = await response.json();

@@ -10,6 +10,7 @@ interface AuthData {
   name: string;
   role: 'admin' | 'staff';
   expiration: number;
+  token: string;
 }
 
 const EXPIRATION_TIME = 2 * 24 * 60 * 60 * 1000;
@@ -23,7 +24,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
 
   const validateAuth = (authData: AuthData): boolean => {
     const now = new Date().getTime();
-    return authData.expiration > now && authData.role !== undefined;
+    return authData.expiration > now && authData.role !== undefined && authData.token.length > 0;
   };
 
   useEffect(() => {
@@ -82,12 +83,18 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const data: { role: 'admin' | 'staff'; name: string } = await response.json();
+      const data: { role: 'admin' | 'staff'; name: string; token: string } = await response.json();
 
       const expiration = new Date().getTime() + EXPIRATION_TIME;
       localStorage.setItem(
         'auth',
-        JSON.stringify({ username, name: data.name, role: data.role, expiration })
+        JSON.stringify({
+          username,
+          name: data.name,
+          role: data.role,
+          expiration,
+          token: data.token,
+        })
       );
 
       if (data.role === 'admin') {

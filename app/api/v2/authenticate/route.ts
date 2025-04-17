@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 
 const MAX_ATTEMPTS = 5;
-
+const JWT_SECRET = process.env.JWT_SECRET || 'perspicacity';
 const blockedUserSchema = new mongoose.Schema({
   blockKey: { type: String, required: true, unique: true },
   attempts: { type: Number, default: 0 },
@@ -49,7 +50,15 @@ export async function POST(req: NextRequest) {
     if (blockedUser) {
       await BlockedUser.deleteOne({ blockKey });
     }
+    // NEW: Generate a JWT token
+    const token = jwt.sign(
+      { username: user.username, role: user.role }, // Payload: data to include in the token
+      JWT_SECRET, // Secret key to sign the token
+      { expiresIn: '2d' } // Token expires in 2 days (adjust as needed)
+    );
 
+    // MODIFIED: Include the token in the response
+    return NextResponse.json({ role: user.role, name: user.name, token });
     return NextResponse.json({ role: user.role, name: user.name });
   } catch (error) {
     console.error('Error authenticating user:', error);
