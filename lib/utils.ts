@@ -195,3 +195,17 @@ export const formatTime = (timestamp: string | null) => {
     return 'N/A';
   }
 };
+
+export const getAdminToken = () => {
+  const authDataString = localStorage.getItem('auth');
+  if (!authDataString) {
+    return null;
+  }
+  try {
+    const authData = JSON.parse(authDataString);
+    return authData.token || null;
+  } catch (error) {
+    console.error('Error parsing authData:', error);
+    return null;
+  }
+};

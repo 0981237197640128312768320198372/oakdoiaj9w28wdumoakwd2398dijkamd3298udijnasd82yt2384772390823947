@@ -41,7 +41,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Pencil, Trash2, Check, AlertCircle, Loader2, MoreHorizontal, Eye } from 'lucide-react';
-import { formatTime } from '@/lib/utils';
+import { formatTime, getAdminToken } from '@/lib/utils';
 import { TbRefresh } from 'react-icons/tb';
 
 interface IBANEntry {
@@ -89,20 +89,6 @@ const DATAManagement = () => {
   const [entryToDelete, setEntryToDelete] = useState<IBANEntry | null>(null);
   const [selectedViewEntry, setSelectedViewEntry] = useState<IBANEntry | null>(null);
 
-  const getToken = () => {
-    const authDataString = localStorage.getItem('auth');
-    if (!authDataString) {
-      return null;
-    }
-    try {
-      const authData = JSON.parse(authDataString);
-      return authData.token || null;
-    } catch (error) {
-      console.error('Error parsing authData:', error);
-      return null;
-    }
-  };
-
   const fetchLicenses = async () => {
     try {
       const response = await fetch('/api/v2/get_thebot_licenses');
@@ -118,7 +104,7 @@ const DATAManagement = () => {
     setIsRefreshing(true);
     try {
       setLoading(true);
-      const token = getToken();
+      const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
       const response = await fetch(`/api/v2/DATAManagement?type=${filterType}`, {
@@ -146,7 +132,7 @@ const DATAManagement = () => {
   const handleAdd = async () => {
     setLoading(true);
     try {
-      const token = getToken();
+      const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
       const response = await fetch('/api/v2/DATAManagement', {
@@ -185,7 +171,7 @@ const DATAManagement = () => {
     if (!selectedEntry) return;
     setLoading(true);
     try {
-      const token = getToken();
+      const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
       const response = await fetch('/api/v2/DATAManagement', {
@@ -217,7 +203,7 @@ const DATAManagement = () => {
     if (!entryToDelete) return;
     setLoading(true);
     try {
-      const token = getToken();
+      const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
       const response = await fetch('/api/v2/DATAManagement', {
@@ -246,7 +232,7 @@ const DATAManagement = () => {
     const updates = selectedRows.map((id) => ({ _id: id, type }));
     setLoading(true);
     try {
-      const token = getToken();
+      const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
       const response = await fetch('/api/v2/DATAManagement', {
@@ -274,7 +260,7 @@ const DATAManagement = () => {
   const handleMassDelete = async () => {
     setLoading(true);
     try {
-      const token = getToken();
+      const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
       const response = await fetch('/api/v2/DATAManagement', {
