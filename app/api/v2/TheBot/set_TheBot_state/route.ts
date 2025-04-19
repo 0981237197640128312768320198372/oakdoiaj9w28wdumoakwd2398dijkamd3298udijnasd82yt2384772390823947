@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   if (!botId || !botState) {
     return NextResponse.json({ message: 'Missing botId or botState' }, { status: 400 });
   }
-  if (!['running', 'stopped'].includes(botState)) {
+  if (!['running', 'stopped', 'error', 'idle'].includes(botState)) {
     return NextResponse.json({ message: 'Invalid botState' }, { status: 400 });
   }
 

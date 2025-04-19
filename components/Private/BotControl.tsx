@@ -22,8 +22,8 @@ interface BotActivity {
 
 interface BotData {
   _id: string;
-  rdpId: string;
-  botState: 'running' | 'stopped' | 'error';
+  botId: string;
+  botState: 'running' | 'stopped' | 'idle' | 'error';
   parameters: string[];
   activity: BotActivity[];
 }
@@ -52,12 +52,12 @@ const BotControl = () => {
     }
   };
 
-  const setBotState = async (rdpId: string, state: 'running' | 'stopped') => {
+  const setBotState = async (botId: string, state: 'running' | 'stopped') => {
     try {
       const response = await fetch('/api/v2/TheBot/set_TheBot_state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rdpId, state }),
+        body: JSON.stringify({ botId, state }),
       });
       if (!response.ok) throw new Error('Failed to set bot state');
       fetchBotData();
@@ -67,17 +67,17 @@ const BotControl = () => {
     }
   };
 
-  const sendCommand = async (rdpId: string) => {
-    const command = commandInputs[rdpId];
+  const sendCommand = async (botId: string) => {
+    const command = commandInputs[botId];
     if (!command) return;
     try {
       const response = await fetch('/api/v2/TheBot/set_one_time_command', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rdpId, command }),
+        body: JSON.stringify({ botId, command }),
       });
       if (!response.ok) throw new Error('Failed to send command');
-      setCommandInputs((prev) => ({ ...prev, [rdpId]: '' }));
+      setCommandInputs((prev) => ({ ...prev, [botId]: '' }));
       fetchBotData();
     } catch (err) {
       setError('Failed to send command. Please try again later.');
@@ -160,10 +160,10 @@ const BotControl = () => {
         <div className="flex flex-col overflow-auto max-h-[500px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
           {bots.map((bot) => (
             <div
-              key={bot.rdpId}
+              key={bot.botId}
               className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
               <div className="flex justify-between items-center">
-                <span className="text-light-100">{bot.rdpId}</span>
+                <span className="text-light-100">{bot.botId}</span>
                 <span
                   className={`text-sm ${
                     bot.botState === 'running' ? 'text-green-500' : 'text-red-500'
@@ -177,7 +177,7 @@ const BotControl = () => {
               <div className="mt-4">
                 <button
                   onClick={() =>
-                    setBotState(bot.rdpId, bot.botState === 'running' ? 'stopped' : 'running')
+                    setBotState(bot.botId, bot.botState === 'running' ? 'stopped' : 'running')
                   }
                   className={`px-4 py-2 rounded-md ${
                     bot.botState === 'running' ? 'bg-red-500' : 'bg-green-500'
@@ -188,15 +188,15 @@ const BotControl = () => {
               <div className="mt-4 flex gap-2">
                 <input
                   type="text"
-                  value={commandInputs[bot.rdpId] || ''}
+                  value={commandInputs[bot.botId] || ''}
                   onChange={(e) =>
-                    setCommandInputs({ ...commandInputs, [bot.rdpId]: e.target.value })
+                    setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
                   }
                   placeholder="Enter command"
                   className="flex-1 p-2 bg-dark-400 text-light-100 rounded"
                 />
                 <button
-                  onClick={() => sendCommand(bot.rdpId)}
+                  onClick={() => sendCommand(bot.botId)}
                   className="px-4 py-2 bg-blue-500 text-white rounded">
                   Send
                 </button>

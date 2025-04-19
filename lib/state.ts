@@ -1,5 +1,5 @@
 interface AsdState {
-  status: 'running' | 'stopped';
+  status: 'running' | 'stopped' | 'idle' | 'error';
   parameters?: string[];
 }
 
