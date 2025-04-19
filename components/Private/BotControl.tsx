@@ -20,6 +20,13 @@ interface BotActivity {
   error?: string;
 }
 
+// /api/v2/TheBot/get_TheBot_data
+// /api/v2/TheBot/report
+// /api/v2/TheBot/get_TheBot_state
+// /api/v2/TheBot/set_TheBot_state
+// /api/v2/TheBot/get_one_time_command
+// /api/v2/TheBot/set_one_time_command
+
 interface BotData {
   _id: string;
   botId: string;
