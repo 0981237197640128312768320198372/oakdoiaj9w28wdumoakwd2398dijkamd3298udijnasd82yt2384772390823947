@@ -36,9 +36,10 @@ export async function POST(request: Request) {
       { botId, 'activity._id': new mongoose.Types.ObjectId(activityId) },
       { $set: update }
     );
-  } else {
-    return NextResponse.json({ message: 'Unknown report type' }, { status: 400 });
   }
+  // else {
+  //   return NextResponse.json({ message: 'Unknown report type' }, { status: 400 });
+  // }
 
   return NextResponse.json({ message: 'Report processed successfully' });
 }
