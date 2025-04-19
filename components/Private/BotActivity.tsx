@@ -228,7 +228,7 @@ const BotActivity = () => {
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : licenseData.length > 0 ? (
-          <div className="flex flex-col overflow-y-scroll max-h-[700px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
+          <div className="flex flex-col overflow-auto max-h-[500px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
             {licenseData.map(({ license, lastActivity }) => (
               <button
                 key={license}
