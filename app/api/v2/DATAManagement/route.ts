@@ -23,16 +23,18 @@ const validateJwt = (request: NextRequest) => {
 
 export async function POST(request: NextRequest) {
   try {
-    const { valid, error } = validateJwt(request);
-    if (!valid) {
-      return NextResponse.json({ error: error || 'Unauthorized' }, { status: 401 });
-    }
-
     await connectToDatabase();
     const { action, data } = await request.json();
 
     if (!action) {
       return NextResponse.json({ error: 'Action is required' }, { status: 400 });
+    }
+
+    if (action !== 'add') {
+      const { valid, error } = validateJwt(request);
+      if (!valid) {
+        return NextResponse.json({ error: error || 'Unauthorized' }, { status: 401 });
+      }
     }
 
     switch (action) {
@@ -81,7 +83,6 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Validate JWT
     const { valid, error } = validateJwt(request);
     if (!valid) {
       return NextResponse.json({ error: error || 'Unauthorized' }, { status: 401 });
