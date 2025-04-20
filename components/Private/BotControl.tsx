@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -12,7 +13,7 @@ import CopyToClipboard from '../CopyToClipboard';
 interface BotActivity {
   _id: string;
   timestamp: string;
-  type: 'state_change' | 'command' | 'error';
+  type: 'state_change' | 'command' | 'error' | 'dokmai-bot';
   message: string;
   details?: Record<string, any>;
   command?: string;
@@ -20,13 +21,6 @@ interface BotActivity {
   output?: string;
   error?: string;
 }
-
-// /api/v2/TheBot/get_TheBot_data
-// /api/v2/TheBot/report
-// /api/v2/TheBot/get_TheBot_state
-// /api/v2/TheBot/set_TheBot_state
-// /api/v2/TheBot/get_one_time_command
-// /api/v2/TheBot/set_one_time_command
 
 interface BotData {
   _id: string;
@@ -42,7 +36,9 @@ const BotControl = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [commandInputs, setCommandInputs] = useState<{ [key: string]: string }>({});
+  const [eventSources, setEventSources] = useState<{ [key: string]: EventSource }>({});
 
+  // Fetch initial bot data
   const fetchBotData = async () => {
     try {
       setLoading(true);
@@ -60,6 +56,7 @@ const BotControl = () => {
     }
   };
 
+  // Set bot state (start/stop)
   const setBotState = async (
     botId: string,
     botState: 'running' | 'stopped',
@@ -67,9 +64,7 @@ const BotControl = () => {
   ) => {
     try {
       const payload = { botId, botState, parameters };
-      if (parameters) {
-        payload.parameters = parameters;
-      }
+      if (parameters) payload.parameters = parameters;
       const response = await fetch('/api/v2/TheBot/set_TheBot_state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -83,6 +78,7 @@ const BotControl = () => {
     }
   };
 
+  // Send a one-time command
   const sendCommand = async (botId: string) => {
     const command = commandInputs[botId];
     if (!command) return;
@@ -101,17 +97,70 @@ const BotControl = () => {
     }
   };
 
+  // Handle manual refresh
   const handleRefresh = () => {
     setIsRefreshing(true);
     fetchBotData();
   };
 
+  // Initial data fetch
   useEffect(() => {
     fetchBotData();
-    const interval = setInterval(fetchBotData, 30000);
-    return () => clearInterval(interval);
   }, []);
 
+  // SSE setup for real-time updates
+  useEffect(() => {
+    const sources: { [key: string]: EventSource } = {};
+
+    bots.forEach((bot) => {
+      const eventSource = new EventSource(`/api/v2/TheBot/report?botId=${bot.botId}`);
+
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        // Only process activities of type 'dokmai-bot'
+        if (data.type === 'dokmai-bot') {
+          const newActivity: BotActivity = {
+            _id: data.id || data._id || `${bot.botId}-${Date.now()}`,
+            timestamp:
+              data.timestamp || data.lastReportedStatus?.timestamp || new Date().toISOString(),
+            type: 'dokmai-bot',
+            message:
+              data.message ||
+              data.lastReportedStatus?.message ||
+              `State changed to ${bot.botState}`,
+            details: data.details || data.asdState || {},
+          };
+          console.log('New SSE activity:', newActivity); // Debug log
+          setBots((prevBots) =>
+            prevBots.map((b) =>
+              b.botId === bot.botId
+                ? { ...b, activity: [newActivity, ...b.activity].slice(0, 50) }
+                : b
+            )
+          );
+        }
+      };
+
+      eventSource.onerror = () => {
+        console.error(`SSE connection error for bot ${bot.botId}`);
+        eventSource.close();
+        // Attempt to reconnect after a delay
+        setTimeout(() => {
+          sources[bot.botId] = new EventSource(`/api/v2/TheBot/report?botId=${bot.botId}`);
+        }, 5000);
+      };
+
+      sources[bot.botId] = eventSource;
+    });
+
+    setEventSources(sources);
+
+    return () => {
+      Object.values(sources).forEach((source) => source.close());
+    };
+  }, [bots]);
+
+  // Render bot activities
   const renderActivities = (activities: BotActivity[]) => {
     const sortedActivities = activities
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -122,9 +171,9 @@ const BotControl = () => {
           <p className="px-2 bg-light-100/10 w-fit text-light-400 rounded">{activity.type}</p>
           <p>{formatTime(activity.timestamp)}</p>
         </div>
-        <p className="text-xs md:text-md">{activity.message}</p>
+        <p className="text-xs md:text-md">{activity.message || 'No message available'}</p>
         {activity.details && (
-          <p>
+          <div>
             <strong>Details:</strong>
             <ul className="list-disc ml-5">
               {Object.entries(activity.details).map(([key, value]) => (
@@ -133,12 +182,13 @@ const BotControl = () => {
                 </li>
               ))}
             </ul>
-          </p>
+          </div>
         )}
       </div>
     ));
   };
 
+  // Loading state
   if (loading) {
     return (
       <div className="flex flex-col gap-5">
@@ -149,6 +199,7 @@ const BotControl = () => {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <Alert variant="destructive">
@@ -159,9 +210,10 @@ const BotControl = () => {
     );
   }
 
+  // Main UI
   return (
-    <div className="flex flex-col gap-10 ">
-      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full ">
+    <div className="flex flex-col gap-10">
+      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full">
         <div className="w-full flex justify-between items-start gap-5">
           <h3 className="flex items-center gap-2 font-bold mb-5">Bot Controller</h3>
           <button
@@ -182,7 +234,6 @@ const BotControl = () => {
                 <span className="flex gap-2 text-light-100">
                   {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
                 </span>
-
                 <span
                   className={`text-sm ${
                     bot.botState === 'running' ? 'text-green-500' : 'text-red-500'
