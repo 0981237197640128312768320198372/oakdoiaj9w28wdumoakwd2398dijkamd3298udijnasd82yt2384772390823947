@@ -70,6 +70,7 @@ const DATAManagement = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string>('All');
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [newEntryText, setNewEntryText] = useState('');
   const [newEntry, setNewEntry] = useState({
     firstName: '',
     lastName: '',
@@ -91,6 +92,29 @@ const DATAManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [totalEntries, setTotalEntries] = useState(0);
+  const [counts, setCounts] = useState({ Used: 0, Unused: 0, Bad: 0 });
+  const [countsLoading, setCountsLoading] = useState(true);
+
+  const fetchCounts = async () => {
+    try {
+      setCountsLoading(true);
+      const token = getAdminToken();
+      if (!token) throw new Error('No authentication token found');
+
+      const response = await fetch(`/api/v2/DATAManagement?type=All&countsOnly=true`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to fetch counts');
+      setCounts(data.counts);
+    } catch (err) {
+      console.error('Failed to fetch counts:', err);
+    } finally {
+      setCountsLoading(false);
+    }
+  };
 
   const fetchEntries = async () => {
     setIsRefreshing(true);
@@ -121,6 +145,10 @@ const DATAManagement = () => {
   };
 
   useEffect(() => {
+    fetchCounts();
+  }, []);
+
+  useEffect(() => {
     setCurrentPage(1);
   }, [filterType]);
 
@@ -134,32 +162,39 @@ const DATAManagement = () => {
       const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
+      const lines = newEntryText.split('\n').filter((line) => line.trim() !== '');
+      const entriesToAdd = lines.map((line) => {
+        const [firstName, lastName, iban, street, zipCode, city] = line.split('\t');
+        return {
+          firstName,
+          lastName,
+          iban,
+          street,
+          zipCode,
+          city,
+          license: 'Kont',
+          type: 'Unused' as 'Used' | 'Bad' | 'Unused',
+        };
+      });
+
       const response = await fetch('/api/v2/DATAManagement', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ action: 'add', data: [newEntry] }),
+        body: JSON.stringify({ action: 'add', data: entriesToAdd }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to add entry');
-      setSuccess('Entry added successfully');
-      setNewEntry({
-        firstName: '',
-        lastName: '',
-        iban: '',
-        street: '',
-        zipCode: '',
-        city: '',
-        license: '',
-        type: 'Unused',
-      });
+      if (!response.ok) throw new Error(data.error || 'Failed to add entries');
+      setSuccess('Entries added successfully');
+      setNewEntryText('');
       setIsAddDialogOpen(false);
       fetchEntries();
+      fetchCounts();
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
-      setError((err as Error).message || 'Failed to add entry');
+      setError((err as Error).message || 'Failed to add entries');
       setTimeout(() => setError(null), 3000);
     } finally {
       setLoading(false);
@@ -189,6 +224,7 @@ const DATAManagement = () => {
       setSuccess('Entry updated successfully');
       setIsEditDialogOpen(false);
       fetchEntries();
+      fetchCounts();
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError((err as Error).message || 'Failed to update entry');
@@ -218,6 +254,7 @@ const DATAManagement = () => {
       setSuccess('Entry deleted successfully');
       setIsDeleteDialogOpen(false);
       fetchEntries();
+      fetchCounts();
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError((err as Error).message || 'Failed to delete entry');
@@ -247,6 +284,7 @@ const DATAManagement = () => {
       setSuccess('Entries updated successfully');
       setSelectedRows([]);
       fetchEntries();
+      fetchCounts();
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError((err as Error).message || 'Failed to update entries');
@@ -275,6 +313,7 @@ const DATAManagement = () => {
       setSuccess('Entries removed successfully');
       setSelectedRows([]);
       fetchEntries();
+      fetchCounts();
       setTimeout(() => setSuccess(null), 3000);
     } catch (err) {
       setError((err as Error).message || 'Failed to remove entries');
@@ -348,9 +387,6 @@ const DATAManagement = () => {
     </TableRow>
   );
 
-  const usedCount = entries.filter((entry) => entry.type === 'Used').length;
-  const unusedCount = entries.filter((entry) => entry.type === 'Unused').length;
-  const badCount = entries.filter((entry) => entry.type === 'Bad').length;
   const totalPages = Math.ceil(totalEntries / entriesPerPage);
   const start = (currentPage - 1) * entriesPerPage + 1;
   const end = Math.min(currentPage * entriesPerPage, totalEntries);
@@ -359,7 +395,7 @@ const DATAManagement = () => {
     <Card className="min-w-screen w-fit bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
       <CardHeader>
         <div className="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-4">
-          <div className=" w-full flex justify-between">
+          <div className="w-full flex justify-between">
             <CardTitle className="text-light-100 text-lg sm:text-xl">Manage IBAN</CardTitle>
             <button
               onClick={fetchEntries}
@@ -370,10 +406,31 @@ const DATAManagement = () => {
           </div>
           <div className="flex gap-2 w-full justify-between">
             <div className="flex gap-4 mt-2">
-              <span className="text-light-300">Used: {usedCount}</span>
-              <span className="text-light-300">Unused: {unusedCount}</span>
-              <span className="text-light-300">Bad: {badCount}</span>
+              {countsLoading ? (
+                <>
+                  <Skeleton className="h-4 w-16 bg-dark-400 animate-pulse" />
+                  <Skeleton className="h-4 w-16 bg-dark-400 animate-pulse" />
+                  <Skeleton className="h-4 w-16 bg-dark-400 animate-pulse" />
+                </>
+              ) : (
+                <>
+                  <span className="text-light-300">Used: {counts.Used}</span>
+                  <span className="text-light-300">Unused: {counts.Unused}</span>
+                  <span className="text-light-300">Bad: {counts.Bad}</span>
+                </>
+              )}
             </div>
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-[180px] bg-dark-500 border-dark-400 text-light-100">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent className="bg-dark-500 border-dark-400 text-light-100">
+                <SelectItem value="All">All</SelectItem>
+                <SelectItem value="Used">Used</SelectItem>
+                <SelectItem value="Bad">Bad</SelectItem>
+                <SelectItem value="Unused">Unused</SelectItem>
+              </SelectContent>
+            </Select>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200">
@@ -382,122 +439,23 @@ const DATAManagement = () => {
               </DialogTrigger>
               <DialogContent className="bg-dark-600 border-dark-500 text-light-100 w-[calc(100%-2rem)] sm:w-auto sm:max-w-md mx-auto transition-all duration-200">
                 <DialogHeader>
-                  <DialogTitle className="text-light-100">Add New IBAN Entry</DialogTitle>
+                  <DialogTitle className="text-light-100">Add New IBAN Entries</DialogTitle>
                   <DialogDescription className="text-light-500">
-                    Create a new IBAN entry with the following details.
+                    Paste multiple entries, each on a new line, separated by tabs (e.g., First
+                    Name\tLast Name\tIBAN\tStreet\tZip Code\tCity).
                   </DialogDescription>
                 </DialogHeader>
-                <div className="grid grid-cols-1 gap-4 py-4 sm:grid-cols-2">
-                  <div className="grid gap-2">
-                    <Label htmlFor="firstName" className="text-light-200">
-                      First Name
-                    </Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      placeholder="Enter first name"
-                      value={newEntry.firstName}
-                      onChange={(e) => setNewEntry({ ...newEntry, firstName: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="lastName" className="text-light-200">
-                      Last Name
-                    </Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      placeholder="Enter last name"
-                      value={newEntry.lastName}
-                      onChange={(e) => setNewEntry({ ...newEntry, lastName: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="iban" className="text-light-200">
-                      IBAN
-                    </Label>
-                    <Input
-                      id="iban"
-                      name="iban"
-                      placeholder="Enter IBAN"
-                      value={newEntry.iban}
-                      onChange={(e) => setNewEntry({ ...newEntry, iban: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="street" className="text-light-200">
-                      Street
-                    </Label>
-                    <Input
-                      id="street"
-                      name="street"
-                      placeholder="Enter street"
-                      value={newEntry.street}
-                      onChange={(e) => setNewEntry({ ...newEntry, street: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="zipCode" className="text-light-200">
-                      Zip Code
-                    </Label>
-                    <Input
-                      id="zipCode"
-                      name="zipCode"
-                      placeholder="Enter zip code"
-                      value={newEntry.zipCode}
-                      onChange={(e) => setNewEntry({ ...newEntry, zipCode: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="city" className="text-light-200">
-                      City
-                    </Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      placeholder="Enter city"
-                      value={newEntry.city}
-                      onChange={(e) => setNewEntry({ ...newEntry, city: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="license" className="text-light-200">
-                      License
-                    </Label>
-                    <Input
-                      id="license"
-                      name="license"
-                      placeholder="Enter license"
-                      value={newEntry.license}
-                      onChange={(e) => setNewEntry({ ...newEntry, license: e.target.value })}
-                      className="bg-dark-500 border-dark-400 text-light-100"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="type" className="text-light-200">
-                      Type
-                    </Label>
-                    <Select
-                      value={newEntry.type}
-                      onValueChange={(value) =>
-                        setNewEntry({ ...newEntry, type: value as 'Used' | 'Bad' | 'Unused' })
-                      }>
-                      <SelectTrigger className="bg-dark-500 border-dark-400 text-light-100">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-dark-500 border-dark-400 text-light-100">
-                        <SelectItem value="Used">Used</SelectItem>
-                        <SelectItem value="Bad">Bad</SelectItem>
-                        <SelectItem value="Unused">Unused</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="grid gap-4 py-4">
+                  <Label htmlFor="entries" className="text-light-200">
+                    Entries (tab-separated)
+                  </Label>
+                  <textarea
+                    id="entries"
+                    placeholder="Paste entries here, one per line"
+                    value={newEntryText}
+                    onChange={(e) => setNewEntryText(e.target.value)}
+                    className="bg-dark-500 border-dark-400 text-light-100 h-40 w-full p-2"
+                  />
                 </div>
                 <DialogFooter className="flex flex-col sm:flex-row gap-2">
                   <Button
@@ -518,7 +476,7 @@ const DATAManagement = () => {
                     ) : (
                       <>
                         <Check className="mr-2 h-4 w-4" />
-                        Add Entry
+                        Add Entries
                       </>
                     )}
                   </Button>
@@ -666,7 +624,6 @@ const DATAManagement = () => {
                 <SelectValue placeholder="Entries per page" />
               </SelectTrigger>
               <SelectContent className="bg-dark-500 border-dark-400 text-light-100">
-                <SelectItem value="5">5</SelectItem>
                 <SelectItem value="10">10</SelectItem>
                 <SelectItem value="20">20</SelectItem>
                 <SelectItem value="50">50</SelectItem>
@@ -678,17 +635,16 @@ const DATAManagement = () => {
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
-              Previous
+              {'<'}
             </Button>
             <span>
-              Page {totalEntries > 0 ? currentPage : 0} of {totalPages} (Showing {start}-{end} of{' '}
-              {totalEntries} entries)
+              Page {totalEntries > 0 ? currentPage : 0} / {totalPages} ({totalEntries})
             </span>
             <Button
               disabled={currentPage === totalPages || totalEntries === 0}
               onClick={() => setCurrentPage(currentPage + 1)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
-              Next
+              {'>'}
             </Button>
           </div>
         </div>

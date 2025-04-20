@@ -93,13 +93,21 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type') || 'All';
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
-    const skip = (page - 1) * limit;
+    const countsOnly = searchParams.get('countsOnly') === 'true';
 
     let query = {};
     if (type !== 'All') {
       query = { type };
     }
 
+    if (countsOnly) {
+      const used = await DATAInfo.countDocuments({ ...query, type: 'Used' });
+      const unused = await DATAInfo.countDocuments({ ...query, type: 'Unused' });
+      const bad = await DATAInfo.countDocuments({ ...query, type: 'Bad' });
+      return NextResponse.json({ counts: { Used: used, Unused: unused, Bad: bad } });
+    }
+
+    const skip = (page - 1) * limit;
     const entries = await DATAInfo.find(query).sort({ date: -1 }).skip(skip).limit(limit).lean();
     const total = await DATAInfo.countDocuments(query);
 
