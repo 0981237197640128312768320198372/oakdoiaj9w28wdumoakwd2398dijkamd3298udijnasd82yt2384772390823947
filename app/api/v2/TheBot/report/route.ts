@@ -76,61 +76,14 @@ export async function GET(request: Request) {
 
   await connectToDatabase();
 
-  const headers = {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
-  };
-
-  const stream = new ReadableStream({
-    async start(controller) {
-      const bot = await TheBot.findOne({ botId });
-      if (bot) {
-        controller.enqueue(
-          `data: ${JSON.stringify({
-            type: 'state_change',
-            botState: bot.botState,
-            parameters: bot.parameters,
-            timestamp: new Date().toISOString(),
-          })}\n\n`
-        );
-      }
-
-      const changeStream = TheBot.watch([{ $match: { 'fullDocument.botId': botId } }], {
-        fullDocument: 'updateLookup',
-      });
-
-      let lastSentTimestamp = new Date();
-
-      changeStream.on('change', (change) => {
-        if (change.operationType === 'update' && change.fullDocument) {
-          const bot = change.fullDocument;
-          const newActivities = bot.activity.filter((a: any) => a.timestamp > lastSentTimestamp);
-          for (const activity of newActivities) {
-            controller.enqueue(`data: ${JSON.stringify(activity)}\n\n`);
-          }
-          if (newActivities.length > 0) {
-            lastSentTimestamp = newActivities[newActivities.length - 1].timestamp;
-          }
-          if (change.updateDescription.updatedFields.botState) {
-            controller.enqueue(
-              `data: ${JSON.stringify({
-                type: 'state_change',
-                botState: bot.botState,
-                parameters: bot.parameters,
-                timestamp: new Date().toISOString(),
-              })}\n\n`
-            );
-          }
-        }
-      });
-
-      request.signal.addEventListener('abort', () => {
-        changeStream.close();
-        controller.close();
-      });
-    },
-  });
-
-  return new Response(stream, { headers });
+  try {
+    const bot = await TheBot.findOne({ botId }).lean();
+    if (!bot) {
+      return new Response('Bot not found', { status: 404 });
+    }
+    return NextResponse.json(bot);
+  } catch (error) {
+    console.error('Error fetching bot data:', error);
+    return new Response('Internal Server Error', { status: 500 });
+  }
 }
