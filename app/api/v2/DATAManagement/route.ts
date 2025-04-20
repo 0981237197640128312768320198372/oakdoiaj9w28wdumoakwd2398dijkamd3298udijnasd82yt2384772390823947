@@ -91,14 +91,19 @@ export async function GET(request: NextRequest) {
     await connectToDatabase();
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'All';
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const skip = (page - 1) * limit;
 
     let query = {};
     if (type !== 'All') {
       query = { type };
     }
 
-    const entries = await DATAInfo.find(query).sort({ date: -1 }).lean();
-    return NextResponse.json({ entries });
+    const entries = await DATAInfo.find(query).sort({ date: -1 }).skip(skip).limit(limit).lean();
+    const total = await DATAInfo.countDocuments(query);
+
+    return NextResponse.json({ entries, total });
   } catch (error) {
     console.error('Error fetching DATA data:', error);
     return NextResponse.json({ error: 'Failed to fetch DATA data' }, { status: 500 });

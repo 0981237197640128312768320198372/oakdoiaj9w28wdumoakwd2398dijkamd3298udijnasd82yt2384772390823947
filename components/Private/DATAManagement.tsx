@@ -88,17 +88,9 @@ const DATAManagement = () => {
   const [selectedEntry, setSelectedEntry] = useState<IBANEntry | null>(null);
   const [entryToDelete, setEntryToDelete] = useState<IBANEntry | null>(null);
   const [selectedViewEntry, setSelectedViewEntry] = useState<IBANEntry | null>(null);
-
-  // const fetchLicenses = async () => {
-  //   try {
-  //     const response = await fetch('/api/v2/get_thebot_licenses');
-  //     const data = await response.json();
-  //     if (!response.ok) throw new Error(data.error || 'Failed to fetch licenses');
-  //     setLicenseData(data.licenses);
-  //   } catch (err) {
-  //     console.error('Error fetching licenses:', err);
-  //   }
-  // };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [totalEntries, setTotalEntries] = useState(0);
 
   const fetchEntries = async () => {
     setIsRefreshing(true);
@@ -107,14 +99,18 @@ const DATAManagement = () => {
       const token = getAdminToken();
       if (!token) throw new Error('No authentication token found');
 
-      const response = await fetch(`/api/v2/DATAManagement?type=${filterType}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `/api/v2/DATAManagement?type=${filterType}&page=${currentPage}&limit=${entriesPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to fetch entries');
       setEntries(data.entries);
+      setTotalEntries(data.total);
       setError(null);
     } catch (err) {
       setError((err as Error).message || 'Failed to fetch entries');
@@ -125,9 +121,12 @@ const DATAManagement = () => {
   };
 
   useEffect(() => {
-    // fetchLicenses();
-    fetchEntries();
+    setCurrentPage(1);
   }, [filterType]);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [filterType, currentPage, entriesPerPage]);
 
   const handleAdd = async () => {
     setLoading(true);
@@ -352,6 +351,9 @@ const DATAManagement = () => {
   const usedCount = entries.filter((entry) => entry.type === 'Used').length;
   const unusedCount = entries.filter((entry) => entry.type === 'Unused').length;
   const badCount = entries.filter((entry) => entry.type === 'Bad').length;
+  const totalPages = Math.ceil(totalEntries / entriesPerPage);
+  const start = (currentPage - 1) * entriesPerPage + 1;
+  const end = Math.min(currentPage * entriesPerPage, totalEntries);
 
   return (
     <Card className="min-w-screen w-fit bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
@@ -359,7 +361,6 @@ const DATAManagement = () => {
         <div className="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-4">
           <div className=" w-full flex justify-between">
             <CardTitle className="text-light-100 text-lg sm:text-xl">Manage IBAN</CardTitle>
-
             <button
               onClick={fetchEntries}
               className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70 hover:text-dark-800"
@@ -594,7 +595,11 @@ const DATAManagement = () => {
                 {loading ? (
                   Array.from({ length: 10 }).map((_, index) => <TableRowSkeleton key={index} />)
                 ) : entries.length === 0 ? (
-                  <TableRow>...</TableRow>
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center text-light-300">
+                      No entries found
+                    </TableCell>
+                  </TableRow>
                 ) : (
                   entries.map((entry) => (
                     <TableRow key={entry._id} className="border-dark-500 hover:bg-dark-600">
@@ -647,6 +652,44 @@ const DATAManagement = () => {
                 )}
               </TableBody>
             </Table>
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 text-light-300">
+          <div className="mb-2 sm:mb-0">
+            <Select
+              value={entriesPerPage.toString()}
+              onValueChange={(value) => {
+                setEntriesPerPage(Number(value));
+                setCurrentPage(1);
+              }}>
+              <SelectTrigger className="w-[180px] bg-dark-500 border-dark-400 text-light-100">
+                <SelectValue placeholder="Entries per page" />
+              </SelectTrigger>
+              <SelectContent className="bg-dark-500 border-dark-400 text-light-100">
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
+              Previous
+            </Button>
+            <span>
+              Page {totalEntries > 0 ? currentPage : 0} of {totalPages} (Showing {start}-{end} of{' '}
+              {totalEntries} entries)
+            </span>
+            <Button
+              disabled={currentPage === totalPages || totalEntries === 0}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
+              Next
+            </Button>
           </div>
         </div>
       </CardContent>
