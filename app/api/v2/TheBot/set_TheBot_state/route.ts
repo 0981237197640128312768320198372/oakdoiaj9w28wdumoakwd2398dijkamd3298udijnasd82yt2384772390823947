@@ -4,6 +4,7 @@ import { TheBot } from '@/models/TheBot';
 
 export async function POST(request: Request) {
   const { botId, botState, parameters } = await request.json();
+  console.log(botId, botState, parameters);
   if (!botId || !botState) {
     return NextResponse.json({ message: 'Missing botId or botState' }, { status: 400 });
   }

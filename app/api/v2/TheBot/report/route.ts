@@ -4,6 +4,26 @@ import { connectToDatabase } from '@/lib/db';
 import { TheBot } from '@/models/TheBot';
 import mongoose from 'mongoose';
 
+const cleanOldActivities = async () => {
+  try {
+    const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+    await TheBot.updateMany(
+      {},
+      {
+        $pull: {
+          activity: {
+            timestamp: { $lt: fortyEightHoursAgo },
+            type: 'dokmai-bot',
+            status: { $ne: 'success' },
+          },
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error cleaning old activities:', error);
+  }
+};
+
 export async function POST(request: Request) {
   await connectToDatabase();
   const report = await request.json();
@@ -41,6 +61,8 @@ export async function POST(request: Request) {
     const activity = { type: 'dokmai-bot', message, status };
     await TheBot.updateOne({ botId }, { $push: { activity } }, { upsert: true });
   }
+
+  await cleanOldActivities();
 
   return NextResponse.json({ message: 'Report processed successfully' });
 }

@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatTime } from '@/lib/utils';
+import CopyToClipboard from '../CopyToClipboard';
 
 interface BotActivity {
   _id: string;
@@ -41,7 +42,7 @@ const BotControl = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [commandInputs, setCommandInputs] = useState<{ [key: string]: string }>({});
-  console.log(bots);
+
   const fetchBotData = async () => {
     try {
       setLoading(true);
@@ -59,12 +60,20 @@ const BotControl = () => {
     }
   };
 
-  const setBotState = async (botId: string, state: 'running' | 'stopped') => {
+  const setBotState = async (
+    botId: string,
+    botState: 'running' | 'stopped',
+    parameters?: string[]
+  ) => {
     try {
+      const payload = { botId, botState, parameters };
+      if (parameters) {
+        payload.parameters = parameters;
+      }
       const response = await fetch('/api/v2/TheBot/set_TheBot_state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ botId, state }),
+        body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error('Failed to set bot state');
       fetchBotData();
@@ -170,7 +179,10 @@ const BotControl = () => {
               key={bot.botId}
               className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
               <div className="flex justify-between items-center">
-                <span className="text-light-100">{bot.botId}</span>
+                <span className="flex gap-2 text-light-100">
+                  {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
+                </span>
+
                 <span
                   className={`text-sm ${
                     bot.botState === 'running' ? 'text-green-500' : 'text-red-500'
@@ -181,16 +193,27 @@ const BotControl = () => {
               <div className="mt-2">
                 <p className="text-sm text-light-800">Parameters: {bot.parameters.join(', ')}</p>
               </div>
-              <div className="mt-4">
-                <button
-                  onClick={() =>
-                    setBotState(bot.botId, bot.botState === 'running' ? 'stopped' : 'running')
-                  }
-                  className={`px-4 py-2 rounded-md ${
-                    bot.botState === 'running' ? 'bg-red-500' : 'bg-green-500'
-                  } text-white`}>
-                  {bot.botState === 'running' ? 'Stop' : 'Start'}
-                </button>
+              <div className="mt-4 flex gap-2">
+                {bot.botState === 'stopped' ? (
+                  <>
+                    <button
+                      onClick={() => setBotState(bot.botId, 'running', ['--mailgen', '--smart'])}
+                      className="px-4 py-2 bg-green-500 text-white rounded-md">
+                      Start Creating
+                    </button>
+                    <button
+                      onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
+                      className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                      Start Checking
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setBotState(bot.botId, 'stopped')}
+                    className="px-4 py-2 bg-red-500 text-white rounded-md">
+                    Stop
+                  </button>
+                )}
               </div>
               <div className="mt-4 flex gap-2">
                 <input
