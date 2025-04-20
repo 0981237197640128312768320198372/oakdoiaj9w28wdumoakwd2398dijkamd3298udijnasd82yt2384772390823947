@@ -36,10 +36,11 @@ export async function POST(request: Request) {
       { botId, 'activity._id': new mongoose.Types.ObjectId(activityId) },
       { $set: update }
     );
+  } else if (type === 'dokmai-bot') {
+    const { message, status } = report;
+    const activity = { type: 'dokmai-bot', message, status };
+    await TheBot.updateOne({ botId }, { $push: { activity } }, { upsert: true });
   }
-  // else {
-  //   return NextResponse.json({ message: 'Unknown report type' }, { status: 400 });
-  // }
 
   return NextResponse.json({ message: 'Report processed successfully' });
 }
