@@ -1,5 +1,5 @@
 import React from 'react';
-// import DATAManagement from './DATAManagement';
+import DATAManagement from './DATAManagement';
 // import BotActivity from './BotActivity';
 // import SuccessLogs from './SuccessLogs';
 import BotControl from './BotControl';
@@ -12,7 +12,7 @@ const TheBot = () => {
         <BotActivity /> */}
         <BotControl />
       </div>
-      {/* <DATAManagement /> */}
+      <DATAManagement />
     </div>
   );
 };

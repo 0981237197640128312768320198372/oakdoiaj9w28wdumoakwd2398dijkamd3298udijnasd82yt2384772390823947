@@ -12,7 +12,7 @@ const LoadingAnimation = ({ text }: { text?: string }) => {
           width={100}
           height={100}
           loading="lazy"
-          className="w-32 h-auto"
+          className="w-auto h-28"
         />
       </div>
       <p className="mt-2">{text}</p>

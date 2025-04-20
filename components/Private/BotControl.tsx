@@ -151,8 +151,8 @@ const BotControl = () => {
   }
 
   return (
-    <div className="flex flex-col gap-10">
-      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-4xl md:min-w-[500px]">
+    <div className="flex flex-col gap-10 ">
+      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full ">
         <div className="w-full flex justify-between items-start gap-5">
           <h3 className="flex items-center gap-2 font-bold mb-5">Bot Controller</h3>
           <button
@@ -164,7 +164,7 @@ const BotControl = () => {
           </button>
         </div>
 
-        <div className="flex flex-col overflow-auto max-h-[500px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
+        <div className="grid grid-cols-2 overflow-auto max-h-[500px] gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
           {bots.map((bot) => (
             <div
               key={bot.botId}

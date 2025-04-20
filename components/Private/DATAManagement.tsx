@@ -89,16 +89,16 @@ const DATAManagement = () => {
   const [entryToDelete, setEntryToDelete] = useState<IBANEntry | null>(null);
   const [selectedViewEntry, setSelectedViewEntry] = useState<IBANEntry | null>(null);
 
-  const fetchLicenses = async () => {
-    try {
-      const response = await fetch('/api/v2/get_thebot_licenses');
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to fetch licenses');
-      setLicenseData(data.licenses);
-    } catch (err) {
-      console.error('Error fetching licenses:', err);
-    }
-  };
+  // const fetchLicenses = async () => {
+  //   try {
+  //     const response = await fetch('/api/v2/get_thebot_licenses');
+  //     const data = await response.json();
+  //     if (!response.ok) throw new Error(data.error || 'Failed to fetch licenses');
+  //     setLicenseData(data.licenses);
+  //   } catch (err) {
+  //     console.error('Error fetching licenses:', err);
+  //   }
+  // };
 
   const fetchEntries = async () => {
     setIsRefreshing(true);
@@ -125,7 +125,7 @@ const DATAManagement = () => {
   };
 
   useEffect(() => {
-    fetchLicenses();
+    // fetchLicenses();
     fetchEntries();
   }, [filterType]);
 
