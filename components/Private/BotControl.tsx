@@ -109,7 +109,7 @@ const BotControl = () => {
 
   // Mass Start Creating All Bots
   const massStartCreating = () => {
-    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen', '--smart']));
+    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen']));
   };
 
   // Mass Start Checking All Bots

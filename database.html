@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Design</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: black;
+        color: #a9a9a9; /* Medium gray text */
+      }
+      h1,
+      h2 {
+        color: #d3d3d3; /* Light gray for headings */
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        margin: 5px 0;
+      }
+      .collection {
+        margin-bottom: 30px;
+        padding: 10px;
+        border: 1px solid #333; /* Dark border for separation */
+      }
+      ul ul {
+        margin-left: 20px; /* Indent nested lists */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Database Design</h1>
+    <div class="collection">
+      <h2>Users Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>username</strong>: String</li>
+        <li><strong>email</strong>: String</li>
+        <li><strong>password</strong>: String (unhashed)</li>
+        <li><strong>roles</strong>: Array of Strings (e.g., ['buyer', 'seller'])</li>
+        <li>
+          <strong>contact</strong>: Object
+          <ul>
+            <li><strong>whatsapp</strong>: String (optional)</li>
+            <li><strong>line</strong>: String (optional)</li>
+            <li><strong>facebook</strong>: String (optional)</li>
+            <li><strong>instagram</strong>: String (optional)</li>
+            <li>
+              <strong>constraint</strong>: At least one of whatsapp, line, facebook, or instagram is
+              required
+            </li>
+          </ul>
+        </li>
+        <li>
+          <strong>shop</strong>: Object (for sellers)
+          <ul>
+            <li><strong>name</strong>: String (required for sellers)</li>
+            <li><strong>description</strong>: String</li>
+            <li><strong>logoUrl</strong>: String</li>
+            <li><strong>rating</strong>: Number (e.g., 4.5 out of 5)</li>
+            <li>
+              <strong>credits</strong>: Object
+              <ul>
+                <li><strong>positive</strong>: Number</li>
+                <li><strong>negative</strong>: Number</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><strong>createdAt</strong>: Date</li>
+        <li><strong>updatedAt</strong>: Date</li>
+      </ul>
+    </div>
+    <div class="collection">
+      <h2>Products Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>title</strong>: String</li>
+        <li><strong>description</strong>: String</li>
+        <li>
+          <strong>type</strong>: String (e.g., 'text', 'account', 'link', 'license', 'course', or
+          any custom type)
+        </li>
+        <li>
+          <strong>details</strong>: Object (flexible key-value pairs based on type)
+          <ul>
+            <li>Example for 'text': { content: String }</li>
+            <li>Example for 'account': { username: String, password: String }</li>
+            <li>Example for 'link': { url: String }</li>
+            <li>Example for 'license': { key: String }</li>
+            <li>Example for 'course': { courseUrl: String, accessCode: String }</li>
+            <li>
+              Note: Can support any custom type with arbitrary data structure (e.g., { type:
+              'template', details: { templateId: String, format: String } })
+            </li>
+          </ul>
+        </li>
+        <li><strong>sellerId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>categoryId</strong>: ObjectId (reference to Categories)</li>
+        <li><strong>price</strong>: Number</li>
+        <li><strong>images</strong>: Array of Strings</li>
+        <li><strong>status</strong>: String (e.g., 'active', 'draft')</li>
+        <li><strong>rating</strong>: Number (e.g., 4.2 out of 5)</li>
+        <li><strong>createdAt</strong>: Date</li>
+        <li><strong>updatedAt</strong>: Date</li>
+      </ul>
+    </div>
+    <div class="collection">
+      <h2>Categories Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>name</strong>: String</li>
+        <li><strong>description</strong>: String</li>
+        <li><strong>logoUrl</strong>: String</li>
+        <li><strong>parentId</strong>: ObjectId (optional, for hierarchy)</li>
+      </ul>
+    </div>
+    <div class="collection">
+      <h2>Balances Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>userId</strong>: ObjectId (reference to Users)</li>
+        <li>
+          <strong>balanceType</strong>: String (e.g., 'wallet' for buyers, 'earnings' for sellers)
+        </li>
+        <li><strong>amount</strong>: Number</li>
+        <li><strong>currency</strong>: String (e.g., 'USD')</li>
+        <li><strong>lastUpdated</strong>: Date</li>
+      </ul>
+    </div>
+    <div class="collection">
+      <h2>ShopStatistics Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>sellerId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>totalSales</strong>: Number</li>
+        <li><strong>totalRevenue</strong>: Number</li>
+        <li>
+          <strong>monthlyStats</strong>: Array of Objects
+          <ul>
+            <li><strong>month</strong>: String (e.g., '2024-09')</li>
+            <li><strong>sales</strong>: Number</li>
+            <li><strong>revenue</strong>: Number</li>
+          </ul>
+        </li>
+        <li><strong>createdAt</strong>: Date</li>
+        <li><strong>updatedAt</strong>: Date</li>
+      </ul>
+    </div>
+    <div class="collection">
+      <h2>Reviews Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>productId</strong>: ObjectId (reference to Products)</li>
+        <li><strong>userId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>rating</strong>: Number (1 to 5)</li>
+        <li><strong>comment</strong>: String</li>
+        <li><strong>createdAt</strong>: Date</li>
+      </ul>
+    </div>
+    <div class="collection">
+      <h2>ShopCredits Collection</h2>
+      <ul>
+        <li><strong>_id</strong>: ObjectId</li>
+        <li><strong>shopId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>buyerId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>creditType</strong>: String ('positive' or 'negative')</li>
+        <li><strong>createdAt</strong>: Date</li>
+        <li>
+          <strong>constraints</strong>: Unique index on (shopId, buyerId) to ensure one credit per
+          buyer per shop
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
