@@ -102,22 +102,17 @@ const BotControl = () => {
     fetchBotData();
   };
 
-  // Mass Stop All Bots
   const massStop = () => {
     bots.forEach((bot) => setBotState(bot.botId, 'stopped'));
   };
 
-  // Mass Start Creating All Bots
   const massStartCreating = () => {
     bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen']));
   };
 
-  // Mass Start Checking All Bots
   const massStartChecking = () => {
     bots.forEach((bot) => setBotState(bot.botId, 'running', ['--checking']));
   };
-
-  // Mass Restart All Bots
   const massRestart = () => {
     bots.forEach((bot) => {
       setBotState(bot.botId, 'stopped');
@@ -125,13 +120,11 @@ const BotControl = () => {
     });
   };
 
-  // Restart Single Bot
   const restartBot = (bot: BotData) => {
     setBotState(bot.botId, 'stopped');
     setBotState(bot.botId, 'running', bot.parameters);
   };
 
-  // Initial data fetch and periodic refresh
   useEffect(() => {
     fetchBotData();
     const interval = setInterval(fetchBotData, 30000); // Fetch every 30 seconds
@@ -153,7 +146,6 @@ const BotControl = () => {
         key={index}
         className="border-b border-dark-500 last:border-b-0 py-4 px-2 flex flex-col gap-2">
         <div className="flex justify-between items-center">
-          <span className="text-sm font-medium text-light-100">{activity.type}</span>
           <span className="text-xs text-light-400">{formatTime(activity.timestamp)}</span>
         </div>
         <p className="text-sm text-light-100">{activity.message || 'No message available'}</p>
@@ -205,17 +197,6 @@ const BotControl = () => {
     </div>
   );
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="flex flex-col gap-5">
-        {[...Array(3)].map((_, index) => (
-          <BotCardSkeleton key={index} />
-        ))}
-      </div>
-    );
-  }
-
   // Error state
   if (error) {
     return (
@@ -230,7 +211,7 @@ const BotControl = () => {
   // Main UI
   return (
     <div className="flex flex-col gap-10">
-      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full">
+      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full 0">
         <div className="w-full flex justify-between items-start gap-5 flex-wrap">
           <h3 className="flex items-center gap-2 font-bold mb-5 text-light-100">Bot Controller</h3>
           <div className="flex gap-4 items-center flex-wrap">
@@ -266,77 +247,84 @@ const BotControl = () => {
             </div>
           </div>
         </div>
-
-        <div className="flex flex-col gap-5 w-full bg-dark-600 p-5 __dokmai_scrollbar">
-          {bots.map((bot) => (
-            <div
-              key={bot.botId}
-              className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
-              <div className="flex justify-between items-center">
-                <span className="flex gap-2 text-light-100">
-                  {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
-                </span>
-                <span
-                  className={`px-2 py-1 rounded text-xs ${
-                    bot.botState === 'running' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-                  }`}>
-                  {bot.botState}
-                </span>
-              </div>
-              <div className="mt-2">
-                <p className="text-sm text-light-800">Parameters: {bot.parameters.join(', ')}</p>
-              </div>
-              <div className="mt-4 flex gap-2">
-                {bot.botState === 'stopped' ? (
-                  <>
+        <div className="flex mt-10 flex-col gap-32 w-full bg-dark-600 p-5 max-h-[500px] overflow-y-scroll __dokmai_scrollbar">
+          {loading
+            ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
+            : bots.map((bot) => (
+                <div
+                  key={bot.botId}
+                  className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
+                  <div className="flex justify-between items-center">
+                    <span className="flex gap-2 text-light-100">
+                      {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        bot.botState === 'running'
+                          ? 'bg-green-500 text-white'
+                          : 'bg-red-500 text-white'
+                      }`}>
+                      {bot.botState}
+                    </span>
+                  </div>
+                  <div className="mt-2">
+                    <p className="text-sm text-light-800">
+                      Parameters: {bot.parameters.join(', ')}
+                    </p>
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    {bot.botState === 'stopped' ? (
+                      <>
+                        <button
+                          onClick={() =>
+                            setBotState(bot.botId, 'running', ['--mailgen', '--smart'])
+                          }
+                          className="px-4 py-2 bg-primary text-black rounded-md">
+                          Start Creating
+                        </button>
+                        <button
+                          onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
+                          className="px-4 py-2 bg-primary text-black rounded-md">
+                          Start Checking
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => setBotState(bot.botId, 'stopped')}
+                          className="px-4 py-2 bg-primary text-black rounded-md">
+                          Stop
+                        </button>
+                        <button
+                          onClick={() => restartBot(bot)}
+                          className="px-4 py-2 bg-primary text-black rounded-md">
+                          Restart
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <div className="mt-4 flex gap-2">
+                    <input
+                      type="text"
+                      value={commandInputs[bot.botId] || ''}
+                      onChange={(e) =>
+                        setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
+                      }
+                      placeholder="Enter command"
+                      className="flex-1 p-2 bg-dark-400 text-light-100 rounded"
+                    />
                     <button
-                      onClick={() => setBotState(bot.botId, 'running', ['--mailgen', '--smart'])}
-                      className="px-4 py-2 bg-primary text-black rounded-md">
-                      Start Creating
+                      onClick={() => sendCommand(bot.botId)}
+                      className="px-4 py-2 bg-primary text-black rounded">
+                      Send
                     </button>
-                    <button
-                      onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
-                      className="px-4 py-2 bg-primary text-black rounded-md">
-                      Start Checking
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setBotState(bot.botId, 'stopped')}
-                      className="px-4 py-2 bg-primary text-black rounded-md">
-                      Stop
-                    </button>
-                    <button
-                      onClick={() => restartBot(bot)}
-                      className="px-4 py-2 bg-primary text-black rounded-md">
-                      Restart
-                    </button>
-                  </>
-                )}
-              </div>
-              <div className="mt-4 flex gap-2">
-                <input
-                  type="text"
-                  value={commandInputs[bot.botId] || ''}
-                  onChange={(e) =>
-                    setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
-                  }
-                  placeholder="Enter command"
-                  className="flex-1 p-2 bg-dark-400 text-light-100 rounded"
-                />
-                <button
-                  onClick={() => sendCommand(bot.botId)}
-                  className="px-4 py-2 bg-primary text-black rounded">
-                  Send
-                </button>
-              </div>
-              <div className="mt-4">
-                <h4 className="text-light-100 mb-2">Recent Activities</h4>
-                <div className="space-y-4">{renderActivities(bot.activity)}</div>
-              </div>
-            </div>
-          ))}
+                  </div>
+                  <div className="mt-4">
+                    <h4 className="text-light-100 mb-2">Recent Activities</h4>
+                    <div className="space-y-4">{renderActivities(bot.activity)}</div>
+                  </div>
+                </div>
+              ))}
         </div>
       </div>
     </div>
