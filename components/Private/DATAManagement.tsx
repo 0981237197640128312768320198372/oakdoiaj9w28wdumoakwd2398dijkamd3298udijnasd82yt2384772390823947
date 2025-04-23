@@ -53,17 +53,17 @@ interface IBANEntry {
   zipCode: string;
   city: string;
   date: string;
-  license: string;
+  botId: string;
   type: 'Used' | 'Bad' | 'Unused';
 }
 
-interface LicenseData {
-  license: string;
+interface botIdData {
+  botId: string;
   lastActivity: string | null;
 }
 
 const DATAManagement = () => {
-  const [licenseData, setLicenseData] = useState<LicenseData[]>([]);
+  const [botIdData, setbotIdData] = useState<botIdData[]>([]);
   const [entries, setEntries] = useState<IBANEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +78,7 @@ const DATAManagement = () => {
     street: '',
     zipCode: '',
     city: '',
-    license: '',
+    botId: '',
     type: 'Unused' as 'Used' | 'Bad' | 'Unused',
   });
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -172,7 +172,7 @@ const DATAManagement = () => {
           street,
           zipCode,
           city,
-          license: 'Kont',
+          botId: 'Admin Panel',
           type: 'Unused' as 'Used' | 'Bad' | 'Unused',
         };
       });
@@ -338,7 +338,7 @@ const DATAManagement = () => {
       street: entry.street,
       zipCode: entry.zipCode,
       city: entry.city,
-      license: entry.license,
+      botId: entry.botId,
       type: entry.type,
     });
     setIsEditDialogOpen(true);
@@ -738,15 +738,15 @@ const DATAManagement = () => {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="edit-license" className="text-light-200">
-                License
+              <Label htmlFor="edit-botId" className="text-light-200">
+                Bot ID
               </Label>
               <Input
-                id="edit-license"
-                name="license"
-                placeholder="Enter license"
-                value={newEntry.license}
-                onChange={(e) => setNewEntry({ ...newEntry, license: e.target.value })}
+                id="edit-botId"
+                name="botId"
+                placeholder="Enter botId"
+                value={newEntry.botId}
+                onChange={(e) => setNewEntry({ ...newEntry, botId: e.target.value })}
                 className="bg-dark-500 border-dark-400 text-light-100"
               />
             </div>
@@ -855,8 +855,8 @@ const DATAManagement = () => {
               <div className="text-light-100">{selectedViewEntry.zipCode}</div>
               <div className="text-light-200">City</div>
               <div className="text-light-100">{selectedViewEntry.city}</div>
-              <div className="text-light-200">License</div>
-              <div className="text-light-100">{selectedViewEntry.license}</div>
+              <div className="text-light-200">Bot ID</div>
+              <div className="text-light-100">{selectedViewEntry.botId}</div>
               <div className="text-light-200">Type</div>
               <div className="text-light-100">{selectedViewEntry.type}</div>
               <div className="text-light-200">Date</div>
