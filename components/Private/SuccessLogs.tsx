@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
@@ -9,47 +10,58 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-interface BotLog {
-  timestamp: string;
-  type: 'error' | 'success' | 'status' | 'info';
+interface SuccessLog {
   message: string;
-  details?: {
-    email?: string;
-    errorCode?: string;
-    stack?: string;
-  };
-  license: string;
-}
-
-interface LicenseData {
-  license: string;
-  lastActivity: string | null;
+  status: string;
+  timestamp: string;
+  botId: string;
 }
 
 const SuccessLogs = () => {
-  const [licenseData, setLicenseData] = useState<LicenseData[]>([]);
-  const [successLogs, setSuccessLogs] = useState<BotLog[]>([]);
+  const [successLogs, setSuccessLogs] = useState<SuccessLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const logType = 'success'; // Hardcoded to 'success'
 
-  const fetchLicenses = async () => {
+  const fetchSuccessLogs = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/v2/get_thebot_licenses', {
+      const response = await fetch('/api/v2/TheBot/report?filter=success-dokmai-bot', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch licenses');
+        throw new Error(errorData.error || 'Failed to fetch logs');
       }
       const data = await response.json();
-      setLicenseData(data.licenses);
+      console.log(data);
+
+      // Log each botId and activity details for debugging
+      data.forEach((item: { botId: string; activity: any[] }) => {
+        console.log(item.botId);
+        item.activity.forEach(
+          (activity: { timestamp: string; status: string; message: string }) => {
+            console.log(activity.timestamp);
+            console.log(activity.message);
+          }
+        );
+      });
+
+      // Transform data into SuccessLog array, handling nested activities
+      const logs: SuccessLog[] = data.flatMap((bot: { botId: string; activity: any[] }) =>
+        bot.activity.map((activity: { message: string; status: string; timestamp: string }) => ({
+          message: activity.message,
+          status: activity.status,
+          timestamp: activity.timestamp,
+          botId: bot.botId,
+        }))
+      );
+      logs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      setSuccessLogs(logs);
     } catch (err) {
-      setError('Failed to load licenses. Please try again later.');
+      setError('Failed to load logs. Please try again later.');
       console.error(err);
     } finally {
       setLoading(false);
@@ -57,56 +69,19 @@ const SuccessLogs = () => {
     }
   };
 
-  const fetchSuccessLogs = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const allLogs: BotLog[] = [];
-      for (const { license } of licenseData) {
-        const url = `/api/v2/get_thebot_log?license=${encodeURIComponent(
-          license
-        )}&type=${encodeURIComponent(logType)}`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        if (!response.ok) {
-          console.error(`Failed to fetch logs for ${license}: ${response.status}`);
-          continue;
-        }
-        const data = await response.json();
-        const logsWithLicense = data.logs.map((log: BotLog) => ({ ...log, license }));
-        allLogs.push(...logsWithLicense);
-      }
-      allLogs.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-      setSuccessLogs(allLogs);
-    } catch (err) {
-      setError('Failed to load logs. Please try again later.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleRefresh = () => {
     setIsRefreshing(true);
-    fetchLicenses();
+    fetchSuccessLogs();
   };
 
   useEffect(() => {
-    fetchLicenses();
+    fetchSuccessLogs();
   }, []);
-
-  useEffect(() => {
-    if (licenseData.length > 0) {
-      fetchSuccessLogs();
-    }
-  }, [licenseData]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setIsRefreshing(true);
-      fetchLicenses();
+      fetchSuccessLogs();
     }, 60 * 1000);
     return () => clearInterval(interval);
   }, []);
@@ -153,21 +128,18 @@ const SuccessLogs = () => {
               <div
                 key={index}
                 className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
-                <div className="flex w-full justify-end">
-                  <p className="text-sm text-light-800">{formatTime(log.timestamp)}</p>
-                </div>
-                <p className="text-xs md:text-md">{log.message}</p>
-                <p className="text-sm text-light-800">License: {log.license}</p>
-                {log.details && (
-                  <p>
-                    <strong>Details:</strong>
-                    <ul className="list-disc ml-5">
-                      {log.details.email && <li>Email: {log.details.email}</li>}
-                      {log.details.errorCode && <li>Error Code: {log.details.errorCode}</li>}
-                      {log.details.stack && <li>Stack: {log.details.stack}</li>}
-                    </ul>
-                  </p>
-                )}
+                <p>
+                  <strong>Bot ID:</strong> {log.botId}
+                </p>
+                <p>
+                  <strong>Timestamp:</strong> {formatTime(log.timestamp)}
+                </p>
+                <p>
+                  <strong>Status:</strong> {log.status}
+                </p>
+                <p>
+                  <strong>Message:</strong> {log.message}
+                </p>
               </div>
             ))}
           </div>
