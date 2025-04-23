@@ -4,6 +4,27 @@ import { connectToDatabase } from '@/lib/db';
 import { TheBot } from '@/models/TheBot';
 import mongoose from 'mongoose';
 
+// Define the type for bot activity
+interface Activity {
+  _id: mongoose.Types.ObjectId;
+  timestamp: Date;
+  type: string;
+  message?: string;
+  details?: any;
+  command?: string;
+  status?: string;
+  output?: string;
+  error?: string;
+}
+
+// Define the type for the bot document
+interface Bot {
+  botId: string;
+  botState: string;
+  parameters: string[];
+  activity: Activity[];
+}
+
 const cleanOldActivities = async () => {
   try {
     const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
@@ -38,7 +59,13 @@ export async function POST(request: Request) {
     if (!botState) {
       return NextResponse.json({ message: 'Missing botState' }, { status: 400 });
     }
-    const activity = { type: 'state_change', message, details: { botState } };
+    const activity: Activity = {
+      _id: new mongoose.Types.ObjectId(),
+      timestamp: new Date(),
+      type: 'state_change',
+      message,
+      details: { botState },
+    };
     await TheBot.updateOne(
       { botId },
       { $set: { botState }, $push: { activity } },
@@ -58,7 +85,13 @@ export async function POST(request: Request) {
     );
   } else if (type === 'dokmai-bot') {
     const { message, status } = report;
-    const activity = { type: 'dokmai-bot', message, status };
+    const activity: Activity = {
+      _id: new mongoose.Types.ObjectId(),
+      timestamp: new Date(),
+      type: 'dokmai-bot',
+      message,
+      status,
+    };
     await TheBot.updateOne({ botId }, { $push: { activity } }, { upsert: true });
   }
 
@@ -70,18 +103,33 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const botId = searchParams.get('botId');
-  if (!botId) {
-    return new Response('Missing botId', { status: 400 });
-  }
+  const filter = searchParams.get('filter');
 
   await connectToDatabase();
 
   try {
-    const bot = await TheBot.findOne({ botId }).lean();
-    if (!bot) {
-      return new Response('Bot not found', { status: 404 });
+    if (botId) {
+      const bot = (await TheBot.findOne({ botId }).lean()) as unknown as Bot;
+      if (!bot) {
+        return new Response('Bot not found', { status: 404 });
+      }
+      if (filter === 'success-dokmai-bot') {
+        bot.activity = bot.activity.filter(
+          (act: Activity) => act.type === 'dokmai-bot' && act.status === 'success'
+        );
+      }
+      return NextResponse.json(bot);
+    } else {
+      const bots = (await TheBot.find().lean()) as unknown as Bot[];
+      if (filter === 'success-dokmai-bot') {
+        bots.forEach((bot) => {
+          bot.activity = bot.activity.filter(
+            (act: Activity) => act.type === 'dokmai-bot' && act.status === 'success'
+          );
+        });
+      }
+      return NextResponse.json(bots);
     }
-    return NextResponse.json(bot);
   } catch (error) {
     console.error('Error fetching bot data:', error);
     return new Response('Internal Server Error', { status: 500 });
