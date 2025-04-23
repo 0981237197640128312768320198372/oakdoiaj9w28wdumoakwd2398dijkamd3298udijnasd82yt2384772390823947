@@ -392,9 +392,9 @@ const DATAManagement = () => {
   const end = Math.min(currentPage * entriesPerPage, totalEntries);
 
   return (
-    <Card className="min-w-screen w-fit bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
+    <Card className="w-full max-w-[900px] bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
       <CardHeader>
-        <div className="flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col justify-between gap-5">
           <div className="w-full flex justify-between">
             <CardTitle className="text-light-100 text-lg sm:text-xl">Manage IBAN</CardTitle>
             <button
@@ -404,8 +404,8 @@ const DATAManagement = () => {
               <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
             </button>
           </div>
-          <div className="flex gap-2 w-full justify-between">
-            <div className="flex gap-4 mt-2">
+          <div className="flex flex-col gap-2 w-full justify-between">
+            <div className="flex gap-5 mt-2">
               {countsLoading ? (
                 <>
                   <Skeleton className="h-4 w-16 bg-dark-400 animate-pulse" />
