@@ -8,6 +8,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatTime } from '@/lib/utils';
+import { SiHackaday } from 'react-icons/si';
 import CopyToClipboard from '../CopyToClipboard';
 
 interface BotActivity {
@@ -37,7 +38,6 @@ const BotControl = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [commandInputs, setCommandInputs] = useState<{ [key: string]: string }>({});
 
-  // Fetch bot data
   const fetchBotData = async () => {
     try {
       setLoading(true);
@@ -55,7 +55,6 @@ const BotControl = () => {
     }
   };
 
-  // Set bot state (start/stop)
   const setBotState = async (
     botId: string,
     botState: 'running' | 'stopped',
@@ -77,7 +76,6 @@ const BotControl = () => {
     }
   };
 
-  // Send a one-time command
   const sendCommand = async (botId: string) => {
     const command = commandInputs[botId];
     if (!command) return;
@@ -96,7 +94,6 @@ const BotControl = () => {
     }
   };
 
-  // Handle manual refresh
   const handleRefresh = () => {
     setIsRefreshing(true);
     fetchBotData();
@@ -127,32 +124,27 @@ const BotControl = () => {
 
   useEffect(() => {
     fetchBotData();
-    const interval = setInterval(fetchBotData, 30000); // Fetch every 30 seconds
+    const interval = setInterval(fetchBotData, 60000);
     return () => clearInterval(interval);
   }, []);
-
-  // Calculate bot counts
   const totalBots = bots.length;
   const runningBots = bots.filter((bot) => bot.botState === 'running').length;
   const stoppedBots = bots.filter((bot) => bot.botState === 'stopped').length;
 
-  // Render bot activities
   const renderActivities = (activities: BotActivity[]) => {
     const sortedActivities = activities
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 3);
     return sortedActivities.map((activity, index) => (
-      <div
-        key={index}
-        className="border-b border-dark-500 last:border-b-0 py-4 px-2 flex flex-col gap-2">
+      <div key={index} className="bg-dark-300 p-2 flex flex-col gap-1">
         <div className="flex justify-between items-center">
           <span className="text-xs text-light-400">{formatTime(activity.timestamp)}</span>
         </div>
-        <p className="text-sm text-light-100">{activity.message || 'No message available'}</p>
+        <p className="text-xs ">{activity.message || 'No message available'}</p>
         {activity.details && (
           <div className="mt-2">
-            <strong className="text-light-100">Details:</strong>
-            <ul className="list-disc ml-5 text-sm text-light-100">
+            <p className="text-white text-xs">Details:</p>
+            <ul className="list-disc ml-5 text-xs text-light-100/60">
               {Object.entries(activity.details).map(([key, value]) => (
                 <li key={key}>
                   {key}: {value}
@@ -165,7 +157,6 @@ const BotControl = () => {
     ));
   };
 
-  // Skeleton for bot card
   const BotCardSkeleton = () => (
     <div className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500">
       <div className="flex justify-between items-center">
@@ -210,33 +201,22 @@ const BotControl = () => {
 
   // Main UI
   return (
-    <div className="flex flex-col gap-10">
-      <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full 0">
-        <div className="w-full flex justify-between items-start gap-5 flex-wrap">
-          <h3 className="flex items-center gap-2 font-bold mb-5 text-light-100">Bot Controller</h3>
-          <div className="flex gap-4 items-center flex-wrap">
-            <div className="text-light-100">
-              Total Bots: {totalBots} |{' '}
-              <span className="text-green-500">Running: {runningBots}</span> |{' '}
-              <span className="text-red-500">Stopped: {stoppedBots}</span>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={massStop} className="px-4 py-2 bg-primary text-black rounded-md">
-                Mass Stop
-              </button>
-              <button
-                onClick={massStartCreating}
-                className="px-4 py-2 bg-primary text-black rounded-md">
-                Mass Start Creating
-              </button>
-              <button
-                onClick={massStartChecking}
-                className="px-4 py-2 bg-primary text-black rounded-md">
-                Mass Start Checking
-              </button>
-              <button onClick={massRestart} className="px-4 py-2 bg-primary text-black rounded-md">
-                Mass Restart
-              </button>
+    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-[700px]">
+      <div className="w-full flex flex-col gap-5 flex-wrap">
+        <h3 className="flex items-center gap-2 font-bold  text-light-100">
+          <SiHackaday /> Bot Controller
+        </h3>
+        <div className="flex gap-5">
+          Total Bots: {totalBots}
+          <span className="bg-green-500/20 text-green-500 px-1">Running: {runningBots}</span>
+          <span className="bg-red-500/20 text-red-500 px-1">Stopped: {stoppedBots}</span>
+        </div>
+        <div className="flex gap-5 items-center flex-wrap">
+          <div className="flex flex-col gap-2 bg-dark-600 w-full p-5">
+            <div className="flex justify-between w-full">
+              <h3 className="">
+                Mass Action <p className="text-xs text-white/40">Action will effect all bot</p>
+              </h3>
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
@@ -245,85 +225,106 @@ const BotControl = () => {
                 <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
             </div>
+            <div className="grid gap-5 grid-cols-2">
+              <button
+                onClick={massStop}
+                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                Stop
+              </button>
+              <button
+                onClick={massStartCreating}
+                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                Start Creating
+              </button>
+              <button
+                onClick={massStartChecking}
+                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                Start Checking
+              </button>
+              <button
+                onClick={massRestart}
+                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                Restart
+              </button>
+            </div>
           </div>
         </div>
-        <div className="flex mt-10 flex-col gap-32 w-full bg-dark-600 p-5 max-h-[500px] overflow-y-scroll __dokmai_scrollbar">
-          {loading
-            ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
-            : bots.map((bot) => (
-                <div
-                  key={bot.botId}
-                  className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
-                  <div className="flex justify-between items-center">
-                    <span className="flex gap-2 text-light-100">
-                      {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
-                    </span>
-                    <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        bot.botState === 'running'
-                          ? 'bg-green-500 text-white'
-                          : 'bg-red-500 text-white'
-                      }`}>
-                      {bot.botState}
-                    </span>
-                  </div>
-                  <div className="mt-2">
-                    <p className="text-sm text-light-800">
-                      Parameters: {bot.parameters.join(', ')}
-                    </p>
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    {bot.botState === 'stopped' ? (
-                      <>
-                        <button
-                          onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
-                          className="px-4 py-2 bg-primary text-black rounded-md">
-                          Start Creating
-                        </button>
-                        <button
-                          onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
-                          className="px-4 py-2 bg-primary text-black rounded-md">
-                          Start Checking
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => setBotState(bot.botId, 'stopped')}
-                          className="px-4 py-2 bg-primary text-black rounded-md">
-                          Stop
-                        </button>
-                        <button
-                          onClick={() => restartBot(bot)}
-                          className="px-4 py-2 bg-primary text-black rounded-md">
-                          Restart
-                        </button>
-                      </>
-                    )}
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <input
-                      type="text"
-                      value={commandInputs[bot.botId] || ''}
-                      onChange={(e) =>
-                        setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
-                      }
-                      placeholder="Enter command"
-                      className="flex-1 p-2 bg-dark-400 text-light-100 rounded"
-                    />
-                    <button
-                      onClick={() => sendCommand(bot.botId)}
-                      className="px-4 py-2 bg-primary text-black rounded">
-                      Send
-                    </button>
-                  </div>
-                  <div className="mt-4">
-                    <h4 className="text-light-100 mb-2">Recent Activities</h4>
-                    <div className="space-y-4">{renderActivities(bot.activity)}</div>
-                  </div>
+      </div>
+      <div className="flex mt-10 flex-col gap-32 w-full bg-dark-600 p-5 max-h-[500px] overflow-y-scroll __dokmai_scrollbar">
+        {loading
+          ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
+          : bots.map((bot) => (
+              <div
+                key={bot.botId}
+                className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
+                <div className="flex justify-between items-center">
+                  <span className="flex gap-2 text-light-100">
+                    {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
+                  </span>
+                  <span
+                    className={`px-2 py-1 rounded text-xs ${
+                      bot.botState === 'running'
+                        ? 'bg-green-500/20 text-green-500'
+                        : 'bg-red-500/20 text-red-500 px-1'
+                    }`}>
+                    {bot.botState}
+                  </span>
                 </div>
-              ))}
-        </div>
+                <div className="mt-2">
+                  <p className="text-xs text-light-800">
+                    Parameters Active: {bot.parameters.join(', ')}
+                  </p>
+                </div>
+                <div className="mt-4 flex gap-2">
+                  {bot.botState === 'stopped' ? (
+                    <>
+                      <button
+                        onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
+                        className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                        Start Creating
+                      </button>
+                      <button
+                        onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
+                        className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                        Start Checking
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => setBotState(bot.botId, 'stopped')}
+                        className="px-1 rounded-sm font-aktivGroteskBold bg-red-500/20 text-red-500 hover:bg-red-500/40">
+                        Stop
+                      </button>
+                      <button
+                        onClick={() => restartBot(bot)}
+                        className="px-1 rounded-sm font-aktivGroteskBold bg-cyan-500 text-dark-800 hover:bg-cyan-500">
+                        Restart
+                      </button>
+                    </>
+                  )}
+                </div>
+                <div className="mt-5 flex gap-2">
+                  <input
+                    type="text"
+                    value={commandInputs[bot.botId] || ''}
+                    onChange={(e) =>
+                      setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
+                    }
+                    placeholder="Enter command"
+                    className="border border-primary p-2 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm"
+                  />
+                  <button
+                    onClick={() => sendCommand(bot.botId)}
+                    className="px-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                    Send
+                  </button>
+                </div>
+                <div className="mt-5 p-5 bg-dark-400">
+                  <div className="space-y-4">{renderActivities(bot.activity)}</div>
+                </div>
+              </div>
+            ))}
       </div>
     </div>
   );
