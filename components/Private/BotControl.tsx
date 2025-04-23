@@ -276,9 +276,7 @@ const BotControl = () => {
                     {bot.botState === 'stopped' ? (
                       <>
                         <button
-                          onClick={() =>
-                            setBotState(bot.botId, 'running', ['--mailgen', '--smart'])
-                          }
+                          onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
                           className="px-4 py-2 bg-primary text-black rounded-md">
                           Start Creating
                         </button>
