@@ -256,7 +256,11 @@ const BotControl = () => {
           : bots.map((bot) => (
               <div
                 key={bot.botId}
-                className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
+                className={`flex flex-col border shadow-lg ${
+                  bot.botState === 'running'
+                    ? 'border-green-500 shadow-green-500/30'
+                    : 'border-red-500 shadow-red-500/30'
+                } p-5 rounded bg-dark-500 transition duration-200`}>
                 <div className="flex justify-between items-center">
                   <span className="flex gap-2 text-light-100">
                     {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
@@ -281,12 +285,12 @@ const BotControl = () => {
                       <button
                         onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
                         className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Start Creating
+                        Start (Creating)
                       </button>
                       <button
                         onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
                         className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Start Checking
+                        Start (Checking)
                       </button>
                     </>
                   ) : (
