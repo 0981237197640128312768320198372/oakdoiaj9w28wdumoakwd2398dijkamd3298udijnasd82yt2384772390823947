@@ -37,6 +37,9 @@ const BotControl = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [commandInputs, setCommandInputs] = useState<{ [key: string]: string }>({});
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<null | string>(null);
+  const [confirmMessage, setConfirmMessage] = useState('');
 
   const fetchBotData = async () => {
     try {
@@ -97,6 +100,40 @@ const BotControl = () => {
   const handleRefresh = () => {
     setIsRefreshing(true);
     fetchBotData();
+  };
+  const actionExplanations: { [key: string]: string } = {
+    massStop: 'This will stop all bots. Are you sure?',
+    massStartCreating: 'This will start all bots in creating mode. Are you sure?',
+    massStartChecking: 'This will start all bots in checking mode. Are you sure?',
+    massRestart: 'This will restart all bots. Are you sure?',
+  };
+  const handleMassAction = (action: string) => {
+    setConfirmAction(action);
+    setConfirmMessage(actionExplanations[action]);
+    setShowConfirm(true);
+  };
+
+  const confirmMassAction = () => {
+    if (confirmAction) {
+      switch (confirmAction) {
+        case 'massStop':
+          massStop();
+          break;
+        case 'massStartCreating':
+          massStartCreating();
+          break;
+        case 'massStartChecking':
+          massStartChecking();
+          break;
+        case 'massRestart':
+          massRestart();
+          break;
+        default:
+          break;
+      }
+      setShowConfirm(false);
+      setConfirmAction(null);
+    }
   };
 
   const massStop = () => {
@@ -188,7 +225,6 @@ const BotControl = () => {
     </div>
   );
 
-  // Error state
   if (error) {
     return (
       <Alert variant="destructive">
@@ -199,7 +235,6 @@ const BotControl = () => {
     );
   }
 
-  // Main UI
   return (
     <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-[700px]">
       <div className="w-full flex flex-col gap-5 flex-wrap">
@@ -225,24 +260,24 @@ const BotControl = () => {
                 <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
             </div>
-            <div className="grid gap-5 grid-cols-2">
+            <div className="grid gap-5 grid-cols-2 font-semibold">
               <button
-                onClick={massStop}
+                onClick={() => handleMassAction('massStop')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
                 Stop
               </button>
               <button
-                onClick={massStartCreating}
+                onClick={() => handleMassAction('massStartCreating')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Start Creating
+                Start (Creating)
               </button>
               <button
-                onClick={massStartChecking}
+                onClick={() => handleMassAction('massStartChecking')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Start Checking
+                Start (Checking)
               </button>
               <button
-                onClick={massRestart}
+                onClick={() => handleMassAction('massRestart')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
                 Restart
               </button>
@@ -329,6 +364,26 @@ const BotControl = () => {
                 </div>
               </div>
             ))}
+        {showConfirm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-dark-700 p-5 rounded border border-dark-500">
+              <h4 className="text-light-100">Are you sure?</h4>
+              <p className="text-light-500">{confirmMessage}</p>
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => setShowConfirm(false)}
+                  className="px-2 py-1 bg-gray-500 text-white rounded">
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmMassAction}
+                  className="px-2 py-1 bg-red-500 text-white rounded">
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
