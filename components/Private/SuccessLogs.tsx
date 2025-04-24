@@ -37,17 +37,6 @@ const SuccessLogs = () => {
         throw new Error(errorData.error || 'Failed to fetch logs');
       }
       const data = await response.json();
-      console.log(data);
-
-      data.forEach((item: { botId: string; activity: any[] }) => {
-        console.log(item.botId);
-        item.activity.forEach(
-          (activity: { timestamp: string; status: string; message: string }) => {
-            console.log(activity.timestamp);
-            console.log(activity.message);
-          }
-        );
-      });
 
       const logs: SuccessLog[] = data.flatMap((bot: { botId: string; activity: any[] }) =>
         bot.activity.map((activity: { message: string; status: string; timestamp: string }) => ({
