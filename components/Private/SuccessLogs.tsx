@@ -39,7 +39,6 @@ const SuccessLogs = () => {
       const data = await response.json();
       console.log(data);
 
-      // Log each botId and activity details for debugging
       data.forEach((item: { botId: string; activity: any[] }) => {
         console.log(item.botId);
         item.activity.forEach(
@@ -50,7 +49,6 @@ const SuccessLogs = () => {
         );
       });
 
-      // Transform data into SuccessLog array, handling nested activities
       const logs: SuccessLog[] = data.flatMap((bot: { botId: string; activity: any[] }) =>
         bot.activity.map((activity: { message: string; status: string; timestamp: string }) => ({
           message: activity.message,
@@ -128,7 +126,7 @@ const SuccessLogs = () => {
             <div
               key={index}
               className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500 hover:shadow-lg transition duration-200">
-              <div className="w-full flex  mb-5 justify-between items-start">
+              <div className="w-full flex flex-col-reverse md:flex-row mb-5 justify-between items-start">
                 <span className="flex gap-2 text-light-100">
                   {log.botId} <CopyToClipboard textToCopy={log.botId.replace('bot-', '')} />
                 </span>
@@ -137,7 +135,9 @@ const SuccessLogs = () => {
                 </p>
               </div>
 
-              <p className="text-xs w-full justify-center text-center">{log.message}</p>
+              <p className="text-xs w-full text-end md:justify-center md:text-center">
+                {log.message}
+              </p>
             </div>
           ))}
         </div>
