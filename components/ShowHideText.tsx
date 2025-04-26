@@ -1,29 +1,28 @@
-import React, { useState } from "react"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
+import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface ShowHideTextProps {
-  text: string
+  text: string;
 }
 
 const ShowHideText: React.FC<ShowHideTextProps> = ({ text }) => {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleToggleVisibility = () => {
-    setIsVisible((prev) => !prev)
-  }
+    setIsVisible((prev) => !prev);
+  };
 
   return (
-    <div className='flex items-center gap-2'>
+    <div className="flex items-center gap-2">
       <button
         onClick={handleToggleVisibility}
-        className='flex items-center text-light-800 hover:text-white'
-        aria-label={isVisible ? "Hide Text" : "Show Text"}
-      >
+        className="flex items-center text-light-800 hover:text-white"
+        aria-label={isVisible ? 'Hide Text' : 'Show Text'}>
         {isVisible ? <FaEyeSlash /> : <FaEye />}
       </button>
-      <span>{isVisible ? text : text.replace(/./g, " • ")}</span>
+      <span>{isVisible ? text : text.replace(/./g, '●')}</span>
     </div>
-  )
-}
+  );
+};
 
-export default ShowHideText
+export default ShowHideText;
