@@ -1,27 +1,26 @@
-"use client"
+'use client';
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect, ReactNode } from "react"
-import LoadingAnimation from "@/components/Loading"
+import React, { useState, useEffect, ReactNode } from 'react';
+import LoadingAnimation from '@/components/Loading';
 
 interface HomeWrapperProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export const HomeWrapper: React.FC<HomeWrapperProps> = ({ children }) => {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulating a loading delay or data fetching
     const timer = setTimeout(() => {
-      setLoading(false)
-    }, 8000) // Adjust the duration as needed
+      setLoading(false);
+    }, 5000);
 
-    return () => clearTimeout(timer) // Cleanup the timer on unmount
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
   if (loading) {
-    return <LoadingAnimation />
+    return <LoadingAnimation />;
   }
 
-  return <>{children}</>
-}
+  return <>{children}</>;
+};
