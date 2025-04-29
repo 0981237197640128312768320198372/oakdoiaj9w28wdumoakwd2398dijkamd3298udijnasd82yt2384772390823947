@@ -370,32 +370,31 @@ const AccountList = () => {
                     <div className="text-xs px-1 rounded bg-dark-300 text-white ">
                       {formatTime(account.createdAt)}
                     </div>
-                    <Button
-                      variant="ghost"
-                      // size="icon"
-                      onClick={() => handleCopyLine(account)}
-                      className="text-light-400 hover:text-white hover:bg-dark-400 !p-2">
-                      <PiCopySimpleLight className="text-xl" />
-                    </Button>
-                  </div>
-                  <div className="flex justify-between items-center gap-5">
-                    <div className="flex flex-col items-start text-xs lg:text-base text-light-300 font-light w-full">
-                      <p title={account.email}>{account.email}</p>
-                      <p title={account.password}>{account.password}</p>
+                    <div className="flex justify-end items-center gap-2">
+                      <Select
+                        value={statusChanges[account._id] || account.status}
+                        onValueChange={(value) => handleStatusChange(account._id, value)}>
+                        <SelectTrigger className="bg-dark-500 border-dark-400 text-light-100 h-9 w-fit">
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-dark-500 border-dark-400 text-light-100">
+                          <SelectItem value="Uncheck">Uncheck</SelectItem>
+                          <SelectItem value="Created">Created</SelectItem>
+                          <SelectItem value="Good">Good</SelectItem>
+                          <SelectItem value="Wiped">Wiped</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleCopyLine(account)}
+                        className="text-light-400 hover:text-white hover:bg-dark-400 !p-2">
+                        <PiCopySimpleLight className="text-xl" />
+                      </Button>
                     </div>
-                    <Select
-                      value={statusChanges[account._id] || account.status}
-                      onValueChange={(value) => handleStatusChange(account._id, value)}>
-                      <SelectTrigger className="bg-dark-500 border-dark-400 text-light-100 h-9 w-fit">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-dark-500 border-dark-400 text-light-100">
-                        <SelectItem value="Uncheck">Uncheck</SelectItem>
-                        <SelectItem value="Created">Created</SelectItem>
-                        <SelectItem value="Good">Good</SelectItem>
-                        <SelectItem value="Wiped">Wiped</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  </div>
+                  <div className="flex flex-col items-start text-xs lg:text-base text-light-300 font-light w-full">
+                    <p title={account.email}>{account.email}</p>
+                    <p title={account.password}>{account.password}</p>
                   </div>
                   <p className="text-xs text-light-600 p-4 bg-dark-400 border-[1px] border-dark-100 italic font-light">
                     {account.detail}
