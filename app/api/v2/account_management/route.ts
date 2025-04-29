@@ -33,7 +33,6 @@ export async function GET(request: NextRequest) {
     const accounts = await Account.find(query).sort(sort).skip(skip).limit(limit).lean();
 
     const total = await Account.countDocuments(query);
-
     return NextResponse.json({
       accounts,
       total,
@@ -63,5 +62,28 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating account:', error);
     return NextResponse.json({ error: 'Failed to create account' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    await connectToDatabase();
+    const body = await request.json();
+    const { id, ...updates } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: 'Missing account ID' }, { status: 400 });
+    }
+
+    const account = await Account.findByIdAndUpdate(id, updates, { new: true });
+
+    if (!account) {
+      return NextResponse.json({ error: 'Account not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Account updated', account });
+  } catch (error) {
+    console.error('Error updating account:', error);
+    return NextResponse.json({ error: 'Failed to update account' }, { status: 500 });
   }
 }
