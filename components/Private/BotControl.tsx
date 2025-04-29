@@ -237,7 +237,7 @@ const BotControl = () => {
   }
 
   return (
-    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full max-w-[700px]">
+    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full ">
       <div className="w-full flex flex-col gap-5 flex-wrap">
         <h3 className="flex items-center gap-2 font-bold  text-light-100">
           <SiHackaday /> Bot Controller
@@ -287,7 +287,7 @@ const BotControl = () => {
           </div>
         </div>
       </div>
-      <div className="flex mt-10 flex-col gap-32 w-full bg-dark-600 p-5 max-h-[500px] overflow-y-scroll __dokmai_scrollbar">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 w-full bg-dark-600 p-5 mt-10 max-h-[500px] overflow-y-scroll __dokmai_scrollbar">
         {loading
           ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
           : bots.map((bot) => (
