@@ -392,7 +392,7 @@ const DATAManagement = () => {
   const end = Math.min(currentPage * entriesPerPage, totalEntries);
 
   return (
-    <Card className="w-full max-w-[900px] bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
+    <Card className="w-full  bg-dark-700 border-dark-600 text-light-100 transition-all duration-200">
       <CardHeader>
         <div className="flex flex-col justify-between gap-5">
           <div className="w-full flex justify-between">
@@ -433,7 +433,7 @@ const DATAManagement = () => {
             </Select>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200">
+                <Button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-fit">
                   Add Entry
                 </Button>
               </DialogTrigger>
