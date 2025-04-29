@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Activity, BarChart3, HelpCircle, Home, LogOut, Users, Wallet } from 'lucide-react';
+import { GrAppsRounded } from 'react-icons/gr';
 import { TbDatabase } from 'react-icons/tb';
 import { RiRobot2Line } from 'react-icons/ri';
 import { RxActivityLog } from 'react-icons/rx';
@@ -45,6 +46,7 @@ const sectionIcons: Record<string, React.ElementType> = {
   ManageUsers: Users,
   DataRemain: TbDatabase,
   TheBot: RiRobot2Line,
+  Management: GrAppsRounded,
 };
 
 const sectionTitles: Record<string, string> = {
@@ -57,6 +59,7 @@ const sectionTitles: Record<string, string> = {
   ManageUsers: 'Manage Users',
   DataRemain: 'Data Remain',
   TheBot: 'TheBot',
+  Management: 'Management',
 };
 
 interface AdminSidebarProps {

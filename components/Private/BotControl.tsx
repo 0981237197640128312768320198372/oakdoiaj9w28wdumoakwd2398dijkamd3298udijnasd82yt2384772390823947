@@ -167,6 +167,7 @@ const BotControl = () => {
   const totalBots = bots.length;
   const runningBots = bots.filter((bot) => bot.botState === 'running').length;
   const stoppedBots = bots.filter((bot) => bot.botState === 'stopped').length;
+  const idleBots = bots.filter((bot) => bot.botState === 'idle').length;
 
   const renderActivities = (activities: BotActivity[]) => {
     const sortedActivities = activities
@@ -244,6 +245,7 @@ const BotControl = () => {
         <div className="flex gap-5">
           Total Bots: {totalBots}
           <span className="bg-green-500/20 text-green-500 px-1">Running: {runningBots}</span>
+          <span className="bg-sky-500/20 text-sky-500 px-1">Idle: {idleBots}</span>
           <span className="bg-red-500/20 text-red-500 px-1">Stopped: {stoppedBots}</span>
         </div>
         <div className="flex gap-5 items-center flex-wrap">
@@ -291,11 +293,11 @@ const BotControl = () => {
           : bots.map((bot) => (
               <div
                 key={bot.botId}
-                className={`flex flex-col border shadow-lg ${
-                  bot.botState === 'running'
-                    ? 'border-green-500 shadow-green-500/30'
-                    : 'border-red-500 shadow-red-500/30'
-                } p-5 rounded bg-dark-500 transition duration-200`}>
+                className={`flex flex-col border shadow-lg 
+                  ${bot.botState === 'running' && 'border-green-500 shadow-green-500/30 '}
+                  ${bot.botState === 'stopped' && 'border-red-500 shadow-red-500/30 '}
+                  ${bot.botState === 'idle' && 'border-sky-500 shadow-sky-500/30 '}
+                 p-5 rounded bg-dark-500 transition duration-200`}>
                 <div className="flex justify-between items-center">
                   <span className="flex gap-2 text-light-100">
                     {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />

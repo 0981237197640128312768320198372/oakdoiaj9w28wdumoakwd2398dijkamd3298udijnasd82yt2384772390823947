@@ -12,6 +12,7 @@ import DataRemain from './DataRemain';
 import TheBot from './TheBot';
 import { AdminSidebar } from './AdminSidebar';
 import RealTimeClock from './RealTimeClock';
+import Management from './Management';
 
 const AdminPageContent = () => {
   const [currentSection, setCurrentSection] = useState('AdminDeposit');
@@ -34,6 +35,7 @@ const AdminPageContent = () => {
     ManageUsers: <ManageUsers />,
     DataRemain: <DataRemain />,
     TheBot: <TheBot />,
+    Management: <Management />,
   };
 
   return (
