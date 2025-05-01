@@ -250,9 +250,9 @@ const AccountList = () => {
   const getStatusStyle = (status: string): string => {
     switch (status) {
       case 'Uncheck':
-        return 'border-orange-500 shadow-orange-500/30';
+        return 'border-yellow-500 shadow-yellow-500/30';
       case 'Created':
-        return 'border-primary shadow-primary/30';
+        return 'border-gray-500 shadow-gray-500/30';
       case 'Good':
         return 'border-green-500 shadow-green-500/30';
       case 'Wiped':
