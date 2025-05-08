@@ -141,7 +141,7 @@ const BotControl = () => {
   };
 
   const massStartCreating = () => {
-    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen']));
+    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen', '--ibangen']));
   };
 
   const massStartChecking = () => {
@@ -271,12 +271,13 @@ const BotControl = () => {
               <button
                 onClick={() => handleMassAction('massStartCreating')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Start (Creating)
+                Create (Generate Data)
               </button>
               <button
+                disabled
                 onClick={() => handleMassAction('massStartChecking')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Start (Checking)
+                Check
               </button>
               <button
                 onClick={() => handleMassAction('massRestart')}
@@ -320,14 +321,17 @@ const BotControl = () => {
                   {bot.botState === 'stopped' ? (
                     <>
                       <button
-                        onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
+                        onClick={() =>
+                          setBotState(bot.botId, 'running', ['--mailgen', '--ibangen'])
+                        }
                         className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Start (Creating)
+                        Create (Generate Data)
                       </button>
                       <button
                         onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
+                        disabled
                         className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Start (Checking)
+                        Check
                       </button>
                     </>
                   ) : (
