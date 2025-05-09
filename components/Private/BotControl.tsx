@@ -318,7 +318,7 @@ const BotControl = () => {
                   </p>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  {bot.botState === 'stopped' ? (
+                  {bot.botState === 'stopped' || 'idle' ? (
                     <>
                       <button
                         onClick={() =>
@@ -361,7 +361,7 @@ const BotControl = () => {
                   />
                   <button
                     onClick={() => sendCommand(bot.botId)}
-                    className="px-1 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                    className="px-3 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
                     Send
                   </button>
                 </div>
