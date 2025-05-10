@@ -47,6 +47,7 @@ const sectionIcons: Record<string, React.ElementType> = {
   DataRemain: TbDatabase,
   TheBot: RiRobot2Line,
   Management: GrAppsRounded,
+  APIKeysManagement: GrAppsRounded,
 };
 
 const sectionTitles: Record<string, string> = {
@@ -60,6 +61,7 @@ const sectionTitles: Record<string, string> = {
   DataRemain: 'Data Remain',
   TheBot: 'TheBot',
   Management: 'Management',
+  APIKeysManagement: 'API Keys',
 };
 
 interface AdminSidebarProps {
