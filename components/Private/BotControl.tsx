@@ -161,7 +161,7 @@ const BotControl = () => {
 
   useEffect(() => {
     fetchBotData();
-    const interval = setInterval(fetchBotData, 60000);
+    const interval = setInterval(fetchBotData, 60000 * 5);
     return () => clearInterval(interval);
   }, []);
   const totalBots = bots.length;
