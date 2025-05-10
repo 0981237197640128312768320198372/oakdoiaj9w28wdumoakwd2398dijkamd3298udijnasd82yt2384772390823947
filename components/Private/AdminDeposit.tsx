@@ -5,7 +5,7 @@ import { logActivity } from '@/lib/utils';
 import { ReactNode, useState } from 'react';
 import { SlWallet } from 'react-icons/sl';
 import { updateStatistic } from '@/lib/utils';
-import QRGenerator from '../QRGenerator';
+import PromptPayQR from '../PromptPayQR';
 
 const AdminDeposit = () => {
   const [personalKey, setPersonalKey] = useState('');
@@ -157,7 +157,7 @@ const AdminDeposit = () => {
         )}
       </div>
       <div className="mt-40">
-        <QRGenerator />
+        <PromptPayQR />
       </div>
     </>
   );

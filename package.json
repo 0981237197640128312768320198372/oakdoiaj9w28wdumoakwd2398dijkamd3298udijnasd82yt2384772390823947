@@ -32,6 +32,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "dom-to-image": "^2.6.0",
     "file-saver": "^2.0.5",
     "formidable": "^3.5.2",
     "framer-motion": "^12.4.10",
@@ -60,6 +61,7 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/crypto-js": "^4.2.2",
+    "@types/dom-to-image": "^2.6.7",
     "@types/file-saver": "^2.0.7",
     "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.7",
