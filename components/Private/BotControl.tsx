@@ -317,8 +317,8 @@ const BotControl = () => {
                     Parameters Active: {bot.parameters.join(', ')}
                   </p>
                 </div>
-                <div className="mt-4 flex gap-2">
-                  {bot.botState === 'stopped' || 'idle' ? (
+                <div className="mt-5 flex gap-2">
+                  {bot.botState === 'stopped' || bot.botState === 'idle' ? (
                     <>
                       <button
                         onClick={() =>
