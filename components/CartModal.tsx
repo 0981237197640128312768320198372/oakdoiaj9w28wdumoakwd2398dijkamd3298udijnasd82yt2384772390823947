@@ -22,11 +22,13 @@ const CartModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
   const [orderedItems, setOrderedItems] = useState<any[]>([]);
 
   if (!isOpen) return null;
-
+  const isAppDomain = window.location.hostname === 'app.dokmaistore.com';
+  // console.log('aowkoakowa', isAppDomain);
+  // console.log('aowkoakowa', window.location.hostname);
   const handleCheckout = async () => {
     const personalKey = localStorage.getItem('personalKey');
-    if (!personalKey) {
-      // setShowPersonalKeyModal(true);
+
+    if (!personalKey && !isAppDomain) {
       window.location.href = 'https://app.dokmaistore.com/products';
       return;
     }
