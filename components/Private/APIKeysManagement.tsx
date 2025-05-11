@@ -13,10 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ApiKey {
   key: string;
-  limit: number;
+  remainingLimit: number;
 }
 
 const APIKeysManagement = () => {
@@ -46,20 +47,40 @@ const APIKeysManagement = () => {
     fetchKeys();
   }, []);
 
-  const handleAddKey = async (key: string, limit: number) => {
+  const handleAddKeys = async (keysInput: string) => {
     setError('');
     setSuccess('');
+    const lines = keysInput.split('\n').filter((line) => line.trim() !== '');
+    const keysToAdd = lines
+      .map((line) => {
+        const parts = line.split(/\t|\|/);
+        if (parts.length !== 2) return null;
+        const key = parts[0].trim();
+        const remainingLimit = parseInt(parts[1].trim(), 10);
+        if (isNaN(remainingLimit) || remainingLimit < 0) return null;
+        return { key, remainingLimit };
+      })
+      .filter((key) => key !== null);
+
+    if (keysToAdd.length === 0) {
+      setError('No valid API keys provided');
+      return;
+    }
+
     try {
-      const response = await fetch('/api/v2/apikey_management', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, limit }),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add API key');
+      for (const keyData of keysToAdd) {
+        console.log('AOWKOAKWOKAOWKWOAK', keyData);
+        const response = await fetch('/api/v2/apikey_management', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(keyData),
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Failed to add API key ${keyData.key}: ${errorData.error}`);
+        }
       }
-      setSuccess('API key added successfully');
+      setSuccess('API keys added successfully');
       fetchKeys();
     } catch (err) {
       setError((err as Error).message);
@@ -67,14 +88,14 @@ const APIKeysManagement = () => {
     setDialogMode(null);
   };
 
-  const handleUpdateKey = async (key: string, limit: number) => {
+  const handleUpdateKey = async (key: string, remainingLimit: number) => {
     setError('');
     setSuccess('');
     try {
       const response = await fetch('/api/v2/apikey_management', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key, limit }),
+        body: JSON.stringify({ key, remainingLimit }),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -110,6 +131,16 @@ const APIKeysManagement = () => {
     }
   };
 
+  const handleSubmit = (
+    data: { mode: 'add'; keysInput: string } | { mode: 'edit'; key: string; remainingLimit: number }
+  ) => {
+    if (data.mode === 'add') {
+      handleAddKeys(data.keysInput);
+    } else if (data.mode === 'edit') {
+      handleUpdateKey(data.key, data.remainingLimit);
+    }
+  };
+
   const openAddDialog = () => setDialogMode('add');
   const openEditDialog = (key: ApiKey) => {
     setCurrentKey(key);
@@ -117,7 +148,7 @@ const APIKeysManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-dark-800 text-light-100 mx-auto max-w-7xl">
+    <div className="p-6 bg-dark-800 text-light-100 max-w-7xl">
       <h1 className="text-2xl font-bold mb-6">API Keys Management</h1>
       {error && (
         <Alert variant="destructive" className="mb-4 bg-red-500/10 text-red-500 border-dark-800">
@@ -130,12 +161,12 @@ const APIKeysManagement = () => {
       <Button
         onClick={openAddDialog}
         className="mb-5 text-xs bg-primary text-dark-800 hover:bg-primary/90">
-        Add API Key
+        Add API Keys
       </Button>
       {loading ? (
-        <Skeleton className="h-32 w-full bg-dark-700" />
+        <Skeleton className="h-32 w-fit bg-dark-700" />
       ) : (
-        <div className="gap-5 flex flex-col max-h-[800px] overflow-y-auto __dokmai_scrollbar w-full p-5 bg-dark-800 border-dark-500/70 border-[1px]">
+        <div className="gap-5 flex flex-col max-h-[800px] overflow-y-auto __dokmai_scrollbar w-fit p-5 bg-dark-800 border-dark-500/70 border-[1px]">
           {apiKeys.map((key) => (
             <ApiKeyCard
               key={key.key}
@@ -149,8 +180,8 @@ const APIKeysManagement = () => {
       <ApiKeyFormDialog
         mode={dialogMode}
         initialKey={dialogMode === 'edit' && currentKey ? currentKey.key : ''}
-        initialLimit={dialogMode === 'edit' && currentKey ? currentKey.limit : 0}
-        onSubmit={dialogMode === 'add' ? handleAddKey : handleUpdateKey}
+        initialRemainingLimit={dialogMode === 'edit' && currentKey ? currentKey.remainingLimit : 0}
+        onSubmit={handleSubmit}
         onClose={() => setDialogMode(null)}
       />
     </div>
@@ -164,10 +195,10 @@ interface ApiKeyCardProps {
 }
 
 const ApiKeyCard = ({ apiKey, onEdit, onDelete }: ApiKeyCardProps) => (
-  <Card className="bg-dark-700 border-dark-600 w-full hover:shadow-lg transition-shadow">
+  <Card className="bg-dark-700 border-dark-600 w-fit hover:shadow-lg transition-shadow">
     <CardContent className="p-4 text-light-100">
       <div>{apiKey.key}</div>
-      <div>{apiKey.limit}</div>
+      <div>{apiKey.remainingLimit}</div>
       <div className="mt-2 space-x-2">
         <Button onClick={onEdit} className="bg-primary text-dark-800 hover:bg-primary/90">
           Edit
@@ -186,60 +217,82 @@ const ApiKeyCard = ({ apiKey, onEdit, onDelete }: ApiKeyCardProps) => (
 interface ApiKeyFormDialogProps {
   mode: 'add' | 'edit' | null;
   initialKey: string;
-  initialLimit: number;
-  onSubmit: (key: string, limit: number) => void;
+  initialRemainingLimit: number;
+  onSubmit: (
+    data: { mode: 'add'; keysInput: string } | { mode: 'edit'; key: string; remainingLimit: number }
+  ) => void;
   onClose: () => void;
 }
 
 const ApiKeyFormDialog = ({
   mode,
   initialKey,
-  initialLimit,
+  initialRemainingLimit,
   onSubmit,
   onClose,
 }: ApiKeyFormDialogProps) => {
+  const [keysInput, setKeysInput] = useState('');
   const [key, setKey] = useState(initialKey);
-  const [limit, setLimit] = useState(initialLimit);
+  const [remainingLimit, setRemainingLimit] = useState(initialRemainingLimit);
 
   useEffect(() => {
-    setKey(initialKey);
-    setLimit(initialLimit);
-  }, [initialKey, initialLimit]);
+    if (mode === 'edit' && initialKey && initialRemainingLimit) {
+      setKey(initialKey);
+      setRemainingLimit(initialRemainingLimit);
+    } else {
+      setKeysInput('');
+    }
+  }, [initialKey, initialRemainingLimit, mode]);
 
   const handleSubmit = () => {
-    if (!key || limit < 0) {
-      alert('Key cannot be empty and limit must be non-negative.');
-      return;
+    if (mode === 'add') {
+      onSubmit({ mode: 'add', keysInput });
+    } else if (mode === 'edit') {
+      onSubmit({ mode: 'edit', key, remainingLimit: Number(remainingLimit) });
     }
-    onSubmit(key, Number(limit));
+    onClose();
   };
 
   return (
     <Dialog open={mode !== null} onOpenChange={onClose}>
       <DialogContent className="bg-dark-800 text-light-100 border-dark-600 sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{mode === 'add' ? 'Add API Key' : 'Edit API Key'}</DialogTitle>
+          <DialogTitle>{mode === 'add' ? 'Add API Keys' : 'Edit API Key'}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div>
-            <Label>Key</Label>
-            <Input
-              value={key}
-              onChange={(e) => setKey(e.target.value)}
-              disabled={mode === 'edit'}
-              className="bg-dark-700 text-light-100 border-dark-600 focus:border-primary focus:ring-primary"
-            />
-          </div>
-          <div>
-            <Label>Limit</Label>
-            <Input
-              type="number"
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
-              min="0"
-              className="bg-dark-700 text-light-100 border-dark-600 focus:border-primary focus:ring-primary"
-            />
-          </div>
+          {mode === 'add' ? (
+            <div>
+              <Label>API Keys (one per line, format: key\tlimit or key|limit)</Label>
+              <Textarea
+                value={keysInput}
+                onChange={(e) => setKeysInput(e.target.value)}
+                placeholder="my-apikey-code|2500\nanother-key\t1000"
+                className="bg-dark-700 text-light-100 border-dark-600 focus:border-primary focus:ring-primary"
+                rows={10}
+              />
+            </div>
+          ) : (
+            <>
+              <div>
+                <Label>Key</Label>
+                <Input
+                  value={key}
+                  disabled
+                  className="bg-dark-700 text-light-100 border-dark-600"
+                />
+              </div>
+              <div>
+                <Label>Remaining Limit</Label>
+                <Input
+                  type="number"
+                  value={remainingLimit}
+                  onChange={(e) => setRemainingLimit(Number(e.target.value))}
+                  min="0"
+                  className="bg-dark-700 text-light-100 border-dark-600 focus:border-primary focus:ring-primary"
+                />
+              </div>
+            </>
+          )}
         </div>
         <DialogFooter>
           <Button

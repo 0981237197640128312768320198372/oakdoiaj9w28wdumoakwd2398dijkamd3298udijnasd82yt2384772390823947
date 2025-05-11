@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import ApiKey from '@/models/ApiKeys';
 
-// GET: Retrieve API keys with optional filtering
 export async function GET(request: NextRequest) {
   await connectToDatabase();
   const { searchParams } = new URL(request.url);
@@ -22,7 +21,14 @@ export async function GET(request: NextRequest) {
     if (isNaN(limitValue)) {
       return NextResponse.json({ error: 'Invalid limit_upto value' }, { status: 400 });
     }
-    query.limit = { $gte: limitValue };
+
+    query.$or = [
+      { resetDate: { $lte: new Date() } },
+      {
+        remainingLimit: { $gte: limitValue },
+        $or: [{ resetDate: { $exists: false } }, { resetDate: { $gt: new Date() } }],
+      },
+    ];
   }
 
   try {
@@ -37,45 +43,48 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST: Create a new API key with a specified key and limit
 export async function POST(request: NextRequest) {
   await connectToDatabase();
   const body = await request.json();
-  const { key, limit } = body;
+  const { key, remainingLimit } = body;
 
   if (!key || typeof key !== 'string') {
     return NextResponse.json({ error: 'Key is required and must be a string' }, { status: 400 });
   }
-  if (!limit || typeof limit !== 'number') {
-    return NextResponse.json({ error: 'Limit is required and must be a number' }, { status: 400 });
+  if (!remainingLimit || typeof remainingLimit !== 'number') {
+    return NextResponse.json(
+      { error: 'Remaining limit is required and must be a number' },
+      { status: 400 }
+    );
   }
 
-  // Check if the key already exists
   const existingKey = await ApiKey.findOne({ key });
   if (existingKey) {
     return NextResponse.json({ error: 'API key already exists' }, { status: 409 });
   }
 
-  const newApiKey = new ApiKey({ key, limit });
+  const newApiKey = new ApiKey({ key, remainingLimit });
   await newApiKey.save();
 
   return NextResponse.json({ message: 'API key created', apiKey: newApiKey }, { status: 201 });
 }
 
-// PUT: Update an existing API key's limit
 export async function PUT(request: NextRequest) {
   await connectToDatabase();
   const body = await request.json();
-  const { key, limit } = body;
+  const { key, remainingLimit } = body;
 
   if (!key || typeof key !== 'string') {
     return NextResponse.json({ error: 'Key is required and must be a string' }, { status: 400 });
   }
-  if (limit === undefined || typeof limit !== 'number') {
-    return NextResponse.json({ error: 'Limit is required and must be a number' }, { status: 400 });
+  if (remainingLimit === undefined || typeof remainingLimit !== 'number') {
+    return NextResponse.json(
+      { error: 'Remaining limit is required and must be a number' },
+      { status: 400 }
+    );
   }
 
-  const apiKey = await ApiKey.findOneAndUpdate({ key }, { limit }, { new: true });
+  const apiKey = await ApiKey.findOneAndUpdate({ key }, { remainingLimit }, { new: true });
   if (!apiKey) {
     return NextResponse.json({ error: 'API key not found' }, { status: 404 });
   }
