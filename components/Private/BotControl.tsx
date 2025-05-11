@@ -60,7 +60,7 @@ const BotControl = () => {
 
   const setBotState = async (
     botId: string,
-    botState: 'running' | 'stopped',
+    botState: 'running' | 'stopped' | 'idle',
     parameters?: string[]
   ) => {
     try {
@@ -304,11 +304,10 @@ const BotControl = () => {
                     {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
                   </span>
                   <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      bot.botState === 'running'
-                        ? 'bg-green-500/20 text-green-500'
-                        : 'bg-red-500/20 text-red-500 px-1'
-                    }`}>
+                    className={`px-2 py-1 rounded text-xs 
+                       ${bot.botState === 'running' && 'text-green-500 bg-green-500/30 '}
+                  ${bot.botState === 'stopped' && 'text-red-500 bg-red-500/30 '}
+                  ${bot.botState === 'idle' && 'text-sky-500 bg-sky-500/30 '}`}>
                     {bot.botState}
                   </span>
                 </div>
