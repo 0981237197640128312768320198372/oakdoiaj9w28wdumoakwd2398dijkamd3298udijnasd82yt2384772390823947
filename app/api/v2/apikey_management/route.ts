@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   await connectToDatabase();
   const body = await request.json();
-  const { key, remainingLimit } = body;
+  const { key, remainingLimit, resetDate } = body;
 
   if (!key || typeof key !== 'string') {
     return NextResponse.json({ error: 'Key is required and must be a string' }, { status: 400 });
@@ -83,8 +83,15 @@ export async function PUT(request: NextRequest) {
       { status: 400 }
     );
   }
+  // Optional: Validate resetDate if provided
+  if (resetDate !== undefined && isNaN(new Date(resetDate).getTime())) {
+    return NextResponse.json({ error: 'Reset date must be a valid date' }, { status: 400 });
+  }
 
-  const apiKey = await ApiKey.findOneAndUpdate({ key }, { remainingLimit }, { new: true });
+  const updateData = { remainingLimit, resetDate };
+  if (resetDate !== undefined) updateData.resetDate = resetDate;
+
+  const apiKey = await ApiKey.findOneAndUpdate({ key }, updateData, { new: true });
   if (!apiKey) {
     return NextResponse.json({ error: 'API key not found' }, { status: 404 });
   }
