@@ -68,8 +68,8 @@ const APIKeysManagement = () => {
     }
 
     try {
+      setLoading(true);
       for (const keyData of keysToAdd) {
-        console.log('AOWKOAKWOKAOWKWOAK', keyData);
         const response = await fetch('/api/v2/apikey_management', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
