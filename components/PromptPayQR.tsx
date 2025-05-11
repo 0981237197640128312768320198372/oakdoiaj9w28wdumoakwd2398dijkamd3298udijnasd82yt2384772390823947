@@ -16,7 +16,13 @@ import promptpay from '@/assets/images/promptpay.webp';
 import { FaStripe } from 'react-icons/fa';
 import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
 
-export default function PromptPayQR() {
+// Define the props interface
+interface PromptPayQRProps {
+  amount: number;
+  qrCodeData: string;
+}
+
+export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
   const thaibanks = [kbank, scb, bbl, bay, gsb, ktb];
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -25,15 +31,34 @@ export default function PromptPayQR() {
       const canvas = await html2canvas(divRef.current);
       canvas.toBlob((blob) => {
         if (blob) {
-          saveAs(blob, filename);
+          saveAs(blob, `${filename}.jpg`);
         }
       });
     }
   };
+
+  const handleCopy = async () => {
+    if (divRef.current) {
+      const canvas = await html2canvas(divRef.current);
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          try {
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+            console.log('Image copied to clipboard');
+          } catch (error) {
+            console.error('Failed to copy image:', error);
+          }
+        }
+      });
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto rounded-lg shadow-md">
-      <div ref={divRef} className="p-5 flex flex-col justify-center items-center">
-        <div className="bg-dark-700 p-5 border-[0.5px] border-primary flex flex-col justify-center items-center">
+      <div className="p-5 flex flex-col justify-center items-center">
+        <div
+          ref={divRef}
+          className="bg-dark-700 p-5 border-[1px] border-primary flex flex-col justify-center items-center select-none rounded-xl">
           <div className="flex flex-col justify-center items-center gap-5 p-5 w-fit rounded-xl bg-dark-600 border-[0.5px] border-dark-100">
             <div className="h-8 w-full gap-5 flex flex-row-reverse items-center justify-center">
               <FaStripe className="text-6xl" />
@@ -41,11 +66,12 @@ export default function PromptPayQR() {
               <Image
                 src={promptpay}
                 alt="Prompt Pay Logo | dokmaistore.com"
-                className="w-auto h-6 "
+                className="w-auto h-6"
+                draggable={false}
               />
             </div>
             <QRCode
-              value="00020101021230540016A0000006770101120115010556207402702021125062781065520412345303764540510.005802TH5902NA6304CE42"
+              value={qrCodeData}
               size={200}
               bgColor="#fff"
               fgColor="#000"
@@ -57,14 +83,16 @@ export default function PromptPayQR() {
               id="Dokmai Store Prompt Pay"
             />
             <div className="w-full flex flex-col justify-center items-center">
-              <p className="text-light-600 font-light text-xs">Dokmai Coin</p>
-              <div className="py-2 gap-2 text-lg flex flex-row justify-center items-center bg-gradient-to-br from-transparent via-dark-500/30 to-transparent w-full">
+              <div className="gap-2 text-lg flex flex-row justify-center items-center w-full">
                 <Image
                   src={dokmaicoin3d}
                   alt="Dokmai Coin Logo | dokmaistore.com"
-                  className="w-auto h-10"
+                  className="w-auto h-7"
+                  draggable={false}
                 />
-                <p className="font-bold text-xl text-light-200 tracking-widest">1000</p>
+                <p className="font-bold text-xl text-light-200 tracking-widest select-none">
+                  {amount}
+                </p>
               </div>
             </div>
           </div>
@@ -84,12 +112,18 @@ export default function PromptPayQR() {
           </p>
         </div>
       </div>
-
-      <button
-        onClick={() => handleDownload('PromptPayQR')}
-        className="mt-5 px-4 py-2 bg-primary text-black rounded-md">
-        Download QR
-      </button>
+      <div className="flex justify-between w-full">
+        <button
+          onClick={() => handleDownload('PromptPayQR')}
+          className="mt-5 px-4 py-2 bg-primary text-black rounded-md">
+          Download QR
+        </button>
+        <button
+          onClick={handleCopy}
+          className="mt-4 ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+          Copy QR
+        </button>
+      </div>
     </div>
   );
 }

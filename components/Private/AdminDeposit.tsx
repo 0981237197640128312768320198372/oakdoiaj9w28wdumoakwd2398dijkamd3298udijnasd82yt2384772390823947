@@ -157,7 +157,10 @@ const AdminDeposit = () => {
         )}
       </div>
       <div className="mt-40">
-        <PromptPayQR />
+        <PromptPayQR
+          amount={1500}
+          qrCodeData="00020101021230540016A0000006770101120115010556207402702021125062781065520412345303764540515.005802TH5902NA6304XXXX"
+        />
       </div>
     </>
   );
