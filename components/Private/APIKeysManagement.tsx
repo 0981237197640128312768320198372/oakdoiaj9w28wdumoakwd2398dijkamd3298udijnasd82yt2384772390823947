@@ -14,8 +14,10 @@ import { Label } from '@/components/ui/label';
 import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
+import { formatTime } from '@/lib/utils';
 
 interface ApiKey {
+  resetDate: Date;
   key: string;
   remainingLimit: number;
 }
@@ -196,9 +198,10 @@ interface ApiKeyCardProps {
 
 const ApiKeyCard = ({ apiKey, onEdit, onDelete }: ApiKeyCardProps) => (
   <Card className="bg-dark-700 border-dark-600 w-fit hover:shadow-lg transition-shadow">
-    <CardContent className="p-4 text-light-100">
+    <CardContent className="p-5 text-xs text-light-100">
       <div>{apiKey.key}</div>
       <div>{apiKey.remainingLimit}</div>
+      <div>{formatTime(apiKey.resetDate as unknown as string)}</div>
       <div className="mt-2 space-x-2">
         <Button onClick={onEdit} className="bg-primary text-dark-800 hover:bg-primary/90">
           Edit
