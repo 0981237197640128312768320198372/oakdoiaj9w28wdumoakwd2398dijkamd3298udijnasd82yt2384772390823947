@@ -288,7 +288,7 @@ const BotControl = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 w-full bg-dark-600 p-5 mt-10 max-h-[500px] overflow-y-scroll __dokmai_scrollbar">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 max-h-[800px] w-full bg-dark-600 p-5 mt-10  overflow-y-scroll __dokmai_scrollbar">
         {loading
           ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
           : bots.map((bot) => (

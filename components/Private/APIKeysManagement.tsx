@@ -168,7 +168,7 @@ const APIKeysManagement = () => {
       {loading ? (
         <Skeleton className="h-32 w-fit bg-dark-700" />
       ) : (
-        <div className="gap-5 flex flex-col max-h-[800px] overflow-y-auto __dokmai_scrollbar w-fit p-5 bg-dark-800 border-dark-500/70 border-[1px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 max-h-[800px] overflow-y-auto __dokmai_scrollbar w-fit p-5 bg-dark-800 border-dark-500/70 border-[1px]">
           {apiKeys.map((key) => (
             <ApiKeyCard
               key={key.key}
@@ -269,7 +269,7 @@ const ApiKeyFormDialog = ({
               <Textarea
                 value={keysInput}
                 onChange={(e) => setKeysInput(e.target.value)}
-                placeholder="my-apikey-code|2500\nanother-key\t1000"
+                placeholder="apikey remain limit"
                 className="bg-dark-700 text-light-100 border-dark-600 focus:border-primary focus:ring-primary"
                 rows={10}
               />
