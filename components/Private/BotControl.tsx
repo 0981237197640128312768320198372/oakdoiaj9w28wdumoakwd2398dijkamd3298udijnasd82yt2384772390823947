@@ -72,7 +72,7 @@ const BotControl = () => {
         body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error('Failed to set bot state');
-      fetchBotData();
+      // fetchBotData();
     } catch (err) {
       setError('Failed to set bot state. Please try again later.');
       console.error(err);
@@ -90,7 +90,7 @@ const BotControl = () => {
       });
       if (!response.ok) throw new Error('Failed to send command');
       setCommandInputs((prev) => ({ ...prev, [botId]: '' }));
-      fetchBotData();
+      // fetchBotData();
     } catch (err) {
       setError('Failed to send command. Please try again later.');
       console.error(err);
