@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-09-30.acacia',
 });
 
-export async function GET(request: NextRequest, { params }: { params: { [key: string]: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const paymentIntentId = params.id;
     if (!paymentIntentId) {
