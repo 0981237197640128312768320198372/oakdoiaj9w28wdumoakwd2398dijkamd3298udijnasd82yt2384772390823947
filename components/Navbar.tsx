@@ -55,8 +55,8 @@ const Navbar = ({ onMenu = true }: { onMenu?: boolean }) => {
         className={`fixed flex flex-col items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform  ${
           visible ? 'translate-y-0' : '-translate-y-full'
         } z-10`}>
-        <div className="flex w-full justify-center items-center p-2 text-sm bg-dark-800 border-b-[1px] border-primary/50 ">
-          <span className="flex gap-2 items-center lg:text-lg tracking-widest">
+        <div className="flex w-full justify-center items-center p-2 text-sm bg-dark-700 border-b-[1px] border-dark-500 ">
+          <span className="flex gap-2 items-center lg:text-lg tracking-widest px-3 text-primary">
             ระบบใช้{' '}
             <Link href="https://stripe.com" className="rounded underline">
               stripe

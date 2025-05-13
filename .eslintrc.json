@@ -1,10 +1,5 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript", "plugin:@typescript-eslint/recommended"],
-  "settings": {
-    "next": {
-      "rootDir": "packages/my-app/"
-    }
-  },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "rules": {
