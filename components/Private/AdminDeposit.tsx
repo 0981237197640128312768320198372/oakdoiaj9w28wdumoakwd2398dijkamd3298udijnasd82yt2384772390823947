@@ -5,7 +5,7 @@ import { logActivity } from '@/lib/utils';
 import { ReactNode, useState } from 'react';
 import { SlWallet } from 'react-icons/sl';
 import { updateStatistic } from '@/lib/utils';
-import PromptPayQR from '../PromptPayQR';
+// import PromptPayQR from '../PromptPayQR';
 
 const AdminDeposit = () => {
   const [personalKey, setPersonalKey] = useState('');
@@ -156,12 +156,12 @@ const AdminDeposit = () => {
           </div>
         )}
       </div>
-      <div className="mt-40">
+      {/* <div className="mt-40">
         <PromptPayQR
           amount={1500}
           qrCodeData="00020101021230540016A0000006770101120115010556207402702021125062781065520412345303764540515.005802TH5902NA6304XXXX"
         />
-      </div>
+      </div> */}
     </>
   );
 };
