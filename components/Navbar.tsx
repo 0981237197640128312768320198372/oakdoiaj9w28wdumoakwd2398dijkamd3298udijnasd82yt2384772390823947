@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -14,7 +15,7 @@ import { navButtons } from '@/constant';
 import { TbReload } from 'react-icons/tb';
 import { PiArrowFatLinesUp } from 'react-icons/pi';
 
-const Navbar = () => {
+const Navbar = ({ onMenu = true }: { onMenu?: boolean }) => {
   const path = usePathname();
 
   const [prevScrollPos, setPrevScrollPos] = useState(0);
@@ -47,7 +48,6 @@ const Navbar = () => {
     window.location.reload();
   };
 
-  const isApp = window.location.hostname === 'app.dokmaistore.com';
   return (
     <>
       <nav
@@ -83,26 +83,24 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-
-        <div
-          className={`"w-full gap-10 justify-between max-w-[1140px] hidden duration-1000 items-center" ${
-            isApp ? '' : 'lg:flex'
-          }`}>
-          <div className="flex w-full justify-between items-center bg-dark-800/70 backdrop-blur py-2">
-            <div className=" w-full flex gap-10 justify-center items-center text-white">
-              {navButtons.map((nav, i) => (
-                <Link
-                  href={nav.url}
-                  key={i}
-                  className={`text-light-200 border-b-[1px] border-primary flex-col-reverse py-[3px] hover:py-[1px] duration-300 md:text-sm font-medium group ${
-                    path === nav.url ? 'font-black transition-transform duration-700 ' : ''
-                  }${path === nav.url ? ' text-primary' : ' hover:text-primary'}`}>
-                  {nav.title}
-                </Link>
-              ))}
+        {onMenu && (
+          <div className="w-full gap-10 justify-between max-w-[1140px] lg:flex hidden duration-1000 items-center">
+            <div className="flex w-full justify-between items-center bg-dark-800/70 backdrop-blur py-2">
+              <div className=" w-full flex gap-10 justify-center items-center text-white">
+                {navButtons.map((nav, i) => (
+                  <Link
+                    href={nav.url}
+                    key={i}
+                    className={`text-light-200 border-b-[1px] border-primary flex-col-reverse py-[3px] hover:py-[1px] duration-300 md:text-sm font-medium group ${
+                      path === nav.url ? 'font-black transition-transform duration-700 ' : ''
+                    }${path === nav.url ? ' text-primary' : ' hover:text-primary'}`}>
+                    {nav.title}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </nav>
       <div className="lg:hidden fixed bottom-0 right-0 p-3 mb-10 mr-10 flex flex-col gap-5 z-50 bg-dark-500/80 items-center backdrop-blur-sm border-[1px] border-dark-200 rounded shadow-2xl shadow-black">
         <button onClick={scrollToTop} className="duration-500 text-primary text-2xl">
