@@ -1,104 +1,102 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-"use client"
+'use client';
 
-import React, { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import MobileNav from "./MobileNav"
-import Image from "next/image"
-import dokmaiwithtext from "@/assets/images/dokmaiwithtext.png"
-import dokmailogosquare from "@/assets/images/dokmailogosquare.png"
-import { navButtons } from "@/constant"
-import { TbReload } from "react-icons/tb"
-import { PiArrowFatLinesUp } from "react-icons/pi"
+import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import MobileNav from './MobileNav';
+import Image from 'next/image';
+import dokmaiwithtext from '@/assets/images/dokmaiwithtext.png';
+import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
+import { navButtons } from '@/constant';
+import { TbReload } from 'react-icons/tb';
+import { PiArrowFatLinesUp } from 'react-icons/pi';
 
 const Navbar = () => {
-  const path = usePathname()
+  const path = usePathname();
 
-  const [prevScrollPos, setPrevScrollPos] = useState(0)
-  const [scrollToTopVisible, setScrollToTopVisible] = useState(false)
-  const [visible, setVisible] = useState(true)
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [scrollToTopVisible, setScrollToTopVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const handleScroll = () => {
-    const currentScrollPos = window.pageYOffset
-    const isScrollingDown = prevScrollPos < currentScrollPos
+    const currentScrollPos = window.pageYOffset;
+    const isScrollingDown = prevScrollPos < currentScrollPos;
     if (currentScrollPos <= 0) {
-      setVisible(true)
-      setScrollToTopVisible(false)
+      setVisible(true);
+      setScrollToTopVisible(false);
     } else {
-      setVisible(isScrollingDown)
-      setScrollToTopVisible(currentScrollPos > 350)
+      setVisible(isScrollingDown);
+      setScrollToTopVisible(currentScrollPos > 350);
     }
-    setPrevScrollPos(currentScrollPos)
-  }
+    setPrevScrollPos(currentScrollPos);
+  };
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener('scroll', handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  })
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const reloadPage = () => {
-    window.location.reload()
-  }
+    window.location.reload();
+  };
 
+  const isApp = window.location.hostname === 'app.dokmaistore.com';
   return (
     <>
       <nav
         className={`fixed flex flex-col items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform  ${
-          visible ? "translate-y-0" : "-translate-y-full"
-        } z-10`}
-      >
-        <div className='w-full gap-10 bg-dark-800 flex p-3 xl:pb-6 xl:px-0 xl:pt-10 max-w-[1140px] px-5 justify-between duration-1000 items-center border-b-[1px] border-dark-500'>
-          <Link href='/' className='flex select-none items-center gap-1 w-fit'>
+          visible ? 'translate-y-0' : '-translate-y-full'
+        } z-10`}>
+        <div className="w-full gap-10 bg-dark-800 flex p-3 xl:pb-6 xl:px-0 xl:pt-10 max-w-[1140px] px-5 justify-between duration-1000 items-center border-b-[1px] border-dark-500">
+          <Link href="/" className="flex select-none items-center gap-1 w-fit">
             <Image
               width={100}
               height={100}
               src={dokmaiwithtext}
-              loading='lazy'
-              alt='Logo of Dokmai Store'
-              className='duration-700 hidden xl:block'
+              loading="lazy"
+              alt="Logo of Dokmai Store"
+              className="duration-700 hidden xl:block"
             />
             <Image
               width={60}
               height={60}
               src={dokmailogosquare}
-              loading='lazy'
-              alt='Logo of Dokmai Store'
-              className='duration-700 xl:hidden'
+              loading="lazy"
+              alt="Logo of Dokmai Store"
+              className="duration-700 xl:hidden"
             />
           </Link>
-          <div className='flex items-center justify-end gap-5'>
-            <div className='flex justify-end items-center gap-3 font-aktivGroteskBold '>
+          <div className="flex items-center justify-end gap-5">
+            <div className="flex justify-end items-center gap-3 font-aktivGroteskBold ">
               <Link
-                href='/products'
-                className='text-dark-800 bg-primary flex px-2 pt-1 items-center gap-2 text-lg rounded-sm font-aktivGroteskBold'
-              >
+                href="/products"
+                className="text-dark-800 bg-primary flex px-2 pt-1 items-center gap-2 text-lg rounded-sm font-aktivGroteskBold">
                 ซื้อเลย!
               </Link>
             </div>
           </div>
         </div>
-        <div className='w-full gap-10 lg:flex justify-between max-w-[1140px] hidden duration-1000 items-center'>
-          <div className='flex w-full justify-between items-center bg-dark-800/70 backdrop-blur py-2'>
-            <div className=' w-full flex gap-10 justify-center items-center text-white'>
+
+        <div
+          className={`"w-full gap-10 justify-between max-w-[1140px] hidden duration-1000 items-center" ${
+            isApp ? '' : 'lg:flex'
+          }`}>
+          <div className="flex w-full justify-between items-center bg-dark-800/70 backdrop-blur py-2">
+            <div className=" w-full flex gap-10 justify-center items-center text-white">
               {navButtons.map((nav, i) => (
                 <Link
                   href={nav.url}
                   key={i}
                   className={`text-light-200 border-b-[1px] border-primary flex-col-reverse py-[3px] hover:py-[1px] duration-300 md:text-sm font-medium group ${
-                    path === nav.url
-                      ? "font-black transition-transform duration-700 "
-                      : ""
-                  }${
-                    path === nav.url ? " text-primary" : " hover:text-primary"
-                  }`}
-                >
+                    path === nav.url ? 'font-black transition-transform duration-700 ' : ''
+                  }${path === nav.url ? ' text-primary' : ' hover:text-primary'}`}>
                   {nav.title}
                 </Link>
               ))}
@@ -106,23 +104,17 @@ const Navbar = () => {
           </div>
         </div>
       </nav>
-      <div className='lg:hidden fixed bottom-0 right-0 p-3 mb-10 mr-10 flex flex-col gap-5 z-50 bg-dark-500/80 items-center backdrop-blur-sm border-[1px] border-dark-200 rounded shadow-2xl shadow-black'>
-        <button
-          onClick={scrollToTop}
-          className='duration-500 text-primary text-2xl'
-        >
+      <div className="lg:hidden fixed bottom-0 right-0 p-3 mb-10 mr-10 flex flex-col gap-5 z-50 bg-dark-500/80 items-center backdrop-blur-sm border-[1px] border-dark-200 rounded shadow-2xl shadow-black">
+        <button onClick={scrollToTop} className="duration-500 text-primary text-2xl">
           <PiArrowFatLinesUp />
         </button>
-        <button
-          onClick={reloadPage}
-          className='duration-500 text-primary text-2xl'
-        >
+        <button onClick={reloadPage} className="duration-500 text-primary text-2xl">
           <TbReload />
         </button>
         <MobileNav />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

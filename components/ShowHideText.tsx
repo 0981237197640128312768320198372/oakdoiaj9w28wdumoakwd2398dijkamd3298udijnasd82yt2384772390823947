@@ -20,7 +20,12 @@ const ShowHideText: React.FC<ShowHideTextProps> = ({ text }) => {
         aria-label={isVisible ? 'Hide Text' : 'Show Text'}>
         {isVisible ? <FaEyeSlash /> : <FaEye />}
       </button>
-      <span>{isVisible ? text : text.replace(/./g, '●')}</span>
+      <span
+        className={`text-sm font-medium text-light-100 select-none ${
+          isVisible ? '' : 'blur-sm line-through'
+        }`}>
+        {isVisible ? text : text.replace(/./g, '●')}
+      </span>
     </div>
   );
 };
