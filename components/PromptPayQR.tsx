@@ -31,16 +31,18 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
   const handleDownload = async (filename: string) => {
     if (divRef.current) {
       const canvas = await html2canvas(divRef.current);
-      canvas.toBlob((blob) => {
-        if (blob) {
-          saveAs(blob, `${filename}.jpg`);
-        }
-      });
+      const dataURL = canvas.toDataURL('image/jpeg');
+      const link = document.createElement('a');
+      link.href = dataURL;
+      link.download = `${filename}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 
   const handleCopy = async () => {
-    if (divRef.current) {
+    if (divRef.current && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
       const canvas = await html2canvas(divRef.current);
       canvas.toBlob(async (blob) => {
         if (blob) {
@@ -52,6 +54,9 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
           }
         }
       });
+    } else {
+      console.log('Clipboard API not supported');
+      // Optionally, show a message like: "Copying is not supported on this device."
     }
   };
 
