@@ -38,18 +38,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/deposit',
-        destination: 'https://lin.ee/Ovlixv5',
-        permanent: false,
-      },
-      {
         source: '/register',
         destination: 'https://lin.ee/Ovlixv5',
-        permanent: false,
-      },
-      {
-        source: '/indefatigability/perspicacity/thebot',
-        destination: 'https://www.mediafire.com/folder/dy6nfl2n96w9a/Thebot',
         permanent: false,
       },
     ];

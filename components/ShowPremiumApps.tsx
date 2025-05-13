@@ -23,6 +23,8 @@ import SearchableDropdown from './SearchableDropdown';
 import dokmaicoin from '@/assets/images/dokmaicoin.gif';
 import dokmaioutline from '@/assets/images/dokmaioutline.png';
 import { TbUrgent } from 'react-icons/tb';
+import DepositModal from './DepositModal';
+import { FaPowerOff } from 'react-icons/fa';
 
 interface PremiumApp {
   accessType?: string;
@@ -61,6 +63,8 @@ export const ShowPremiumApps = () => {
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedApp, setSelectedApp] = useState<PremiumApp | null>(null);
   const [problemDescription, setProblemDescription] = useState('');
+
+  const [showDepositModal, setShowDepositModal] = useState(false);
 
   const fetchEmails = async (email: string) => {
     setLoadingEmail(true);
@@ -380,6 +384,36 @@ export const ShowPremiumApps = () => {
         </div>
       )}
       {validatingPersonalKey && <Loading text="กำลังเช็คข้อมูลของคุณ..." />}
+      <div className="text-light-300 text-xs w-full justify-center items-center py-10">
+        <div className="flex flex-col lg:flex-row gap-10 ">
+          <div>
+            <h3 className="text-xl font-semibold mt-5">ทำไมต้องเก็บ Personal Key ให้ปลอดภัย?</h3>
+            <ul className="list-disc ml-6 text-light-500">
+              <li>
+                <strong>ง่ายและสะดวก:</strong> ไม่ต้องจำอีเมลหรือรหัสผ่านมากมาย แค่รหัส 8 หลัก
+                (ประกอบด้วยตัวอักษร 4 ตัว และตัวเลข 4 ตัว) คุณก็สามารถใช้งานได้เลย
+              </li>
+              <li>
+                <strong>ใช้ในการตรวจสอบตัวตน:</strong> ใช้รหัสนี้เพื่อเข้าถึงข้อมูลบัญชีแอปพรีเมียม
+                และดูรายละเอียดการซื้อของคุณ
+              </li>
+              <li>
+                <strong>เครื่องมือเข้าถึงพิเศษ:</strong>{' '}
+                ใช้รหัสนี้เพื่อรีเซ็ตรหัสผ่านของบัญชีแอปพรีเมียม ซื้อแอปพรีเมียมเพิ่มเติม
+                และเข้าถึงยอด <strong>Dokmai Coin</strong> ของคุณ
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold mt-4">สิ่งที่ควรจำเกี่ยวกับ Personal Key</h3>
+            <p>โปรดเก็บรักษารหัสนี้เป็นความลับ! หากมีใครได้รู้รหัสของคุณ พวกเขาจะสามารถ:</p>
+            <ul className="list-disc ml-6 text-light-500">
+              <li>ดูข้อมูลบัญชีแอปพรีเมียมที่คุณซื้อ</li>
+              <li>เข้าถึงยอด Dokmai Coin และข้อมูลสำคัญอื่นๆ ในบัญชีของคุณ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
         <div className="flex gap-5 lg:gap-10 flex-col lg:flex-row">
           <div
@@ -413,6 +447,9 @@ export const ShowPremiumApps = () => {
                   </span>
                 </div>
                 <Link
+                  // onClick={() => {
+                  //   setShowDepositModal(true);
+                  // }}
                   href="/deposit"
                   className="flex gap-2 items-center bg-primary text-xs hover:bg-primary/90 text-dark-800 rounded p-1 z-30 font-bold">
                   <PiWallet className="w-5 h-5 " />
@@ -431,8 +468,8 @@ export const ShowPremiumApps = () => {
               <div className="w-full flex justify-end">
                 <button
                   onClick={handleLogout}
-                  className=" bg-red-500/10 hover:bg-red-500/30 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskBold">
-                  Logout
+                  className="flex gap-1 items-center bg-red-500/10 hover:bg-red-500/30 text-red-500 text-xs rounded px-2 py-1 font-aktivGroteskBold">
+                  <FaPowerOff className="text-md" /> Logout
                 </button>
               </div>
               <Image
@@ -443,36 +480,6 @@ export const ShowPremiumApps = () => {
                 className="absolute -bottom-20 -right-3 opacity-90 group-hover:opacity-100 select-none duration-1000 -z-40"
               />
             </div>
-          </div>
-          <div className="text-light-300 text-xs">
-            <h3 className="text-xl font-semibold mt-4">ทำไมต้องเก็บ Personal Key ให้ปลอดภัย?</h3>
-            <ul className="list-disc ml-6 text-light-500">
-              <li>
-                <strong>ง่ายและสะดวก:</strong> ไม่ต้องจำอีเมลหรือรหัสผ่านมากมาย แค่รหัส 8 หลัก
-                (ประกอบด้วยตัวอักษร 4 ตัว และตัวเลข 4 ตัว) คุณก็สามารถใช้งานได้เลย
-              </li>
-              <li>
-                <strong>ใช้ในการตรวจสอบตัวตน:</strong> ใช้รหัสนี้เพื่อเข้าถึงข้อมูลบัญชีแอปพรีเมียม
-                และดูรายละเอียดการซื้อของคุณ
-              </li>
-              <li>
-                <strong>เครื่องมือเข้าถึงพิเศษ:</strong>{' '}
-                ใช้รหัสนี้เพื่อรีเซ็ตรหัสผ่านของบัญชีแอปพรีเมียม ซื้อแอปพรีเมียมเพิ่มเติม
-                และเข้าถึงยอด <strong>Dokmai Coin</strong> ของคุณ
-              </li>
-            </ul>
-
-            <h3 className="text-xl font-semibold mt-4">สิ่งที่ควรจำเกี่ยวกับ Personal Key</h3>
-            <p>โปรดเก็บรักษารหัสนี้เป็นความลับ! หากมีใครได้รู้รหัสของคุณ พวกเขาจะสามารถ:</p>
-            <ul className="list-disc ml-6 text-light-500">
-              <li>ดูข้อมูลบัญชีแอปพรีเมียมที่คุณซื้อ</li>
-              <li>เข้าถึงยอด Dokmai Coin และข้อมูลสำคัญอื่นๆ ในบัญชีของคุณ</li>
-            </ul>
-
-            <p className="mt-4">
-              ด้วย Personal Key คุณสามารถจัดการและรักษาความปลอดภัยของบัญชีได้อย่างง่ายดาย
-              มั่นใจในความปลอดภัย และสะดวกสบายกับการใช้งานทุกฟีเจอร์ของเรา!
-            </p>
           </div>
         </div>
       )}
@@ -499,7 +506,7 @@ export const ShowPremiumApps = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search your premium apps..."
-              className="mb-5  border-[1px] border-primary/40 p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm"
+              className="mb-5 border-[1px] border-primary/40 p-2 px-3 w-full focus:outline-none focus:ring-0 bg-transparent text-sm"
             />
             <div className="grid flex-col grid-cols-1 lg:grid-cols-2 gap-5 w-full max-h-[650px] overflow-y-auto px-5 pb-5 border-t-0 border-[1px] border-dark-500 __dokmai_scrollbar">
               {(searchTerm ? filteredPremiumData : premiumData)
@@ -736,6 +743,7 @@ export const ShowPremiumApps = () => {
           </p>
         </div>
       )}
+      {showDepositModal && <DepositModal />}
     </div>
   );
 };

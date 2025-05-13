@@ -29,9 +29,8 @@ export default function RootLayout({
       <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/10 selection:text-primary">
         <CartProvider>
           <Navbar />
-          <div className="flex flex-col justify-start items-center w-full min-h-screen py-10 pt-20">
+          <div className="flex flex-col justify-start items-center w-full min-h-screen py-20">
             {children}
-
             <Analytics />
           </div>
           <Footer />

@@ -14,6 +14,7 @@ import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { navButtons } from '@/constant';
 import { TbReload } from 'react-icons/tb';
 import { PiArrowFatLinesUp } from 'react-icons/pi';
+import { FaStripe } from 'react-icons/fa';
 
 const Navbar = ({ onMenu = true }: { onMenu?: boolean }) => {
   const path = usePathname();
@@ -54,7 +55,16 @@ const Navbar = ({ onMenu = true }: { onMenu?: boolean }) => {
         className={`fixed flex flex-col items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform  ${
           visible ? 'translate-y-0' : '-translate-y-full'
         } z-10`}>
-        <div className="w-full gap-10 bg-dark-800 flex p-3 xl:pb-6 xl:px-0 xl:pt-10 max-w-[1140px] px-5 justify-between duration-1000 items-center border-b-[1px] border-dark-500">
+        <div className="flex w-full justify-center items-center p-2 text-sm bg-dark-800 border-b-[1px] border-primary/50 ">
+          <span className="flex gap-2 items-center lg:text-lg tracking-widest">
+            ระบบใช้{' '}
+            <Link href="https://stripe.com" className="rounded underline">
+              stripe
+            </Link>{' '}
+            รักษาความปลอดภัยธุรกรรม
+          </span>
+        </div>
+        <div className="w-full gap-10 bg-dark-800 flex p-3 xl:py-3 xl:px-0 max-w-[1140px] px-5 justify-between duration-1000 items-center border-b-[1px] border-dark-500">
           <Link href="/" className="flex select-none items-center gap-1 w-fit">
             <Image
               width={100}

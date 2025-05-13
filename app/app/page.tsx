@@ -12,7 +12,7 @@ export const metadata = generateMetadata({
 });
 const page = () => {
   return (
-    <div className="flex flex-col justify-center w-full items-start px-5 xl:px-0 pt-20 xl:pt-32 __container">
+    <div className="flex flex-col justify-center w-full items-center px-5 xl:px-0 pt-20 xl:pt-32 my-10 __container">
       <div className="w-full px-5 xl:px-0 flex flex-col gap-3">
         <ShowPremiumApps />
       </div>

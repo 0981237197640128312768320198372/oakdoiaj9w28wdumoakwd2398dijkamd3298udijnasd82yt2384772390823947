@@ -15,6 +15,8 @@ import bay from '@/assets/images/bay.svg';
 import promptpay from '@/assets/images/promptpay.webp';
 import { FaStripe } from 'react-icons/fa';
 import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
+import Link from 'next/link';
+import { MdContentCopy, MdDownload } from 'react-icons/md';
 
 // Define the props interface
 interface PromptPayQRProps {
@@ -59,6 +61,13 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
         <div
           ref={divRef}
           className="bg-dark-700 p-5 border-[1px] border-primary flex flex-col justify-center items-center select-none rounded-xl">
+          <span className="flex w-full gap-1 items-center text-xs justify-center tracking-widest mb-5">
+            ระบบใช้{' '}
+            <Link href="https://stripe.com" className="rounded underline text-md">
+              stripe
+            </Link>{' '}
+            รักษาความปลอดภัยธุรกรรม
+          </span>
           <div className="flex flex-col justify-center items-center gap-5 p-5 w-fit rounded-xl bg-dark-600 border-[0.5px] border-dark-100">
             <div className="h-8 w-full gap-5 flex flex-row-reverse items-center justify-center">
               <FaStripe className="text-6xl" />
@@ -112,16 +121,17 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
           </p>
         </div>
       </div>
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between w-full mt-5">
         <button
-          onClick={() => handleDownload('PromptPayQR')}
-          className="mt-5 px-4 py-2 bg-primary text-black rounded-md">
+          onClick={() => handleDownload(`Deposit ${amount} Dokmai Coin`)}
+          className="bg-primary text-dark-800 font-aktivGroteskBold px-4 py-2 w-full hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50">
+          <MdDownload />
           Download QR
         </button>
         <button
           onClick={handleCopy}
-          className="mt-4 ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-          Copy QR
+          className="bg-dark-800 border-[1px] border-primary text-dark-800 font-aktivGroteskBold px-4 py-2 w-full hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50">
+          <MdContentCopy /> Copy QR
         </button>
       </div>
     </div>
