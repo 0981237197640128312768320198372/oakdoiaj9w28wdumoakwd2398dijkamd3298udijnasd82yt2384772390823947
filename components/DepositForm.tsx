@@ -127,7 +127,7 @@ const DepositForm = () => {
     setError('');
 
     try {
-      const email = `${cleanPersonalKey?.toLowerCase()}@dokmaistore.com`;
+      const email = `testing@dokmaistore.com`;
       const response = await fetch('/api/v2/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -121,16 +121,16 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
           </p>
         </div>
       </div>
-      <div className="flex justify-between w-full mt-5">
+      <div className="flex w-full mt-5">
         <button
           onClick={() => handleDownload(`Deposit ${amount} Dokmai Coin`)}
-          className="bg-primary text-dark-800 font-aktivGroteskBold px-4 py-2 w-full hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50">
+          className="bg-primary text-dark-800 font-aktivGroteskBold py-1 justify-center items-center w-full flex gap-2 hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50">
           <MdDownload />
           Download QR
         </button>
         <button
           onClick={handleCopy}
-          className="bg-dark-800 border-[1px] border-primary text-dark-800 font-aktivGroteskBold px-4 py-2 w-full hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50">
+          className="bg-dark-800 border-[1px] border-primary text-white-800 font-aktivGroteskBold py-1 justify-center items-center w-full flex gap-2 hover:text-dark-800 hover:bg-primary/90 active:bg-primary/80 disabled:bg-primary/50">
           <MdContentCopy /> Copy QR
         </button>
       </div>
