@@ -12,12 +12,31 @@ interface DataItem {
   horizontal?: string;
 }
 
+function getMostRecentSunday(date: Date): Date {
+  const day = date.getDay();
+  if (day === 0) {
+    return new Date(date);
+  } else {
+    const daysToSubtract = day;
+    const previousSunday = new Date(date);
+    previousSunday.setDate(date.getDate() - daysToSubtract);
+    return previousSunday;
+  }
+}
+
 export async function GET() {
   try {
+    const currentDate = new Date();
+    const recentSunday = getMostRecentSunday(currentDate);
+    const year = recentSunday.getFullYear();
+    const month = String(recentSunday.getMonth() + 1).padStart(2, '0');
+    const day = String(recentSunday.getDate()).padStart(2, '0');
+    const dateString = `${year}${month}${day}`;
+    console.log(dateString);
     const [dataRes, namesRes, boxartRes] = await Promise.all([
-      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250406-data.json'),
-      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250406-en-names.json'),
-      fetch('https://www.netflix.com/tudum/top10/data/weeks/20250406-th-boxart.json'),
+      fetch(`https://www.netflix.com/tudum/top10/data/weeks/${dateString}-data.json`),
+      fetch(`https://www.netflix.com/tudum/top10/data/weeks/${dateString}-en-names.json`),
+      fetch(`https://www.netflix.com/tudum/top10/data/weeks/${dateString}-th-boxart.json`),
     ]);
 
     const dataJson = await dataRes.json();
