@@ -38,7 +38,7 @@ export default function LoginSellerPage() {
 
       if (response.ok) {
         login(data.token);
-        router.push('/seller');
+        router.push('/');
       } else {
         setError(data.error || 'Invalid username or password');
       }
