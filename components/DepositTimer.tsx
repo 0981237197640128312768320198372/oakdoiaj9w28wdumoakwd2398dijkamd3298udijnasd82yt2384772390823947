@@ -31,24 +31,31 @@ const DepositTimer: React.FC<DepositTimerProps> = ({ seconds, onExpire }) => {
 
   // Determine color based on time left
   const getColor = () => {
-    if (percentage > 50) return 'bg-green-500';
-    if (percentage > 20) return 'bg-yellow-500';
+    if (percentage > 80) return 'bg-green-500';
+    if (percentage > 50) return 'bg-yellow-500';
+    if (percentage > 20) return 'bg-orange-500';
+    if (percentage > 10) return 'bg-rose-500';
     return 'bg-red-500';
   };
-
+  console.log(percentage);
   return (
     <div className="w-full mt-4 mb-2">
       <div className="flex justify-between mb-1 text-sm">
         <span>เวลาที่เหลือ</span>
-        <span className={percentage <= 20 ? 'text-red-500 font-medium' : ''}>{formattedTime}</span>
+        <span
+          className={
+            percentage <= 20 ? 'text-red-500 font-bold animate-bounce' : 'animate-pulse font-medium'
+          }>
+          {formattedTime}
+        </span>
       </div>
-      <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+      <div className={`w-full h-2 ${getColor()}/20 rounded-full overflow-hidden`}>
         <div
-          className={`h-full ${getColor()} transition-all duration-1000 ease-linear`}
+          className={`h-full ${getColor()} transition-all duration-1000 ease-linear rounded-full`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <p className="text-xs text-gray-400 mt-1">
+      <p className="text-xs text-dark-100 mt-1">
         QR Code จะหมดอายุเมื่อเวลาหมด โปรดชำระก่อนเวลาจะหมด
       </p>
     </div>

@@ -393,7 +393,7 @@ export default function RegisterForm() {
           {/* Login Link */}
           <div className="mt-6 text-center">
             <Link
-              href="/seller/auth/login"
+              href="/auth/login"
               className="inline-flex items-center gap-2 text-light-500 hover:text-light-100 text-sm transition-colors duration-300">
               <LogIn size={16} />
               Already have an account? Login here

@@ -82,7 +82,6 @@ const DepositForm: React.FC<DepositFormProps> = () => {
         error: (err as Error).message,
         loading: false,
       }));
-
       setErrorMessage((err as Error).message);
     }
   };
@@ -171,35 +170,12 @@ const DepositForm: React.FC<DepositFormProps> = () => {
     }
   }, [state.paymentIntentId]);
 
-  useEffect(() => {
-    if (state.timer > 0 && state.qrCodeData && state.status !== 'succeeded') {
-      const countdown = setInterval(() => {
-        setState((prev) => ({
-          ...prev,
-          timer: prev.timer - 1,
-        }));
-      }, 1000);
-
-      return () => clearInterval(countdown);
-    } else if (state.timer === 0 && state.status !== 'succeeded' && state.qrCodeData) {
-      setState((prev) => ({
-        ...prev,
-        status: 'failed',
-        qrCodeData: '',
-      }));
-
-      setErrorMessage('QR Code has expired. Please try again.');
-      setCurrentStep(0);
-    }
-  }, [state.timer, state.qrCodeData, state.status]);
-
   const handleQrExpired = () => {
     setState((prev) => ({
       ...prev,
       status: 'failed',
       qrCodeData: '',
     }));
-
     setErrorMessage('QR Code has expired. Please try again.');
     setCurrentStep(0);
   };

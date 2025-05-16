@@ -74,7 +74,7 @@ const SellerLoginPrompt = () => {
         Please log in to your seller account to access the dashboard.
       </p>
       <Link
-        href="/seller/auth/login"
+        href="/auth/login"
         className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 py-2 px-6 rounded-full transition-all duration-300">
         Login to Continue
       </Link>
