@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document, Types, models } from 'mongoose';
 
 interface IMonthlyStat {
   month: string;
@@ -46,4 +46,6 @@ const storeStatisticsSchema = new Schema<IStoreStatistics>({
   updatedAt: { type: Date, default: Date.now },
 });
 
-export const StoreStatistics = model<IStoreStatistics>('StoreStatistics', storeStatisticsSchema);
+// Use the existing model if it exists, otherwise create a new one
+export const StoreStatistics =
+  models.StoreStatistics || model<IStoreStatistics>('StoreStatistics', storeStatisticsSchema);
