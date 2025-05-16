@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, models } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 interface IContact {
@@ -58,7 +58,7 @@ const sellerSchema = new Schema<ISeller>(
       whatsapp: { type: String, default: null },
     },
     store: {
-      name: { type: String, required: true, index: true }, // Added index for store name searches
+      name: { type: String, required: true, index: true },
       description: { type: String, required: true },
       logoUrl: { type: String, default: null },
       rating: {
@@ -90,11 +90,11 @@ sellerSchema.pre('save', async function (next) {
   }
 });
 
-// Method to compare passwordsss
+// Method to compare passwords
 sellerSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-export const Seller = model<ISeller>('Seller', sellerSchema);
+export const Seller = models.Seller || model<ISeller>('Seller', sellerSchema);
