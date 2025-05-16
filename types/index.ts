@@ -27,3 +27,34 @@ export interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
 }
+
+export interface DepositFormProps {
+  // Add any props if needed
+}
+
+export interface PaymentStep {
+  id: number;
+  title: string;
+  description: string;
+}
+
+export interface DepositState {
+  personalKey: string;
+  amount: number;
+  qrCodeData: string;
+  paymentIntentId: string;
+  status: 'pending' | 'processing' | 'succeeded' | 'failed';
+  error: string;
+  timer: number;
+  bonusPercentage: number | string;
+  loading: boolean;
+}
+
+export interface SuccessData {
+  message: string;
+  personalKey: string;
+  depositAmount: number;
+  bonusAmount: number;
+  totalDepositAmount: number;
+  newBalance: number;
+}

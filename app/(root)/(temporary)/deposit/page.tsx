@@ -74,7 +74,7 @@ const page = () => {
   };
 
   return (
-    <div className="h-screen w-screen justify-center flex flex-col items-center __container">
+    <div className="min-h-screen w-screen justify-center flex flex-col items-center __container">
       {checkingLocalStorage && <Loading />}
       {!checkingLocalStorage && !personalKey && (
         <div className="w-full flex flex-col min-h-96 justify-center items-start h-full gap-10">
