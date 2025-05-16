@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     });
     await newStoreStatistics.save();
 
-    return NextResponse.json({ message: 'Seller registered successfully' }, { status: 201 });
+    return NextResponse.json({ message: 'Seller registered successfully ' }, { status: 201 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
