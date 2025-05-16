@@ -25,7 +25,7 @@ export default function Home() {
         <RecomendationsSection />
         <WeeklyTop10Section />
         <FAQSection />
-        <CreditsSection />
+        {/* <CreditsSection /> */}
         <ReviewSection />
       </HomeWrapper>
     </main>
