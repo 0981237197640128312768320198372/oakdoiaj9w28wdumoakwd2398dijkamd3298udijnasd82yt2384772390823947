@@ -29,20 +29,11 @@ interface ISeller extends Document {
   store: IStore;
   createdAt: Date;
   updatedAt: Date;
-  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 const sellerSchema = new Schema<ISeller>(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-      minlength: [3, 'Username must be at least 3 characters long'],
-      maxlength: [30, 'Username cannot exceed 30 characters'],
-      match: [/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'],
-    },
+    username: { type: String, required: true, unique: true, index: true },
     email: {
       type: String,
       required: true,
@@ -58,15 +49,10 @@ const sellerSchema = new Schema<ISeller>(
       whatsapp: { type: String, default: null },
     },
     store: {
-      name: { type: String, required: true, index: true }, // Added index for store name searches
+      name: { type: String, required: true },
       description: { type: String, required: true },
       logoUrl: { type: String, default: null },
-      rating: {
-        type: Number,
-        default: 0,
-        min: [0, 'Rating cannot be less than 0'],
-        max: [5, 'Rating cannot be more than 5'],
-      },
+      rating: { type: Number, default: 0 },
       credits: {
         positive: { type: Number, default: 0 },
         negative: { type: Number, default: 0 },
@@ -76,7 +62,7 @@ const sellerSchema = new Schema<ISeller>(
   { timestamps: true }
 );
 
-// Hash password before saving
+// Pre-save hook to hash password
 sellerSchema.pre('save', async function (next) {
   const seller = this as ISeller;
   if (!seller.isModified('password')) return next();
@@ -89,12 +75,5 @@ sellerSchema.pre('save', async function (next) {
     next(error as Error);
   }
 });
-
-// Method to compare passwords
-sellerSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
 
 export const Seller = model<ISeller>('Seller', sellerSchema);

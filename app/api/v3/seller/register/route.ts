@@ -1,57 +1,45 @@
-import { Schema, model, models } from 'mongoose';
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
+import { connectToDatabase } from '@/lib/db';
+import { Seller } from '@/models/v3/Seller';
+import { StoreStatistics } from '@/models/v3/StoreStatistics';
 
-interface IContact {
-  facebook?: string;
-  line?: string;
-  instagram?: string;
-  whatsapp?: string;
+export async function POST(req: NextRequest) {
+  try {
+    await connectToDatabase();
+
+    const body = await req.json();
+    const { username, email, password, contact, store } = body;
+
+    if (!username || !email || !password || !store?.name) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const existingSeller = await Seller.findOne({ email });
+    if (existingSeller) {
+      return NextResponse.json({ error: 'Seller already exists' }, { status: 400 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newSeller = new Seller({
+      username,
+      email,
+      password: hashedPassword,
+      contact,
+      store,
+    });
+
+    await newSeller.save();
+
+    const newStoreStatistics = new StoreStatistics({
+      sellerId: newSeller._id,
+    });
+    await newStoreStatistics.save();
+
+    return NextResponse.json({ message: 'Seller registered successfully' }, { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
 }
-
-interface IStoreCredits {
-  positive: number;
-  negative: number;
-}
-
-interface IStore {
-  name: string;
-  description: string;
-  logoUrl: string;
-  rating: number;
-  credits: IStoreCredits;
-}
-
-interface ISeller extends Document {
-  username: string;
-  email: string;
-  password: string;
-  contact: IContact;
-  store: IStore;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const sellerSchema = new Schema<ISeller>({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  contact: {
-    facebook: String,
-    line: String,
-    instagram: String,
-    whatsapp: String,
-  },
-  store: {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    logoUrl: { type: String },
-    rating: { type: Number, default: 0 },
-    credits: {
-      positive: { type: Number, default: 0 },
-      negative: { type: Number, default: 0 },
-    },
-  },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
-
-export const Seller = models.Seller || model<ISeller>('Seller', sellerSchema);
