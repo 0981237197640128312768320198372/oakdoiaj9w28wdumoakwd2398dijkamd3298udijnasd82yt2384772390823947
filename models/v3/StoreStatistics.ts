@@ -46,6 +46,5 @@ const storeStatisticsSchema = new Schema<IStoreStatistics>({
   updatedAt: { type: Date, default: Date.now },
 });
 
-// Use the existing model if it exists, otherwise create a new one
 export const StoreStatistics =
   models.StoreStatistics || model<IStoreStatistics>('StoreStatistics', storeStatisticsSchema);

@@ -90,7 +90,7 @@ sellerSchema.pre('save', async function (next) {
   }
 });
 
-// Method to compare passwords
+// Method to compare passwordsss
 sellerSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
