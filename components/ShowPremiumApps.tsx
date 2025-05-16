@@ -23,8 +23,8 @@ import SearchableDropdown from './SearchableDropdown';
 import dokmaicoin from '@/assets/images/dokmaicoin.gif';
 import dokmaioutline from '@/assets/images/dokmaioutline.png';
 import { TbUrgent } from 'react-icons/tb';
-import DepositModal from './DepositModal';
 import { FaPowerOff } from 'react-icons/fa';
+import { redirect } from 'next/navigation';
 
 interface PremiumApp {
   accessType?: string;
@@ -63,8 +63,6 @@ export const ShowPremiumApps = () => {
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedApp, setSelectedApp] = useState<PremiumApp | null>(null);
   const [problemDescription, setProblemDescription] = useState('');
-
-  const [showDepositModal, setShowDepositModal] = useState(false);
 
   const fetchEmails = async (email: string) => {
     setLoadingEmail(true);
@@ -272,6 +270,7 @@ export const ShowPremiumApps = () => {
       item.accessType?.toLowerCase().includes(searchQuery)
     );
   });
+
   const emailOptions = premiumData
     .filter((item: any) => item.accessType && item.accessType.includes('Family Access'))
     .map((item: any) => item.email)
@@ -352,7 +351,9 @@ export const ShowPremiumApps = () => {
       console.error('Error reporting problem:', error);
     }
   };
-
+  if (!checkingLocalStorage && !personalKey) {
+    redirect;
+  }
   return (
     <div className="w-full justify-center items-center">
       {checkingLocalStorage && <Loading />}
@@ -383,37 +384,41 @@ export const ShowPremiumApps = () => {
           </form>
         </div>
       )}
+
       {validatingPersonalKey && <Loading text="กำลังเช็คข้อมูลของคุณ..." />}
-      <div className="text-light-300 text-xs w-full justify-center items-center py-10">
-        <div className="flex flex-col lg:flex-row gap-10 ">
-          <div>
-            <h3 className="text-xl font-semibold mt-5">ทำไมต้องเก็บ Personal Key ให้ปลอดภัย?</h3>
-            <ul className="list-disc ml-6 text-light-500">
-              <li>
-                <strong>ง่ายและสะดวก:</strong> ไม่ต้องจำอีเมลหรือรหัสผ่านมากมาย แค่รหัส 8 หลัก
-                (ประกอบด้วยตัวอักษร 4 ตัว และตัวเลข 4 ตัว) คุณก็สามารถใช้งานได้เลย
-              </li>
-              <li>
-                <strong>ใช้ในการตรวจสอบตัวตน:</strong> ใช้รหัสนี้เพื่อเข้าถึงข้อมูลบัญชีแอปพรีเมียม
-                และดูรายละเอียดการซื้อของคุณ
-              </li>
-              <li>
-                <strong>เครื่องมือเข้าถึงพิเศษ:</strong>{' '}
-                ใช้รหัสนี้เพื่อรีเซ็ตรหัสผ่านของบัญชีแอปพรีเมียม ซื้อแอปพรีเมียมเพิ่มเติม
-                และเข้าถึงยอด <strong>Dokmai Coin</strong> ของคุณ
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mt-4">สิ่งที่ควรจำเกี่ยวกับ Personal Key</h3>
-            <p>โปรดเก็บรักษารหัสนี้เป็นความลับ! หากมีใครได้รู้รหัสของคุณ พวกเขาจะสามารถ:</p>
-            <ul className="list-disc ml-6 text-light-500">
-              <li>ดูข้อมูลบัญชีแอปพรีเมียมที่คุณซื้อ</li>
-              <li>เข้าถึงยอด Dokmai Coin และข้อมูลสำคัญอื่นๆ ในบัญชีของคุณ</li>
-            </ul>
+      {checkingLocalStorage && !validatingPersonalKey && !fetchingData && (
+        <div className="text-light-300 text-xs w-full justify-center items-center py-10">
+          <div className="flex flex-col lg:flex-row gap-10 ">
+            <div>
+              <h3 className="text-xl font-semibold mt-5">ทำไมต้องเก็บ Personal Key ให้ปลอดภัย?</h3>
+              <ul className="list-disc ml-6 text-light-500">
+                <li>
+                  <strong>ง่ายและสะดวก:</strong> ไม่ต้องจำอีเมลหรือรหัสผ่านมากมาย แค่รหัส 8 หลัก
+                  (ประกอบด้วยตัวอักษร 4 ตัว และตัวเลข 4 ตัว) คุณก็สามารถใช้งานได้เลย
+                </li>
+                <li>
+                  <strong>ใช้ในการตรวจสอบตัวตน:</strong>{' '}
+                  ใช้รหัสนี้เพื่อเข้าถึงข้อมูลบัญชีแอปพรีเมียม และดูรายละเอียดการซื้อของคุณ
+                </li>
+                <li>
+                  <strong>เครื่องมือเข้าถึงพิเศษ:</strong>{' '}
+                  ใช้รหัสนี้เพื่อรีเซ็ตรหัสผ่านของบัญชีแอปพรีเมียม ซื้อแอปพรีเมียมเพิ่มเติม
+                  และเข้าถึงยอด <strong>Dokmai Coin</strong> ของคุณ
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mt-4">สิ่งที่ควรจำเกี่ยวกับ Personal Key</h3>
+              <p>โปรดเก็บรักษารหัสนี้เป็นความลับ! หากมีใครได้รู้รหัสของคุณ พวกเขาจะสามารถ:</p>
+              <ul className="list-disc ml-6 text-light-500">
+                <li>ดูข้อมูลบัญชีแอปพรีเมียมที่คุณซื้อ</li>
+                <li>เข้าถึงยอด Dokmai Coin และข้อมูลสำคัญอื่นๆ ในบัญชีของคุณ</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       {!checkingLocalStorage && !validatingPersonalKey && userInfo && (
         <div className="flex gap-5 lg:gap-10 flex-col lg:flex-row">
           <div
@@ -447,9 +452,6 @@ export const ShowPremiumApps = () => {
                   </span>
                 </div>
                 <Link
-                  // onClick={() => {
-                  //   setShowDepositModal(true);
-                  // }}
                   href="/deposit"
                   className="flex gap-2 items-center bg-primary text-xs hover:bg-primary/90 text-dark-800 rounded p-1 z-30 font-bold">
                   <PiWallet className="w-5 h-5 " />
@@ -460,9 +462,7 @@ export const ShowPremiumApps = () => {
                 {accountBadge(userInfo.badge)}
                 <div className="flex gap-2 items-center mt-1">
                   <FaUserLock className="w-8 h-8 text-white p-2 bg-white/10 rounded-lg mr-1" />
-                  <p className="text-lg select-none">
-                    <ShowHideText text={userInfo.personalKey} />
-                  </p>
+                  <ShowHideText text={userInfo.personalKey} />
                 </div>
               </div>
               <div className="w-full flex justify-end">
@@ -743,7 +743,6 @@ export const ShowPremiumApps = () => {
           </p>
         </div>
       )}
-      {showDepositModal && <DepositModal />}
     </div>
   );
 };

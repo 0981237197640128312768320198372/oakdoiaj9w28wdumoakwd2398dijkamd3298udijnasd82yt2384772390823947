@@ -103,7 +103,8 @@ const BotControl = () => {
   };
   const actionExplanations: { [key: string]: string } = {
     massStop: 'This will stop all bots. Are you sure?',
-    massStartCreating: 'This will start all bots in creating mode. Are you sure?',
+    massStartCreateGenerate: 'This will start all bots in creating mode. Are you sure?',
+    massStartCreate: 'This will start all bots in creating mode. Are you sure?',
     massStartChecking: 'This will start all bots in checking mode. Are you sure?',
     massRestart: 'This will restart all bots. Are you sure?',
   };
@@ -119,8 +120,11 @@ const BotControl = () => {
         case 'massStop':
           massStop();
           break;
-        case 'massStartCreating':
-          massStartCreating();
+        case 'massStartCreateGenerate':
+          massStartCreateGenerate();
+          break;
+        case 'massStartCreate':
+          massStartCreate();
           break;
         case 'massStartChecking':
           massStartChecking();
@@ -140,13 +144,17 @@ const BotControl = () => {
     bots.forEach((bot) => setBotState(bot.botId, 'stopped'));
   };
 
-  const massStartCreating = () => {
+  const massStartCreateGenerate = () => {
     bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen', '--ibangen']));
+  };
+  const massStartCreate = () => {
+    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen']));
   };
 
   const massStartChecking = () => {
     bots.forEach((bot) => setBotState(bot.botId, 'running', ['--checking']));
   };
+
   const massRestart = () => {
     bots.forEach((bot) => {
       setBotState(bot.botId, 'stopped');
@@ -164,6 +172,7 @@ const BotControl = () => {
     const interval = setInterval(fetchBotData, 60000 * 5);
     return () => clearInterval(interval);
   }, []);
+
   const totalBots = bots.length;
   const runningBots = bots.filter((bot) => bot.botState === 'running').length;
   const stoppedBots = bots.filter((bot) => bot.botState === 'stopped').length;
@@ -269,9 +278,14 @@ const BotControl = () => {
                 Stop
               </button>
               <button
-                onClick={() => handleMassAction('massStartCreating')}
+                onClick={() => handleMassAction('massStartCreateGenerate')}
                 className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
                 Create (Generate Data)
+              </button>
+              <button
+                onClick={() => handleMassAction('massStartCreate')}
+                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                Create
               </button>
               <button
                 disabled
@@ -319,6 +333,11 @@ const BotControl = () => {
                 <div className="mt-5 flex gap-2">
                   {bot.botState === 'stopped' || bot.botState === 'idle' ? (
                     <>
+                      <button
+                        onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
+                        className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
+                        Create
+                      </button>
                       <button
                         onClick={() =>
                           setBotState(bot.botId, 'running', ['--mailgen', '--ibangen'])

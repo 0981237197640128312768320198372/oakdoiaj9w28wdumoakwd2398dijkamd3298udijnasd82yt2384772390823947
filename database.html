@@ -31,24 +31,24 @@
         margin-left: 20px; /* Indent nested lists */
       }
     </style>
+    <link rel="icon" href="https://dokmaistore.com/icons/favicon.png" />
   </head>
   <body>
     <h1>Database Design</h1>
     <div class="collection">
-      <h2>Users Collection</h2>
+      <h2>Sellers Collection</h2>
       <ul>
         <li><strong>_id</strong>: ObjectId</li>
         <li><strong>username</strong>: String</li>
         <li><strong>email</strong>: String</li>
-        <li><strong>password</strong>: String (unhashed)</li>
-        <li><strong>roles</strong>: Array of Strings (e.g., ['buyer', 'seller'])</li>
+        <li><strong>password</strong>: String</li>
         <li>
           <strong>contact</strong>: Object
           <ul>
-            <li><strong>whatsapp</strong>: String (optional)</li>
-            <li><strong>line</strong>: String (optional)</li>
-            <li><strong>facebook</strong>: String (optional)</li>
+            <li><strong>facebook</strong>: String</li>
+            <li><strong>line</strong>: String</li>
             <li><strong>instagram</strong>: String (optional)</li>
+            <li><strong>whatsapp</strong>: String (optional)</li>
             <li>
               <strong>constraint</strong>: At least one of whatsapp, line, facebook, or instagram is
               required
@@ -56,9 +56,9 @@
           </ul>
         </li>
         <li>
-          <strong>shop</strong>: Object (for sellers)
+          <strong>store</strong>: Object
           <ul>
-            <li><strong>name</strong>: String (required for sellers)</li>
+            <li><strong>name</strong>: String</li>
             <li><strong>description</strong>: String</li>
             <li><strong>logoUrl</strong>: String</li>
             <li><strong>rating</strong>: Number (e.g., 4.5 out of 5)</li>
@@ -81,6 +81,7 @@
         <li><strong>_id</strong>: ObjectId</li>
         <li><strong>title</strong>: String</li>
         <li><strong>description</strong>: String</li>
+        <li><strong>stock</strong>: Number</li>
         <li>
           <strong>type</strong>: String (e.g., 'text', 'account', 'link', 'license', 'course', or
           any custom type)
@@ -99,7 +100,7 @@
             </li>
           </ul>
         </li>
-        <li><strong>sellerId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>sellerId</strong>: ObjectId (reference to Seller)</li>
         <li><strong>categoryId</strong>: ObjectId (reference to Categories)</li>
         <li><strong>price</strong>: Number</li>
         <li><strong>images</strong>: Array of Strings</li>
@@ -128,21 +129,29 @@
           <strong>balanceType</strong>: String (e.g., 'wallet' for buyers, 'earnings' for sellers)
         </li>
         <li><strong>amount</strong>: Number</li>
-        <li><strong>currency</strong>: String (e.g., 'USD')</li>
         <li><strong>lastUpdated</strong>: Date</li>
       </ul>
     </div>
     <div class="collection">
-      <h2>ShopStatistics Collection</h2>
+      <h2>StoreStatistics Collection</h2>
       <ul>
         <li><strong>_id</strong>: ObjectId</li>
         <li><strong>sellerId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>totalProducts</strong>: Number</li>
         <li><strong>totalSales</strong>: Number</li>
         <li><strong>totalRevenue</strong>: Number</li>
         <li>
           <strong>monthlyStats</strong>: Array of Objects
           <ul>
             <li><strong>month</strong>: String (e.g., '2024-09')</li>
+            <li><strong>sales</strong>: Number</li>
+            <li><strong>revenue</strong>: Number</li>
+          </ul>
+        </li>
+        <li>
+          <strong>dailyStats</strong>: Array of Objects
+          <ul>
+            <li><strong>day</strong>: String (e.g., '2024-09-11')</li>
             <li><strong>sales</strong>: Number</li>
             <li><strong>revenue</strong>: Number</li>
           </ul>
@@ -156,23 +165,24 @@
       <ul>
         <li><strong>_id</strong>: ObjectId</li>
         <li><strong>productId</strong>: ObjectId (reference to Products)</li>
-        <li><strong>userId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>sellerId</strong>: ObjectId (reference to seller)</li>
+        <li><strong>userId</strong>: ObjectId (reference to user who review it)</li>
         <li><strong>rating</strong>: Number (1 to 5)</li>
         <li><strong>comment</strong>: String</li>
         <li><strong>createdAt</strong>: Date</li>
       </ul>
     </div>
     <div class="collection">
-      <h2>ShopCredits Collection</h2>
+      <h2>StoreCredits Collection</h2>
       <ul>
         <li><strong>_id</strong>: ObjectId</li>
-        <li><strong>shopId</strong>: ObjectId (reference to Users)</li>
+        <li><strong>storeId</strong>: ObjectId (reference to Users)</li>
         <li><strong>buyerId</strong>: ObjectId (reference to Users)</li>
         <li><strong>creditType</strong>: String ('positive' or 'negative')</li>
         <li><strong>createdAt</strong>: Date</li>
         <li>
-          <strong>constraints</strong>: Unique index on (shopId, buyerId) to ensure one credit per
-          buyer per shop
+          <strong>constraints</strong>: Unique index on (storeId, buyerId) to ensure one credit per
+          buyer per store
         </li>
       </ul>
     </div>

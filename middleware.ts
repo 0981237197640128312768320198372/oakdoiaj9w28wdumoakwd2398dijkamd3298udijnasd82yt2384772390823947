@@ -5,15 +5,6 @@ interface GeoRequest extends NextRequest {
 }
 
 export async function middleware(req: GeoRequest) {
-  const userAgent = req.headers.get('user-agent') || '';
-  const allowedUserAgent =
-    'Mozilla/5.0 (Windows NT 10.0; WOW64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.6666.666 Safari/537.36';
-  const isAllowedUserAgent = userAgent === allowedUserAgent;
-
-  if (isAllowedUserAgent) {
-    return NextResponse.next();
-  }
-
   const acceptLanguage = req.headers.get('accept-language') || '';
   const browserLanguage = acceptLanguage.split(',')[0];
   const isRestrictedLanguage = browserLanguage.startsWith('id');
@@ -21,10 +12,14 @@ export async function middleware(req: GeoRequest) {
   const isRestrictedCountry = userCountry === 'ID';
 
   if (isRestrictedLanguage || isRestrictedCountry) {
-    return new Response(null, { status: 404, headers: { 'Content-Type': 'text/html' } });
+    return new Response('Access restricted due to region or language', {
+      status: 403,
+      headers: { 'Content-Type': 'text/plain' },
+    });
   }
 
   const hostname = req.headers.get('host')?.toLowerCase();
+  const subdomain = hostname?.split('.')[0];
   const path = req.nextUrl.pathname;
 
   if (
@@ -44,24 +39,36 @@ export async function middleware(req: GeoRequest) {
     hostname?.endsWith('dokmaistore.com') &&
     path.startsWith('/admin')
   ) {
-    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
+    return new Response('Admin access restricted', {
+      status: 403,
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
+
+  if (hostname?.endsWith('.dokmai.store') && subdomain !== 'www') {
+    return NextResponse.rewrite(new URL(`/seller/${subdomain}`, req.url));
   }
 
   if (
-    hostname !== 'app.dokmaistore.com' &&
+    hostname !== 'seller.dokmaistore.com' &&
     !hostname?.includes('localhost') &&
     hostname?.endsWith('dokmaistore.com') &&
-    path.startsWith('/app')
+    path.startsWith('/seller')
   ) {
     return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
   }
 
-  if (hostname === 'admin.dokmaistore.com') {
-    return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
-  }
-
   if (hostname === 'app.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/app${path}`, req.url));
+  }
+
+  // Rewrite seller.dokmaistore.com to /seller (new setup)
+  if (hostname === 'seller.dokmaistore.com') {
+    return NextResponse.rewrite(new URL(`/seller${path}`, req.url));
+  }
+
+  if (hostname === 'admin.dokmaistore.com') {
+    return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
   }
 
   if (hostname?.includes('localhost') && (path.startsWith('/admin') || path.startsWith('/app'))) {

@@ -8,7 +8,7 @@ import LoadingAnimation from '@/components/Loading';
 interface AuthData {
   username: string;
   name: string;
-  role: 'admin' | 'staff';
+  // role: 'admin' | 'staff';
   expiration: number;
   token: string;
 }
@@ -24,12 +24,12 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
 
   const validateAuth = (authData: AuthData): boolean => {
     const now = new Date().getTime();
-    return authData.expiration > now && authData.role !== undefined && authData.token.length > 0;
+    return authData.expiration > now && authData.token.length > 0;
   };
 
   useEffect(() => {
     const authData = localStorage.getItem('auth');
-
+    console.log('authData: \n', authData);
     if (authData) {
       try {
         const parsedAuth: AuthData = JSON.parse(authData);
@@ -37,13 +37,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         if (validateAuth(parsedAuth)) {
           const currentPath = window.location.pathname;
 
-          if (parsedAuth.role === 'admin' && currentPath.startsWith('/staff')) {
-            router.replace('/');
-          } else if (parsedAuth.role === 'staff' && currentPath.startsWith('/')) {
-            router.replace('/staff');
-          } else {
-            setAuthenticated(true);
-          }
+          setAuthenticated(true);
         } else {
           localStorage.removeItem('auth');
         }
@@ -82,8 +76,7 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         }
         return;
       }
-
-      const data: { role: 'admin' | 'staff'; name: string; token: string } = await response.json();
+      const data: { name: string; token: string } = await response.json();
 
       const expiration = new Date().getTime() + EXPIRATION_TIME;
       localStorage.setItem(
@@ -91,23 +84,16 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         JSON.stringify({
           username,
           name: data.name,
-          role: data.role,
+          // role: data.role,
           expiration,
           token: data.token,
         })
       );
-
-      if (data.role === 'admin') {
-        setAuthenticated(true);
-      } else if (data.role === 'staff') {
-        router.push('/staff');
-      }
     } catch (err) {
       console.error(err);
       setError('An error occurred. Please try again later.');
     } finally {
       setIsSubmitting(false);
-
       window.location.reload();
     }
   };

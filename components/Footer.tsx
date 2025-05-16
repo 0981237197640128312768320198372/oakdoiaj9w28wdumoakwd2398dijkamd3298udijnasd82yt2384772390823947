@@ -35,7 +35,7 @@ const contact = [
 
 const Footer = () => {
   return (
-    <footer className="flex justify-center items-center w-full z-50">
+    <footer className="flex justify-center items-center w-full z-50 bg-dark-800 text-light-100">
       <div className="flex w-ful flex-col justify-center __container items-center px-0 ">
         <div className="flex w-full flex-col lg:justify-between lg:flex-row gap-5 bg-dark-600/30 py-5 mt-24 px-5">
           <div className="flex flex-col gap-3">

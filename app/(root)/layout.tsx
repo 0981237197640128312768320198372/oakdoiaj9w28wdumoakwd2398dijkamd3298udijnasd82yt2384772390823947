@@ -5,6 +5,14 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Analytics } from '@vercel/analytics/react';
 import { CartProvider } from '@/context/CartContext';
+import { generateMetadata } from '@/lib/utils';
+
+export const metadata = generateMetadata({
+  title: '',
+  iconUrl: '/icons/favicon.png',
+  manifest: 'manifest.json',
+  url: 'https://dokmaistore.com',
+});
 
 export default function RootLayout({
   children,
@@ -26,10 +34,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/10 selection:text-primary">
+      <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/50  selection:text-primary">
         <CartProvider>
           <Navbar />
-          <div className="flex flex-col justify-start items-center w-full min-h-screen py-20">
+          <div className="flex flex-col justify-start items-center w-full min-h-screen py-20 bg-dark-800">
             {children}
             <Analytics />
           </div>

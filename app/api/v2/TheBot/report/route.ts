@@ -4,7 +4,6 @@ import { connectToDatabase } from '@/lib/db';
 import { TheBot } from '@/models/TheBot';
 import mongoose from 'mongoose';
 
-// Define the type for bot activity
 interface Activity {
   _id: mongoose.Types.ObjectId;
   timestamp: Date;
@@ -17,7 +16,6 @@ interface Activity {
   error?: string;
 }
 
-// Define the type for the bot document
 interface Bot {
   botId: string;
   botState: string;
@@ -34,8 +32,6 @@ const cleanOldActivities = async () => {
         $pull: {
           activity: {
             timestamp: { $lt: fortyEightHoursAgo },
-            type: 'dokmai-bot',
-            status: { $ne: 'success' },
           },
         },
       }

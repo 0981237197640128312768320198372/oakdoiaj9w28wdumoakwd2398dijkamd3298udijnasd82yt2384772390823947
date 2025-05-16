@@ -93,25 +93,22 @@ const DepositForm = () => {
       setLoading(false);
     }
   };
-
-  {
-    successMessage && (
-      <div className="fixed inset-0 h-screen w-screen bg-dark-800/80 backdrop-blur top-0 right-0 z-40 flex flex-col justify-center items-center rounded shadow">
-        <div className="w-fit p-5 bg-dark-700 border-[1px] border-dark-600 rounded-sm">
-          <div className="flex flex-col w-full">
-            {successMessage}
-            <button
-              onClick={() => {
-                setSuccessMessage(null);
-              }}
-              className="self-end bg-red-500 font-aktivGroteskBold hover:bg-red-500/90 active:bg-red-500/80 py-1 px-2 text-dark-800">
-              Close
-            </button>
-          </div>
+  successMessage && (
+    <div className="fixed inset-0 h-screen w-screen bg-dark-800/80 backdrop-blur top-0 right-0 z-40 flex flex-col justify-center items-center rounded shadow">
+      <div className="w-fit p-5 bg-dark-700 border-[1px] border-dark-600 rounded-sm">
+        <div className="flex flex-col w-full">
+          {successMessage}
+          <button
+            onClick={() => {
+              setSuccessMessage(null);
+            }}
+            className="self-end bg-red-500 font-aktivGroteskBold hover:bg-red-500/90 active:bg-red-500/80 py-1 px-2 text-dark-800">
+            Close
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 
   {
     errorMessage && (
@@ -196,9 +193,9 @@ const DepositForm = () => {
               />
               <Input
                 type="number"
-                value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
-                placeholder="Enter amount in THB"
+                placeholder="Minimum 10 Dokmai Coin"
+                min={10}
                 className="focus:outline-none focus:ring-0 border-0"
               />
             </div>

@@ -26,7 +26,7 @@ export const navButtons = [
   },
   {
     title: 'App Dokmai Store',
-    url: 'https://app.dokmaistore.com',
+    url: '/your-premium-apps',
   },
 ];
 export const footerButton = [

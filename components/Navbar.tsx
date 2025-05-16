@@ -14,7 +14,6 @@ import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { navButtons } from '@/constant';
 import { TbReload } from 'react-icons/tb';
 import { PiArrowFatLinesUp } from 'react-icons/pi';
-import { FaStripe } from 'react-icons/fa';
 
 const Navbar = ({ onMenu = true }: { onMenu?: boolean }) => {
   const path = usePathname();

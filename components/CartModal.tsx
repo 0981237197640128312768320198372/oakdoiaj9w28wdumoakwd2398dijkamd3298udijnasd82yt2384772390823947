@@ -23,8 +23,6 @@ const CartModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
 
   if (!isOpen) return null;
   const isAppDomain = window.location.hostname === 'app.dokmaistore.com';
-  // console.log('aowkoakowa', isAppDomain);
-  // console.log('aowkoakowa', window.location.hostname);
   const handleCheckout = async () => {
     const personalKey = localStorage.getItem('personalKey');
 
@@ -115,7 +113,7 @@ const CartModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
         </div>
         <div className="w-full flex justify-between items-end text-xs">
           <Link
-            href="https://app.dokmaistore.com"
+            href="/your-premium-apps"
             target="blank"
             className="text-primary px-2 py-1 font-aktivGroteskRegular rounded border-[0.7px] border-primary">
             ดูบัญชีที่สั่งซื้อทั้งหมด

@@ -25,7 +25,6 @@ const AdminPageContent = () => {
 
   const authData = JSON.parse(localStorage.getItem('auth') || '{}');
   const userName = authData.name || 'You';
-
   const sections: Record<string, JSX.Element> = {
     StatisticCards: <StatisticCards />,
     Statistics: <Statistics />,
