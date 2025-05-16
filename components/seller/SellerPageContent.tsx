@@ -16,7 +16,6 @@ const SellerPageContent = () => {
   const { activeView } = useSellerDashboard();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayedView, setDisplayedView] = useState(activeView);
-
   // Handle smooth transitions between views
   useEffect(() => {
     if (activeView !== displayedView) {
@@ -48,7 +47,6 @@ const SellerPageContent = () => {
         return <SellerInfo />;
     }
   };
-
   return (
     <>
       <SellerNavbar />

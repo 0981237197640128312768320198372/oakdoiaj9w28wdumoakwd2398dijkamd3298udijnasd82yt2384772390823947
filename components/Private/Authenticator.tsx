@@ -8,7 +8,6 @@ import LoadingAnimation from '@/components/Loading';
 interface AuthData {
   username: string;
   name: string;
-  // role: 'admin' | 'staff';
   expiration: number;
   token: string;
 }
