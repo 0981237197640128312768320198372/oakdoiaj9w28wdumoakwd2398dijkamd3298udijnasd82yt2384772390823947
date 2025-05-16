@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image';
-import dokmaicoin from '@/assets/images/dokmaicoin.gif';
+import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
 
 const LoadingAnimation = ({ text }: { text?: string }) => {
   return (
