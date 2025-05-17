@@ -156,7 +156,12 @@ const AccountList = () => {
 
   const handleCopyAll = () => {
     const allText = accounts
-      .map((account) => `${account.email}\t${account.password}\t${formatTime(account.createdAt)}`)
+      .map(
+        (account) =>
+          `${account.email}\t${account.password}\t${account.status}\t${formatTime(
+            account.createdAt
+          )}`
+      )
       .join('\n');
     copyToClipboard(allText);
   };
