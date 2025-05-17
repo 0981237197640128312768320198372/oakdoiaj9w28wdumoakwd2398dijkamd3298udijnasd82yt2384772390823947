@@ -12,6 +12,7 @@ export async function middleware(req: GeoRequest) {
   const isRestrictedCountry = userCountry === 'ID';
   const isApiRoute = req.nextUrl.pathname.startsWith('/api');
 
+  // Handle preflight OPTIONS requests for API routes
   if (req.method === 'OPTIONS' && isApiRoute) {
     const response = new NextResponse(null, { status: 200 });
     response.headers.set('Access-Control-Allow-Origin', 'https://seller.dokmaistore.com');
@@ -20,6 +21,7 @@ export async function middleware(req: GeoRequest) {
     return response;
   }
 
+  // Set CORS headers for API routes
   if (isApiRoute) {
     const response = NextResponse.next();
     response.headers.set('Access-Control-Allow-Origin', 'https://seller.dokmaistore.com');
@@ -28,13 +30,7 @@ export async function middleware(req: GeoRequest) {
     return response;
   }
 
-  if (isRestrictedLanguage || isRestrictedCountry) {
-    return new Response('Access restricted due to region or language', {
-      status: 403,
-      headers: { 'Content-Type': 'text/plain' },
-    });
-  }
-
+  // Existing access restriction logic
   if (isRestrictedLanguage || isRestrictedCountry) {
     return new Response('Access restricted due to region or language', {
       status: 403,
@@ -102,5 +98,5 @@ export async function middleware(req: GeoRequest) {
 }
 
 export const config = {
-  matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  matcher: '/((?!_next/static|_next/image|favicon.ico).*)',
 };
