@@ -24,15 +24,36 @@ export const useProducts = (sellerId?: string) => {
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
+  // Dynamically determine the API URL
+  const getApiUrl = () => {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      // If we're on a subdomain like seller.dokmaistore.com
+      if (hostname.includes('seller.') || hostname.startsWith('seller.')) {
+        // Use the current origin (protocol + hostname + port)
+        return window.location.origin;
+      }
+      // Otherwise use the environment variable or fallback
+      return process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
+    }
+    return process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
+  };
+
+  const [apiUrl, setApiUrl] = useState<string>('');
+
+  useEffect(() => {
+    setApiUrl(getApiUrl());
+  }, []);
+
   const fetchProducts = async () => {
-    if (!sellerId) return;
+    if (!sellerId || !apiUrl) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/products`, {
+      const response = await fetch(`${apiUrl}/api/v3/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,8 +73,10 @@ export const useProducts = (sellerId?: string) => {
   };
 
   const fetchCategories = async () => {
+    if (!apiUrl) return;
+
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/categories`);
+      const response = await fetch(`${apiUrl}/api/v3/categories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories);
@@ -101,7 +124,7 @@ export const useProducts = (sellerId?: string) => {
   };
 
   const addProduct = async (): Promise<boolean> => {
-    if (!validateForm()) {
+    if (!validateForm() || !apiUrl) {
       return false;
     }
 
@@ -111,7 +134,7 @@ export const useProducts = (sellerId?: string) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/products`, {
+      const response = await fetch(`${apiUrl}/api/v3/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,21 +161,20 @@ export const useProducts = (sellerId?: string) => {
     }
   };
   const deleteProduct = async (productId: string): Promise<boolean> => {
+    if (!apiUrl) return false;
+
     setIsLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v3/products?id=${productId}`,
-        {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${apiUrl}/api/v3/products?id=${productId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         setSuccess('Product deleted successfully');
@@ -188,11 +210,11 @@ export const useProducts = (sellerId?: string) => {
   };
 
   useEffect(() => {
-    if (sellerId) {
+    if (sellerId && apiUrl) {
       fetchProducts();
+      fetchCategories();
     }
-    fetchCategories();
-  }, [sellerId]);
+  }, [sellerId, apiUrl]);
 
   return {
     products,
