@@ -10,7 +10,7 @@ interface ICategory extends Document {
 const categorySchema = new Schema<ICategory>({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  logoUrl: { type: String, required: true },
+  logoUrl: { type: String },
   parentId: { type: Schema.Types.ObjectId, ref: 'Category' },
 });
 

@@ -58,3 +58,35 @@ export interface SuccessData {
   totalDepositAmount: number;
   newBalance: number;
 }
+
+export interface Product {
+  _id: string;
+  title: string;
+  description: string;
+  stock: number;
+  type: string;
+  categoryId: string;
+  price: number;
+  images: string[];
+  status: 'active' | 'draft';
+}
+
+export interface Category {
+  _id: string;
+  name: string;
+}
+
+export interface ProductFormData {
+  title: string;
+  description: string;
+  stock: number;
+  type: string;
+  categoryId: string;
+  price: number;
+  images: string[];
+  status: 'active' | 'draft';
+}
+
+export type FormErrors = {
+  [key in keyof ProductFormData]?: string;
+};

@@ -39,7 +39,17 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'plus.unsplash.com',
+        hostname: 'placehold.co',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: '6qf4kgcbit1ipocg.public.blob.vercel-storage.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dokmaistore.com',
         pathname: '**',
       },
     ],

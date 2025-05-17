@@ -3,6 +3,7 @@
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Metadata } from 'next';
+import { put } from '@vercel/blob';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -209,3 +210,10 @@ export const getAdminToken = () => {
     return null;
   }
 };
+
+export async function uploadImage(file: File): Promise<string> {
+  const { url } = await put(`images/${file.name}`, file, {
+    access: 'public',
+  });
+  return url;
+}

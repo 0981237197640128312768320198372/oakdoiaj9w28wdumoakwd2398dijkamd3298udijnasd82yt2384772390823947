@@ -5,11 +5,11 @@ import { useSellerDashboard } from '@/context/SellerDashboardContext';
 import React, { useState, useEffect } from 'react';
 import SellerInfo from './SellerInfo';
 import SellerNavbar from './SellerNavbar';
-import SellerProducts from './SellerProducts';
 import SellerOrders from './SellerOrders';
 import SellerAnalytics from './SellerAnalytics';
 import { UserPlus } from 'lucide-react';
 import Link from 'next/link';
+import SellerProducts from './product/SellerProducts';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();
@@ -28,7 +28,6 @@ const SellerPageContent = () => {
     }
   }, [activeView, displayedView]);
 
-  // Render the active component based on the selected view
   const renderActiveComponent = () => {
     if (!seller) {
       return <SellerLoginPrompt />;
@@ -38,7 +37,9 @@ const SellerPageContent = () => {
       case 'profile':
         return <SellerInfo />;
       case 'products':
-        return <SellerProducts />;
+        return (
+          <SellerProducts seller={seller ? { id: seller._id, name: seller.store.name } : null} />
+        );
       case 'orders':
         return <SellerOrders />;
       case 'analytics':

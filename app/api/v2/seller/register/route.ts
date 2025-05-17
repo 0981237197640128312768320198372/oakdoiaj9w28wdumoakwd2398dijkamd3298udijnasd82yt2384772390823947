@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     });
     await newSeller.save();
     const token = jwt.sign(
-      { userId: newSeller._id, username: newSeller.username, roles: ['seller'] },
+      { userId: newSeller._id, username: newSeller.username },
       process.env.JWT_SECRET as string,
       { expiresIn: '6h' }
     );
