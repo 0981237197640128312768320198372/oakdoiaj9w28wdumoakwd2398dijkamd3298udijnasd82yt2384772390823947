@@ -32,7 +32,7 @@ export const useProducts = (sellerId?: string) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/v3/products', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +53,7 @@ export const useProducts = (sellerId?: string) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/v3/categories');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/categories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories);
@@ -111,7 +111,7 @@ export const useProducts = (sellerId?: string) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/v3/products', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -144,12 +144,15 @@ export const useProducts = (sellerId?: string) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`/api/v3/products?id=${productId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v3/products?id=${productId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         setSuccess('Product deleted successfully');
