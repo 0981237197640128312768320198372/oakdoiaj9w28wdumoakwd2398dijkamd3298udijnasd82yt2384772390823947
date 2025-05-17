@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { X, Upload, AlertTriangle, Check } from 'lucide-react';
 import { ProductFormData, Category, FormErrors } from '@/types';
 import Image from 'next/image';
@@ -38,20 +38,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [isSellerDomain, setIsSellerDomain] = useState('');
-
-  useEffect(() => {
-    if (process) {
-      setIsSellerDomain(window.location.host);
-    }
-  }, []);
-
-  console.log('awikwokwikwok', `${isSellerDomain}/api/v3/upload-image`);
   async function uploadImages(files: File[]): Promise<string[]> {
     const formData = new FormData();
     files.forEach((file) => formData.append('images', file));
 
-    const response = await fetch(`${isSellerDomain}/api/v3/upload-image`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v3/upload-image`, {
       method: 'POST',
       body: formData,
     });
