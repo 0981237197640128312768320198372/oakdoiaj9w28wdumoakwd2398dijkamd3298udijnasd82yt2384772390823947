@@ -1,25 +1,9 @@
-import React, { useState, useCallback, useRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+'use client';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { X, Upload, AlertTriangle, Check } from 'lucide-react';
 import { ProductFormData, Category, FormErrors } from '@/types';
 import Image from 'next/image';
-
-// Utility function to upload images (assumes an API endpoint)
-async function uploadImages(files: File[]): Promise<string[]> {
-  const formData = new FormData();
-  files.forEach((file) => formData.append('images', file));
-
-  const response = await fetch('/api/v3/upload-image', {
-    method: 'POST',
-    body: formData,
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to upload images');
-  }
-
-  const data = await response.json();
-  return data.urls; // Expecting { urls: string[] } from the API
-}
 
 interface ProductFormProps {
   formData: ProductFormData;
@@ -54,7 +38,32 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle image drag events
+  const [isSellerDomain, setIsSellerDomain] = useState('');
+
+  useEffect(() => {
+    if (process) {
+      setIsSellerDomain(window.location.host);
+    }
+  }, []);
+
+  console.log('awikwokwikwok', `${isSellerDomain}/api/v3/upload-image`);
+  async function uploadImages(files: File[]): Promise<string[]> {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('images', file));
+
+    const response = await fetch(`${isSellerDomain}/api/v3/upload-image`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload images');
+    }
+
+    const data = await response.json();
+    return data.urls;
+  }
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -76,33 +85,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
           onInputChange('images', [...formData.images, ...urls]);
         } catch (err) {
           console.error('Error uploading images:', err);
-          // Optionally, set an error state to display to the user
         }
       }
     },
     [formData.images, onInputChange]
   );
 
-  // Handle file selection via click
   const handleBrowseClick = () => {
-    // Programmatically trigger file input click
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  // Handle file input changes
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       try {
         const urls = await uploadImages(Array.from(files));
         onInputChange('images', [...formData.images, ...urls]);
-        // Clear the input value to allow selecting the same file again if needed
+
         e.target.value = '';
       } catch (err) {
         console.error('Error uploading images:', err);
-        // Optionally, set an error state to display to the user
       }
     }
   };

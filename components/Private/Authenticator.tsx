@@ -28,7 +28,6 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const authData = localStorage.getItem('auth');
-    console.log('authData: \n', authData);
     if (authData) {
       try {
         const parsedAuth: AuthData = JSON.parse(authData);

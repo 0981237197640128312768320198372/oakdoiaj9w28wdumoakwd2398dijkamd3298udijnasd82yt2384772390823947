@@ -37,7 +37,7 @@ const DepositTimer: React.FC<DepositTimerProps> = ({ seconds, onExpire }) => {
     if (percentage > 10) return 'bg-rose-500';
     return 'bg-red-500';
   };
-  console.log(percentage);
+
   return (
     <div className="w-full mt-4 mb-2">
       <div className="flex justify-between mb-1 text-sm">
