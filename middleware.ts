@@ -10,6 +10,30 @@ export async function middleware(req: GeoRequest) {
   const isRestrictedLanguage = browserLanguage.startsWith('id');
   const userCountry = req.geo?.country || '';
   const isRestrictedCountry = userCountry === 'ID';
+  const isApiRoute = req.nextUrl.pathname.startsWith('/api');
+
+  if (req.method === 'OPTIONS' && isApiRoute) {
+    const response = new NextResponse(null, { status: 200 });
+    response.headers.set('Access-Control-Allow-Origin', 'https://seller.dokmaistore.com');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return response;
+  }
+
+  if (isApiRoute) {
+    const response = NextResponse.next();
+    response.headers.set('Access-Control-Allow-Origin', 'https://seller.dokmaistore.com');
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return response;
+  }
+
+  if (isRestrictedLanguage || isRestrictedCountry) {
+    return new Response('Access restricted due to region or language', {
+      status: 403,
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
 
   if (isRestrictedLanguage || isRestrictedCountry) {
     return new Response('Access restricted due to region or language', {
@@ -62,7 +86,6 @@ export async function middleware(req: GeoRequest) {
     return NextResponse.rewrite(new URL(`/app${path}`, req.url));
   }
 
-  // Rewrite seller.dokmaistore.com to /seller (new setup)
   if (hostname === 'seller.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/seller${path}`, req.url));
   }
