@@ -10,15 +10,11 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) => {
-  // Get first image or use placeholder
   const mainImage =
-    product.images.length > 0
-      ? product.images[0]
-      : 'https://dokmaistore.com/images/og-dokmaistore.webp';
+    product.images.length > 0 ? product.images[0] : '/images/dokmai-placeholder.webp';
 
   return (
     <div className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md border border-gray-100 dark:border-gray-700 transition-all duration-300 flex flex-col">
-      {/* Product Image with Status Badge */}
       <div className="relative h-48 overflow-hidden">
         <Image
           width={100}

@@ -56,7 +56,6 @@ export const useProducts = (sellerId?: string) => {
       const response = await fetch('/api/v3/categories');
       if (response.ok) {
         const data = await response.json();
-        console.log('use Products Categories', data.categories);
         setCategories(data.categories);
       } else {
         console.error('Failed to fetch categories');
@@ -138,7 +137,36 @@ export const useProducts = (sellerId?: string) => {
       setIsLoading(false);
     }
   };
+  const deleteProduct = async (productId: string): Promise<boolean> => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
 
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/v3/products?id=${productId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        setSuccess('Product deleted successfully');
+        setProducts((prev) => prev.filter((product) => product._id !== productId));
+        return true;
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Failed to delete product');
+        return false;
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const resetForm = () => {
     setFormData(initialFormData);
     setFormErrors({});
@@ -174,9 +202,10 @@ export const useProducts = (sellerId?: string) => {
     resetForm,
     updateFormData,
     addProduct,
+    deleteProduct,
     setSuccess,
     setError,
-    setProducts, // Export setProducts
+    setProducts,
   };
 };
 

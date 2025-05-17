@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import ProductList from './ProductList';
-import ProductForm from './ProductForm';
+import ProductForm from '../product/ProductForm';
 import EmptyState from './EmptyState';
 import { Product } from '@/types';
 import { useProducts } from '@/hooks/useProducts';
@@ -31,10 +31,10 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     success,
     updateFormData,
     addProduct,
+    deleteProduct,
     resetForm,
     setError,
     setSuccess,
-    setProducts,
   } = useProducts(seller?.id);
 
   const { showSuccess, showError } = useToast();
@@ -50,30 +50,32 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     }
   };
 
-  // Handle edit product
   const handleEditProduct = (product: Product) => {
     setIsEditing(true);
     setEditingProductId(product._id);
     setIsFormModalOpen(true);
   };
 
-  // Handle delete product
   const handleDeleteProduct = (productId: string) => {
     setProductToDelete(productId);
     setIsDeleteModalOpen(true);
   };
 
-  // Confirm delete product
-  const confirmDeleteProduct = () => {
+  const confirmDeleteProduct = async () => {
     if (productToDelete) {
-      setProducts(products.filter((p) => p._id !== productToDelete));
+      const result = await deleteProduct(productToDelete);
       setIsDeleteModalOpen(false);
-      showSuccess('Product deleted successfully!');
+
+      if (result) {
+        showSuccess('Product deleted successfully!');
+      } else {
+        showError(error || 'Failed to delete product');
+      }
+
       setProductToDelete(null);
     }
   };
 
-  // Open form modal
   const openAddProductModal = () => {
     resetForm();
     setIsEditing(false);
@@ -81,7 +83,6 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     setIsFormModalOpen(true);
   };
 
-  // Handle form modal close
   const handleFormModalClose = () => {
     setIsFormModalOpen(false);
     resetForm();
@@ -91,15 +92,13 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Your Products</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            Manage your store inventory and product listings
-          </p>
+          <h1 className="text-2xl font-bold text-gray-100">Your Products</h1>
+          <p className="text-gray-400 mt-1">Manage your store inventory and product listings</p>
         </div>
 
         <button
           onClick={openAddProductModal}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
+          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
           <Plus size={18} />
           <span>Add Product</span>
         </button>
@@ -131,15 +130,15 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
 
       {/* Delete Confirmation Modal */}
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} size="sm">
-        <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3">Delete Product</h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
+        <div className="p-6 bg-gray-900 text-gray-100 rounded-lg">
+          <h3 className="text-lg font-bold mb-3">Delete Product</h3>
+          <p className="text-gray-300 mb-6">
             Are you sure you want to delete this product? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
             <button
               onClick={() => setIsDeleteModalOpen(false)}
-              className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg font-medium transition-colors duration-200">
+              className="px-4 py-2 text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-lg font-medium transition-colors duration-200 border border-gray-700">
               Cancel
             </button>
             <button
