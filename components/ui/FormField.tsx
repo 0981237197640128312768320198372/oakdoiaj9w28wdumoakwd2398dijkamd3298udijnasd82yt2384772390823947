@@ -19,7 +19,7 @@ const FormField: React.FC<FormFieldProps> = ({ id, label, error, children }) => 
       {children}
       {error && (
         <p className="mt-1 text-xs text-red-400 flex items-center gap-1 animate-fadeIn">
-          <AlertTriangle size={12} className="flex-shrink-0" />
+          <AlertTriangle size={10} className="flex-shrink-0" />
           <span className="leading-tight">{error}</span>
         </p>
       )}

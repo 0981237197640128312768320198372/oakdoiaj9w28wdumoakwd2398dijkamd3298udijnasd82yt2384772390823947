@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { ProductFormData, Category, FormErrors } from '@/types';
@@ -10,7 +11,6 @@ interface ProductFormProps {
   formErrors: FormErrors;
   categories: Category[];
   isLoading: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onInputChange: (field: keyof ProductFormData, value: any) => void;
   onSubmit: () => void;
   onCancel: () => void;
@@ -30,7 +30,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [details, setDetails] = useState<Record<string, string>[]>([]);
 
   useEffect(() => {
-    // Automatically update stock and details in formData when details change
     onInputChange('stock', details.length);
     onInputChange('details', details);
   }, [details, onInputChange]);
@@ -48,18 +47,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
   };
 
   return (
-    <div className="relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-xl p-6 shadow-xl border border-dark-600 animate-fadeIn">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold text-light-100 flex items-center gap-2">
-          <span className="inline-block w-2 h-8 bg-primary rounded-sm" />
+    <div className="relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg p-4 shadow-xl border border-dark-600 animate-fadeIn">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-bold text-light-100 flex items-center gap-2">
+          <span className="inline-block w-1 h-6 bg-primary rounded-sm" />
           <span>{step === 1 ? 'Create New Product' : 'Product Details & Inventory'}</span>
         </h2>
         <button
           onClick={onCancel}
-          className="p-2 text-light-500 bg-dark-700/50 hover:bg-red-500/15 hover:text-red-400 
+          className="p-1.5 text-light-500 bg-dark-700/50 hover:bg-red-500/15 hover:text-red-400 
                    rounded-full transition-all duration-200"
           aria-label="Cancel">
-          <X size={20} />
+          <X size={16} />
         </button>
       </div>
 
@@ -89,7 +88,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       )}
 
       {/* Glowing background effect */}
-      <div className="absolute -z-10 top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-primary/5 to-transparent rounded-xl blur-xl opacity-30" />
+      <div className="absolute -z-10 top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-primary/5 to-transparent rounded-lg blur-xl opacity-30" />
     </div>
   );
 };

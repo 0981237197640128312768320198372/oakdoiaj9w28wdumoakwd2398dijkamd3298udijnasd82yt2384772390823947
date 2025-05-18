@@ -21,7 +21,6 @@ export async function middleware(req: GeoRequest) {
     'https://admin.dokmaistore.com',
   ];
 
-  // For OPTIONS (preflight) requests, return CORS headers
   if (req.method === 'OPTIONS') {
     const response = new NextResponse(null, { status: 204 });
 
