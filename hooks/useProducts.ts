@@ -1,3 +1,4 @@
+'use client';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
@@ -15,6 +16,7 @@ export const useProducts = (sellerId?: string) => {
     description: '',
     stock: 0,
     type: '',
+    details: [],
     categoryId: '',
     price: 0,
     images: [],
@@ -24,16 +26,15 @@ export const useProducts = (sellerId?: string) => {
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  // Dynamically determine the API URL
   const getApiUrl = () => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
-      // If we're on a subdomain like seller.dokmaistore.com
       if (hostname.includes('seller.') || hostname.startsWith('seller.')) {
-        // Use the current origin (protocol + hostname + port)
         return window.location.origin;
       }
-      // Otherwise use the environment variable or fallback
+      if (hostname.includes('localhost')) {
+        return 'http://localhost:3000';
+      }
       return process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
     }
     return process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';

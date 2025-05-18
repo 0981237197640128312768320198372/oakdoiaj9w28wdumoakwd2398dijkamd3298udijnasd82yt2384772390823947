@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Seller {
   _id: string;
   username: string;
@@ -65,6 +66,7 @@ export interface Product {
   description: string;
   stock: number;
   type: string;
+  details: any;
   categoryId: string;
   price: number;
   images: string[];
@@ -81,6 +83,7 @@ export interface ProductFormData {
   description: string;
   stock: number;
   type: string;
+  details: any;
   categoryId: string;
   price: number;
   images: string[];

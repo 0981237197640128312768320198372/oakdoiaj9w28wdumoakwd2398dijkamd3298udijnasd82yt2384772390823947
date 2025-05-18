@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -8,29 +8,6 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, size = 'md' }) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  // Close modal when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      // Prevent body scrolling when modal is open
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      // Re-enable body scrolling when modal is closed
-      document.body.style.overflow = 'auto';
-    };
-  }, [isOpen, onClose]);
-
   // Handle escape key press
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -61,10 +38,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, size = 'md' })
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed h-screen w-screen inset-0 z-[9999] overflow-y-auto bg-dark-800/30 backdrop-blur flex items-center justify-center animate-fade-in">
       <div
-        ref={modalRef}
-        className={`${sizeClasses[size]} w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl transform transition-all duration-300 animate-scale-in`}>
+        className={`${sizeClasses[size]} w-full bg-dark-800 rounded-xl shadow-xl transform transition-all duration-300 animate-scale-in`}>
         {children}
       </div>
     </div>
