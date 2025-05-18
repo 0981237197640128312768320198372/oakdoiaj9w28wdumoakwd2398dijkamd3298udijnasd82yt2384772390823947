@@ -56,6 +56,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid categoryId' }, { status: 400 });
     }
 
+    // Validate image count
+    if (images && images.length > 3) {
+      return NextResponse.json({ error: 'Maximum 3 images allowed' }, { status: 400 });
+    }
+
     // Calculate discounted price
     const discountedPrice = discountPercentage > 0 ? price * (1 - discountPercentage / 100) : price;
 
@@ -87,21 +92,6 @@ export async function POST(req: NextRequest) {
 }
 
 // GET: Fetch products for the authenticated seller
-// export async function GET(req: NextRequest) {
-//   try {
-//     await connectToDatabase();
-//     const authResult = jwtAuthenticate(req);
-//     if ('error' in authResult) {
-//       return NextResponse.json({ error: authResult.error }, { status: authResult.status });
-//     }
-//     const sellerId = authResult.sellerId;
-//     const products = await Product.find({ sellerId }).lean();
-//     return NextResponse.json({ products });
-//   } catch (error) {
-//     console.error('Error fetching products:', error);
-//     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-//   }
-// }
 export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
@@ -145,6 +135,11 @@ export async function PUT(req: NextRequest) {
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
+    }
+
+    // Validate image count
+    if (images && images.length > 3) {
+      return NextResponse.json({ error: 'Maximum 3 images allowed' }, { status: 400 });
     }
 
     const product = await Product.findOne({ _id: id, sellerId });

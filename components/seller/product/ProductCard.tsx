@@ -1,5 +1,6 @@
-import React from 'react';
-import { Edit, Trash2, AlertTriangle, Check } from 'lucide-react';
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import { Edit, Trash2, AlertTriangle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import Image from 'next/image';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
@@ -11,20 +12,60 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) => {
-  const mainImage =
-    product.images.length > 0 ? product.images[0] : '/images/dokmai-placeholder.webp';
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Calculate the discounted price
+  const currentImage =
+    product.images.length > 0
+      ? product.images[currentImageIndex]
+      : '/images/dokmai-placeholder.webp';
+
   const hasDiscount = product.discountPercentage > 0;
   const discountedPrice = hasDiscount
     ? product.price * (1 - product.discountPercentage / 100)
     : product.price;
 
+  useEffect(() => {
+    if (product.images.length <= 1) return;
+
+    intervalRef.current = setInterval(() => {
+      if (!isHovering) {
+        setCurrentImageIndex((prevIndex) =>
+          prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
+        );
+      }
+    }, 5000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [product.images.length, isHovering]);
+
+  const goToPrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? product.images.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
   return (
-    <div className="group relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg overflow-hidden border border-dark-600 hover:border-dark-400 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-dark-800/20 hover:-translate-y-0.5">
+    <div
+      className="group relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg overflow-hidden border border-dark-600 hover:border-dark-400 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-dark-800/20 hover:-translate-y-0.5"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}>
       <div className="relative aspect-square w-full overflow-hidden bg-dark-700/50">
         <Image
-          src={mainImage}
+          src={currentImage}
           alt={product.title}
           fill
           className="object-contain p-2 group-hover:scale-102 transition-transform duration-500"
@@ -32,10 +73,46 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-dark-800/80 via-transparent to-transparent group-hover:opacity-0 opacity-100 transition-opacity duration-300" />
 
+        {/* Image navigation controls - only show when hovering and multiple images */}
+        {product.images.length > 1 && (
+          <>
+            <button
+              onClick={goToPrevImage}
+              className="absolute left-1 top-1/2 -translate-y-1/2 bg-dark-800/80 text-light-200 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-primary/80 hover:text-dark-800">
+              <ChevronLeft size={16} />
+            </button>
+            <button
+              onClick={goToNextImage}
+              className="absolute right-1 top-1/2 -translate-y-1/2 bg-dark-800/80 text-light-200 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-primary/80 hover:text-dark-800">
+              <ChevronRight size={16} />
+            </button>
+          </>
+        )}
+
+        {/* Image pagination dots */}
+        {product.images.length > 1 && (
+          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+            {product.images.map((_, index) => (
+              <div
+                key={index}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                  index === currentImageIndex
+                    ? 'bg-primary scale-125'
+                    : 'bg-light-500/50 hover:bg-light-500'
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImageIndex(index);
+                }}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Status badge */}
         <div
           className={`
-            absolute bottom-1 right-1 flex items-center gap-1 px-1 py-0.5 rounded text-xs font-medium
+            absolute bottom-1 right-1 flex items-center gap-1 px-1 py-0.5 rounded-lg text-xs font-medium
             backdrop-blur-md transition-all duration-200
             ${
               product.status === 'active'
@@ -58,8 +135,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
 
         {/* Discount badge */}
         {hasDiscount && (
-          <div className="absolute top-1 left-1 bg-fuchsia-500/30 text-fuchsia-500 px-1.5 py-0.5 rounded text-xs font-bold">
-            Discount {product.discountPercentage}%
+          <div className="absolute top-1 left-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
+            {product.discountPercentage}% OFF
           </div>
         )}
       </div>
@@ -72,7 +149,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
           <div className="flex items-center gap-2">
             {hasDiscount ? (
               <>
-                <span className="text-xs line-through text-light-800 whitespace-nowrap flex gap-1 items-center">
+                <span className="text-xs line-through text-light-500 whitespace-nowrap flex gap-1 items-center">
                   <Image
                     src={dokmaicoin}
                     alt="Dokmai Coin"
@@ -82,7 +159,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
                   />
                   {product.price.toFixed(2)}
                 </span>
-                <span className="text-sm font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
+                <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
                   <Image
                     src={dokmaicoin}
                     alt="Dokmai Coin"
@@ -94,7 +171,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
                 </span>
               </>
             ) : (
-              <span className="text-sm font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
+              <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
                 <Image
                   src={dokmaicoin}
                   alt="Dokmai Coin"

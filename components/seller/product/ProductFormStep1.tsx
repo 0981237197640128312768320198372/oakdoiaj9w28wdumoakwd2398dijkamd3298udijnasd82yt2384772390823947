@@ -195,6 +195,7 @@ const ProductFormStep1: React.FC<ProductFormStep1Props> = ({
           images={formData.images}
           onImagesChange={(images) => onInputChange('images', images)}
           error={formErrors.images}
+          maxImages={3}
         />
       </div>
 

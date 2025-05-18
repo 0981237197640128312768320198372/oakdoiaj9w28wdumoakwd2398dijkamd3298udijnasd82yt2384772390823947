@@ -65,6 +65,7 @@ export const useProducts = (sellerId?: string) => {
       if (response.ok) {
         const data = await response.json();
         setProducts(data.products);
+        console.log(data.products);
       } else {
         setError('Failed to fetch products');
       }
@@ -124,6 +125,10 @@ export const useProducts = (sellerId?: string) => {
 
     if (formData.images.length === 0) {
       errors.images = 'At least one image is required';
+    }
+
+    if (formData.images.length > 3) {
+      errors.images = 'Maximum 3 images allowed';
     }
 
     setFormErrors(errors);
@@ -254,7 +259,7 @@ export const useProducts = (sellerId?: string) => {
       categoryId: product.categoryId,
       price: product.price,
       discountPercentage: product.discountPercentage || 0,
-      images: product.images,
+      images: product.images.slice(0, 3), // Limit to 3 images
       status: product.status,
     });
 
