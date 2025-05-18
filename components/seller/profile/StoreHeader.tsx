@@ -18,7 +18,7 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
   return (
     <div className="relative">
       <div className="absolute inset-0 h-40 bg-gradient-to-tr from-dark-600 via-dark-800 to-background rounded-3xl border-[1px] border-dark-600" />
-      <div className="relative p-5 pt-16 flex items-start  gap-5 z-10">
+      <div className="relative p-5 pt-16 flex items-start gap-5 z-10">
         <div className="relative h-20 w-20 overflow-hidden rounded-full shadow-md border-2 border-primary/20 bg-background transition-all duration-500 hover:scale-105">
           <div
             className={cn(

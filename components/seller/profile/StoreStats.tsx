@@ -21,7 +21,9 @@ interface StoreStatsProps {
 
 export function StoreStats({ seller }: StoreStatsProps) {
   const { rating, credits } = seller.store;
-  const { totalProducts, totalSales, totalRevenue } = seller.storeStatistics;
+
+  const totalProducts = 0; // temporary
+  const totalSales = 0; // temporary
   const totalCredits = credits.positive + credits.negative;
   const positivePercentage =
     totalCredits > 0 ? Math.round((credits.positive / totalCredits) * 100) : 0;

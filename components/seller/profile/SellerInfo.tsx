@@ -12,6 +12,7 @@ import { SocialLinks } from './SocialLinks';
 import { InfoSection } from './InfoSection';
 import { StoreStats } from './StoreStats';
 import Link from 'next/link';
+import EditProfileButton from './EditProfileButton';
 
 export default function SellerInfo() {
   const { seller, logout } = useSellerAuth();
@@ -24,6 +25,12 @@ export default function SellerInfo() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const refreshSellerData = () => {
+    // Force a refresh by reloading the page
+    // In a more sophisticated app, you might want to just refresh the seller data
+    window.location.reload();
+  };
 
   if (!seller) {
     return (
@@ -52,6 +59,10 @@ export default function SellerInfo() {
       <Card className="overflow-hidden bg-card text-card-foreground shadow-lg">
         <StoreHeader seller={seller} />
         <CardContent className="p-5 lg:px-0">
+          <div className="flex justify-end mb-4">
+            <EditProfileButton seller={seller} onProfileUpdated={refreshSellerData} />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 space-y-5">
               <InfoSection title="Store Information" icon={<Info className="h-5 w-5" />}>

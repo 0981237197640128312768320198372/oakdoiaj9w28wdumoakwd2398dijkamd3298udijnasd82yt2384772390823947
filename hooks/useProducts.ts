@@ -65,7 +65,6 @@ export const useProducts = (sellerId?: string) => {
       if (response.ok) {
         const data = await response.json();
         setProducts(data.products);
-        console.log(data.products);
       } else {
         setError('Failed to fetch products');
       }
