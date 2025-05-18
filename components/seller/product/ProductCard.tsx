@@ -63,7 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
           </span>
         </div>
 
-        <p className="text-xs text-light-500 line-clamp-2 min-h-[2.5rem]">{product.description}</p>
+        {/* <p className="text-xs text-light-500 line-clamp-2 min-h-[2.5rem]">{product.description}</p> */}
 
         <div className="flex items-center justify-between pt-2 border-t border-dark-600">
           <span className="text-xs text-light-600">Stock: {product.stock}</span>
