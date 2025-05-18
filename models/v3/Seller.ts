@@ -76,7 +76,6 @@ const sellerSchema = new Schema<ISeller>(
   { timestamps: true }
 );
 
-// Hash password before saving
 sellerSchema.pre('save', async function (next) {
   const seller = this as ISeller;
   if (!seller.isModified('password')) return next();
@@ -90,7 +89,6 @@ sellerSchema.pre('save', async function (next) {
   }
 });
 
-// Method to compare passwords
 sellerSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {

@@ -3,7 +3,7 @@
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerDashboard } from '@/context/SellerDashboardContext';
 import React, { useState, useEffect } from 'react';
-import SellerInfo from './SellerInfo';
+import SellerInfo from './profile/SellerInfo';
 import SellerNavbar from './SellerNavbar';
 import SellerOrders from './SellerOrders';
 import SellerAnalytics from './SellerAnalytics';
