@@ -4,7 +4,6 @@ import { Product } from '@/models/v3/Product';
 import jwt from 'jsonwebtoken';
 import { connectToDatabase } from '@/lib/db';
 
-// Authentication helper
 function jwtAuthenticate(req: NextRequest) {
   const token = req.headers.get('Authorization')?.split(' ')[1];
   if (!token) {
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
     const sellerId = authResult.sellerId;
 
     const body = await req.json();
-    const { title, description, stock, type, categoryId, price, images, status } = body;
+    const { title, description, stock, type, details, categoryId, price, images, status } = body;
 
     if (
       !title ||
@@ -51,7 +50,7 @@ export async function POST(req: NextRequest) {
       description,
       stock,
       type,
-      details: {},
+      details,
       sellerId,
       categoryId,
       price,

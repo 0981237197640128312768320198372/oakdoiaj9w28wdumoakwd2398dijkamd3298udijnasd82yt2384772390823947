@@ -11,7 +11,6 @@ export async function middleware(req: GeoRequest) {
   const userCountry = req.geo?.country || '';
   const isRestrictedCountry = userCountry === 'ID';
 
-  // Handle CORS for cross-subdomain requests
   const origin = req.headers.get('origin');
   const allowedOrigins = [
     'https://dokmaistore.com',
@@ -19,6 +18,8 @@ export async function middleware(req: GeoRequest) {
     'https://www.dokmaistore.com',
     'https://app.dokmaistore.com',
     'https://admin.dokmaistore.com',
+    'http://localhost:3000',
+    'http://localhost',
   ];
 
   if (req.method === 'OPTIONS') {
@@ -29,7 +30,7 @@ export async function middleware(req: GeoRequest) {
       response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       response.headers.set('Access-Control-Allow-Credentials', 'true');
-      response.headers.set('Access-Control-Max-Age', '86400'); // 24 hours
+      response.headers.set('Access-Control-Max-Age', '31104000');
     }
 
     return response;
@@ -46,7 +47,6 @@ export async function middleware(req: GeoRequest) {
   const subdomain = hostname?.split('.')[0];
   const path = req.nextUrl.pathname;
 
-  // Add CORS headers to the response for API routes
   if (path.startsWith('/api/')) {
     const response = NextResponse.next();
 

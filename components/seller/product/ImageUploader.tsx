@@ -17,8 +17,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ images, onImagesChange, e
   async function uploadImages(files: File[]): Promise<string[]> {
     const formData = new FormData();
     files.forEach((file) => formData.append('images', file));
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v3/upload-image`;
-    console.log(process.env.NEXT_PUBLIC_API_URL);
+    const apiUrl = '/api/v3/upload-image';
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
