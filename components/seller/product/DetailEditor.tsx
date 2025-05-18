@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import { X, Trash2, Plus } from 'lucide-react';
-import Button from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 
 interface DetailEditorProps {
   keys: string[];

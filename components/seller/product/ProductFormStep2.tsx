@@ -3,7 +3,7 @@ import React from 'react';
 import { ProductFormData } from '@/types';
 import { ArrowLeft, Save } from 'lucide-react';
 import DetailEditor from './DetailEditor';
-import Button from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 
 interface ProductFormStep2Props {
   formData: ProductFormData;

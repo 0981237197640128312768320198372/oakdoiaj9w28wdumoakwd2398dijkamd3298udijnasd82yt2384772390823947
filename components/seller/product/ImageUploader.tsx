@@ -2,7 +2,7 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { X, Upload } from 'lucide-react';
 import Image from 'next/image';
-import Button from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 
 interface ImageUploaderProps {
   images: string[];

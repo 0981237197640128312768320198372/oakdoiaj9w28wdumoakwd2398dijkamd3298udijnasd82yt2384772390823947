@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
