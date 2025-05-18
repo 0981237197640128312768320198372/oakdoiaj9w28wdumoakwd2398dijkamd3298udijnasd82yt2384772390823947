@@ -214,6 +214,7 @@ export const getAdminToken = () => {
 export async function uploadImage(file: File): Promise<string> {
   const { url } = await put(`images/${file.name}`, file, {
     access: 'public',
+    addRandomSuffix: true,
   });
   return url;
 }
