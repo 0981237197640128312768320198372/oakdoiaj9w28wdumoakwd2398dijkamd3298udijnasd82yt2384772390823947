@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Product, Category, ProductFormData, FormErrors } from '@/types';
 
 export const useProducts = (sellerId?: string) => {
@@ -160,6 +160,7 @@ export const useProducts = (sellerId?: string) => {
       setIsLoading(false);
     }
   };
+
   const deleteProduct = async (productId: string): Promise<boolean> => {
     if (!apiUrl) return false;
 
@@ -192,22 +193,27 @@ export const useProducts = (sellerId?: string) => {
       setIsLoading(false);
     }
   };
+
   const resetForm = () => {
     setFormData(initialFormData);
     setFormErrors({});
   };
 
-  const updateFormData = (field: keyof ProductFormData, value: string | number | string[]) => {
-    setFormData((prev: any) => ({ ...prev, [field]: value }));
+  // Use useCallback to prevent this function from being recreated on every render
+  const updateFormData = useCallback(
+    (field: keyof ProductFormData, value: string | number | string[]) => {
+      setFormData((prev: any) => ({ ...prev, [field]: value }));
 
-    if (formErrors[field]) {
-      setFormErrors((prev: any) => {
-        const updated = { ...prev };
-        delete updated[field];
-        return updated;
-      });
-    }
-  };
+      if (formErrors[field]) {
+        setFormErrors((prev: any) => {
+          const updated = { ...prev };
+          delete updated[field];
+          return updated;
+        });
+      }
+    },
+    [formErrors]
+  );
 
   useEffect(() => {
     if (sellerId && apiUrl) {
