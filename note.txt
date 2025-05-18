@@ -60,3 +60,5 @@ Gather feedback from users to make improvements.
 help me to enhance this component, for more cooler, modern, profesional, simple in dark themes.
 just assume that i have css tailwind class for color dark and light 100 to 800 and also primary color.
 always based on dark themes, because my website is just 1 theme (dark)
+
+here is the component :
