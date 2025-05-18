@@ -30,15 +30,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [keys, setKeys] = useState<string[]>([]);
   const [details, setDetails] = useState<Record<string, string>[]>([]);
 
-  // This useEffect is causing the infinite loop because it's updating formData
-  // which triggers a re-render, which calls this useEffect again
   useEffect(() => {
-    // Only update if details actually changed to prevent infinite loop
     if (details.length > 0) {
       onInputChange('stock', details.length);
       onInputChange('details', details);
     }
-  }, [details]); // Remove onInputChange from dependencies
+  }, [details]);
 
   const handleNextStep = () => {
     setStep(2);
@@ -61,8 +58,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </h2>
         <button
           onClick={onCancel}
-          className="p-1.5 text-light-500 bg-dark-700/50 hover:bg-red-500/15 hover:text-red-400 
-                   rounded-full transition-all duration-200"
+          className="p-1.5 text-light-500 bg-dark-700/50 hover:bg-red-500/15 hover:text-red-400 rounded-full transition-all duration-200"
           aria-label="Cancel">
           <X size={16} />
         </button>
