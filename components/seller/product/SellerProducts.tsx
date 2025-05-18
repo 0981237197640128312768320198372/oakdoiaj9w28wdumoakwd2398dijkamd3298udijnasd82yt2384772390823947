@@ -18,8 +18,6 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
   const {
     products,
@@ -29,9 +27,11 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     isLoading,
     error,
     success,
+    editMode,
     updateFormData,
     addProduct,
     deleteProduct,
+    editProduct,
     resetForm,
     setError,
     setSuccess,
@@ -44,15 +44,14 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     const result = await addProduct();
     if (result) {
       setIsFormModalOpen(false);
-      showSuccess('Product added successfully!');
+      showSuccess(editMode ? 'Product updated successfully!' : 'Product added successfully!');
     } else {
-      showError(error || 'Failed to add product');
+      showError(error || 'Failed to process product');
     }
   };
 
   const handleEditProduct = (product: Product) => {
-    setIsEditing(true);
-    setEditingProductId(product._id);
+    editProduct(product);
     setIsFormModalOpen(true);
   };
 
@@ -78,8 +77,6 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
 
   const openAddProductModal = () => {
     resetForm();
-    setIsEditing(false);
-    setEditingProductId(null);
     setIsFormModalOpen(true);
   };
 
@@ -125,6 +122,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
           onInputChange={updateFormData}
           onSubmit={handleSubmit}
           onCancel={handleFormModalClose}
+          isEditMode={editMode}
         />
       </Modal>
 

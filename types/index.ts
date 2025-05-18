@@ -69,6 +69,8 @@ export interface Product {
   details: any;
   categoryId: string;
   price: number;
+  discountPercentage: number;
+  discountedPrice: number;
   images: string[];
   status: 'active' | 'draft';
 }
@@ -86,6 +88,7 @@ export interface ProductFormData {
   details: any;
   categoryId: string;
   price: number;
+  discountPercentage: number;
   images: string[];
   status: 'active' | 'draft';
 }

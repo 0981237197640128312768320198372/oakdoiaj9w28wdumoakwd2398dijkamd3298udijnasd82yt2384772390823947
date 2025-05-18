@@ -23,11 +23,10 @@ export async function connectToDatabase(): Promise<Connection> {
     const mongooseConnection = await mongoose.connect(MONGODB_URI);
     cached.connection = mongooseConnection.connection;
 
-    // console.log('MongoDB connected successfully');
     return cached.connection;
   } catch (error) {
-    // console.error('MongoDB connection error:', error);
-    console.error('MongoDB connection error');
+    console.log(error);
+    console.log('MongoDB connection error');
     throw new Error('Failed to connect to MongoDB');
   }
 }

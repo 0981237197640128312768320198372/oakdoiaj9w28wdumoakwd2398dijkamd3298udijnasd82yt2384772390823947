@@ -18,12 +18,15 @@ export const useProducts = (sellerId?: string) => {
     details: [],
     categoryId: '',
     price: 0,
+    discountPercentage: 0,
     images: [],
     status: 'draft',
   };
 
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [editMode, setEditMode] = useState(false);
+  const [currentProductId, setCurrentProductId] = useState<string | null>(null);
 
   const getApiUrl = () => {
     if (typeof window !== 'undefined') {
@@ -115,6 +118,10 @@ export const useProducts = (sellerId?: string) => {
       errors.price = 'Price must be greater than 0';
     }
 
+    if (formData.discountPercentage < 0 || formData.discountPercentage > 100) {
+      errors.discountPercentage = 'Discount must be between 0 and 100';
+    }
+
     if (formData.images.length === 0) {
       errors.images = 'At least one image is required';
     }
@@ -134,23 +141,36 @@ export const useProducts = (sellerId?: string) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${apiUrl}/api/v3/products`, {
-        method: 'POST',
+      const method = editMode ? 'PUT' : 'POST';
+      const url = editMode ? `${apiUrl}/api/v3/products` : `${apiUrl}/api/v3/products`;
+
+      const body = editMode
+        ? JSON.stringify({ ...formData, id: currentProductId })
+        : JSON.stringify(formData);
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body,
       });
 
       const data = await response.json();
       if (response.ok) {
-        setSuccess('Product added successfully');
-        setProducts((prev) => [...prev, data.product]);
+        setSuccess(editMode ? 'Product updated successfully' : 'Product added successfully');
+
+        if (editMode) {
+          setProducts((prev) => prev.map((p) => (p._id === currentProductId ? data.product : p)));
+        } else {
+          setProducts((prev) => [...prev, data.product]);
+        }
+
         resetForm();
         return true;
       } else {
-        setError(data.error || 'Failed to add product');
+        setError(data.error || (editMode ? 'Failed to update product' : 'Failed to add product'));
         return false;
       }
     } catch (err) {
@@ -158,6 +178,8 @@ export const useProducts = (sellerId?: string) => {
       return false;
     } finally {
       setIsLoading(false);
+      setEditMode(false);
+      setCurrentProductId(null);
     }
   };
 
@@ -197,15 +219,17 @@ export const useProducts = (sellerId?: string) => {
   const resetForm = () => {
     setFormData(initialFormData);
     setFormErrors({});
+    setEditMode(false);
+    setCurrentProductId(null);
   };
 
   // Use useCallback to prevent this function from being recreated on every render
   const updateFormData = useCallback(
-    (field: keyof ProductFormData, value: string | number | string[]) => {
-      setFormData((prev: any) => ({ ...prev, [field]: value }));
+    (field: keyof ProductFormData, value: any) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
 
       if (formErrors[field]) {
-        setFormErrors((prev: any) => {
+        setFormErrors((prev) => {
           const updated = { ...prev };
           delete updated[field];
           return updated;
@@ -214,6 +238,29 @@ export const useProducts = (sellerId?: string) => {
     },
     [formErrors]
   );
+
+  const editProduct = (product: Product) => {
+    // Convert product details to the format expected by the form
+    const productDetails = Array.isArray(product.details)
+      ? product.details
+      : Object.entries(product.details || {}).map(([key, value]) => ({ [key]: value }));
+
+    setFormData({
+      title: product.title,
+      description: product.description,
+      stock: product.stock,
+      type: product.type,
+      details: productDetails,
+      categoryId: product.categoryId,
+      price: product.price,
+      discountPercentage: product.discountPercentage || 0,
+      images: product.images,
+      status: product.status,
+    });
+
+    setEditMode(true);
+    setCurrentProductId(product._id);
+  };
 
   useEffect(() => {
     if (sellerId && apiUrl) {
@@ -230,10 +277,12 @@ export const useProducts = (sellerId?: string) => {
     isLoading,
     error,
     success,
+    editMode,
     resetForm,
     updateFormData,
     addProduct,
     deleteProduct,
+    editProduct,
     setSuccess,
     setError,
     setProducts,

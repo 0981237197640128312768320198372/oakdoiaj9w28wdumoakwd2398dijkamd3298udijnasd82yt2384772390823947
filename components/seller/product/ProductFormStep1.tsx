@@ -87,6 +87,42 @@ const ProductFormStep1: React.FC<ProductFormStep1Props> = ({
             </div>
           </FormField>
 
+          <FormField
+            id="discountPercentage"
+            label="Discount (%)"
+            error={formErrors.discountPercentage}>
+            <div className="relative">
+              <input
+                id="discountPercentage"
+                type="number"
+                name="discountPercentage"
+                value={formData.discountPercentage || ''}
+                onChange={(e) => onInputChange('discountPercentage', parseFloat(e.target.value))}
+                min="0"
+                max="100"
+                step="1"
+                className={`w-full px-3 py-2 rounded-lg border transition-all duration-200 text-sm
+                  ${
+                    formErrors.discountPercentage
+                      ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                      : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
+                  } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20`}
+                placeholder="0"
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <span className="text-light-500 text-sm">%</span>
+              </div>
+            </div>
+            {formData.discountPercentage > 0 && (
+              <div className="mt-2 text-xs text-primary">
+                Discounted price: $
+                {(formData.price * (1 - formData.discountPercentage / 100)).toFixed(2)}
+              </div>
+            )}
+          </FormField>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <FormField id="type" label="Product Type" error={formErrors.type}>
             <input
               id="type"
@@ -101,6 +137,24 @@ const ProductFormStep1: React.FC<ProductFormStep1Props> = ({
                     : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
                 } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20`}
               placeholder="e.g. Physical, Digital, Subscription"
+            />
+          </FormField>
+
+          <FormField id="stock" label="Stock" error={formErrors.stock}>
+            <input
+              id="stock"
+              type="number"
+              name="stock"
+              value={formData.stock || ''}
+              onChange={(e) => onInputChange('stock', parseInt(e.target.value))}
+              min="0"
+              className={`w-full px-3 py-2 rounded-lg border transition-all duration-200 text-sm
+                ${
+                  formErrors.stock
+                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
+                } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20`}
+              placeholder="0"
             />
           </FormField>
         </div>

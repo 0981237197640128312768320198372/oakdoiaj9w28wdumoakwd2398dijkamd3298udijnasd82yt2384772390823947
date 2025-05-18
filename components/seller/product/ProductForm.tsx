@@ -12,6 +12,7 @@ interface ProductFormProps {
   formErrors: FormErrors;
   categories: Category[];
   isLoading: boolean;
+  isEditMode?: boolean;
   onInputChange: (field: keyof ProductFormData, value: any) => void;
   onSubmit: () => void;
   onCancel: () => void;
@@ -22,6 +23,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   formErrors,
   categories,
   isLoading,
+  isEditMode = false,
   onInputChange,
   onSubmit,
   onCancel,
@@ -29,6 +31,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [step, setStep] = useState(1);
   const [keys, setKeys] = useState<string[]>([]);
   const [details, setDetails] = useState<Record<string, string>[]>([]);
+
+  // Initialize keys and details from formData when in edit mode
+  useEffect(() => {
+    if (formData.details && formData.details.length > 0) {
+      // Extract keys from the first detail object
+      const firstDetail = formData.details[0];
+      const extractedKeys = Object.keys(firstDetail);
+
+      setKeys(extractedKeys);
+      setDetails(formData.details);
+    }
+  }, [formData.details]);
 
   useEffect(() => {
     if (details.length > 0) {
@@ -54,7 +68,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold text-light-100 flex items-center gap-2">
           <span className="inline-block w-1 h-6 bg-primary rounded-sm" />
-          <span>{step === 1 ? 'Create New Product' : 'Product Details & Inventory'}</span>
+          <span>{isEditMode ? 'Edit Product' : 'Create New Product'}</span>
         </h2>
         <button
           onClick={onCancel}
