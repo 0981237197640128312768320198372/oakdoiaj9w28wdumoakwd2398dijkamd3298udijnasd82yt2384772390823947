@@ -17,7 +17,6 @@ import {
   MoreHorizontal,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -290,10 +289,10 @@ export const ManageUsers = () => {
             </div>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 whitespace-nowrap">
+                <button className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 whitespace-nowrap">
                   <UserPlus className="h-4 w-4" />
                   <span className="sm:inline">Add User</span>
-                </Button>
+                </button>
               </DialogTrigger>
               <DialogContent className="bg-dark-600 border-dark-500 text-light-100 sm:max-w-md w-[calc(100%-2rem)] mx-auto transition-all duration-200">
                 <DialogHeader>
@@ -330,10 +329,8 @@ export const ManageUsers = () => {
                         onChange={handleInputChange}
                         className="bg-dark-500 border-dark-400 text-light-100 transition-colors duration-200"
                       />
-                      <Button
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="icon"
                         className="absolute right-0 top-0 h-full text-light-300 hover:text-light-100 transition-colors duration-200"
                         onClick={() => togglePasswordVisibility('new')}>
                         {showPassword['new'] ? (
@@ -341,7 +338,7 @@ export const ManageUsers = () => {
                         ) : (
                           <Eye className="h-4 w-4" />
                         )}
-                      </Button>
+                      </button>
                     </div>
                   </div>
                   <div className="grid gap-2">
@@ -376,13 +373,12 @@ export const ManageUsers = () => {
                   </div>
                 </div>
                 <DialogFooter className="flex-col sm:flex-row gap-2">
-                  <Button
-                    variant="outline"
+                  <button
                     onClick={() => setIsAddDialogOpen(false)}
                     className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 transition-colors duration-200 w-full sm:w-auto">
                     Cancel
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     onClick={handleAddUser}
                     disabled={isLoading}
                     className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-full sm:w-auto">
@@ -397,7 +393,7 @@ export const ManageUsers = () => {
                         Add User
                       </>
                     )}
-                  </Button>
+                  </button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -483,9 +479,7 @@ export const ManageUsers = () => {
                               <span className="font-mono text-light-200">
                                 {showPassword[user._id] ? user.password : '••••••••'}
                               </span>
-                              <Button
-                                variant="ghost"
-                                size="icon"
+                              <button
                                 onClick={() => togglePasswordVisibility(user._id)}
                                 className="text-light-300 hover:text-light-100 hover:bg-dark-500 transition-colors duration-200">
                                 {showPassword[user._id] ? (
@@ -493,20 +487,17 @@ export const ManageUsers = () => {
                                 ) : (
                                   <Eye className="h-4 w-4" />
                                 )}
-                              </Button>
+                              </button>
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
                             <TooltipProvider>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-light-300 hover:text-light-100 hover:bg-dark-500 transition-colors duration-200">
+                                  <button className="text-light-300 hover:text-light-100 hover:bg-dark-500 transition-colors duration-200">
                                     <span className="sr-only">Open menu</span>
                                     <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
+                                  </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
                                   align="end"
@@ -593,10 +584,8 @@ export const ManageUsers = () => {
                   onChange={handleInputChange}
                   className="bg-dark-500 border-dark-400 text-light-100 transition-colors duration-200"
                 />
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
                   className="absolute right-0 top-0 h-full text-light-300 hover:text-light-100 transition-colors duration-200"
                   onClick={() => togglePasswordVisibility('edit')}>
                   {showPassword['edit'] ? (
@@ -604,7 +593,7 @@ export const ManageUsers = () => {
                   ) : (
                     <Eye className="h-4 w-4" />
                   )}
-                </Button>
+                </button>
               </div>
             </div>
             <div className="grid gap-2">
@@ -639,13 +628,12 @@ export const ManageUsers = () => {
             </div>
           </div>
           <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsEditDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 transition-colors duration-200 w-full sm:w-auto">
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleUpdateUser}
               disabled={isLoading}
               className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-full sm:w-auto">
@@ -660,7 +648,7 @@ export const ManageUsers = () => {
                   Update User
                 </>
               )}
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -673,14 +661,12 @@ export const ManageUsers = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsDeleteDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 transition-colors duration-200 w-full sm:w-auto">
               Cancel
-            </Button>
-            <Button
-              variant="destructive"
+            </button>
+            <button
               onClick={handleDeleteUser}
               disabled={isLoading}
               className="bg-red-500 hover:bg-red-600 text-dark-800 transition-colors duration-200 w-full sm:w-auto">
@@ -695,7 +681,7 @@ export const ManageUsers = () => {
                   Delete
                 </>
               )}
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

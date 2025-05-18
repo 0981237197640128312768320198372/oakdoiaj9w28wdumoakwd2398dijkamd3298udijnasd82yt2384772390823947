@@ -4,7 +4,7 @@ import { ProductFormData, Category, FormErrors } from '@/types';
 import ImageUploader from './ImageUploader';
 import StatusSelector from './StatusSelector';
 import FormField from '@/components/ui/FormField';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/ButtonWithLoader';
 
 interface ProductFormStep1Props {
   formData: ProductFormData;

@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
@@ -160,11 +159,11 @@ const APIKeysManagement = () => {
       {success && (
         <Alert className="mb-4 bg-green-500/10 text-green-500 border-dark-800">{success}</Alert>
       )}
-      <Button
+      <button
         onClick={openAddDialog}
         className="mb-5 text-xs bg-primary text-dark-800 hover:bg-primary/90">
         Add API Keys
-      </Button>
+      </button>
       {loading ? (
         <Skeleton className="h-32 w-fit bg-dark-700" />
       ) : (
@@ -203,15 +202,12 @@ const ApiKeyCard = ({ apiKey, onEdit, onDelete }: ApiKeyCardProps) => (
       <div>{apiKey.remainingLimit}</div>
       <div>{formatTime(apiKey.resetDate as unknown as string)}</div>
       <div className="mt-2 space-x-2">
-        <Button onClick={onEdit} className="bg-primary text-dark-800 hover:bg-primary/90">
+        <button onClick={onEdit} className="bg-primary text-dark-800 hover:bg-primary/90">
           Edit
-        </Button>
-        <Button
-          variant="destructive"
-          onClick={onDelete}
-          className="bg-red-500 text-light-100 hover:bg-red-600">
+        </button>
+        <button onClick={onDelete} className="bg-red-500 text-light-100 hover:bg-red-600">
           Delete
-        </Button>
+        </button>
       </div>
     </CardContent>
   </Card>
@@ -298,15 +294,12 @@ const ApiKeyFormDialog = ({
           )}
         </div>
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={onClose}
-            className="border-primary text-primary hover:bg-primary/10">
+          <button onClick={onClose} className="border-primary text-primary hover:bg-primary/10">
             Cancel
-          </Button>
-          <Button onClick={handleSubmit} className="bg-primary text-dark-800 hover:bg-primary/90">
+          </button>
+          <button onClick={handleSubmit} className="bg-primary text-dark-800 hover:bg-primary/90">
             {mode === 'add' ? 'Add' : 'Update'}
-          </Button>
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

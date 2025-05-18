@@ -11,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
@@ -433,9 +432,9 @@ const DATAManagement = () => {
             </Select>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-fit">
+                <button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-fit">
                   Add Entry
-                </Button>
+                </button>
               </DialogTrigger>
               <DialogContent className="bg-dark-600 border-dark-500 text-light-100 w-[calc(100%-2rem)] sm:w-auto sm:max-w-md mx-auto transition-all duration-200">
                 <DialogHeader>
@@ -458,13 +457,12 @@ const DATAManagement = () => {
                   />
                 </div>
                 <DialogFooter className="flex flex-col sm:flex-row gap-2">
-                  <Button
-                    variant="outline"
+                  <button
                     onClick={() => setIsAddDialogOpen(false)}
                     className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
                     Cancel
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     onClick={handleAdd}
                     disabled={loading}
                     className="bg-primary hover:bg-primary/90 text-dark-800">
@@ -479,7 +477,7 @@ const DATAManagement = () => {
                         Add Entries
                       </>
                     )}
-                  </Button>
+                  </button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -505,11 +503,9 @@ const DATAManagement = () => {
           <div className="mb-4 flex flex-wrap gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
+                <button className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
                   Mass Update Type
-                </Button>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="bg-dark-500 border-dark-400 text-light-100">
                 <DropdownMenuItem
@@ -529,12 +525,11 @@ const DATAManagement = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button
-              variant="destructive"
+            <button
               onClick={handleMassDelete}
               className="bg-red-500 hover:bg-red-600 text-light-100">
               Delete Selected ({selectedRows.length})
-            </Button>
+            </button>
           </div>
         )}
         <div className="w-full overflow-x-auto max-h-[700px] __dokmai_scrollbar border border-dark-500">
@@ -576,12 +571,9 @@ const DATAManagement = () => {
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="text-light-300 hover:text-light-100 hover:bg-dark-500">
+                            <button className="text-light-300 hover:text-light-100 hover:bg-dark-500">
                               <MoreHorizontal className="h-4 w-4" />
-                            </Button>
+                            </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent className="bg-dark-500 border-dark-400 text-light-100">
                             <DropdownMenuItem
@@ -631,21 +623,21 @@ const DATAManagement = () => {
             </Select>
           </div>
           <div className="flex items-center gap-2">
-            <Button
+            <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
               {'<'}
-            </Button>
+            </button>
             <span>
               Page {totalEntries > 0 ? currentPage : 0} / {totalPages} ({totalEntries})
             </span>
-            <Button
+            <button
               disabled={currentPage === totalPages || totalEntries === 0}
               onClick={() => setCurrentPage(currentPage + 1)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
               {'>'}
-            </Button>
+            </button>
           </div>
         </div>
       </CardContent>
@@ -771,13 +763,12 @@ const DATAManagement = () => {
             </div>
           </div>
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsEditDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleEdit}
               disabled={loading}
               className="bg-primary hover:bg-primary/90 text-dark-800">
@@ -792,7 +783,7 @@ const DATAManagement = () => {
                   Save Changes
                 </>
               )}
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -806,14 +797,12 @@ const DATAManagement = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsDeleteDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
               Cancel
-            </Button>
-            <Button
-              variant="destructive"
+            </button>
+            <button
               onClick={handleDelete}
               disabled={loading}
               className="bg-red-500 hover:bg-red-600 text-light-100">
@@ -828,7 +817,7 @@ const DATAManagement = () => {
                   Delete
                 </>
               )}
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -864,12 +853,11 @@ const DATAManagement = () => {
             </div>
           )}
           <DialogFooter>
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsViewDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
               Close
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

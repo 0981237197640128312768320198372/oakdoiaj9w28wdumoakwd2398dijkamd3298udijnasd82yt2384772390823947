@@ -3,7 +3,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
@@ -329,16 +328,16 @@ const AccountList = () => {
               </div>
             </div>
             <div className="flex gap-2 w-full ">
-              <Button
+              <button
                 onClick={handleCopyAll}
                 className="bg-primary hover:bg-primary/90 text-dark-800 max-sm:w-full">
                 Copy All ({totalEntries})
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={handleSaveChanges}
                 className="bg-primary hover:bg-primary/90 text-dark-800 max-sm:w-full">
                 Save Changes
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -389,12 +388,11 @@ const AccountList = () => {
                           <SelectItem value="Wiped">Wiped</SelectItem>
                         </SelectContent>
                       </Select>
-                      <Button
-                        variant="ghost"
+                      <button
                         onClick={() => handleCopyLine(account)}
                         className="text-light-400 hover:text-white hover:bg-dark-400 !p-2">
                         <PiCopySimpleLight className="text-xl" />
-                      </Button>
+                      </button>
                     </div>
                   </div>
                   <div className="flex flex-col items-start text-xs lg:text-base text-light-300 font-light w-full">
@@ -407,12 +405,9 @@ const AccountList = () => {
                   <div className="flex justify-end items-end">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-light-300 hover:text-light-100 hover:bg-dark-400">
+                        <button className="text-light-300 hover:text-light-100 hover:bg-dark-400">
                           <MoreHorizontal className="h-4 w-4" />
-                        </Button>
+                        </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="bg-dark-500 border-dark-400 text-light-100">
                         <DropdownMenuItem onClick={() => handleEditClick(account)}>
@@ -453,21 +448,21 @@ const AccountList = () => {
             </Select>
           </div>
           <div className="flex items-center gap-2">
-            <Button
+            <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
               {'<'}
-            </Button>
+            </button>
             <span>
               Page {totalEntries > 0 ? currentPage : 0} / {totalPages} ({totalEntries})
             </span>
-            <Button
+            <button
               disabled={currentPage === totalPages || totalEntries === 0}
               onClick={() => setCurrentPage(currentPage + 1)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400 disabled:opacity-50">
               {'>'}
-            </Button>
+            </button>
           </div>
         </div>
       </CardContent>
@@ -532,13 +527,12 @@ const AccountList = () => {
             </div>
           </div>
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsEditDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleEdit}
               disabled={loading}
               className="bg-primary hover:bg-primary/90 text-dark-800">
@@ -553,7 +547,7 @@ const AccountList = () => {
                   Save Changes
                 </>
               )}
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -567,14 +561,12 @@ const AccountList = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
+            <button
               onClick={() => setIsDeleteDialogOpen(false)}
               className="bg-dark-500 border-dark-400 text-light-100 hover:bg-dark-400">
               Cancel
-            </Button>
-            <Button
-              variant="destructive"
+            </button>
+            <button
               onClick={handleDelete}
               disabled={loading}
               className="bg-red-500 hover:bg-red-600 text-light-100">
@@ -589,7 +581,7 @@ const AccountList = () => {
                   Delete
                 </>
               )}
-            </Button>
+            </button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

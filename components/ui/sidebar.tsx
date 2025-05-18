@@ -5,7 +5,7 @@ import { Slot } from '@radix-ui/react-slot';
 import { VariantProps, cva } from 'class-variance-authority';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/Button';
+import { Button2 } from '@/components/ui/button2';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -245,13 +245,13 @@ const Sidebar = React.forwardRef<
 Sidebar.displayName = 'Sidebar';
 
 const SidebarTrigger = React.forwardRef<
-  React.ElementRef<typeof Button>,
-  React.ComponentProps<typeof Button>
+  React.ElementRef<typeof Button2>,
+  React.ComponentProps<typeof Button2>
 >(({ className, onClick, ...props }, ref) => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <Button
+    <Button2
       ref={ref}
       data-sidebar="trigger"
       variant="ghost"
@@ -264,7 +264,7 @@ const SidebarTrigger = React.forwardRef<
       {...props}>
       <VscLayoutSidebarLeft className="text-primary h-8 w-8" />
       <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+    </Button2>
   );
 });
 SidebarTrigger.displayName = 'SidebarTrigger';
