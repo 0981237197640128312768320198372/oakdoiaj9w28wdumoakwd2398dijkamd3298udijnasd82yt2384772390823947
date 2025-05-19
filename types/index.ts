@@ -29,9 +29,7 @@ export interface AuthContextType {
   logout: () => void;
 }
 
-export interface DepositFormProps {
-  // Add any props if needed
-}
+export interface DepositFormProps {}
 
 export interface PaymentStep {
   id: number;
