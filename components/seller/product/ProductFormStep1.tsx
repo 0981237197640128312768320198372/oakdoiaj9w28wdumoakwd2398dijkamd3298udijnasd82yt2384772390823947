@@ -5,6 +5,7 @@ import ImageUploader from './ImageUploader';
 import StatusSelector from './StatusSelector';
 import FormField from '@/components/ui/FormField';
 import Button from '@/components/ui/ButtonWithLoader';
+import Image from 'next/image';
 
 interface ProductFormStep1Props {
   formData: ProductFormData;
@@ -161,26 +162,52 @@ const ProductFormStep1: React.FC<ProductFormStep1Props> = ({
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <FormField id="categoryId" label="Category" error={formErrors.categoryId}>
-            <select
-              id="categoryId"
-              name="categoryId"
-              value={formData.categoryId}
-              onChange={(e) => onInputChange('categoryId', e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border transition-all duration-200 appearance-none bg-no-repeat text-sm
-                ${
-                  formErrors.categoryId
-                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
-                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
-                } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20
-                bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"%3E%3Cpath stroke="%236b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m6 8 4 4 4-4"/%3E%3C/svg%3E')]
-                bg-[right_0.5rem_center] bg-[length:1.25em_1.25em]`}>
-              <option value="">Select a category</option>
-              {categories.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                id="categoryId"
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={(e) => onInputChange('categoryId', e.target.value)}
+                className={`w-full px-3 py-2 rounded-lg border transition-all duration-200 appearance-none bg-no-repeat text-sm
+                  ${
+                    formErrors.categoryId
+                      ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
+                      : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
+                  } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20
+                  bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"%3E%3Cpath stroke="%236b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m6 8 4 4 4-4"/%3E%3C/svg%3E')]
+                  bg-[right_0.5rem_center] bg-[length:1.25em_1.25em]`}>
+                <option value="">Select a category</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Category Preview */}
+            {formData.categoryId && (
+              <div className="mt-2 flex items-center gap-2 p-2 bg-dark-600 rounded-lg border border-dark-500">
+                {categories.find((cat) => cat._id === formData.categoryId)?.logoUrl ? (
+                  <div className="relative w-8 h-8 overflow-hidden rounded-md">
+                    <Image
+                      src={categories.find((cat) => cat._id === formData.categoryId)?.logoUrl || ''}
+                      alt="Category"
+                      width={32}
+                      height={32}
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 bg-dark-500 rounded-md flex items-center justify-center text-light-500 text-xs">
+                    No img
+                  </div>
+                )}
+                <span className="text-xs text-light-300">
+                  {categories.find((cat) => cat._id === formData.categoryId)?.name}
+                </span>
+              </div>
+            )}
           </FormField>
 
           <StatusSelector

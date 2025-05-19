@@ -94,24 +94,20 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         updateData.append('password', formData.password);
       }
 
-      // Contact info
       updateData.append('facebook', formData.facebook);
       updateData.append('line', formData.line);
       updateData.append('instagram', formData.instagram);
       updateData.append('whatsapp', formData.whatsapp);
 
-      // Logo if changed
       if (logoFile) {
         updateData.append('logo', logoFile);
       }
 
-      // Get token from localStorage
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('Authentication token not found');
       }
 
-      // Send update request
       const response = await fetch('/api/v3/seller/update-profile', {
         method: 'PUT',
         headers: {
@@ -126,7 +122,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         throw new Error(data.error || 'Failed to update profile');
       }
 
-      // Update auth context with new token if provided
       if (data.token) {
         login(data.token);
       }
@@ -134,7 +129,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       setSuccess('Profile updated successfully');
       onProfileUpdated();
 
-      // Close modal after a short delay
       setTimeout(() => {
         onClose();
       }, 1500);

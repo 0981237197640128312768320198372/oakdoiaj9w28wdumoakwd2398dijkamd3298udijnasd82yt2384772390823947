@@ -26,20 +26,16 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     formErrors,
     isLoading,
     error,
-    success,
     editMode,
     updateFormData,
     addProduct,
     deleteProduct,
     editProduct,
     resetForm,
-    setError,
-    setSuccess,
   } = useProducts(seller?.id);
 
   const { showSuccess, showError } = useToast();
 
-  // Handle form submission
   const handleSubmit = async () => {
     const result = await addProduct();
     if (result) {
@@ -107,6 +103,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
         ) : (
           <ProductList
             products={products}
+            categories={categories}
             onEdit={handleEditProduct}
             onDelete={handleDeleteProduct}
             isLoading={isLoading}

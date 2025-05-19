@@ -9,9 +9,15 @@ interface ProductCardProps {
   product: Product;
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
+  categories?: { _id: string; name: string; logoUrl?: string }[];
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onEdit,
+  onDelete,
+  categories = [],
+}) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -25,6 +31,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
   const discountedPrice = hasDiscount
     ? product.price * (1 - product.discountPercentage / 100)
     : product.price;
+
+  // Find the category for this product
+  const category = categories.find((cat) => cat._id === product.categoryId);
 
   useEffect(() => {
     if (product.images.length <= 1) return;
@@ -135,7 +144,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
 
         {/* Discount badge */}
         {hasDiscount && (
-          <div className="absolute top-1 left-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
+          <div className="absolute top-1 right-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
             {product.discountPercentage}% OFF
           </div>
         )}
@@ -146,19 +155,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
           <h3 className="text-sm font-medium text-light-200 line-clamp-1">{product.title}</h3>
 
           {/* Price display with discount */}
-          <div className="flex items-center gap-2">
-            {hasDiscount ? (
-              <>
-                <span className="text-xs line-through text-light-500 whitespace-nowrap flex gap-1 items-center">
-                  <Image
-                    src={dokmaicoin}
-                    alt="Dokmai Coin"
-                    className="h-3 w-3"
-                    width={50}
-                    height={50}
-                  />
-                  {product.price.toFixed(2)}
-                </span>
+          <div className="flex w-full justify-between">
+            <div className="flex items-center gap-2">
+              {hasDiscount ? (
+                <>
+                  <span className="text-xs line-through text-light-500 whitespace-nowrap flex gap-1 items-center">
+                    <Image
+                      src={dokmaicoin}
+                      alt="Dokmai Coin"
+                      className="h-3 w-3"
+                      width={50}
+                      height={50}
+                    />
+                    {product.price.toFixed(2)}
+                  </span>
+                  <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
+                    <Image
+                      src={dokmaicoin}
+                      alt="Dokmai Coin"
+                      className="h-4 w-4"
+                      width={50}
+                      height={50}
+                    />
+                    {discountedPrice.toFixed(2)}
+                  </span>
+                </>
+              ) : (
                 <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
                   <Image
                     src={dokmaicoin}
@@ -167,20 +189,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit, onDelete }) 
                     width={50}
                     height={50}
                   />
-                  {discountedPrice.toFixed(2)}
+                  {product.price.toFixed(2)}
                 </span>
-              </>
-            ) : (
-              <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
-                <Image
-                  src={dokmaicoin}
-                  alt="Dokmai Coin"
-                  className="h-4 w-4"
-                  width={50}
-                  height={50}
-                />
-                {product.price.toFixed(2)}
-              </span>
+              )}
+            </div>
+            {category && (
+              <div>
+                {category.logoUrl ? (
+                  <>
+                    <Image
+                      src={category.logoUrl}
+                      alt={category.name}
+                      width={50}
+                      height={50}
+                      className="w-auto h-3"
+                    />
+                  </>
+                ) : (
+                  <div className="w-5 h-5 bg-primary/20 rounded flex items-center justify-center">
+                    <span className="text-[8px] text-primary">CAT</span>
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

@@ -1,16 +1,23 @@
 import React from 'react';
 import { Search } from 'lucide-react';
 import ProductCard from './ProductCard';
-import { Product } from '@/types';
+import { Product, Category } from '@/types';
 
 interface ProductListProps {
   products: Product[];
+  categories: Category[];
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
   isLoading: boolean;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDelete, isLoading }) => {
+const ProductList: React.FC<ProductListProps> = ({
+  products,
+  categories,
+  onEdit,
+  onDelete,
+  isLoading,
+}) => {
   // Loading skeleton for products
   const ProductSkeleton = () => (
     <div className="bg-dark-800 rounded-xl overflow-hidden shadow-sm border border-dark-700 animate-pulse">
@@ -54,6 +61,7 @@ const ProductList: React.FC<ProductListProps> = ({ products, onEdit, onDelete, i
               <ProductCard
                 key={product._id}
                 product={product}
+                categories={categories}
                 onEdit={onEdit}
                 onDelete={onDelete}
               />

@@ -67,6 +67,7 @@ export interface Product {
   stock: number;
   type: string;
   details: any;
+  sellerId: string;
   categoryId: string;
   price: number;
   discountPercentage: number;
@@ -78,6 +79,9 @@ export interface Product {
 export interface Category {
   _id: string;
   name: string;
+  description?: string;
+  logoUrl?: string;
+  parentId?: string;
 }
 
 export interface ProductFormData {
