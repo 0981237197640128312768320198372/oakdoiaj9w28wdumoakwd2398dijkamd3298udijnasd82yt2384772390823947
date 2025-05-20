@@ -3,9 +3,18 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
 interface ThemeType {
-  primaryColor: string;
-  textColor: string;
+  adsImageUrl: string;
+  backgroundImage: string;
+  buttonBgColor: string;
+  buttonBorder: string;
+  buttonTextColor: string;
   fontFamily: string;
+  primaryColor: string;
+  roundedness: string;
+  secondaryColor: string;
+  shadow: string;
+  spacing: string;
+  textColor: string;
 }
 
 interface ThemeContextProps {
@@ -16,15 +25,35 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 interface SellerThemeProps {
   children: React.ReactNode;
-  subdomain: string;
 }
 
-export const SellerTheme = ({ children, subdomain }: SellerThemeProps) => {
+export const SellerTheme = ({ children }: SellerThemeProps) => {
   const [theme, setTheme] = useState<ThemeType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const getSubdomain = () => {
+      const hostname = window.location.hostname;
+
+      if (hostname.endsWith('.localhost')) {
+        const parts = hostname.split('.');
+        if (parts.length >= 2) {
+          return parts[0]; // Returns "shop"
+        }
+      }
+      return null;
+    };
+
+    const subdomain = getSubdomain();
+    console.log('Subdomain:', subdomain);
+
+    if (!subdomain) {
+      setError('No subdomain found');
+      setLoading(false);
+      return;
+    }
+
     const fetchTheme = async () => {
       setLoading(true);
       setError(null);
@@ -34,7 +63,11 @@ export const SellerTheme = ({ children, subdomain }: SellerThemeProps) => {
           throw new Error(`Failed to fetch theme: ${response.status}`);
         }
         const data = await response.json();
-        setTheme(data.theme);
+        if (data.theme && typeof data.theme === 'object') {
+          setTheme(data.theme);
+        } else {
+          throw new Error('Invalid theme data received');
+        }
       } catch (err) {
         setError(`Failed to load theme for ${subdomain}`);
         console.error(err);
@@ -44,7 +77,7 @@ export const SellerTheme = ({ children, subdomain }: SellerThemeProps) => {
     };
 
     fetchTheme();
-  }, [subdomain]);
+  }, []);
 
   if (loading) {
     return <div>Loading theme...</div>;
@@ -54,18 +87,7 @@ export const SellerTheme = ({ children, subdomain }: SellerThemeProps) => {
     return <div>Error: {error}</div>;
   }
 
-  console.log('Theme:', theme);
-  console.log('Primary Color:', theme?.primaryColor);
-
-  return (
-    <ThemeContext.Provider value={{ theme }}>
-      <div
-        style={{ fontFamily: theme?.fontFamily }}
-        className={`!text-[${theme?.primaryColor}] p-5 min-h-screen  overflow-x-hidden selection:bg-primary/10 selection:text-primary flex flex-col justify-start w-full items-center`}>
-        {children}
-      </div>
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>;
 };
 
 export const useTheme = (): ThemeContextProps => {
