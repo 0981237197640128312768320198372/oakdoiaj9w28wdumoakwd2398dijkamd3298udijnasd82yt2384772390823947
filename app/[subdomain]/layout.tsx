@@ -1,4 +1,4 @@
-import { SellerTheme } from '@/components/seller/SellerTheme';
+import { StoreData } from '@/components/seller/StoreData';
 import { Metadata } from 'next';
 import '@/styles/globals.css';
 
@@ -15,7 +15,7 @@ export default function SubdomainLayout({ children }: SubdomainLayoutProps) {
   return (
     <html lang="en">
       <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/50  selection:text-primary">
-        <SellerTheme>{children}</SellerTheme>
+        <StoreData>{children}</StoreData>
       </body>
     </html>
   );

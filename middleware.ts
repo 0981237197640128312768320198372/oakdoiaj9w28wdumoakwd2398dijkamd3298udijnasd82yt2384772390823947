@@ -1,3 +1,4 @@
+// middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 interface GeoRequest extends NextRequest {
@@ -20,7 +21,7 @@ export async function middleware(req: GeoRequest) {
     'https://admin.dokmaistore.com',
     'http://localhost:3000',
     'http://localhost',
-    'https://dokmai.store',
+    'https://dokmai.store', // Add dokmai.store to allowed origins
   ];
 
   if (req.method === 'OPTIONS') {
@@ -82,6 +83,10 @@ export async function middleware(req: GeoRequest) {
       status: 403,
       headers: { 'Content-Type': 'text/plain' },
     });
+  }
+
+  if (hostname?.includes('.localhost') && subdomain !== 'www') {
+    return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
   }
 
   if (hostname?.includes('localhost') && path.startsWith('/seller')) {

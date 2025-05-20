@@ -23,7 +23,7 @@ interface ThemeContextProps {
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-interface SellerThemeProps {
+interface StoreDataProps {
   children: React.ReactNode;
 }
 
@@ -51,7 +51,7 @@ const getSubdomain = (hostname: string): string | null => {
   return null;
 };
 
-export const SellerTheme = ({ children }: SellerThemeProps) => {
+export const StoreData = ({ children }: StoreDataProps) => {
   const [theme, setTheme] = useState<ThemeType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +109,7 @@ export const SellerTheme = ({ children }: SellerThemeProps) => {
 export const useTheme = (): ThemeContextProps => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a SellerTheme');
+    throw new Error('useTheme must be used within a StoreData');
   }
   return context;
 };
