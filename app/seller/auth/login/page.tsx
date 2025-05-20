@@ -6,11 +6,7 @@ export const metadata = generateMetadata({
   iconUrl: '/icons/favicon-app.png',
 });
 const page = () => {
-  return (
-    <div>
-      <LoginSellerPage />
-    </div>
-  );
+  return <LoginSellerPage />;
 };
 
 export default page;

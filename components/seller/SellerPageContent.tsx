@@ -66,7 +66,7 @@ const SellerPageContent = () => {
 // Component to prompt users to log in
 const SellerLoginPrompt = () => {
   return (
-    <div className="flex flex-col items-center justify-center text-center p-8 bg-dark-600 rounded-xl border border-dark-400 max-w-md mx-auto">
+    <div className="flex flex-col items-center justify-center text-center p-8 bg-dark-600 rounded-xl border border-dark-400 max-w-md mx-auto max-md:pt-32 pt-10">
       <UserPlus size={64} className="text-primary mb-4" />
       <h2 className="text-xl font-bold text-light-100 mb-2">Seller Account Required</h2>
       <p className="text-light-500 mb-6">
