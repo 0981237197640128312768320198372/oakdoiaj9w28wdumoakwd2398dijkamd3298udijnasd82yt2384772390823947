@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useTheme } from '@/components/seller/SellerTheme';
 import React from 'react';
 
 const StorePage = () => {
-  const { theme } = useTheme();
+  const { theme }: any = useTheme();
   console.log(theme);
   const stoerName = theme?.name;
   return <h2 style={{ color: theme?.primaryColor || 'inherit' }}>Hi {stoerName}</h2>;
