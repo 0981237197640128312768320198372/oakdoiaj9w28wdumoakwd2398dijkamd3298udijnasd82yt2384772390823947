@@ -1,3 +1,4 @@
+// components/seller/SellerTheme.tsx
 'use client';
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
@@ -27,57 +28,64 @@ interface SellerThemeProps {
   children: React.ReactNode;
 }
 
+const getSubdomain = (hostname: string): string | null => {
+  if (hostname.endsWith('.localhost')) {
+    const parts = hostname.split('.');
+    if (parts.length >= 2 && parts[parts.length - 1] === 'localhost') {
+      return parts[0]; // e.g., 'shop' from 'shop.localhost'
+    }
+  } else if (hostname.endsWith('.dokmai.store')) {
+    const parts = hostname.split('.');
+    if (parts.length >= 3 && parts.slice(-2).join('.') === 'dokmai.store') {
+      return parts[0];
+    }
+  }
+  return null;
+};
+
 export const SellerTheme = ({ children }: SellerThemeProps) => {
   const [theme, setTheme] = useState<ThemeType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [subdomain, setSubdomain] = useState<string | null>(null);
 
   useEffect(() => {
-    const getSubdomain = () => {
-      const hostname = window.location.hostname;
-
-      if (hostname.endsWith('.localhost')) {
-        const parts = hostname.split('.');
-        if (parts.length >= 2) {
-          return parts[0]; // Returns "shop"
-        }
-      }
-      return null;
-    };
-
-    const subdomain = getSubdomain();
-    console.log('Subdomain:', subdomain);
-
-    if (!subdomain) {
-      setError('No subdomain found');
+    const hostname = window.location.hostname;
+    const subdomain = getSubdomain(hostname);
+    if (subdomain) {
+      setSubdomain(subdomain);
+    } else {
+      setError('Invalid domain or no subdomain provided.');
       setLoading(false);
-      return;
     }
-
-    const fetchTheme = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`/api/v3/seller/theme?subdomain=${subdomain}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch theme: ${response.status}`);
-        }
-        const data = await response.json();
-        if (data.theme && typeof data.theme === 'object') {
-          setTheme(data.theme);
-        } else {
-          throw new Error('Invalid theme data received');
-        }
-      } catch (err) {
-        setError(`Failed to load theme for ${subdomain}`);
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTheme();
   }, []);
+
+  useEffect(() => {
+    if (subdomain) {
+      const fetchTheme = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const response = await fetch(`/api/v3/seller/theme?subdomain=${subdomain}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch theme: ${response.status}`);
+          }
+          const data = await response.json();
+          if (data && typeof data === 'object') {
+            setTheme(data);
+          } else {
+            throw new Error('Invalid theme data received');
+          }
+        } catch (err) {
+          setError(`Failed to load theme for ${subdomain}`);
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchTheme();
+    }
+  }, [subdomain]);
 
   if (loading) {
     return <div>Loading theme...</div>;
