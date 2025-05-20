@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const token = jwt.sign(
       { userId: user._id, username: user.username, roles: user.roles },
       process.env.JWT_SECRET as string,
-      { expiresIn: '6h' }
+      { expiresIn: '2h' }
     );
 
     const redirectUrl = user.roles.includes('seller') ? '/app' : 'app';

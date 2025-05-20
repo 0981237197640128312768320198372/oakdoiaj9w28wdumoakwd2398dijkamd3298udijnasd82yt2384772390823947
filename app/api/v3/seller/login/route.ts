@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     };
 
     const token = jwt.sign(tokenData, process.env.JWT_SECRET as string, {
-      expiresIn: '6h',
+      expiresIn: '2h',
     });
 
     console.log(token);

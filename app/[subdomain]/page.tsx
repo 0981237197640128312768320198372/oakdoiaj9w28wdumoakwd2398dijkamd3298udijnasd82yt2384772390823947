@@ -3,12 +3,21 @@
 
 import { useTheme } from '@/components/seller/SellerTheme';
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 const StorePage = () => {
   const { theme }: any = useTheme();
-  console.log(theme);
-  const stoerName = theme?.name;
-  return <h2 style={{ color: theme?.primaryColor || 'inherit' }}>Hi {stoerName}</h2>;
+  const storeName = theme?.name;
+  const primaryColor = theme?.primaryColor || 'inherit';
+
+  return (
+    <h2
+      style={{ color: primaryColor }}
+      className={cn('font-bold text-2xl', `text-light-200`)} // Apply text color using a Tailwind class
+    >
+      Hi {storeName}
+    </h2>
+  );
 };
 
 export default StorePage;
