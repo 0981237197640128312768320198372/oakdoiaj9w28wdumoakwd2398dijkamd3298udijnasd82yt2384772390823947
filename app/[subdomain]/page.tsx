@@ -32,7 +32,7 @@ const StorePage = () => {
   const [subdomain, setSubdomain] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { theme } = useTheme();
-
+  console.log('OAKWOAKOWKAOWK', theme);
   useEffect(() => {
     const hostname = window.location.hostname;
     console.log(hostname);
@@ -55,6 +55,7 @@ const StorePage = () => {
   return (
     <h2 className="text-green-500" style={{ color: theme?.primaryColor }}>
       Store: {subdomain}
+      {theme?.primaryColor}
     </h2>
   );
 };

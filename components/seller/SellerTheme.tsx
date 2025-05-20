@@ -45,8 +45,9 @@ export const SellerTheme = ({ children }: SellerThemeProps) => {
           throw new Error(`Failed to fetch theme: ${response.status}`);
         }
         const data = await response.json();
+        console.log('aowkaokwaok', data);
         if (data && typeof data === 'object') {
-          setTheme(data);
+          setTheme(data.theme);
         } else {
           throw new Error('Invalid theme data received');
         }
@@ -60,9 +61,9 @@ export const SellerTheme = ({ children }: SellerThemeProps) => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       console.log();
-      const subdomain = hostname.endsWith('.localhost:3000')
+      const subdomain = hostname.includes('.localhost:3000')
         ? hostname.split('.')[0]
-        : hostname.endsWith('.dokmai.store')
+        : hostname.includes('.dokmai.store')
         ? hostname.split('.')[0]
         : null;
       setSubdomain(subdomain);
