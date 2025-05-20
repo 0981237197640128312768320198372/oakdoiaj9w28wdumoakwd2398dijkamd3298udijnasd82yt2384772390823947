@@ -1,4 +1,3 @@
-// app/[subdomain]/layout.tsx
 import { SellerTheme } from '@/components/seller/SellerTheme';
 import { Metadata } from 'next';
 import '@/styles/globals.css';

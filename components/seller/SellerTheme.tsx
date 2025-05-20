@@ -1,4 +1,3 @@
-// components/seller/SellerTheme.tsx
 'use client';
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
