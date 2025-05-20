@@ -84,7 +84,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
 
     try {
-      // Prepare form data for API
       const updateData = new FormData();
       updateData.append('storeName', formData.storeName);
       updateData.append('storeDescription', formData.storeDescription);

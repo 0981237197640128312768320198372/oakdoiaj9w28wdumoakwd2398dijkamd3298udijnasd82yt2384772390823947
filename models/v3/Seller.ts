@@ -91,7 +91,6 @@ const sellerSchema = new Schema<ISeller>(
         negative: { type: Number, default: 0 },
       },
       theme: {
-        // ADDED THIS SECTION
         roundedness: {
           type: String,
           enum: ['rounded', 'rounded-full', 'square'],

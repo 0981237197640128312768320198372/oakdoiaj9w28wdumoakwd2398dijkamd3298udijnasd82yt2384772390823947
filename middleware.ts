@@ -1,3 +1,4 @@
+// middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
 
 interface GeoRequest extends NextRequest {
@@ -20,6 +21,7 @@ export async function middleware(req: GeoRequest) {
     'https://admin.dokmaistore.com',
     'http://localhost:3000',
     'http://localhost',
+    'https://dokmai.store', // Add dokmai.store to allowed origins
   ];
 
   if (req.method === 'OPTIONS') {
@@ -83,30 +85,25 @@ export async function middleware(req: GeoRequest) {
     });
   }
 
+  // Localhost testing: Allow any subdomain on localhost
+  if (hostname?.includes('localhost') && subdomain !== 'www') {
+    return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
+  }
+
   if (hostname?.endsWith('.dokmai.store') && subdomain !== 'www') {
-    return NextResponse.rewrite(new URL(`/seller/${subdomain}`, req.url));
+    return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
   }
 
-  if (
-    hostname !== 'seller.dokmaistore.com' &&
-    !hostname?.includes('localhost') &&
-    hostname?.endsWith('dokmaistore.com') &&
-    path.startsWith('/seller')
-  ) {
-    return new Response(null, { status: 403, headers: { 'Content-Type': 'text/html' } });
-  }
-
-  if (hostname === 'app.dokmaistore.com') {
-    return NextResponse.rewrite(new URL(`/app${path}`, req.url));
-  }
-
-  // Rewrite seller.dokmaistore.com to /seller (new setup)
   if (hostname === 'seller.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/seller${path}`, req.url));
   }
 
   if (hostname === 'admin.dokmaistore.com') {
     return NextResponse.rewrite(new URL(`/admin${path}`, req.url));
+  }
+
+  if (hostname === 'app.dokmaistore.com') {
+    return NextResponse.rewrite(new URL(`/app${path}`, req.url));
   }
 
   if (hostname?.includes('localhost') && (path.startsWith('/admin') || path.startsWith('/app'))) {

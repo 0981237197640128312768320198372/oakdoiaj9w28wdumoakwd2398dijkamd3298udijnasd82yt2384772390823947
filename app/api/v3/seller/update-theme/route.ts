@@ -3,14 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Seller } from '@/models/v3/Seller';
 import { connectToDatabase } from '@/lib/db';
 import jwt from 'jsonwebtoken';
-import { getAdminToken } from '@/lib/utils';
 
 export async function PUT(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    const token = getAdminToken();
-    // const token = req.headers.get('Authorization')?.split(' ')[1];
+    const token = req.headers.get('Authorization')?.split(' ')[1];
     if (!token) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }

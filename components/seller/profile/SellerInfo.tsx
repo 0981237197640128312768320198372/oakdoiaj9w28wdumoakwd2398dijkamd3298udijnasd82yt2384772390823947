@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,10 +13,12 @@ import { InfoSection } from './InfoSection';
 import { StoreStats } from './StoreStats';
 import Link from 'next/link';
 import EditProfileButton from './EditProfileButton';
+import ThemeCustomizer from '../ThemeCustomizer';
 
 export default function SellerInfo() {
-  const { seller, logout } = useSellerAuth();
+  const { seller, login } = useSellerAuth();
   const [isVisible, setIsVisible] = useState(false);
+  const [isThemeCustomizerVisible, setIsThemeCustomizerVisible] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,6 +52,41 @@ export default function SellerInfo() {
     }
   };
 
+  const handleThemeChange = async (theme: any) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found');
+      }
+
+      const response = await fetch('/api/v3/seller/update-theme', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(theme),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update theme');
+      }
+
+      // Update the seller data in local storage
+      const updatedSeller = { ...seller, store: { ...seller.store, theme } };
+      localStorage.setItem('seller', JSON.stringify(updatedSeller));
+
+      // Update the seller context
+      login(token);
+
+      refreshSellerData();
+    } catch (err) {
+      console.error('Error updating theme:', err);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -59,8 +96,13 @@ export default function SellerInfo() {
       <Card className="overflow-hidden bg-card text-card-foreground shadow-lg">
         <StoreHeader seller={seller} />
         <CardContent className="p-5 lg:px-0">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-between items-start mb-4">
             <EditProfileButton seller={seller} onProfileUpdated={refreshSellerData} />
+            <button
+              onClick={() => setIsThemeCustomizerVisible(!isThemeCustomizerVisible)}
+              className="px-4 py-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-lg transition-colors duration-200">
+              Customize Theme
+            </button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -107,6 +149,14 @@ export default function SellerInfo() {
           </div>
         </CardContent>
       </Card>
+
+      {isThemeCustomizerVisible && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur flex items-center justify-center">
+          <div className="bg-dark-700 p-8 rounded-lg max-w-3xl w-full">
+            <ThemeCustomizer seller={seller} onThemeChange={handleThemeChange} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
