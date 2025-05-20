@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+// app/[subdomain]/page.tsx
 'use client';
 
 import { useTheme } from '@/components/seller/SellerTheme';
 import React, { useState, useEffect } from 'react';
+
+interface StorePageProps {
+  params: {
+    subdomain: string;
+  };
+}
 
 const getSubdomain = (hostname: string): string | null => {
   if (hostname.endsWith('.localhost')) {
@@ -33,9 +40,7 @@ const StorePage = () => {
     }
   }, []);
   const { theme } = useTheme();
-  console.log(theme);
-  console.log(theme?.roundedness);
-  console.log(theme?.primaryColor);
+
   if (error) {
     return <p>{error}</p>;
   }
