@@ -31,7 +31,7 @@ const getSubdomain = (hostname: string): string | null => {
   if (hostname.endsWith('.localhost')) {
     const parts = hostname.split('.');
     if (parts.length >= 2 && parts[parts.length - 1] === 'localhost') {
-      return parts[0]; // e.g., 'shop' from 'shop.localhost'
+      return parts[0];
     }
   } else if (hostname.endsWith('.dokmai.store')) {
     const parts = hostname.split('.');
