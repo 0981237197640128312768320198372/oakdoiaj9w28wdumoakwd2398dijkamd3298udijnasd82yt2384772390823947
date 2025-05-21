@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { fetchStoreData } from '@/lib/fetchStoreData';
-import { cn } from '@/lib/utils';
+import { cn, generateMetadata as generateMetadataUtil } from '@/lib/utils';
 
 interface ResolvedParams {
   subdomain: string;
 }
 
-// Define the props type, where params is a Promise
 interface StorePageProps {
   params: Promise<ResolvedParams>;
 }
@@ -17,21 +16,21 @@ export async function generateMetadata(props: StorePageProps) {
     const { seller } = await fetchStoreData(subdomain);
     const storeName = seller?.store.name || 'Dokmai Store';
     const storeDescription = seller?.store.description || 'A digital product marketplace';
-    return {
+    const url = `https://${seller?.username}.dokmai.store/`;
+
+    return generateMetadataUtil({
       title: storeName,
       description: storeDescription,
-      openGraph: {
-        title: storeName,
-        description: storeDescription,
-        url: `https://${seller?.username}.dokmai.store/`,
-      },
-    };
+      url,
+    });
   } catch (error) {
     console.error('Error generating metadata:', error);
-    return {
+
+    return generateMetadataUtil({
       title: 'Dokmai Store',
       description: 'A digital product marketplace',
-    };
+      url: 'https://dokmai.store',
+    });
   }
 }
 
@@ -40,7 +39,6 @@ export default async function StorePage(props: StorePageProps) {
   const { theme, seller } = await fetchStoreData(subdomain);
 
   const storeName = seller?.store.name;
-  const storeDescription = seller?.store.description;
   const primaryColor = theme?.primaryColor || 'inherit';
 
   return (
