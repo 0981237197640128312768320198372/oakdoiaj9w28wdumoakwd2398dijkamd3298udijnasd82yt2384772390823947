@@ -7,7 +7,7 @@ interface SubdomainLayoutProps {
 }
 
 export const metadata: Metadata = {
-  title: 'Storefront',
+  title: 'Store Page',
   description: 'Storefront layout for seller subdomains',
 };
 
