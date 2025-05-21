@@ -7,8 +7,8 @@ interface StoreData {
 }
 
 export async function fetchStoreData(subdomain: string): Promise<StoreData> {
-  const API_URL = 'http://localhost:3000';
-  // const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  // const API_URL = 'http://localhost:3000';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   try {
     const [themeResponse, sellerResponse] = await Promise.all([
       fetch(`${API_URL}/api/v3/seller/theme`, {
