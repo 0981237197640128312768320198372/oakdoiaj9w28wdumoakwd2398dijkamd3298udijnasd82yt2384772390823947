@@ -1,4 +1,3 @@
-// app/[subdomain]/ClientStorePage.tsx
 'use client';
 
 import React from 'react';
