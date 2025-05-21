@@ -1,27 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+import { ThemeType } from '@/lib/utils';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
-interface ThemeType {
-  adsImageUrl: string;
-  backgroundImage: string;
-  buttonBgColor: string;
-  buttonBorder: string;
-  buttonTextColor: string;
-  fontFamily: string;
-  primaryColor: string;
-  roundedness: string;
-  secondaryColor: string;
-  shadow: string;
-  spacing: string;
-  textColor: string;
-}
-
-interface ThemeContextProps {
+interface StoreContextProps {
   theme: ThemeType | null;
+  seller: any;
 }
 
-const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
+const StoreContext = createContext<StoreContextProps | undefined>(undefined);
 
 interface StoreDataProps {
   children: React.ReactNode;
@@ -29,7 +17,7 @@ interface StoreDataProps {
 
 const getSubdomain = (hostname: string): string | null => {
   let domain = hostname;
-  // Remove port number in localhost
+
   if (hostname.includes(':')) {
     domain = hostname.split(':')[0];
   }
@@ -53,6 +41,7 @@ const getSubdomain = (hostname: string): string | null => {
 
 export const StoreData = ({ children }: StoreDataProps) => {
   const [theme, setTheme] = useState<ThemeType | null>(null);
+  const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [subdomain, setSubdomain] = useState<string | null>(null);
@@ -70,46 +59,71 @@ export const StoreData = ({ children }: StoreDataProps) => {
 
   useEffect(() => {
     if (subdomain) {
-      const fetchTheme = async () => {
+      const fetchData = async () => {
         setLoading(true);
         setError(null);
         try {
-          const response = await fetch(`/api/v3/seller/theme?subdomain=${subdomain}`);
-          if (!response.ok) {
-            throw new Error(`Failed to fetch theme: ${response.status}`);
+          const [themeResponse, sellerResponse] = await Promise.all([
+            fetch('/api/v3/seller/theme', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ username: subdomain }),
+            }),
+            fetch('/api/v3/seller/details', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ username: subdomain }),
+            }),
+          ]);
+
+          if (!themeResponse.ok || !sellerResponse.ok) {
+            throw new Error('Failed to fetch data');
           }
-          const data = await response.json();
-          if (data && typeof data === 'object') {
-            setTheme(data);
+
+          const themeData = await themeResponse.json();
+          const sellerData = await sellerResponse.json();
+
+          if (
+            themeData &&
+            sellerData &&
+            typeof themeData === 'object' &&
+            typeof sellerData === 'object'
+          ) {
+            setTheme(themeData);
+            setSeller(sellerData.seller);
           } else {
-            throw new Error('Invalid theme data received');
+            throw new Error('Invalid data received');
           }
         } catch (err) {
-          setError(`Failed to load theme for ${subdomain}`);
+          setError(`Failed to load data for ${subdomain}`);
           console.error(err);
         } finally {
           setLoading(false);
         }
       };
-      fetchTheme();
+      fetchData();
     }
   }, [subdomain]);
 
   if (loading) {
-    return <div>Loading theme...</div>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  return <ThemeContext.Provider value={{ theme }}>{children}</ThemeContext.Provider>;
+  return <StoreContext.Provider value={{ theme, seller }}>{children}</StoreContext.Provider>;
 };
 
-export const useTheme = (): ThemeContextProps => {
-  const context = useContext(ThemeContext);
+export const useStoreData = (): StoreContextProps => {
+  const context = useContext(StoreContext);
   if (!context) {
-    throw new Error('useTheme must be used within a StoreData');
+    throw new Error('useStoreData must be used within a StoreData');
   }
   return context;
 };

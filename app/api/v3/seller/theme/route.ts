@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 
@@ -23,24 +23,27 @@ interface SellerData {
   store?: any;
 }
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const subdomain = searchParams.get('subdomain');
-
-  if (!subdomain) {
-    return NextResponse.json({ error: 'Subdomain is required' }, { status: 400 });
-  }
-
+export async function POST(req: NextRequest) {
   try {
+    const body = await req.json();
+    const username = body.username;
+
+    if (!username) {
+      return NextResponse.json(
+        { error: 'Username is required in the request body' },
+        { status: 400 }
+      );
+    }
+
     await connectToDatabase();
 
-    const seller = (await Seller.findOne({ username: subdomain }).lean()) as SellerData | null;
+    const seller = (await Seller.findOne({ username }).lean()) as SellerData | null;
 
     if (!seller) {
       return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
     }
 
-    const themeData = {
+    const themeData: ThemeData = {
       primaryColor: seller?.store?.theme.primaryColor || '#B9FE13',
       secondaryColor: seller?.store?.theme.secondaryColor || '#5E5E5E',
       fontFamily: seller?.store?.theme.fontFamily || 'AktivGroteskRegular',
@@ -53,7 +56,6 @@ export async function GET(request: Request) {
       spacing: seller?.store?.theme.spacing || 'normal',
       shadow: seller?.store?.theme.shadow || 'shadow-none',
       adsImageUrl: seller?.store?.theme.adsImageUrl || 'null',
-      ...(seller.store || {}),
     };
 
     return NextResponse.json(themeData);
