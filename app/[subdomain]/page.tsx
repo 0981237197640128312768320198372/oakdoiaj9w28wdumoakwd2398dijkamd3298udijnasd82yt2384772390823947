@@ -2,12 +2,17 @@
 import { fetchStoreData } from '@/lib/fetchStoreData';
 import { cn } from '@/lib/utils';
 
-interface StorePageProps {
-  params: { subdomain: string };
+interface ResolvedParams {
+  subdomain: string;
 }
 
-export async function generateMetadata({ params }: StorePageProps) {
-  const { subdomain } = params;
+// Define the props type, where params is a Promise
+interface StorePageProps {
+  params: Promise<ResolvedParams>;
+}
+
+export async function generateMetadata(props: StorePageProps) {
+  const { subdomain } = await props.params;
   try {
     const { seller } = await fetchStoreData(subdomain);
     const storeName = seller?.store.name || 'Dokmai Store';
@@ -30,9 +35,8 @@ export async function generateMetadata({ params }: StorePageProps) {
   }
 }
 
-// Page component
-export default async function StorePage({ params }: StorePageProps) {
-  const { subdomain } = params;
+export default async function StorePage(props: StorePageProps) {
+  const { subdomain } = await props.params;
   const { theme, seller } = await fetchStoreData(subdomain);
 
   const storeName = seller?.store.name;
