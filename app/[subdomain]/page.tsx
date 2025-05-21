@@ -14,23 +14,19 @@ export async function generateMetadata(props: StorePageProps) {
   const { subdomain } = await props.params;
   try {
     const { seller } = await fetchStoreData(subdomain);
-    const storeName = seller?.store.name || 'Dokmai Store';
-    const storeDescription = seller?.store.description || 'A digital product marketplace';
+    const storeLogo = seller?.store.logoUrl || 'Dokmai Store';
+    const storeName = seller?.store.name;
+    const storeDescription = seller?.store.description;
     const url = `https://${seller?.username}.dokmai.store/`;
 
     return generateMetadataUtil({
       title: storeName,
       description: storeDescription,
       url,
+      iconUrl: storeLogo,
     });
   } catch (error) {
-    console.error('Error generating metadata:', error);
-
-    return generateMetadataUtil({
-      title: 'Dokmai Store',
-      description: 'A digital product marketplace',
-      url: 'https://dokmai.store',
-    });
+    // console.error('Error generating metadata:', error);
   }
 }
 
