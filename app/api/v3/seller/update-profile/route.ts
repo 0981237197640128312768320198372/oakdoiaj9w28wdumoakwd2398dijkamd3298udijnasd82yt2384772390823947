@@ -82,7 +82,7 @@ export async function PUT(req: NextRequest) {
     const { password: _, ...sellerData } = sellerObj;
 
     const newToken = jwt.sign(sellerData, process.env.JWT_SECRET as string, {
-      expiresIn: '2h',
+      expiresIn: '6h',
     });
 
     return NextResponse.json({

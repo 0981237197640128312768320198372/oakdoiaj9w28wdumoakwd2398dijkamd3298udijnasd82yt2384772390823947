@@ -99,7 +99,7 @@ export const StoreData = ({ children }: StoreDataProps) => {
             throw new Error('Invalid data received');
           }
         } catch (err) {
-          setError(`Failed to load data for ${subdomain}`);
+          setError(`Store (${subdomain}) Not Exist`);
           console.error(err);
         } finally {
           setLoading(false);
@@ -114,7 +114,11 @@ export const StoreData = ({ children }: StoreDataProps) => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="w-screen h-96 flex justify-center items-center ">
+        <p className="text-light-800 tracking-widest font-thin">[ {error} ]</p>
+      </div>
+    );
   }
 
   return <StoreContext.Provider value={{ theme, seller }}>{children}</StoreContext.Provider>;
