@@ -34,7 +34,7 @@ export const generateMetadata = ({
   const defaultImage = 'https://dokmaistore.com/images/og-dokmaistore.webp';
   const defaultUrl = 'https://dokmaistore.com';
   return {
-    title: title ? `${title} | Dokmai Store` : defaultTitle,
+    title: title ? `${title}` : defaultTitle,
     description: description || defaultDescription,
     icons: {
       icon: [
