@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/components/PublicStoreLayout.tsx
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeType } from '@/lib/utils';
-import { PublicNavbar } from './PublicNavbar';
+import { motion } from 'framer-motion';
+import { StoreNavbar } from './StoreNavbar';
+import Image from 'next/image';
 
 interface PublicStoreLayoutProps {
   theme: ThemeType;
@@ -13,22 +14,146 @@ interface PublicStoreLayoutProps {
 }
 
 const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, children }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // Add a small delay for animation purposes
+    const timer = setTimeout(() => {
+      setLoaded(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Apply theme styles
+  const getButtonStyles = () => {
+    return {
+      backgroundColor: theme?.buttonBgColor || '#B9FE13',
+      color: theme?.buttonTextColor || '#0F0F0F',
+      borderRadius:
+        theme?.roundedness === 'rounded-full'
+          ? '9999px'
+          : theme?.roundedness === 'square'
+          ? '0px'
+          : '0.375rem',
+      border:
+        theme?.buttonBorder === 'border-none'
+          ? 'none'
+          : theme?.buttonBorder === 'border'
+          ? '1px solid'
+          : '2px solid',
+      borderColor: theme?.primaryColor,
+    };
+  };
+
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen w-full"
       style={{
-        backgroundColor: theme?.secondaryColor,
-        color: theme?.textColor,
-        fontFamily: theme?.fontFamily,
+        backgroundColor: theme?.secondaryColor || '#0F0F0F',
+        color: theme?.textColor || '#ECECEC',
+        fontFamily: theme?.fontFamily || 'AktivGrotesk-Regular',
       }}>
-      <PublicNavbar
-        storeName={seller?.store?.name}
-        primaryColor={theme?.primaryColor}
-        username={seller?.username}
+      {/* Background image or pattern if provided */}
+      {theme?.backgroundImage && (
+        <div
+          className="fixed inset-0 z-0 opacity-20 pointer-events-none"
+          style={{
+            backgroundImage: `url(${theme.backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
+      )}
+
+      {/* Navbar */}
+      <StoreNavbar
+        storeName={seller?.store?.name || 'Store'}
+        username={seller?.username || ''}
+        theme={theme}
+        buttonStyles={getButtonStyles()}
       />
-      <div className="flex flex-col items-center justify-start w-full py-20">
-        <div className="w-full max-w-screen-lg px-5">{children}</div>
-      </div>
+
+      {/* Main content */}
+      <motion.div
+        className="flex flex-col items-center justify-start w-full py-20 relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}>
+        <div className="w-full max-w-screen-lg px-5 relative">
+          {/* Store ads banner if available */}
+          {theme?.adsImageUrl && theme.adsImageUrl !== 'null' && (
+            <div
+              className="w-full mb-8 overflow-hidden rounded-lg shadow-xl"
+              style={{
+                borderRadius:
+                  theme?.roundedness === 'rounded-full'
+                    ? '1rem'
+                    : theme?.roundedness === 'square'
+                    ? '0'
+                    : '0.5rem',
+                boxShadow:
+                  theme?.shadow !== 'shadow-none'
+                    ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+                    : 'none',
+              }}>
+              <Image
+                src={theme.adsImageUrl}
+                alt={`${seller?.store?.name} promotion`}
+                width={1200}
+                height={300}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          )}
+
+          {children}
+        </div>
+      </motion.div>
+
+      {/* Footer */}
+      <footer
+        className="w-full py-6 mt-20 border-t"
+        style={{ borderColor: `${theme?.primaryColor}40` }}>
+        <div className="max-w-screen-lg mx-auto px-5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-sm opacity-70">
+            © {new Date().getFullYear()} {seller?.store?.name} | Powered by Dokmai Store
+          </div>
+
+          <div className="flex gap-4">
+            {seller?.contact?.facebook && (
+              <a
+                href={`https://${seller.contact.facebook}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: theme?.primaryColor }}>
+                Facebook
+              </a>
+            )}
+            {seller?.contact?.line && (
+              <a
+                href={`https://line.me/ti/p/${seller.contact.line.replace('@', '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: theme?.primaryColor }}>
+                Line
+              </a>
+            )}
+            {seller?.contact?.instagram && (
+              <a
+                href={`https://instagram.com/${seller.contact.instagram.replace('@', '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: theme?.primaryColor }}>
+                Instagram
+              </a>
+            )}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

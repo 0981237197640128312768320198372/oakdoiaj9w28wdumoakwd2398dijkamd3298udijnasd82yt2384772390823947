@@ -45,11 +45,10 @@ export function StoreStats({ seller }: StoreStatsProps) {
             icon={<ShoppingCart className="h-6 w-6" />}
             label="Sales"
             value={totalSales}
-            color="purple"
+            color="fuchsia"
           />
         </div>
 
-        {/* Rating and Satisfaction */}
         <div className="space-y-4 pt-5 border-t border-dark-300/50">
           <StatItem
             icon={<Star className="h-4 w-4 fill-yellow-400" />}
@@ -101,7 +100,7 @@ interface StatItemProps {
   icon: React.ReactNode;
   label: string;
   value: string | number;
-  color?: 'blue' | 'purple' | 'emerald' | 'yellow' | 'green' | 'red';
+  color?: 'blue' | 'purple' | 'emerald' | 'yellow' | 'green' | 'red' | 'fuchsia';
   children?: React.ReactNode;
 }
 
@@ -116,6 +115,8 @@ function StatItem({ icon, label, value, color = 'blue', children }: StatItemProp
     yellow: 'hover:border-yellow-400/50 hover:via-yellow-400/20 via-yellow-400/5 text-yellow-400',
     green: 'hover:border-green-400/50 hover:via-green-400/20 via-green-400/5 text-green-500',
     red: 'hover:border-red-400/50 hover:via-red-400/20 via-red-400/5 text-red-500',
+    fuchsia:
+      'hover:border-fuchsia-400/50 hover:via-fuchsia-400/20 via-fuchsia-400/5 text-fuchsia-500',
   };
 
   return (

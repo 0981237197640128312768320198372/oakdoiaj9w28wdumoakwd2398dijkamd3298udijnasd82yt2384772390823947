@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-import ProductCard from './ProductCard';
+import SellerProductCard from './SellerProductCard';
 import { Product, Category } from '@/types';
 
 interface ProductListProps {
@@ -58,7 +58,7 @@ const ProductList: React.FC<ProductListProps> = ({
               .fill(0)
               .map((_, index) => <ProductSkeleton key={index} />)
           : products.map((product) => (
-              <ProductCard
+              <SellerProductCard
                 key={product._id}
                 product={product}
                 categories={categories}

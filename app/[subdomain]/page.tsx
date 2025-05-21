@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
 import PublicStoreProfile from '@/components/seller/public/PublicStoreProfile';
 import StoreProducts from '@/components/seller/public/StoreProducts';
@@ -17,7 +18,7 @@ export async function generateMetadata(props: StorePageProps) {
   const { subdomain } = await props.params;
   try {
     const { seller } = await fetchStoreData(subdomain);
-    const storeLogo = seller?.store.logoUrl || 'Dokmai Store';
+    const storeLogo = seller?.store?.logoUrl || 'Dokmai Store';
     const storeName = seller?.store.name;
     const storeDescription = seller?.store.description;
     const url = `https://${seller?.username}.dokmai.store/`;

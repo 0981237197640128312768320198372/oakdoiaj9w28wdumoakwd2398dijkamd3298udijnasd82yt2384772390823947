@@ -220,6 +220,7 @@ export async function uploadImage(file: File): Promise<string> {
 }
 
 export interface ThemeType {
+  logoUrl: any;
   adsImageUrl: string;
   backgroundImage: string;
   buttonBgColor: string;

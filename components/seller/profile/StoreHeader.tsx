@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Star, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { ShoppingCart, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { cn } from '@/lib/utils';
 
@@ -44,6 +44,12 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
               variant="outline"
               className="flex items-center gap-2 border-[0.5px] hover:border-yellow-400/50 bg-gradient-to-tr cursor-default from-transparent hover:via-yellow-400/30 via-yellow-400/10 to-transparent from-5% via-55% to-100% transition-all duration-500">
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+              <span>{seller.store.rating.toFixed(1)}</span>
+            </Badge>
+            <Badge
+              variant="outline"
+              className="flex items-center gap-2 border-[0.5px] hover:border-fuchsia-400/50 bg-gradient-to-tr cursor-default from-transparent hover:via-fuchsia-400/30 via-fuchsia-400/10 to-transparent from-5% via-55% to-100% transition-all duration-500">
+              <ShoppingCart className="h-3 w-3 fill-fuchsia-400 text-fuchsia-400" />
               <span>{seller.store.rating.toFixed(1)}</span>
             </Badge>
             <Badge

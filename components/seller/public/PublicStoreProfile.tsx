@@ -1,17 +1,90 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/components/PublicStoreProfile.tsx
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { CalendarDays, Globe, Info, Mail, MessageCircle, User } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { StoreHeader } from '../profile/StoreHeader';
+import { InfoSection } from '../profile/InfoSection';
+import { StoreStats } from '../profile/StoreStats';
+import { SocialLinks } from '../profile/SocialLinks';
 
 interface PublicStoreProfileProps {
   seller: any;
 }
 
 const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!seller) {
+    return (
+      <Card className="w-full max-w-screen-lg opacity-0 transition-opacity duration-500">
+        <CardContent className="text-center p-6">
+          <p className="text-muted-foreground">Store information not available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const formatDate = (dateString: string) => {
+    try {
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   return (
-    <div className="bg-dark-700 p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">{seller?.store?.name}</h2>
-      <p className="text-light-300">{seller?.store?.description}</p>
-      {/* Display other profile information here */}
+    <div
+      className={cn(
+        'w-full max-w-screen-lg transition-all duration-500 transform',
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      )}>
+      <Card className="overflow-hidden bg-card text-card-foreground shadow-lg">
+        <StoreHeader seller={seller} />
+        <CardContent className="p-5 lg:px-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="lg:col-span-2 space-y-5">
+              <InfoSection title="Store Information" icon={<Info className="h-5 w-5" />}>
+                <p className="text-sm leading-relaxed p-3 bg-dark-700 rounded-xl">
+                  {seller.store.description || 'No description available'}
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                  <div className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">Member since:</span>
+                    <span className="font-medium text-xs">{formatDate(seller.createdAt)}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">Last updated:</span>
+                    <span className="font-medium text-xs">{formatDate(seller.updatedAt)}</span>
+                  </div>
+                </div>
+              </InfoSection>
+            </div>
+
+            <div className="space-y-6">
+              <StoreStats seller={seller} />
+              <InfoSection title="Contact Information" icon={<MessageCircle className="h-5 w-5" />}>
+                <SocialLinks contact={seller.contact} />
+              </InfoSection>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

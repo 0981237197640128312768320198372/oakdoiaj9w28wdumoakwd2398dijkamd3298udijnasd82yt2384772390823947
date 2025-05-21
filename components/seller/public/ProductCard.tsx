@@ -1,23 +1,16 @@
 'use client';
+
 import React, { useEffect, useRef, useState } from 'react';
-import { Edit, Trash2, AlertTriangle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { AlertTriangle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import Image from 'next/image';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
 
 interface ProductCardProps {
   product: Product;
-  onEdit: (product: Product) => void;
-  onDelete: (productId: string) => void;
-  categories?: { _id: string; name: string; logoUrl?: string }[];
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  onEdit,
-  onDelete,
-  categories = [],
-}) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -31,9 +24,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const discountedPrice = hasDiscount
     ? product.price * (1 - product.discountPercentage / 100)
     : product.price;
-
-  // Find the category for this product
-  const category = categories.find((cat) => cat._id === product.categoryId);
 
   useEffect(() => {
     if (product.images.length <= 1) return;
@@ -72,6 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       className="group relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg overflow-hidden border border-dark-600 hover:border-dark-400 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-dark-800/20 hover:-translate-y-0.5"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}>
+      {/* Image Section */}
       <div className="relative aspect-square w-full overflow-hidden bg-dark-700/50">
         <Image
           src={currentImage}
@@ -82,7 +73,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-dark-800/80 via-transparent to-transparent group-hover:opacity-0 opacity-100 transition-opacity duration-300" />
 
-        {/* Image navigation controls - only show when hovering and multiple images */}
+        {/* Image Navigation Controls */}
         {product.images.length > 1 && (
           <>
             <button
@@ -98,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </>
         )}
 
-        {/* Image pagination dots */}
+        {/* Image Pagination Dots */}
         {product.images.length > 1 && (
           <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
             {product.images.map((_, index) => (
@@ -118,7 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
 
-        {/* Status badge */}
+        {/* Status Badge */}
         <div
           className={`
             absolute bottom-1 right-1 flex items-center gap-1 px-1 py-0.5 rounded-lg text-xs font-medium
@@ -142,7 +133,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
 
-        {/* Discount badge */}
+        {/* Discount Badge */}
         {hasDiscount && (
           <div className="absolute top-1 right-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
             {product.discountPercentage}% OFF
@@ -150,11 +141,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
+      {/* Content Section */}
       <div className="p-3 space-y-2">
         <div className="flex flex-col items-start justify-start gap-2">
           <h3 className="text-sm font-medium text-light-200 line-clamp-1">{product.title}</h3>
 
-          {/* Price display with discount */}
+          {/* Price Display with Discount */}
           <div className="flex w-full justify-between">
             <div className="flex items-center gap-2">
               {hasDiscount ? (
@@ -193,18 +185,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </span>
               )}
             </div>
-            {category && (
+
+            {/* Category Logo or Placeholder */}
+            {product.category && (
               <div>
-                {category.logoUrl ? (
-                  <>
-                    <Image
-                      src={category.logoUrl}
-                      alt={category.name}
-                      width={50}
-                      height={50}
-                      className="w-auto h-3"
-                    />
-                  </>
+                {product.category.logoUrl ? (
+                  <Image
+                    src={product.category.logoUrl}
+                    alt={product.category.name}
+                    width={50}
+                    height={50}
+                    className="w-auto h-3"
+                  />
                 ) : (
                   <div className="w-5 h-5 bg-primary/20 rounded flex items-center justify-center">
                     <span className="text-[8px] text-primary">CAT</span>
@@ -215,20 +207,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
 
+        {/* Stock Information */}
         <div className="flex items-center justify-between pt-2 border-t border-dark-600">
           <span className="text-xs text-light-600">Stock: {product.stock}</span>
-          <div className="flex -space-x-1">
-            <button
-              onClick={() => onEdit(product)}
-              className="relative p-1.5 text-light-500 hover:text-primary rounded-full hover:bg-primary/10 transition-all duration-200 z-10">
-              <Edit size={14} />
-            </button>
-            <button
-              onClick={() => onDelete(product._id)}
-              className="relative p-1.5 text-light-500 hover:text-red-500 rounded-full hover:bg-red-500/10 transition-all duration-200">
-              <Trash2 size={14} />
-            </button>
-          </div>
         </div>
       </div>
     </div>
