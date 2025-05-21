@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { Product } from '@/models/v3/Product';
+import { Seller } from '@/models/v3/Seller';
 import jwt from 'jsonwebtoken';
 import { connectToDatabase } from '@/lib/db';
 
@@ -17,7 +18,6 @@ function jwtAuthenticate(req: NextRequest) {
   }
 }
 
-// POST: Create a new product with image URLs
 export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
@@ -91,15 +91,30 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET: Fetch products for the authenticated seller
 export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
-    const authResult = jwtAuthenticate(req);
-    if ('error' in authResult) {
-      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    const { searchParams } = new URL(req.url);
+    const store = searchParams.get('store');
+
+    let sellerId;
+
+    if (store) {
+      // Find seller by username when store parameter is provided
+      const seller = await Seller.findOne({ username: store });
+      if (!seller) {
+        return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
+      }
+      sellerId = seller._id;
+    } else {
+      // Require authentication when no store parameter is provided
+      const authResult = jwtAuthenticate(req);
+      if ('error' in authResult) {
+        return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+      }
+      sellerId = authResult.sellerId;
     }
-    const sellerId = authResult.sellerId;
+
     const products = await Product.find({ sellerId }).lean();
     return NextResponse.json({ products });
   } catch (error) {
@@ -108,7 +123,6 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// PUT: Update an existing product
 export async function PUT(req: NextRequest) {
   try {
     await connectToDatabase();
@@ -185,7 +199,6 @@ export async function PUT(req: NextRequest) {
   }
 }
 
-// DELETE: Remove a product
 export async function DELETE(req: NextRequest) {
   try {
     await connectToDatabase();

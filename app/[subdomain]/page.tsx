@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
+import PublicStoreProfile from '@/components/seller/public/PublicStoreProfile';
+import StoreProducts from '@/components/seller/public/StoreProducts';
 import { fetchStoreData } from '@/lib/fetchStoreData';
 import { cn, generateMetadata as generateMetadataUtil } from '@/lib/utils';
-
+import { notFound } from 'next/navigation';
 interface ResolvedParams {
   subdomain: string;
 }
@@ -29,17 +32,22 @@ export async function generateMetadata(props: StorePageProps) {
     // console.error('Error generating metadata:', error);
   }
 }
-
 export default async function StorePage(props: StorePageProps) {
   const { subdomain } = await props.params;
-  const { theme, seller } = await fetchStoreData(subdomain);
+  try {
+    const { theme, seller } = await fetchStoreData(subdomain);
 
-  const storeName = seller?.store.name;
-  const primaryColor = theme?.primaryColor || 'inherit';
+    if (!seller) {
+      notFound();
+    }
 
-  return (
-    <h2 style={{ color: primaryColor }} className={cn('font-bold text-2xl', 'text-light-200')}>
-      Hi {storeName}
-    </h2>
-  );
+    return (
+      <PublicStoreLayout theme={theme} seller={seller}>
+        <PublicStoreProfile seller={seller} />
+        <StoreProducts store={seller.username} />
+      </PublicStoreLayout>
+    );
+  } catch (error) {
+    notFound();
+  }
 }
