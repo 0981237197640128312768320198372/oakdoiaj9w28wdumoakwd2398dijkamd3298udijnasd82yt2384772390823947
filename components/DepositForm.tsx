@@ -39,7 +39,7 @@ const DepositForm: React.FC<DepositFormProps> = () => {
       const authData = localStorage.getItem('personalKey') as string;
       setState((prev) => ({ ...prev, personalKey: authData }));
     } catch (error) {
-      console.log('Error fetching personalKey:', error);
+      // console.log('Error fetching personalKey:', error);
     }
   }, []);
 

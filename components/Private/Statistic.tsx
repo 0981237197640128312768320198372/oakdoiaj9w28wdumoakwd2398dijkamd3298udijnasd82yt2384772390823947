@@ -53,7 +53,7 @@ const Statistics = () => {
       setDataPoints([]);
       return;
     }
-    console.log('Statistics Entries:', statistics); // Inspect entries
+    // console.log('Statistics Entries:', statistics);
 
     const filteredData = statistics.filter((entry: any) => {
       switch (activeData) {

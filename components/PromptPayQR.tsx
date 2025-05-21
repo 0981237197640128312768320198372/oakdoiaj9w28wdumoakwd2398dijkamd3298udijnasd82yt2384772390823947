@@ -48,14 +48,14 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
         if (blob) {
           try {
             await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-            console.log('Image copied to clipboard');
+            // console.log('Image copied to clipboard');
           } catch (error) {
             console.error('Failed to copy image:', error);
           }
         }
       });
     } else {
-      console.log('Clipboard API not supported');
+      // console.log('Clipboard API not supported');
       // Optionally, show a message like: "Copying is not supported on this device."
     }
   };

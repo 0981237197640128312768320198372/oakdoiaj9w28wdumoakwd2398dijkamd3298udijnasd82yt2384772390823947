@@ -40,7 +40,7 @@ export async function GET() {
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const dateString = formatDate(currentDate);
-    console.log(`Attempt ${attempt + 1}: Trying date ${dateString}`);
+    // console.log(`Attempt ${attempt + 1}: Trying date ${dateString}`);
 
     try {
       const [dataRes, namesRes, boxartRes] = await Promise.all([
