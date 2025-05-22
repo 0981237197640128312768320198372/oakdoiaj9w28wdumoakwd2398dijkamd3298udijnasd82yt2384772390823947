@@ -28,13 +28,13 @@ const SellerNavbar = () => {
         <div className="flex items-center gap-1 w-fit select-none group transition-all duration-500">
           {seller ? (
             <>
-              <div className="relative w-10 h-10 overflow-hidden rounded-full border-dark-400 border-[1px]">
+              <div className="relative w-10 h-10 border-dark-400 border-[1px] overflow-hidden rounded-full bg-cover bg-center">
                 <Image
                   src={seller.store.logoUrl || dokmailogosquare}
                   alt={seller.store.name}
-                  layout="fill"
-                  objectFit="cover"
-                  className="border-[1px] border-dark-600"
+                  width={100}
+                  height={100}
+                  className="border-[1px] border-dark-600 w-full h-full overflow-hidden rounded-full"
                 />
               </div>
             </>

@@ -6,6 +6,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import DetailEditor from './DetailEditor';
 import { Button2 } from '@/components/ui/button2';
 import { useRef, useEffect } from 'react';
+import ButtonWithLoader from '@/components/ui/ButtonWithLoader';
 
 interface ProductFormStep2Props {
   formData: ProductFormData;
@@ -85,7 +86,7 @@ export default function ProductFormStep2({
           <span className="absolute inset-0 bg-dark-600/50 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
         </Button2>
 
-        <Button2
+        <ButtonWithLoader
           disabled={isLoading}
           onClick={onSubmit}
           className="group relative overflow-hidden shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/20">
@@ -117,7 +118,7 @@ export default function ProductFormStep2({
             </span>
           )}
           <span className="absolute inset-0 bg-primary/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
-        </Button2>
+        </ButtonWithLoader>
       </div>
     </div>
   );
