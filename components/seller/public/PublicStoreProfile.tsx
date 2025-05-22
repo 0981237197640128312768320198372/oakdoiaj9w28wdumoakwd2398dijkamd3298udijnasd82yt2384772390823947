@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CalendarDays, Globe, Info, Mail, MessageCircle, User } from 'lucide-react';
+import { CalendarDays, Info, Mail, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';

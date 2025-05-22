@@ -68,14 +68,12 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
 
       <StoreNavbar seller={seller} />
 
-      {/* Main content */}
       <motion.div
-        className="flex flex-col items-center justify-start w-full py-20 relative z-10"
+        className="flex flex-col items-center justify-start w-full pb-20 pt-28 lg:pt-32 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}>
-        <div className="w-full max-w-screen-lg px-5 relative">
-          {/* Store ads banner if available */}
+        <div className="w-full max-w-screen-lg px-5 lg:px-0 relative">
           {theme?.adsImageUrl && theme.adsImageUrl !== 'null' && (
             <div
               className="w-full mb-8 overflow-hidden rounded-lg shadow-xl"
@@ -105,7 +103,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
         </div>
       </motion.div>
 
-      {/* Footer */}
       <footer
         className="w-full py-6 mt-20 border-t"
         style={{ borderColor: `${theme?.primaryColor}40` }}>
