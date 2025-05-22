@@ -1,5 +1,4 @@
 import React from 'react';
-import { Search } from 'lucide-react';
 import SellerProductCard from './SellerProductCard';
 import { Product, Category } from '@/types';
 
@@ -39,19 +38,6 @@ const ProductList: React.FC<ProductListProps> = ({
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-        <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search size={18} className="text-dark-100" />
-          </div>
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-dark-200  bg-dark-700 text-light-400 focus:outline-none focus:ring-[1px] focus:ring-primary  transition-all duration-200"
-          />
-        </div>
-      </div>
-
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
         {isLoading
           ? Array(6)

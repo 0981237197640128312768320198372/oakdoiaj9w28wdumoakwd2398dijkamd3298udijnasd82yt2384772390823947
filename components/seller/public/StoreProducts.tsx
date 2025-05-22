@@ -1,107 +1,132 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Product } from '@/types';
-import { Search, ShoppingCart, Filter } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { Product } from '@/types';
+import { ShoppingCart, X, RefreshCw } from 'lucide-react';
 import ProductCard from './ProductCard';
 
 interface StoreProductsProps {
   store: string | undefined;
 }
 
-const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
+export default function StoreProducts({ store }: StoreProductsProps) {
+  // State management
   const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Set<string>>(new Set());
+  const [sortOption, setSortOption] = useState<'default' | 'price-asc' | 'price-desc' | 'name'>(
+    'default'
+  );
 
+  // Fetch products and categories on component mount or when store changes
   useEffect(() => {
-    const fetchProducts = async () => {
-      if (!store) return;
+    if (!store) return;
 
+    const fetchData = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const response = await fetch(`/api/v3/products?store=${store}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
+        // Fetch products
+        const productsResponse = await fetch(`/api/v3/products?store=${store}`);
+        if (!productsResponse.ok) {
+          throw new Error(`Failed to fetch products: ${productsResponse.statusText}`);
         }
-        const data = await response.json();
-        setProducts(data.products);
-        setFilteredProducts(data.products);
-
-        const uniqueCategories = new Set<string>();
-        data.products.forEach((product: Product) => {
-          if (product.type) {
-            uniqueCategories.add(product.type);
-          }
-        });
-        setCategories(uniqueCategories);
+        const productsData = await productsResponse.json();
+        setProducts(productsData.products || []);
       } catch (err) {
-        setError('An unexpected error occurred');
+        console.error('Error fetching data:', err);
+        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, [store]);
 
-  useEffect(() => {
-    let filtered = products;
+  // Filter and sort products using useMemo for performance
+  const filteredProducts = useMemo(() => {
+    let result = [...products];
 
+    // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(
+      const searchLower = searchTerm.toLowerCase();
+      result = result.filter(
         (product) =>
-          product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase())
+          product.title?.toLowerCase().includes(searchLower) ||
+          product.description?.toLowerCase().includes(searchLower)
       );
     }
 
+    // Apply category filter
     if (selectedCategory) {
-      filtered = filtered.filter((product) => product.type === selectedCategory);
+      result = result.filter((product) => product.categoryId === selectedCategory);
     }
 
-    setFilteredProducts(filtered);
-  }, [searchTerm, selectedCategory, products]);
+    // Apply sorting
+    switch (sortOption) {
+      case 'price-asc':
+        result.sort((a, b) => (a.price || 0) - (b.price || 0));
+        break;
+      case 'price-desc':
+        result.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case 'name':
+        result.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      default:
+        // Keep default order
+        break;
+    }
 
+    return result;
+  }, [products, searchTerm, selectedCategory, sortOption]);
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory(null);
+    setSortOption('default');
+  };
+
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
   if (isLoading) {
     return (
-      <div className="w-full py-10">
+      <div className="w-full py-8">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold">Products</h2>
+          <div className="h-8 bg-dark-700 rounded w-32 animate-pulse"></div>
+          <div className="h-10 bg-dark-700 rounded w-64 animate-pulse"></div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, index) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+          {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={index}
-              className="bg-dark-700/50 rounded-xl overflow-hidden border border-dark-600 animate-pulse">
-              <div className="h-48 bg-dark-600"></div>
-              <div className="p-4">
-                <div className="h-6 bg-dark-600 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-dark-600 rounded w-full mb-1"></div>
-                <div className="h-4 bg-dark-600 rounded w-2/3 mb-4"></div>
-                <div className="h-8 bg-dark-600 rounded w-1/3"></div>
+              className="bg-dark-750 rounded-xl overflow-hidden border border-dark-600 animate-pulse shadow-lg">
+              <div className="h-48 bg-dark-700"></div>
+              <div className="p-4 space-y-3">
+                <div className="h-5 bg-dark-700 rounded w-3/4"></div>
+                <div className="h-4 bg-dark-700 rounded w-1/2"></div>
+                <div className="h-6 bg-dark-700 rounded w-1/3"></div>
               </div>
             </div>
           ))}
@@ -110,11 +135,24 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="w-full py-10 flex justify-center">
-        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg max-w-md">
-          <p>{error}</p>
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-6 py-5 rounded-lg max-w-md shadow-lg">
+          <h3 className="font-medium mb-2 flex items-center gap-2">
+            <span className="bg-red-500/20 p-1 rounded">
+              <X size={18} />
+            </span>
+            Error Loading Products
+          </h3>
+          <p className="text-sm opacity-90 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="text-sm flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 transition-colors px-4 py-2 rounded-md">
+            <RefreshCw size={14} />
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -122,84 +160,53 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
 
   return (
     <motion.div
-      className="w-full py-10"
+      className="w-full py-8"
       variants={containerVariants}
       initial="hidden"
       animate="visible">
-      <motion.div
-        className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8"
-        variants={itemVariants}>
-        <h2 className="text-2xl font-bold">Products</h2>
-
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <div className="relative flex-1 md:w-64">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-400 h-4 w-4" />
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-dark-700 border border-dark-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm"
-            />
-          </div>
-          {categories.size > 0 && (
-            <div className="relative">
-              <select
-                value={selectedCategory || ''}
-                onChange={(e) => setSelectedCategory(e.target.value || null)}
-                className="appearance-none w-full pl-10 pr-8 py-2 bg-dark-700 border border-dark-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm">
-                <option value="">All Categories</option>
-                {Array.from(categories).map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-400 h-4 w-4" />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M2.5 4.5L6 8L9.5 4.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
+      {/* Products grid or empty state */}
+      <AnimatePresence mode="wait">
+        {filteredProducts.length === 0 ? (
+          <motion.div
+            key="empty"
+            className="flex flex-col items-center justify-center py-16 text-center"
+            variants={itemVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden">
+            <div className="w-16 h-16 rounded-full bg-dark-700 flex items-center justify-center mb-4 border border-dark-600">
+              <ShoppingCart className="h-8 w-8 text-light-400" />
             </div>
-          )}
-        </div>
-      </motion.div>
-
-      {filteredProducts.length === 0 ? (
-        <motion.div
-          className="flex flex-col items-center justify-center py-16 text-center"
-          variants={itemVariants}>
-          <div className="w-16 h-16 rounded-full bg-dark-600 flex items-center justify-center mb-4">
-            <ShoppingCart className="h-8 w-8 text-light-400" />
-          </div>
-          <h3 className="text-xl font-semibold mb-2">No products found</h3>
-          <p className="text-light-400 max-w-md">
-            {searchTerm || selectedCategory
-              ? 'Try adjusting your search or filter criteria'
-              : "This store doesn't have any products yet"}
-          </p>
-        </motion.div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
-      )}
+            <h3 className="text-xl font-semibold mb-2 text-light-200">No products found</h3>
+            <p className="text-light-400 max-w-md mb-6">
+              {searchTerm || selectedCategory
+                ? 'Try adjusting your search or filter criteria'
+                : "This store doesn't have any products yet"}
+            </p>
+            {(searchTerm || selectedCategory || sortOption !== 'default') && (
+              <button
+                onClick={handleClearFilters}
+                className="px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-lg text-sm transition-colors">
+                Clear All Filters
+              </button>
+            )}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="grid"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden">
+            {filteredProducts.map((product) => (
+              <motion.div key={product._id} variants={itemVariants}>
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
-};
-
-export default StoreProducts;
+}

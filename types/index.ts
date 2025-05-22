@@ -59,6 +59,7 @@ export interface SuccessData {
 }
 
 export interface Product {
+  createdAt: any;
   rating: string;
   _id: string;
   title: string;

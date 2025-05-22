@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, ShoppingBag, Store, ChevronRight } from 'lucide-react';
+import { Search, X, Store, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -98,8 +98,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
       const filteredProducts = products.filter(
         (product: any) =>
           product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.type.toLowerCase().includes(searchTerm.toLowerCase())
+          product.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
       // Get seller info
@@ -223,7 +222,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
               <div className="p-2">
                 {results.map((result) => (
                   <motion.div
-                    key={`${result.type}-${result.id}`}
+                    key={result.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
@@ -242,8 +241,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                             height={48}
                             className="object-cover w-full h-full"
                           />
-                        ) : result.type === 'product' ? (
-                          <ShoppingBag className="text-light-400" size={24} />
                         ) : (
                           <Store className="text-light-400" size={24} />
                         )}
@@ -259,7 +256,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                             {result.description}
                           </p>
                         )}
-                        {result.type === 'product' && result.price && (
+                        {result.price && (
                           <div className="flex items-center mt-1">
                             <Image
                               src={dokmaicoin}
