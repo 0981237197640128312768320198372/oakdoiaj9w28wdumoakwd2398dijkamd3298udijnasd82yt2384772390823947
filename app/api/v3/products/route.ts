@@ -1,3 +1,6 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { Product } from '@/models/v3/Product';
@@ -32,7 +35,6 @@ export async function POST(req: NextRequest) {
       title,
       description,
       stock,
-      type,
       details,
       categoryId,
       price,
@@ -41,14 +43,7 @@ export async function POST(req: NextRequest) {
       status,
     } = body;
 
-    if (
-      !title ||
-      !description ||
-      stock === undefined ||
-      !type ||
-      !categoryId ||
-      price === undefined
-    ) {
+    if (!title || !description || stock === undefined || !categoryId || price === undefined) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -68,7 +63,6 @@ export async function POST(req: NextRequest) {
       title,
       description,
       stock,
-      type,
       details,
       sellerId,
       categoryId,
@@ -96,6 +90,7 @@ export async function GET(req: NextRequest) {
     await connectToDatabase();
     const { searchParams } = new URL(req.url);
     const store = searchParams.get('store');
+    const categoryId = searchParams.get('categoryId'); // Get the categoryId from the query parameters
 
     let sellerId;
 
@@ -115,7 +110,14 @@ export async function GET(req: NextRequest) {
       sellerId = authResult.sellerId;
     }
 
-    const products = await Product.find({ sellerId }).lean();
+    let query: any = { sellerId };
+
+    // Add category filter if categoryId is provided
+    if (categoryId) {
+      query.categoryId = categoryId;
+    }
+
+    const products = await Product.find(query).lean();
     return NextResponse.json({ products });
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -138,7 +140,6 @@ export async function PUT(req: NextRequest) {
       title,
       description,
       stock,
-      type,
       categoryId,
       price,
       discountPercentage = 0,
@@ -161,11 +162,9 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Product not found or not authorized' }, { status: 404 });
     }
 
-    // Update product fields
     if (title) product.title = title;
     if (description) product.description = description;
     if (stock !== undefined) product.stock = stock;
-    if (type) product.type = type;
     if (details) product.details = details;
 
     if (categoryId) {

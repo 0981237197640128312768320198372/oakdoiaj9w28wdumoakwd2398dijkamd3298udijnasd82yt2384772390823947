@@ -9,7 +9,6 @@ interface IProduct extends Document {
   title: string;
   description: string;
   stock: number;
-  type: string;
   details: IProductDetails;
   sellerId: Types.ObjectId;
   categoryId: Types.ObjectId;
@@ -27,7 +26,6 @@ const productSchema = new Schema<IProduct>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   stock: { type: Number, required: true },
-  type: { type: String, required: true },
   details: Schema.Types.Mixed,
   sellerId: { type: Schema.Types.ObjectId, ref: 'Seller', required: true },
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },

@@ -1,3 +1,4 @@
+// components/seller/public/PublicStoreProfile.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
@@ -12,12 +13,20 @@ import { StoreHeader } from '../profile/StoreHeader';
 import { InfoSection } from '../profile/InfoSection';
 import { StoreStats } from '../profile/StoreStats';
 import { SocialLinks } from '../profile/SocialLinks';
+import SellerCategories from '../SellerCategories'; // Import the new component
+import { Product, Category } from '@/types';
 
 interface PublicStoreProfileProps {
   seller: any;
+  products: Product[];
+  categories: any;
 }
 
-const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller }) => {
+const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
+  seller,
+  products,
+  categories,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -74,6 +83,8 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller }) => {
                   </div>
                 </div>
               </InfoSection>
+              <SellerCategories products={products} categories={categories} />{' '}
+              {/* Add the new component here */}
             </div>
 
             <div className="space-y-6">

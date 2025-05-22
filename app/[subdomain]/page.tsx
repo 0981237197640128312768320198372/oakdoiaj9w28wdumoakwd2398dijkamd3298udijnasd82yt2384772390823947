@@ -1,3 +1,4 @@
+// app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
@@ -6,6 +7,7 @@ import StoreProducts from '@/components/seller/public/StoreProducts';
 import { fetchStoreData } from '@/lib/fetchStoreData';
 import { cn, generateMetadata as generateMetadataUtil } from '@/lib/utils';
 import { notFound } from 'next/navigation';
+
 interface ResolvedParams {
   subdomain: string;
 }
@@ -33,6 +35,7 @@ export async function generateMetadata(props: StorePageProps) {
     // console.error('Error generating metadata:', error);
   }
 }
+
 export default async function StorePage(props: StorePageProps) {
   const { subdomain } = await props.params;
   try {
@@ -42,9 +45,23 @@ export default async function StorePage(props: StorePageProps) {
       notFound();
     }
 
+    // Fetch products and categories here
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
+    const response = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
+    const data = await response.json();
+    const products = data.products;
+
+    // Extract unique categories from the products
+    const categories = [...new Set(products.map((product: any) => product.type))].map(
+      (categoryName) => ({
+        _id: categoryName,
+        name: categoryName,
+      })
+    );
+
     return (
       <PublicStoreLayout theme={theme} seller={seller}>
-        <PublicStoreProfile seller={seller} />
+        <PublicStoreProfile seller={seller} products={products} categories={categories} />
         <StoreProducts store={seller.username} />
       </PublicStoreLayout>
     );

@@ -7,28 +7,27 @@ import { connectToDatabase } from '@/lib/db';
 import { uploadImage } from '@/lib/utils';
 import jwt from 'jsonwebtoken';
 
-// Authentication helper
-function authenticate(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.split(' ')[1];
-  if (!token) {
-    return { error: 'Missing token', status: 401 };
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { _id: string };
-    return { userId: decoded._id };
-  } catch (error) {
-    return { error: 'Invalid token', status: 401 };
-  }
-}
+// function authenticate(req: NextRequest) {
+//   const token = req.headers.get('Authorization')?.split(' ')[1];
+//   if (!token) {
+//     return { error: 'Missing token', status: 401 };
+//   }
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { _id: string };
+//     return { userId: decoded._id };
+//   } catch (error) {
+//     return { error: 'Invalid token', status: 401 };
+//   }
+// }
 
 // POST: Create a new category with image upload
 export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
-    const authResult = authenticate(req);
-    if ('error' in authResult) {
-      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
-    }
+    // const authResult = authenticate(req);
+    // if ('error' in authResult) {
+    //   return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    // }
 
     const formData = await req.formData();
     const name = formData.get('name') as string;
@@ -106,10 +105,10 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     await connectToDatabase();
-    const authResult = authenticate(req);
-    if ('error' in authResult) {
-      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
-    }
+    // const authResult = authenticate(req);
+    // if ('error' in authResult) {
+    //   return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    // }
 
     const formData = await req.formData();
     const id = formData.get('id') as string;
@@ -160,10 +159,10 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     await connectToDatabase();
-    const authResult = authenticate(req);
-    if ('error' in authResult) {
-      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
-    }
+    // const authResult = authenticate(req);
+    // if ('error' in authResult) {
+    //   return NextResponse.json({ error: authResult.error }, { status: authResult.status });
+    // }
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

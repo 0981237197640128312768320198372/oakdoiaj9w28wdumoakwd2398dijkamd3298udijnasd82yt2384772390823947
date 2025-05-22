@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       $or: [
         { title: { $regex: query, $options: 'i' } },
         { description: { $regex: query, $options: 'i' } },
-        { type: { $regex: query, $options: 'i' } },
+        { price: { $regex: query, $options: 'i' } },
       ],
       status: 'active',
     }).limit(10);
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
         price: product.price,
         discountedPrice: product.discountedPrice,
         image: product.images[0] || null,
-        type: product.type,
+        categoryId: product.categoryId,
       })),
     };
 

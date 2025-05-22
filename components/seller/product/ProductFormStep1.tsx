@@ -124,23 +124,6 @@ const ProductFormStep1: React.FC<ProductFormStep1Props> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField id="type" label="Product Type" error={formErrors.type}>
-            <input
-              id="type"
-              type="text"
-              name="type"
-              value={formData.type}
-              onChange={(e) => onInputChange('type', e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border transition-all duration-200 text-sm
-                ${
-                  formErrors.type
-                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
-                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
-                } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20`}
-              placeholder="e.g. Physical, Digital, Subscription"
-            />
-          </FormField>
-
           <FormField id="stock" label="Stock" error={formErrors.stock}>
             <input
               id="stock"

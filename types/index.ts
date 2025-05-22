@@ -88,7 +88,6 @@ export interface ProductFormData {
   title: string;
   description: string;
   stock: number;
-  type: string;
   details: any;
   categoryId: string;
   price: number;
