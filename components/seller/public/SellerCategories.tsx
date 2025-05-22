@@ -3,8 +3,9 @@
 
 import React, { useState } from 'react';
 import { Product, Category } from '@/types';
-import ProductCard from './public/ProductCard';
 import { motion } from 'framer-motion';
+import ProductCard from './ProductCard';
+import Image from 'next/image';
 
 interface SellerCategoriesProps {
   products: Product[];
@@ -31,9 +32,22 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
                   ? 'bg-primary text-dark-800'
                   : 'bg-dark-600 text-light-200 hover:bg-dark-500'
               }`}>
-            {category.name}
+            {category.logoUrl ? (
+              <Image
+                src={category.logoUrl}
+                alt={category.name}
+                width={50}
+                height={50}
+                className="w-auto h-3"
+              />
+            ) : (
+              <div className="w-5 h-5 bg-primary/20 rounded flex items-center justify-center">
+                <span className="text-[8px] text-primary">CAT</span>
+              </div>
+            )}
           </button>
         ))}
+
         {selectedCategory && (
           <button
             onClick={() => setSelectedCategory(null)}

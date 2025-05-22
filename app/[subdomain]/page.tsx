@@ -1,4 +1,3 @@
-// app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
@@ -45,14 +44,12 @@ export default async function StorePage(props: StorePageProps) {
       notFound();
     }
 
-    // Fetch products and categories here
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
     const response = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
     const data = await response.json();
     const products = data.products;
 
-    // Extract unique categories from the products
-    const categories = [...new Set(products.map((product: any) => product.type))].map(
+    const categories = [...new Set(products.map((product: any) => product.categoryId))].map(
       (categoryName) => ({
         _id: categoryName,
         name: categoryName,

@@ -13,8 +13,9 @@ import { StoreHeader } from '../profile/StoreHeader';
 import { InfoSection } from '../profile/InfoSection';
 import { StoreStats } from '../profile/StoreStats';
 import { SocialLinks } from '../profile/SocialLinks';
-import SellerCategories from '../SellerCategories'; // Import the new component
+
 import { Product, Category } from '@/types';
+import SellerCategories from './SellerCategories';
 
 interface PublicStoreProfileProps {
   seller: any;
@@ -54,7 +55,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
       return dateString;
     }
   };
-
+  console.log(categories);
   return (
     <div
       className={cn(
@@ -83,7 +84,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
                   </div>
                 </div>
               </InfoSection>
-              <SellerCategories products={products} categories={categories} />{' '}
+              <SellerCategories products={products} categories={categories} />
               {/* Add the new component here */}
             </div>
 
