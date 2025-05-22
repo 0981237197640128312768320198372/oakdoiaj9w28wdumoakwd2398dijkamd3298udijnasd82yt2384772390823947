@@ -53,20 +53,18 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller }) => {
                 />
               </>
             )}
-            {seller && (
-              <h1 className="font-aktivGroteskBold text-sm px-2 py-1 group-hover:border-dark-300 border-dark-700 border-[1px] rounded-full group-hover:bg-dark-700 tracking-widest text-light-100 transition-all duration-500">
-                {seller.store.name}
-              </h1>
-            )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 xl:mr-1 font-aktivGroteskRegular">
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              className="flex items-center text-xs justify-start w-40 xl:w-96 gap-3 border-[1px] border-dark-400 hover:border-dark-300 bg-dark-600 hover:bg-dark-500 text-light-600 hover:text-light-100 rounded-full px-2 py-1 transition-colors duration-200">
-              <Search className="text-sm" /> Search
-            </button>
-          </div>
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            className="flex items-center justify-center w-40 xl:w-96 gap-2 border-[1px] border-dark-400 hover:border-dark-300 bg-dark-600 hover:bg-dark-500 text-light-600 hover:text-light-100 rounded-full py-0.5 transition-colors duration-200">
+            <Search size={18} /> Search
+          </button>
+          {seller && (
+            <h1 className="font-aktivGroteskBold select-none text-sm px-2 py-1 group-hover:border-dark-300 border-dark-700 border-[1px] rounded-full group-hover:bg-dark-700 tracking-widest text-light-100 transition-all duration-500">
+              {seller.store.name}
+            </h1>
+          )}
         </div>
       </nav>
 
