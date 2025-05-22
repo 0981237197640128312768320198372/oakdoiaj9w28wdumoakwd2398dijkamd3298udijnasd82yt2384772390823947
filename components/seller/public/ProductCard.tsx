@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { AlertTriangle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import Image from 'next/image';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
+import Link from 'next/link';
 
 interface ProductCardProps {
   product: Product;
@@ -62,7 +63,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       className="group relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg overflow-hidden border border-dark-600 hover:border-dark-400 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-dark-800/20 hover:-translate-y-0.5"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}>
-      {/* Image Section */}
       <div className="relative aspect-square w-full overflow-hidden bg-dark-700/50">
         <Image
           src={currentImage}
@@ -73,7 +73,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-dark-800/80 via-transparent to-transparent group-hover:opacity-0 opacity-100 transition-opacity duration-300" />
 
-        {/* Image Navigation Controls */}
         {product.images.length > 1 && (
           <>
             <button
@@ -89,7 +88,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </>
         )}
 
-        {/* Image Pagination Dots */}
         {product.images.length > 1 && (
           <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
             {product.images.map((_, index) => (
@@ -109,31 +107,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         )}
 
-        {/* Status Badge */}
-        <div
-          className={`
-            absolute bottom-1 right-1 flex items-center gap-1 px-1 py-0.5 rounded-lg text-xs font-medium
-            backdrop-blur-md transition-all duration-200
-            ${
-              product.status === 'active'
-                ? 'bg-green-900 border border-green-500/20 text-green-500'
-                : 'bg-amber-900 border border-amber-500/20 text-amber-500'
-            }
-          `}>
-          {product.status === 'active' ? (
-            <>
-              <Check size={10} strokeWidth={2.5} />
-              <span>Active</span>
-            </>
-          ) : (
-            <>
-              <AlertTriangle size={10} strokeWidth={2.5} />
-              <span>Draft</span>
-            </>
-          )}
-        </div>
-
-        {/* Discount Badge */}
         {hasDiscount && (
           <div className="absolute top-1 right-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
             {product.discountPercentage}% OFF
@@ -141,12 +114,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
       </div>
 
-      {/* Content Section */}
       <div className="p-3 space-y-2">
         <div className="flex flex-col items-start justify-start gap-2">
           <h3 className="text-sm font-medium text-light-200 line-clamp-1">{product.title}</h3>
+          <div className="absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded-full bg-dark-800/80 backdrop-blur-sm border border-dark-600">
+            {product.status === 'active' ? (
+              <span className="flex items-center gap-1 text-green-400">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
+                Available
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-amber-400">
+                <span className="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+                Coming Soon
+              </span>
+            )}
+          </div>
 
-          {/* Price Display with Discount */}
           <div className="flex w-full justify-between">
             <div className="flex items-center gap-2">
               {hasDiscount ? (
@@ -186,7 +170,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               )}
             </div>
 
-            {/* Category Logo or Placeholder */}
             {product.category && (
               <div>
                 {product.category.logoUrl ? (
@@ -206,10 +189,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </div>
         </div>
-
-        {/* Stock Information */}
         <div className="flex items-center justify-between pt-2 border-t border-dark-600">
           <span className="text-xs text-light-600">Stock: {product.stock}</span>
+          <Link href={'asd'} className="bg-primary text-dark-800 px-2 py-1 rounded text-xs">
+            Buy Now
+          </Link>
         </div>
       </div>
     </div>

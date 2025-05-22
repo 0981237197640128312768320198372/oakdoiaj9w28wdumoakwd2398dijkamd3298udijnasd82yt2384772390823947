@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Product } from '@/types';
-import Image from 'next/image';
-import { Search, ShoppingCart, Star, Tag, Filter, Package } from 'lucide-react';
-import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
+import { Search, ShoppingCart, Filter } from 'lucide-react';
+import ProductCard from './ProductCard';
 
 interface StoreProductsProps {
   store: string | undefined;
@@ -36,7 +35,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
         setProducts(data.products);
         setFilteredProducts(data.products);
 
-        // Extract unique categories
         const uniqueCategories = new Set<string>();
         data.products.forEach((product: Product) => {
           if (product.type) {
@@ -55,7 +53,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
   }, [store]);
 
   useEffect(() => {
-    // Filter products based on search term and category
     let filtered = products;
 
     if (searchTerm) {
@@ -73,7 +70,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory, products]);
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -146,7 +142,6 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
               className="w-full pl-10 pr-4 py-2 bg-dark-700 border border-dark-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm"
             />
           </div>
-
           {categories.size > 0 && (
             <div className="relative">
               <select
@@ -197,110 +192,12 @@ const StoreProducts: React.FC<StoreProductsProps> = ({ store }) => {
           </p>
         </motion.div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {filteredProducts.map((product) => (
             <ProductCard key={product._id} product={product} />
           ))}
         </div>
       )}
-    </motion.div>
-  );
-};
-
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
-  const hasDiscount = product.discountPercentage > 0;
-  const discountedPrice = hasDiscount
-    ? product.price * (1 - product.discountPercentage / 100)
-    : product.price;
-
-  return (
-    <motion.div
-      className="group bg-dark-700/50 rounded-xl overflow-hidden border border-dark-600 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
-      variants={{
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
-      }}>
-      <div className="relative aspect-square overflow-hidden bg-dark-800/50">
-        {product.images && product.images.length > 0 ? (
-          <Image
-            src={product.images[0]}
-            alt={product.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-700"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Package className="h-16 w-16 text-light-500/20" />
-          </div>
-        )}
-
-        {/* Status badge */}
-        <div className="absolute top-2 left-2 px-2 py-1 text-xs font-medium rounded-full bg-dark-800/80 backdrop-blur-sm border border-dark-600">
-          {product.status === 'active' ? (
-            <span className="flex items-center gap-1 text-green-400">
-              <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-              Available
-            </span>
-          ) : (
-            <span className="flex items-center gap-1 text-amber-400">
-              <span className="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
-              Coming Soon
-            </span>
-          )}
-        </div>
-
-        {/* Discount badge */}
-        {hasDiscount && (
-          <div className="absolute top-2 right-2 bg-primary text-dark-800 px-2 py-1 rounded-full text-xs font-bold">
-            {product.discountPercentage}% OFF
-          </div>
-        )}
-      </div>
-
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="text-base font-medium line-clamp-1">{product.title}</h3>
-          <div className="flex items-center gap-1 text-xs bg-dark-600/80 px-1.5 py-0.5 rounded">
-            <Tag className="h-3 w-3" />
-            <span>{product.type}</span>
-          </div>
-        </div>
-
-        <p className="text-light-400 text-sm line-clamp-2 mb-3 min-h-[2.5rem]">
-          {product.description}
-        </p>
-
-        <div className="flex items-end justify-between">
-          <div className="flex items-center">
-            {hasDiscount ? (
-              <div className="flex flex-col">
-                <span className="text-xs line-through text-light-500 flex items-center gap-1">
-                  <Image src={dokmaicoin} alt="Dokmai Coin" width={12} height={12} />
-                  {product.price.toFixed(2)}
-                </span>
-                <span className="text-base font-semibold text-primary flex items-center gap-1">
-                  <Image src={dokmaicoin} alt="Dokmai Coin" width={16} height={16} />
-                  {discountedPrice.toFixed(2)}
-                </span>
-              </div>
-            ) : (
-              <span className="text-base font-semibold text-primary flex items-center gap-1">
-                <Image src={dokmaicoin} alt="Dokmai Coin" width={16} height={16} />
-                {product.price.toFixed(2)}
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1 text-xs">
-            <div className="flex items-center gap-0.5 text-yellow-400">
-              <Star className="h-3 w-3 fill-yellow-400" />
-              <span>{product.rating || '0.0'}</span>
-            </div>
-            <span className="text-light-500">•</span>
-            <span className="text-light-500">Stock: {product.stock}</span>
-          </div>
-        </div>
-      </div>
     </motion.div>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -24,7 +25,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
     return () => clearTimeout(timer);
   }, []);
 
-  // Apply theme styles
   const getButtonStyles = () => {
     return {
       backgroundColor: theme?.buttonBgColor || '#B9FE13',
@@ -66,13 +66,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
         />
       )}
 
-      {/* Navbar */}
-      <StoreNavbar
-        storeName={seller?.store?.name || 'Store'}
-        username={seller?.username || ''}
-        theme={theme}
-        buttonStyles={getButtonStyles()}
-      />
+      <StoreNavbar seller={seller} />
 
       {/* Main content */}
       <motion.div
