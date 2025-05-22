@@ -32,10 +32,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [keys, setKeys] = useState<string[]>([]);
   const [details, setDetails] = useState<Record<string, string>[]>([]);
 
-  // Initialize keys and details from formData when in edit mode
   useEffect(() => {
     if (formData.details && formData.details.length > 0) {
-      // Extract keys from the first detail object
       const firstDetail = formData.details[0];
       const extractedKeys = Object.keys(firstDetail);
 

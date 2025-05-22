@@ -14,7 +14,6 @@ export const useProducts = (sellerId?: string) => {
     title: '',
     description: '',
     stock: 0,
-    type: '',
     details: [],
     categoryId: '',
     price: 0,
@@ -104,10 +103,6 @@ export const useProducts = (sellerId?: string) => {
 
     if (formData.stock < 0) {
       errors.stock = 'Stock cannot be negative';
-    }
-
-    if (!formData.type.trim()) {
-      errors.type = 'Type is required';
     }
 
     if (!formData.categoryId) {
@@ -253,7 +248,6 @@ export const useProducts = (sellerId?: string) => {
       title: product.title,
       description: product.description,
       stock: product.stock,
-      type: product.type,
       details: productDetails,
       categoryId: product.categoryId,
       price: product.price,
