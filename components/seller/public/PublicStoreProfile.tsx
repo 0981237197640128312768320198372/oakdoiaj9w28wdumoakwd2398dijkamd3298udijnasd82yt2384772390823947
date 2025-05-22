@@ -20,7 +20,7 @@ import SellerCategories from './SellerCategories';
 interface PublicStoreProfileProps {
   seller: any;
   products: Product[];
-  categories: any;
+  categories: Category[];
 }
 
 const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
@@ -55,7 +55,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
       return dateString;
     }
   };
-  console.log(categories);
+
   return (
     <div
       className={cn(
@@ -84,7 +84,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
                   </div>
                 </div>
               </InfoSection>
-              <SellerCategories products={products} categories={categories} />
+              <SellerCategories products={products} categories={categories} />{' '}
               {/* Add the new component here */}
             </div>
 

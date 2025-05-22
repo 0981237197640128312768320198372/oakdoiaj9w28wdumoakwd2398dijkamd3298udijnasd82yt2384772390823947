@@ -1,8 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { ProductFormData, Category, FormErrors } from '@/types';
+import type { ProductFormData, Category, FormErrors } from '@/types';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import ProductFormStep1 from './ProductFormStep1';
 import ProductFormStep2 from './ProductFormStep2';
 import StepIndicator from '@/components/ui/StepIndicator';
@@ -18,7 +21,7 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({
+export default function ProductForm({
   formData,
   formErrors,
   categories,
@@ -27,43 +30,47 @@ const ProductForm: React.FC<ProductFormProps> = ({
   onInputChange,
   onSubmit,
   onCancel,
-}) => {
+}: ProductFormProps) {
   const [step, setStep] = useState(1);
   const [keys, setKeys] = useState<string[]>([]);
   const [details, setDetails] = useState<Record<string, string>[]>([]);
 
+  // Initialize details from form data only once on component mount
   useEffect(() => {
-    if (formData.details && formData.details.length > 0) {
+    if (formData.details?.length > 0) {
       const firstDetail = formData.details[0];
-      const extractedKeys = Object.keys(firstDetail);
-
-      setKeys(extractedKeys);
+      setKeys(Object.keys(firstDetail));
       setDetails(formData.details);
+    } else {
+      setKeys(['Color', 'Size', 'Material']);
+
+      const emptyDetail: Record<string, string> = {
+        Color: '',
+        Size: '',
+        Material: '',
+      };
+      setDetails([emptyDetail]);
     }
-  }, [formData.details]);
+  }, []);
+
+  const handleDetailsChange = (newDetails: Record<string, string>[]) => {
+    setDetails(newDetails);
+    onInputChange('details', newDetails);
+  };
+
+  const handleKeysChange = (newKeys: string[]) => {
+    setKeys(newKeys);
+  };
 
   useEffect(() => {
     if (details.length > 0) {
       onInputChange('stock', details.length);
-      onInputChange('details', details);
     }
-  }, [details]);
-
-  const handleNextStep = () => {
-    setStep(2);
-  };
-
-  const handlePreviousStep = () => {
-    setStep(1);
-  };
-
-  const handleStepClick = (stepNumber: number) => {
-    setStep(stepNumber);
-  };
+  }, [details.length, onInputChange]);
 
   return (
-    <div className="relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg p-4 shadow-xl border border-dark-600 animate-fadeIn">
-      <div className="flex justify-between items-center mb-4">
+    <Card className="relative bg-gradient-to-b from-dark-800 to-dark-850 border-dark-600 shadow-xl animate-fadeIn overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <h2 className="text-lg font-bold text-light-100 flex items-center gap-2">
           <span className="inline-block w-1 h-6 bg-primary rounded-sm" />
           <span>{isEditMode ? 'Edit Product' : 'Create New Product'}</span>
@@ -74,37 +81,35 @@ const ProductForm: React.FC<ProductFormProps> = ({
           aria-label="Cancel">
           <X size={16} />
         </button>
-      </div>
+      </CardHeader>
 
-      <StepIndicator currentStep={step} totalSteps={2} onStepClick={handleStepClick} />
+      <StepIndicator currentStep={step} totalSteps={2} onStepClick={setStep} />
 
-      {step === 1 && (
-        <ProductFormStep1
-          formData={formData}
-          formErrors={formErrors}
-          categories={categories}
-          onInputChange={onInputChange}
-          onNextStep={handleNextStep}
-        />
-      )}
-
-      {step === 2 && (
-        <ProductFormStep2
-          formData={formData}
-          keys={keys}
-          details={details}
-          isLoading={isLoading}
-          onKeysChange={setKeys}
-          onDetailsChange={setDetails}
-          onPreviousStep={handlePreviousStep}
-          onSubmit={onSubmit}
-        />
-      )}
+      <CardContent className="p-4">
+        {step === 1 ? (
+          <ProductFormStep1
+            formData={formData}
+            formErrors={formErrors}
+            categories={categories}
+            onInputChange={onInputChange}
+            onNextStep={() => setStep(2)}
+          />
+        ) : (
+          <ProductFormStep2
+            formData={formData}
+            keys={keys}
+            details={details}
+            isLoading={isLoading}
+            onKeysChange={handleKeysChange}
+            onDetailsChange={handleDetailsChange}
+            onPreviousStep={() => setStep(1)}
+            onSubmit={onSubmit}
+          />
+        )}
+      </CardContent>
 
       {/* Glowing background effect */}
-      <div className="absolute -z-10 top-0 left-0 right-0 bottom-0 bg-gradient-to-b from-primary/5 to-transparent rounded-lg blur-xl opacity-30" />
-    </div>
+      <div className="absolute -z-10 inset-0 bg-gradient-to-b from-primary/5 to-transparent rounded-lg blur-xl opacity-30" />
+    </Card>
   );
-};
-
-export default ProductForm;
+}

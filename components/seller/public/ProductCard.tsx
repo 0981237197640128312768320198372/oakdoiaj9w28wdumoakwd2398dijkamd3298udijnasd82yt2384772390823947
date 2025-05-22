@@ -15,7 +15,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
   const currentImage =
     product.images.length > 0
       ? product.images[currentImageIndex]
@@ -170,7 +169,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               )}
             </div>
 
-            {product.category && (
+            {/* {product.category && (
               <div>
                 {product.category.logoUrl ? (
                   <Image
@@ -186,7 +185,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   </div>
                 )}
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <div className="flex items-center justify-between pt-2 border-t border-dark-600">

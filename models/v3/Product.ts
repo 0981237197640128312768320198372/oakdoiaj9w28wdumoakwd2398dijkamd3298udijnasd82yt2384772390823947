@@ -39,7 +39,6 @@ const productSchema = new Schema<IProduct>({
   updatedAt: { type: Date, default: Date.now },
 });
 
-// Calculate discounted price before saving
 productSchema.pre('save', function (next) {
   if (this.discountPercentage > 0) {
     this.discountedPrice = this.price * (1 - this.discountPercentage / 100);

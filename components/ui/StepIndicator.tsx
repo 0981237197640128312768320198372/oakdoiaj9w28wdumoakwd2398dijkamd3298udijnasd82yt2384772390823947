@@ -17,7 +17,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps, 
 
         return (
           <React.Fragment key={stepNumber}>
-            {/* Step circle */}
             <div
               onClick={() => onStepClick && onStepClick(stepNumber)}
               className={`
@@ -38,7 +37,6 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps, 
               )}
             </div>
 
-            {/* Connector line */}
             {stepNumber < totalSteps && (
               <div className="w-8 h-0.5 mx-1 rounded-full bg-dark-600">
                 <div

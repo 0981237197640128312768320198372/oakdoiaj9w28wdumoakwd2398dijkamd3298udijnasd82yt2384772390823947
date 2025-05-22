@@ -59,7 +59,6 @@ export interface SuccessData {
 }
 
 export interface Product {
-  category: any;
   rating: string;
   _id: string;
   title: string;

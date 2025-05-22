@@ -1,3 +1,4 @@
+// app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
@@ -45,16 +46,29 @@ export default async function StorePage(props: StorePageProps) {
     }
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
-    const response = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
-    const data = await response.json();
-    const products = data.products;
+    const productsResponse = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
 
-    const categories = [...new Set(products.map((product: any) => product.categoryId))].map(
-      (categoryName) => ({
-        _id: categoryName,
-        name: categoryName,
-      })
-    );
+    if (!productsResponse.ok) {
+      throw new Error('Failed to fetch products');
+    }
+
+    const productsData = await productsResponse.json();
+    const products = productsData.products;
+
+    // Fetch categories based on the product categoryIds
+    const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
+
+    const categoriesPromises = categoryIds.map(async (categoryId) => {
+      const categoryResponse = await fetch(`${API_URL}/api/v3/categories?id=${categoryId}`);
+      if (!categoryResponse.ok) {
+        console.error(`Failed to fetch category with ID: ${categoryId}`);
+        return null;
+      }
+      return await categoryResponse.json();
+    });
+
+    const categoriesResults = await Promise.all(categoriesPromises);
+    const categories = categoriesResults.filter(Boolean).map((result) => result.category);
 
     return (
       <PublicStoreLayout theme={theme} seller={seller}>
