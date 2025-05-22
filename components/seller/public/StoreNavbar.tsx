@@ -8,7 +8,7 @@ import Image from 'next/image';
 import dokmaiwithtext from '@/assets/images/dokmaiwithtext.png';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 
-import { FaPowerOff } from 'react-icons/fa';
+import { ShoppingCart } from 'lucide-react';
 
 interface StoreNavbarProps {
   seller: any;
@@ -63,8 +63,8 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller }) => {
         <div className="flex items-center justify-end gap-2">
           <Link
             href={'#'}
-            className="flex gap-1 items-center border-[1px] border-primary/50 bg-primary/10 hover:bg-primary/20 text-primary text-xs rounded-full px-3 py-2 font-aktivGroteskBold">
-            <FaPowerOff className="text-md" /> Order Now
+            className="flex gap-1 text-xs items-center border-[1px] border-primary/50 bg-primary/10 hover:bg-primary/20 text-primary rounded-full px-2 py-1 font-aktivGroteskBold">
+            <ShoppingCart className="text-md p-1" /> Order Now
           </Link>
         </div>
       </div>

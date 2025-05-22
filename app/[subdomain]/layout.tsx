@@ -9,7 +9,7 @@ interface SubdomainLayoutProps {
 export default function SubdomainLayout({ children }: SubdomainLayoutProps) {
   return (
     <html lang="en">
-      <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/50 selection:text-primary">
+      <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/50 selection:text-primary pt-10">
         <StoreData>{children}</StoreData>
       </body>
     </html>
