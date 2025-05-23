@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
-import { X, Loader2, Save, User, Mail, Lock, Store, MessageSquare } from 'lucide-react';
+import { X, Loader2, Save, User, Store, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 

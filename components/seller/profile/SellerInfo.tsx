@@ -52,10 +52,6 @@ export default function SellerInfo() {
       <Card className="overflow-hidden bg-card text-card-foreground shadow-lg">
         <StoreHeader seller={seller} />
         <CardContent className="p-5 lg:px-0">
-          <div className="flex justify-between items-start mb-4">
-            <Link href={'/seller/customize'}>Edit Profile</Link>
-          </div>
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 space-y-5">
               <InfoSection title="Store Information" icon={<Info className="h-5 w-5" />}>

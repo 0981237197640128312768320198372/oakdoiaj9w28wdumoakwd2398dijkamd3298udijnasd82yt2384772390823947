@@ -4,9 +4,10 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Edit, ShoppingCart, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 interface StoreHeaderProps {
   seller: any;
@@ -66,6 +67,11 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
             </Badge>
           </div>
         </div>
+        <Link
+          href="/seller/customize"
+          className="absolute top-3 right-3 flex gap-1 items-center text-primary bg-primary/10 hover:bg-primary/25 px-2 py-1 border-[0.5px] text-xs border-primary rounded-md">
+          <Edit size={16} /> Edit Profile
+        </Link>
       </div>
     </div>
   );

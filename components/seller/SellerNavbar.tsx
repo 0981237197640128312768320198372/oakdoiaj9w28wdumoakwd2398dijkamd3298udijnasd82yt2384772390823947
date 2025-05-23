@@ -68,14 +68,12 @@ const SellerNavbar = () => {
         <div className="flex items-center justify-end gap-2">
           {seller ? (
             <>
-              {/* Mobile Menu Button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden flex gap-1 items-center bg-dark-600 hover:bg-dark-500 text-light-100 text-xs rounded-full p-2 font-aktivGroteskBold border-[1px] border-dark-400">
                 <Menu size={16} />
               </button>
 
-              {/* Mobile Menu */}
               <div
                 className={`md:hidden fixed top-20 right-5 bg-dark-700 rounded-xl border border-dark-400 overflow-hidden transition-all duration-300 ${
                   isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
@@ -116,6 +114,11 @@ const SellerNavbar = () => {
                         : 'bg-dark-600 hover:bg-dark-500 text-light-100 '
                     } text-xs p-3 font-aktivGroteskBold transition-all duration-300 w-full justify-center`}>
                     <BarChart3 size={16} /> Analytics
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="flex gap-1 items-center text-red-500 bg-red-500/10 hover:bg-red-500/20 text-xs p-3 font-aktivGroteskBold transition-all duration-300 w-full justify-center">
+                    <Power size={16} /> Logout
                   </button>
                 </div>
               </div>
@@ -158,13 +161,12 @@ const SellerNavbar = () => {
                   } text-xs rounded-full px-3 py-2 font-aktivGroteskBold border-[1px] transition-all duration-300`}>
                   <BarChart3 size={16} /> Analytics
                 </button>
+                <button
+                  onClick={logout}
+                  className="flex gap-1 items-center border-[1px] border-rose-500/50 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs rounded-full px-3 py-2 font-aktivGroteskBold">
+                  <Power size={16} /> Logout
+                </button>
               </div>
-
-              <button
-                onClick={logout}
-                className="flex gap-1 items-center border-[1px] border-rose-500/50 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs rounded-full px-3 py-2 font-aktivGroteskBold">
-                <Power size={16} /> Logout
-              </button>
             </>
           ) : (
             <Link
