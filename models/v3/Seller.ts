@@ -79,7 +79,7 @@ const sellerSchema = new Schema<ISeller>(
       name: { type: String, required: true, index: true },
       description: { type: String, required: true },
       logoUrl: { type: String, default: null },
-      adsImageUrl: { type: String, default: null },
+      adsImageUrl: { type: [], default: null },
       rating: {
         type: Number,
         default: 0,

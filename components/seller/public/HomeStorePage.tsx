@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, Star, Clock } from 'lucide-react';
 import SellerCategories from './SellerCategories';
 import { Category, Product } from '@/types';
+import HeroSection from './HeroSection';
 interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
@@ -18,13 +19,7 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories }) =
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
       className="w-full space-y-8">
-      <section className="bg-dark-750 border border-dark-600 rounded-xl p-6 shadow-lg">
-        <h1 className="text-2xl font-bold text-light-100 mb-4">Welcome to Our Store</h1>
-        <p className="text-light-300 leading-relaxed">
-          Discover our exclusive collection of digital products and services. Browse through our
-          categories, check out featured items, or search for something specific.
-        </p>
-      </section>
+      <HeroSection />
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         <FeaturedCard
