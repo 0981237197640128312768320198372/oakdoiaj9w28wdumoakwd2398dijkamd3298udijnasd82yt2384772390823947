@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       );
     }
-
+    // ad
     const sellerObj = seller.toObject();
     const { password: _, ...sellerData } = sellerObj;
     console.log(sellerObj);
