@@ -30,7 +30,6 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
       setFilteredProducts([]); // Show no products when no category is selected
     }
   }, [selectedCategory, products]);
-
   return (
     <div className="w-full space-y-6">
       {/* Category Filter Section */}

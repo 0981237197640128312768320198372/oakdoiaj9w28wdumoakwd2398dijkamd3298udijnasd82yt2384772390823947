@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 // app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -40,24 +41,17 @@ export default async function StorePage(props: StorePageProps) {
   const { subdomain } = await props.params;
   try {
     const { theme, seller } = await fetchStoreData(subdomain);
-
     if (!seller) {
       notFound();
     }
-
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
     const productsResponse = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
-
     if (!productsResponse.ok) {
       throw new Error('Failed to fetch products');
     }
-
     const productsData = await productsResponse.json();
     const products = productsData.products;
-
-    // Fetch categories based on the product categoryIds
     const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
-
     const categoriesPromises = categoryIds.map(async (categoryId) => {
       const categoryResponse = await fetch(`${API_URL}/api/v3/categories?id=${categoryId}`);
       if (!categoryResponse.ok) {
@@ -66,12 +60,10 @@ export default async function StorePage(props: StorePageProps) {
       }
       return await categoryResponse.json();
     });
-
     const categoriesResults = await Promise.all(categoriesPromises);
     const categories = categoriesResults.filter(Boolean).map((result) => result.category);
-
     return (
-      <PublicStoreLayout theme={theme} seller={seller}>
+      <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
         <PublicStoreProfile seller={seller} products={products} categories={categories} />
         <StoreProducts store={seller.username} />
       </PublicStoreLayout>

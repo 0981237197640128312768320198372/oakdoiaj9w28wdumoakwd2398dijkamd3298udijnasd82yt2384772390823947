@@ -5,10 +5,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CalendarDays, Info, Mail, MessageCircle } from 'lucide-react';
+import { CalendarDays, Info, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
 import { StoreHeader } from '../profile/StoreHeader';
 import { InfoSection } from '../profile/InfoSection';
 import { StoreStats } from '../profile/StoreStats';
@@ -55,7 +54,6 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
       return dateString;
     }
   };
-
   return (
     <div
       className={cn(
@@ -84,7 +82,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
                   </div>
                 </div>
               </InfoSection>
-              <SellerCategories products={products} categories={categories} />{' '}
+              <SellerCategories products={products} categories={categories} />
               {/* Add the new component here */}
             </div>
 

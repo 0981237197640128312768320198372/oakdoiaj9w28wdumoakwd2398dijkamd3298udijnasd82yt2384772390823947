@@ -12,7 +12,6 @@ interface StoreProductsProps {
 }
 
 export default function StoreProducts({ store }: StoreProductsProps) {
-  // State management
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +21,6 @@ export default function StoreProducts({ store }: StoreProductsProps) {
     'default'
   );
 
-  // Fetch products and categories on component mount or when store changes
   useEffect(() => {
     if (!store) return;
 
@@ -31,7 +29,6 @@ export default function StoreProducts({ store }: StoreProductsProps) {
       setError(null);
 
       try {
-        // Fetch products
         const productsResponse = await fetch(`/api/v3/products?store=${store}`);
         if (!productsResponse.ok) {
           throw new Error(`Failed to fetch products: ${productsResponse.statusText}`);
@@ -49,11 +46,9 @@ export default function StoreProducts({ store }: StoreProductsProps) {
     fetchData();
   }, [store]);
 
-  // Filter and sort products using useMemo for performance
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Apply search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(
@@ -63,12 +58,10 @@ export default function StoreProducts({ store }: StoreProductsProps) {
       );
     }
 
-    // Apply category filter
     if (selectedCategory) {
       result = result.filter((product) => product.categoryId === selectedCategory);
     }
 
-    // Apply sorting
     switch (sortOption) {
       case 'price-asc':
         result.sort((a, b) => (a.price || 0) - (b.price || 0));
@@ -80,21 +73,18 @@ export default function StoreProducts({ store }: StoreProductsProps) {
         result.sort((a, b) => a.title.localeCompare(b.title));
         break;
       default:
-        // Keep default order
         break;
     }
 
     return result;
   }, [products, searchTerm, selectedCategory, sortOption]);
 
-  // Clear all filters
   const handleClearFilters = () => {
     setSearchTerm('');
     setSelectedCategory(null);
     setSortOption('default');
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

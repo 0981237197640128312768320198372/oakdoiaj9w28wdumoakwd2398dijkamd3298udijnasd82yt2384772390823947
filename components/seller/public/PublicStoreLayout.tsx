@@ -2,20 +2,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { ThemeType } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import type { ThemeType } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
 import { StoreNavbar } from './StoreNavbar';
 import Image from 'next/image';
+import PublicStoreProfile from './PublicStoreProfile';
+import StoreProducts from './StoreProducts';
+import HomeStorePage from './HomeStorePage';
 
 interface PublicStoreLayoutProps {
   theme: ThemeType;
   seller: any;
+  products: any[];
+  categories: any[];
   children: React.ReactNode;
 }
 
-const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, children }) => {
+const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
+  theme,
+  seller,
+  products,
+  categories,
+}) => {
   const [loaded, setLoaded] = useState(false);
+  const [activePage, setActivePage] = useState('home');
 
   useEffect(() => {
     // Add a small delay for animation purposes
@@ -45,6 +57,19 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
     };
   };
 
+  // Render the appropriate content based on the active page
+  const renderContent = () => {
+    switch (activePage) {
+      case 'profile':
+        return <PublicStoreProfile seller={seller} products={products} categories={categories} />;
+      case 'products':
+        return <StoreProducts store={seller?.username} />;
+      case 'home':
+      default:
+        return <HomeStorePage products={products} categories={categories} />;
+    }
+  };
+
   return (
     <div
       className="min-h-screen w-full"
@@ -66,7 +91,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
         />
       )}
 
-      <StoreNavbar seller={seller} />
+      <StoreNavbar seller={seller} activePage={activePage} onNavigate={setActivePage} />
 
       <motion.div
         className="flex flex-col items-center justify-start w-full pb-20 pt-28 lg:pt-32 relative z-10"
@@ -90,7 +115,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
                     : 'none',
               }}>
               <Image
-                src={theme.adsImageUrl}
+                src={theme.adsImageUrl || '/placeholder.svg'}
                 alt={`${seller?.store?.name} promotion`}
                 width={1200}
                 height={300}
@@ -99,7 +124,16 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({ theme, seller, ch
             </div>
           )}
 
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePage}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}>
+              {renderContent()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </motion.div>
 
