@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
@@ -5,19 +6,12 @@ import { X, Loader2, Save, User, Mail, Lock, Store, MessageSquare } from 'lucide
 import Image from 'next/image';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 
-interface EditProfileModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+interface EditProfileProps {
   seller: any;
   onProfileUpdated: () => void;
 }
 
-const EditProfileModal: React.FC<EditProfileModalProps> = ({
-  isOpen,
-  onClose,
-  seller,
-  onProfileUpdated,
-}) => {
+const EditProfile: React.FC<EditProfileProps> = ({ seller, onProfileUpdated }) => {
   const { login } = useSellerAuth();
   const [formData, setFormData] = useState({
     storeName: '',
@@ -51,7 +45,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       });
       setLogoPreview(seller.store.logoUrl || null);
     }
-  }, [seller, isOpen]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -76,7 +70,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     setSuccess(null);
     setIsLoading(true);
 
-    // Validate passwords match if changing password
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setIsLoading(false);
@@ -127,10 +120,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
       setSuccess('Profile updated successfully');
       onProfileUpdated();
-
-      setTimeout(() => {
-        onClose();
-      }, 1500);
     } catch (err) {
       setError((err as Error).message || 'An unexpected error occurred');
     } finally {
@@ -138,23 +127,13 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 h-screen z-50 bg-dark-800/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto ">
-      <div className="relative bg-dark-700 border border-dark-500 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300 __dokmai_scrollbar">
-        <div className="sticky top-0 z-10 flex justify-between items-center p-4 border-b border-dark-600 bg-dark-700">
-          <h2 className="text-xl font-bold text-light-100 flex items-center gap-2">
-            <span className="inline-block w-1 h-6 bg-primary rounded-sm"></span>
-            Edit Profile
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-full text-light-400 hover:text-light-100 hover:bg-dark-600 transition-colors">
-            <X size={20} />
-          </button>
-        </div>
-
+    <div className="relative bg-dark-700 border border-dark-500 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-300 __dokmai_scrollbar">
+      <div className="sticky top-0 z-10 flex justify-between items-center p-4 border-b border-dark-600 bg-dark-700">
+        <h2 className="text-xl font-bold text-light-100 flex items-center gap-2">
+          <span className="inline-block w-1 h-6 bg-primary rounded-sm"></span>
+          Edit Profile
+        </h2>
         <form onSubmit={handleSubmit} className="p-5 space-y-6">
           {/* Logo upload section */}
           <div className="flex flex-col items-center gap-3">
@@ -381,13 +360,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           {/* Form Actions */}
           <div className="flex justify-end gap-3 pt-2">
             <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-dark-600 hover:bg-dark-500 text-light-300 rounded-lg transition-colors duration-200">
-              Cancel
-            </button>
-
-            <button
               type="submit"
               disabled={isLoading}
               className="px-4 py-2 bg-primary hover:bg-primary/90 text-dark-800 font-medium rounded-lg transition-colors duration-200 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
@@ -410,4 +382,4 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   );
 };
 
-export default EditProfileModal;
+export default EditProfile;
