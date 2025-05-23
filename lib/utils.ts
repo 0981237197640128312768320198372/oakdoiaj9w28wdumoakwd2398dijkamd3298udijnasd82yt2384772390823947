@@ -218,19 +218,3 @@ export async function uploadImage(file: File): Promise<string> {
   });
   return url;
 }
-
-export interface ThemeType {
-  logoUrl: any;
-  adsImageUrl: string;
-  backgroundImage: string;
-  buttonBgColor: string;
-  buttonBorder: string;
-  buttonTextColor: string;
-  fontFamily: string;
-  primaryColor: string;
-  roundedness: string;
-  secondaryColor: string;
-  shadow: string;
-  spacing: string;
-  textColor: string;
-}

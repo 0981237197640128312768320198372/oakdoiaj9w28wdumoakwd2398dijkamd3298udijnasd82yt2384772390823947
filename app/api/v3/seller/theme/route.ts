@@ -1,28 +1,27 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse, NextRequest } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 
-interface ThemeData {
-  roundedness: string;
+interface SellerDocument {
+  store: {
+    theme: any;
+  };
+}
+export interface ThemeType {
   primaryColor: string;
   secondaryColor: string;
-  textColor: string;
   fontFamily: string;
-  backgroundImage: string;
+  roundedness: string;
+  textColor: string;
+  backgroundImage: string | null;
   buttonTextColor: string;
   buttonBgColor: string;
   buttonBorder: string;
   spacing: string;
   shadow: string;
-  adsImageUrl: string;
+  adsImageUrl: string | null;
 }
-
-interface SellerData {
-  store?: any;
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -37,25 +36,32 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
-    const seller = (await Seller.findOne({ username }).lean()) as SellerData | null;
+    const seller = (await Seller.findOne({ username })
+      .populate('store.theme')
+      .lean()) as SellerDocument | null;
 
     if (!seller) {
       return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
     }
 
-    const themeData: ThemeData = {
-      primaryColor: seller?.store?.theme.primaryColor || '#B9FE13',
-      secondaryColor: seller?.store?.theme.secondaryColor || '#5E5E5E',
-      fontFamily: seller?.store?.theme.fontFamily || 'AktivGroteskRegular',
-      roundedness: seller?.store?.theme.roundedness || 'default',
-      textColor: seller?.store?.theme.textColor || '#ECECEC',
-      backgroundImage: seller?.store?.theme.backgroundImage || null,
-      buttonTextColor: seller?.store?.theme.buttonTextColor || '#0F0F0F',
-      buttonBgColor: seller?.store?.theme.buttonBgColor || '#B9FE13',
-      buttonBorder: seller?.store?.theme.buttonBorder || 'border-none',
-      spacing: seller?.store?.theme.spacing || 'normal',
-      shadow: seller?.store?.theme.shadow || 'shadow-none',
-      adsImageUrl: seller?.store?.theme.adsImageUrl || 'null',
+    const theme = seller.store.theme;
+    if (!theme) {
+      return NextResponse.json({ error: 'Theme not found for this seller' }, { status: 404 });
+    }
+
+    const themeData: ThemeType = {
+      primaryColor: theme.customizations.colors.primary || '#B9FE13',
+      secondaryColor: theme.customizations.colors.secondary || '#5E5E5E',
+      fontFamily: 'AktivGroteskRegular', // Not in Theme model, using default
+      roundedness: theme.customizations.button.roundedness || 'default',
+      textColor: theme.customizations.button.textColor || '#ECECEC',
+      backgroundImage: null, // Not in Theme model, using null as default
+      buttonTextColor: theme.customizations.button.textColor || '#0F0F0F',
+      buttonBgColor: theme.customizations.button.backgroundColor || '#B9FE13',
+      buttonBorder: theme.customizations.button.border || 'border-none',
+      spacing: 'normal', // Not in Theme model, using default
+      shadow: theme.customizations.button.shadow || 'shadow-none',
+      adsImageUrl: theme.customizations.ads.imageUrl || 'null',
     };
 
     return NextResponse.json(themeData);

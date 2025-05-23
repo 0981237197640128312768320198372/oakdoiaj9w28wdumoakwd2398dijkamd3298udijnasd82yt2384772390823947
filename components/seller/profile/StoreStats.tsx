@@ -32,7 +32,7 @@ export function StoreStats({ seller }: StoreStatsProps) {
     <InfoSection
       title="Store Statistics"
       icon={<TrendingUp className="h-5 w-5" />}
-      className="bg-primary/5">
+      className="bg-dark-700 border-[1px] border-dark-500">
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <StatItem

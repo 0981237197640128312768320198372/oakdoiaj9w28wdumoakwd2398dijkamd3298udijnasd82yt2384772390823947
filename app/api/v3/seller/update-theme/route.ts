@@ -13,7 +13,6 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    // Decode token to get seller ID
     let sellerId: string;
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { _id: string };
@@ -22,7 +21,6 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
 
-    // Get seller from database
     const seller = await Seller.findById(sellerId);
     if (!seller) {
       return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
@@ -44,7 +42,6 @@ export async function PUT(req: NextRequest) {
       adsImageUrl,
     } = body;
 
-    // Update theme settings
     seller.store.theme = {
       roundedness,
       primaryColor,

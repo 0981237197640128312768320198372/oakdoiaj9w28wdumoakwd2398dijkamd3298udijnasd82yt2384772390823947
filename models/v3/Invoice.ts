@@ -1,13 +1,13 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 interface IInvoice extends Document {
-  invoiceId: Types.ObjectId; // Unique identifier for the invoice
-  pin: string; // Secret PIN to secure access
-  productId: Types.ObjectId; // Reference to the purchased product
-  buyerEmail: string; // Email for buyer communication
-  status?: 'pending' | 'completed' | 'cancelled'; // Tracks purchase status
-  createdAt: Date; // When the invoice was created
-  expiresAt?: Date; // Optional expiration for added security
+  invoiceId: Types.ObjectId;
+  pin: string;
+  productId: Types.ObjectId;
+  buyerEmail: string;
+  status?: 'pending' | 'completed' | 'cancelled';
+  createdAt: Date;
+  expiresAt?: Date;
 }
 
 const invoiceSchema = new Schema<IInvoice>({
@@ -17,7 +17,7 @@ const invoiceSchema = new Schema<IInvoice>({
   buyerEmail: { type: String, required: true },
   status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' },
   createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date }, // Optional: Expires after a set time
+  expiresAt: { type: Date },
 });
 
 export const Invoice = model<IInvoice>('Invoice', invoiceSchema);

@@ -1,4 +1,3 @@
-// models/v3/Seller.ts
 import { Schema, model, Document, models } from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -14,21 +13,6 @@ interface IStoreCredits {
   negative: number;
 }
 
-interface ITheme {
-  roundedness: 'rounded' | 'rounded-full' | 'square';
-  primaryColor: string;
-  secondaryColor: string;
-  textColor: string;
-  fontFamily: string;
-  backgroundImage: string;
-  buttonTextColor: string;
-  buttonBgColor: string;
-  buttonBorder: string;
-  spacing: string;
-  shadow: string;
-  adsImageUrl: string;
-}
-
 interface IStore {
   name: string;
   description: string;
@@ -36,7 +20,7 @@ interface IStore {
   adsImageUrl?: string;
   rating: number;
   credits: IStoreCredits;
-  theme: ITheme;
+  theme: Schema.Types.ObjectId;
 }
 
 interface ISeller extends Document {
@@ -79,7 +63,6 @@ const sellerSchema = new Schema<ISeller>(
       name: { type: String, required: true, index: true },
       description: { type: String, required: true },
       logoUrl: { type: String, default: null },
-      adsImageUrl: { type: [], default: null },
       rating: {
         type: Number,
         default: 0,
@@ -90,24 +73,7 @@ const sellerSchema = new Schema<ISeller>(
         positive: { type: Number, default: 0 },
         negative: { type: Number, default: 0 },
       },
-      theme: {
-        roundedness: {
-          type: String,
-          enum: ['rounded', 'rounded-full', 'square'],
-          default: 'rounded',
-        },
-        primaryColor: { type: String, default: '#B9FE13' },
-        secondaryColor: { type: String, default: '#0F0F0F' },
-        textColor: { type: String, default: '#ECECEC' },
-        fontFamily: { type: String, default: 'AktivGrotesk-Regular' },
-        backgroundImage: { type: String, default: null },
-        buttonTextColor: { type: String, default: '#0F0F0F' },
-        buttonBgColor: { type: String, default: '#B9FE13' },
-        buttonBorder: { type: String, default: 'border-none' },
-        spacing: { type: String, default: 'normal' },
-        shadow: { type: String, default: 'shadow-none' },
-        adsImageUrl: { type: String, default: null },
-      },
+      theme: { type: Schema.Types.ObjectId, ref: 'Theme' },
     },
   },
   { timestamps: true }

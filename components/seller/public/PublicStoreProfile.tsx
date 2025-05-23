@@ -8,13 +8,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { CalendarDays, Info, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { StoreHeader } from '../profile/StoreHeader';
 import { InfoSection } from '../profile/InfoSection';
 import { StoreStats } from '../profile/StoreStats';
 import { SocialLinks } from '../profile/SocialLinks';
 
 import { Product, Category } from '@/types';
 import SellerCategories from './SellerCategories';
+import { PublicStoreHeader } from './PublicStoreHeader';
 
 interface PublicStoreProfileProps {
   seller: any;
@@ -61,7 +61,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       )}>
       <Card className="overflow-hidden bg-card text-card-foreground shadow-lg">
-        <StoreHeader seller={seller} />
+        <PublicStoreHeader seller={seller} />
         <CardContent className="p-5 lg:px-0">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 space-y-5">

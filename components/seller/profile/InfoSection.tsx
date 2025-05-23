@@ -13,7 +13,7 @@ export function InfoSection({ title, icon, children, className }: InfoSectionPro
   return (
     <div
       className={cn(
-        'group border-border/30 bg-card p-4 transition-all duration-300 bg-gradient-to-bl from-dark-700 via-dark-800 to-background rounded-2xl border-[1px] border-dark-700',
+        'group p-4 transition-all duration-300 rounded-2xl bg-dark-700 border-[1px] border-dark-500',
         'hover:border-primary/40 hover:shadow-sm',
         className
       )}>

@@ -21,7 +21,7 @@ export async function middleware(req: GeoRequest) {
     'https://admin.dokmaistore.com',
     'http://localhost:3000',
     'http://localhost',
-    'https://dokmai.store', // Add dokmai.store to allowed origins
+    'https://dokmai.store',
   ];
 
   if (req.method === 'OPTIONS') {
@@ -88,13 +88,17 @@ export async function middleware(req: GeoRequest) {
   if (hostname?.includes('.localhost') && subdomain !== 'www') {
     return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
   }
+  if (
+    hostname?.includes('.dokmai.store') &&
+    subdomain !== 'www' &&
+    subdomain !== 'seller' &&
+    subdomain !== 'admin'
+  ) {
+    return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
+  }
 
   if (hostname?.includes('localhost') && path.startsWith('/seller')) {
     return NextResponse.next();
-  }
-
-  if (hostname?.endsWith('.dokmai.store') && subdomain !== 'www') {
-    return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
   }
 
   if (hostname === 'seller.dokmaistore.com') {

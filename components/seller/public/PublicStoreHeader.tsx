@@ -4,16 +4,15 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Edit, ShoppingCart, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { ShoppingCart, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
 
-interface StoreHeaderProps {
+interface PublicStoreHeaderProps {
   seller: any;
 }
 
-export function StoreHeader({ seller }: StoreHeaderProps) {
+export function PublicStoreHeader({ seller }: PublicStoreHeaderProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
@@ -67,11 +66,6 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
             </Badge>
           </div>
         </div>
-        <Link
-          href="/seller/edit"
-          className="absolute top-3 right-3 flex gap-2 items-center text-light-200 bg-dark-600 hover:bg-dark-500 px-2 py-1 border-[0.5px] text-xs border-dark-400 rounded-md">
-          <Edit size={16} /> Edit Profile
-        </Link>
       </div>
     </div>
   );

@@ -23,12 +23,15 @@ export async function POST(req: NextRequest) {
 
     const isPasswordValid = await bcrypt.compare(password, seller.password);
     if (!isPasswordValid) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Invalid credentials Password is Invalid' },
+        { status: 401 }
+      );
     }
 
     const sellerObj = seller.toObject();
     const { password: _, ...sellerData } = sellerObj;
-
+    console.log(sellerObj);
     const storeStats = await StoreStatistics.findOne({ sellerId: seller._id });
     if (!storeStats) {
       return NextResponse.json({ error: 'Store statistics not found' }, { status: 404 });
@@ -40,13 +43,14 @@ export async function POST(req: NextRequest) {
       ...sellerData,
       storeStatistics: storeStatsObj,
     };
+    console.log(tokenData);
     const token = jwt.sign(tokenData, process.env.JWT_SECRET as string, {
       expiresIn: '6h',
     });
 
     return NextResponse.json({ token });
   } catch (error) {
-    console.error(error);
+    console.error(`HERE IS THE ERROR \n${error}\n\n`);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

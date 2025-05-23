@@ -30,7 +30,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const [activePage, setActivePage] = useState('home');
 
   useEffect(() => {
-    // Add a small delay for animation purposes
     const timer = setTimeout(() => {
       setLoaded(true);
     }, 100);
@@ -78,19 +77,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         color: theme?.textColor || '#ECECEC',
         fontFamily: theme?.fontFamily || 'AktivGrotesk-Regular',
       }}>
-      {/* Background image or pattern if provided */}
-      {theme?.backgroundImage && (
-        <div
-          className="fixed inset-0 z-0 opacity-20 pointer-events-none"
-          style={{
-            backgroundImage: `url(${theme.backgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-      )}
-
       <StoreNavbar seller={seller} activePage={activePage} onNavigate={setActivePage} />
 
       <motion.div
