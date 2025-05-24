@@ -33,93 +33,100 @@ const THEME_STORAGE_KEY = 'theme-customizer-draft';
 
 interface ThemeCustomizerProps {
   seller: any;
+  currentTheme: any; // The current theme data passed from parent
   onThemeChange: (theme: any) => void;
 }
 
-export default function ThemeCustomizer({ seller, onThemeChange }: ThemeCustomizerProps) {
+export default function ThemeCustomizer({
+  seller,
+  currentTheme,
+  onThemeChange,
+}: ThemeCustomizerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [theme, setTheme] = useState(() => {
-    // Try to load from localStorage first
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-    if (savedTheme) {
-      try {
-        return JSON.parse(savedTheme);
-      } catch (e) {
-        console.error('Failed to parse saved theme:', e);
-      }
-    }
+  const [isInitialized, setIsInitialized] = useState(false);
 
-    // Fall back to seller data or defaults
-    return {
-      baseTheme: seller?.store?.theme?.baseTheme || 'dark',
-      customizations: {
-        colors: {
-          primary: seller?.store?.theme?.customizations?.colors?.primary || 'primary',
-          secondary: seller?.store?.theme?.customizations?.colors?.secondary || 'dark-800',
-        },
-        button: {
-          textColor: seller?.store?.theme?.customizations?.button?.textColor || 'dark-800',
-          backgroundColor:
-            seller?.store?.theme?.customizations?.button?.backgroundColor || 'primary',
-          roundedness: seller?.store?.theme?.customizations?.button?.roundedness || 'md',
-          shadow: seller?.store?.theme?.customizations?.button?.shadow || 'sm',
-          border: seller?.store?.theme?.customizations?.button?.border || 'none',
-          borderColor: seller?.store?.theme?.customizations?.button?.borderColor || 'primary',
-        },
-        componentStyles: {
-          cardRoundedness:
-            seller?.store?.theme?.customizations?.componentStyles?.cardRoundedness || 'md',
-          cardShadow: seller?.store?.theme?.customizations?.componentStyles?.cardShadow || 'sm',
-        },
-        ads: {
-          images: seller?.store?.theme?.customizations?.ads?.images || [],
-          roundedness: seller?.store?.theme?.customizations?.ads?.roundedness || 'md',
-          shadow: seller?.store?.theme?.customizations?.ads?.shadow || 'sm',
-        },
-      },
-    };
-  });
-
-  useEffect(() => {
-    if (seller?.store?.theme) {
-      setTheme({
-        baseTheme: seller.store.theme.baseTheme || 'dark',
+  // Use the passed currentTheme as the base theme
+  const [baseTheme, setBaseTheme] = useState(
+    () =>
+      currentTheme || {
+        baseTheme: 'dark',
         customizations: {
-          colors: {
-            primary: seller.store.theme.customizations?.colors?.primary || 'primary',
-            secondary: seller.store.theme.customizations?.colors?.secondary || 'dark-800',
-          },
+          colors: { primary: 'primary', secondary: 'dark-800' },
           button: {
-            textColor: seller.store.theme.customizations?.button?.textColor || 'dark-800',
-            backgroundColor:
-              seller.store.theme.customizations?.button?.backgroundColor || 'primary',
-            roundedness: seller.store.theme.customizations?.button?.roundedness || 'md',
-            shadow: seller.store.theme.customizations?.button?.shadow || 'sm',
-            border: seller.store.theme.customizations?.button?.border || 'none',
-            borderColor: seller.store.theme.customizations?.button?.borderColor || 'primary',
+            textColor: 'dark-800',
+            backgroundColor: 'primary',
+            roundedness: 'md',
+            shadow: 'sm',
+            border: 'none',
+            borderColor: 'primary',
           },
-          componentStyles: {
-            cardRoundedness:
-              seller.store.theme.customizations?.componentStyles?.cardRoundedness || 'md',
-            cardShadow: seller.store.theme.customizations?.componentStyles?.cardShadow || 'sm',
-          },
-          ads: {
-            images: seller.store.theme.customizations?.ads?.images || [],
-            roundedness: seller.store.theme.customizations?.ads?.roundedness || 'md',
-            shadow: seller.store.theme.customizations?.ads?.shadow || 'sm',
-          },
+          componentStyles: { cardRoundedness: 'md', cardShadow: 'sm' },
+          ads: { images: [], roundedness: 'md', shadow: 'sm' },
         },
-      });
-    }
-  }, [seller]);
+      }
+  );
 
-  // Save theme to localStorage whenever it changes
+  const [theme, setTheme] = useState(() => currentTheme || baseTheme);
+
+  // Update base theme when currentTheme prop changes
   useEffect(() => {
-    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(theme));
-    setHasUnsavedChanges(true);
-  }, [theme]);
+    if (currentTheme) {
+      setBaseTheme(currentTheme);
+
+      // Check if there's a draft in localStorage
+      const savedDraft = localStorage.getItem(THEME_STORAGE_KEY);
+      if (savedDraft && !isInitialized) {
+        try {
+          const draftTheme = JSON.parse(savedDraft);
+          // Deep merge draft with current theme
+          const mergedTheme = {
+            ...currentTheme,
+            baseTheme: draftTheme.baseTheme || currentTheme.baseTheme,
+            customizations: {
+              colors: {
+                ...currentTheme.customizations.colors,
+                ...draftTheme.customizations?.colors,
+              },
+              button: {
+                ...currentTheme.customizations.button,
+                ...draftTheme.customizations?.button,
+              },
+              componentStyles: {
+                ...currentTheme.customizations.componentStyles,
+                ...draftTheme.customizations?.componentStyles,
+              },
+              ads: {
+                ...currentTheme.customizations.ads,
+                ...draftTheme.customizations?.ads,
+              },
+            },
+          };
+          setTheme(mergedTheme);
+          setHasUnsavedChanges(true);
+        } catch (e) {
+          console.error('Failed to parse saved theme:', e);
+          setTheme(currentTheme);
+        }
+      } else {
+        setTheme(currentTheme);
+      }
+
+      setIsInitialized(true);
+    }
+  }, [currentTheme, isInitialized]);
+
+  // Save theme to localStorage whenever it changes (but only after initialization)
+  useEffect(() => {
+    if (isInitialized && currentTheme) {
+      localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(theme));
+
+      // Check if current theme is different from base theme
+      const isDifferent = JSON.stringify(theme) !== JSON.stringify(baseTheme);
+      setHasUnsavedChanges(isDifferent);
+    }
+  }, [theme, baseTheme, isInitialized, currentTheme]);
 
   const handleBaseThemeChange = (value: 'light' | 'dark') => {
     setTheme((prev: any) => ({
@@ -131,53 +138,43 @@ export default function ThemeCustomizer({ seller, onThemeChange }: ThemeCustomiz
   const handleChange = (section: string, subsection: string | null, key: string, value: string) => {
     setTheme(
       (prev: { customizations: { colors: any; button: any; componentStyles: any; ads: any } }) => {
+        const newTheme = { ...prev };
+
         if (section === 'colors') {
-          return {
-            ...prev,
-            customizations: {
-              ...prev.customizations,
-              colors: {
-                ...prev.customizations.colors,
-                [key]: value,
-              },
+          newTheme.customizations = {
+            ...prev.customizations,
+            colors: {
+              ...prev.customizations.colors,
+              [key]: value,
             },
           };
         } else if (section === 'button') {
-          return {
-            ...prev,
-            customizations: {
+          newTheme.customizations = {
+            ...prev.customizations,
+            button: {
               ...prev.customizations.button,
-              button: {
-                ...prev.customizations.button,
-                [key]: value,
-              },
+              [key]: value,
             },
           };
         } else if (section === 'componentStyles') {
-          return {
-            ...prev,
-            customizations: {
-              ...prev.customizations,
-              componentStyles: {
-                ...prev.customizations.componentStyles,
-                [key]: value,
-              },
+          newTheme.customizations = {
+            ...prev.customizations,
+            componentStyles: {
+              ...prev.customizations.componentStyles,
+              [key]: value,
             },
           };
         } else if (section === 'ads') {
-          return {
-            ...prev,
-            customizations: {
-              ...prev.customizations,
-              ads: {
-                ...prev.customizations.ads,
-                [key]: value,
-              },
+          newTheme.customizations = {
+            ...prev.customizations,
+            ads: {
+              ...prev.customizations.ads,
+              [key]: value,
             },
           };
-        } else {
-          return prev;
         }
+
+        return newTheme;
       }
     );
   };
@@ -201,9 +198,18 @@ export default function ThemeCustomizer({ seller, onThemeChange }: ThemeCustomiz
       await onThemeChange(theme);
       // Clear the draft from localStorage after successful save
       localStorage.removeItem(THEME_STORAGE_KEY);
+      setHasUnsavedChanges(false);
+      // Update base theme to current theme
+      setBaseTheme(theme);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleResetChanges = () => {
+    localStorage.removeItem(THEME_STORAGE_KEY);
+    setTheme(baseTheme);
+    setHasUnsavedChanges(false);
   };
 
   // Get the appropriate shadow class based on the shadow value
@@ -421,6 +427,17 @@ export default function ThemeCustomizer({ seller, onThemeChange }: ThemeCustomiz
     );
   };
 
+  if (!isInitialized || !currentTheme) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-light-400">Initializing theme customizer...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -446,10 +463,17 @@ export default function ThemeCustomizer({ seller, onThemeChange }: ThemeCustomiz
             Components
           </TabsTrigger>
         </TabsList>
+
         {hasUnsavedChanges && (
-          <div className="text-xs text-amber-500 flex items-center gap-1">
-            <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
-            Unsaved changes
+          <div className="mb-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+            <div className="flex items-center gap-2 text-amber-500">
+              <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+              <span className="text-sm font-medium">You have unsaved changes</span>
+            </div>
+            <p className="text-xs text-amber-400 mt-1">
+              Your changes are automatically saved as draft. Click "Save Theme" to apply them
+              permanently.
+            </p>
           </div>
         )}
 
@@ -759,18 +783,15 @@ export default function ThemeCustomizer({ seller, onThemeChange }: ThemeCustomiz
 
       <div className="pt-4 flex justify-end gap-2">
         <Button2
-          onClick={() => {
-            // Clear localStorage and reset to original theme
-            localStorage.removeItem(THEME_STORAGE_KEY);
-            window.location.reload(); // Simple way to reset everything
-          }}
+          onClick={handleResetChanges}
           variant="outline"
-          className="border-dark-600 text-light-300 hover:bg-dark-700">
+          className="border-dark-600 text-light-300 hover:bg-dark-700"
+          disabled={!hasUnsavedChanges}>
           Reset Changes
         </Button2>
         <Button2
           onClick={handleSaveTheme}
-          disabled={isLoading}
+          disabled={isLoading || !hasUnsavedChanges}
           className="bg-primary hover:bg-primary/90 text-dark-800 font-medium">
           {isLoading ? (
             <>

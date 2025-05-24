@@ -74,8 +74,6 @@ export function ColorGrid({
     { name: 'light-600', class: 'light-600' },
     { name: 'light-700', class: 'light-700' },
     { name: 'light-800', class: 'light-800' },
-    { name: 'goldVIP', class: 'goldVIP' },
-    { name: 'purpleVVIP', class: 'purpleVVIP' },
   ];
 
   const basicColors = [
@@ -84,7 +82,6 @@ export function ColorGrid({
     { name: 'transparent', class: 'transparent' },
   ];
 
-  // Handle click outside to close popup
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -92,7 +89,6 @@ export function ColorGrid({
       }
     }
 
-    // Listen for other ColorGrid components opening
     function handleColorGridStateChange(activeId: string | null) {
       if (activeId !== id) {
         setIsOpen(false);

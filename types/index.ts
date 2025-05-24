@@ -10,6 +10,7 @@ export interface Seller {
     whatsapp?: string;
   };
   store: {
+    theme: any;
     name: string;
     description: string;
     logoUrl?: string;

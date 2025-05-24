@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
-// Define the theme type
 interface ThemeType {
   primaryColor: string;
   secondaryColor: string;
@@ -113,15 +113,23 @@ export default function HeroSection({ theme }: HeroSectionProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextBanner, prevBanner]);
 
-  // Get primary color for borders and shadows
   const primaryColor = theme?.primaryColor || 'primary';
-  const primaryColorRgba =
-    primaryColor === 'primary'
-      ? 'rgba(79, 70, 229, 0.3)' // Default indigo color
-      : 'rgba(79, 70, 229, 0.3)'; // Fallback to default
+
+  const getPrimaryColorClasses = (isCenter: boolean) => {
+    if (isCenter) {
+      return {
+        border: `border-2 border-${primaryColor}/30`,
+        shadow: `shadow-2xl shadow-${primaryColor}/10`,
+      };
+    }
+    return {
+      border: 'border border-gray-700/50',
+      shadow: 'shadow-2xl shadow-black/20',
+    };
+  };
 
   return (
-    <div className="w-full bg-dark-800 text-light-100">
+    <div className="w-full">
       <div className="relative w-full overflow-hidden py-6 md:py-12">
         <div
           id="carousel-container"
@@ -145,30 +153,18 @@ export default function HeroSection({ theme }: HeroSectionProps) {
                 const centerWidth = containerWidth * centerWidthPercent;
                 const sideWidth = containerWidth * sideWidthPercent;
 
-                const bannerHeight =
-                  window.innerWidth >= 1536
-                    ? 420
-                    : window.innerWidth >= 1280
-                    ? 380
-                    : window.innerWidth >= 1024
-                    ? 320
-                    : window.innerWidth >= 768
-                    ? 280
-                    : window.innerWidth >= 640
-                    ? 220
-                    : 180;
-
                 let xPos = 0;
                 if (isCenter) xPos = 0;
                 if (isPrev) xPos = -(centerWidth / 2) - sideWidth / 2 - 4;
                 if (isNext) xPos = centerWidth / 2 + sideWidth / 2 + 4;
 
                 const width = isCenter ? centerWidth : sideWidth;
+                const colorClasses = getPrimaryColorClasses(isCenter);
 
                 return (
                   <motion.div
                     key={index}
-                    className="absolute left-1/2 top-1/2 cursor-pointer "
+                    className="absolute left-1/2 top-1/2 cursor-pointer"
                     initial={false}
                     animate={{
                       x: xPos,
@@ -209,29 +205,26 @@ export default function HeroSection({ theme }: HeroSectionProps) {
                     }
                     style={{
                       width: width,
-                      height: bannerHeight,
+                      height:
+                        window.innerWidth >= 1536
+                          ? 420
+                          : window.innerWidth >= 1280
+                          ? 380
+                          : window.innerWidth >= 1024
+                          ? 320
+                          : window.innerWidth >= 768
+                          ? 280
+                          : window.innerWidth >= 640
+                          ? 220
+                          : 180,
                       marginLeft: -width / 2,
                     }}>
-                    <motion.div
-                      className={`relative h-full w-full overflow-hidden shadow-2xl rounded-xl ${
-                        isCenter
-                          ? `border-2 border-${primaryColor}/30 shadow-${primaryColor}/10`
-                          : ' border border-gray-700/50 shadow-black/20'
-                      }`}
-                      initial={false}
-                      animate={{
-                        borderColor: isCenter ? primaryColorRgba : 'rgba(75, 85, 99, 0.5)',
-                        boxShadow: isCenter
-                          ? `0 20px 25px -5px ${primaryColorRgba.replace(
-                              '0.3',
-                              '0.05'
-                            )}, 0 10px 10px -5px ${primaryColorRgba.replace('0.3', '0.1')}`
-                          : '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.2)',
-                      }}
-                      transition={{
-                        duration: 0.5,
-                        ease: 'easeInOut',
-                      }}>
+                    <div
+                      className={cn(
+                        'relative h-full w-full overflow-hidden rounded-xl transition-all duration-500 ease-in-out',
+                        colorClasses.border,
+                        colorClasses.shadow
+                      )}>
                       <Image
                         src={banner.image || defaultBanner}
                         alt="Ads"
@@ -244,7 +237,7 @@ export default function HeroSection({ theme }: HeroSectionProps) {
 
                       {isPrev && (
                         <motion.div
-                          className="absolute inset-0 flex items-center justify-center bg-black/20"
+                          className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition-colors duration-300"
                           initial={{ opacity: 0.2 }}
                           animate={{ opacity: 0.2 }}
                           whileHover={{ opacity: 0.4 }}
@@ -257,7 +250,7 @@ export default function HeroSection({ theme }: HeroSectionProps) {
 
                       {isNext && (
                         <motion.div
-                          className="absolute inset-0 flex items-center justify-center bg-black/20"
+                          className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition-colors duration-300"
                           initial={{ opacity: 0.2 }}
                           animate={{ opacity: 0.2 }}
                           whileHover={{ opacity: 0.4 }}
@@ -267,7 +260,7 @@ export default function HeroSection({ theme }: HeroSectionProps) {
                             if (!isTransitioning) nextBanner();
                           }}></motion.div>
                       )}
-                    </motion.div>
+                    </div>
                   </motion.div>
                 );
               })}
@@ -279,16 +272,15 @@ export default function HeroSection({ theme }: HeroSectionProps) {
               <motion.button
                 key={index}
                 onClick={() => !isTransitioning && goToBanner(index)}
-                className="h-1.5 w-6 rounded-full md:h-2 md:w-8"
+                className={cn(
+                  'h-1.5 w-6 rounded-full md:h-2 md:w-8 transition-all duration-400 ease-in-out',
+                  currentBanner === index
+                    ? `bg-${primaryColor} opacity-100 scale-110`
+                    : 'bg-gray-600 opacity-70 scale-100 hover:opacity-90'
+                )}
                 aria-label={`Go to banner ${index + 1}`}
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
-                initial={false}
-                animate={{
-                  backgroundColor: currentBanner === index ? '#4f46e5' : '#374151',
-                  opacity: currentBanner === index ? 1 : 0.7,
-                  scale: currentBanner === index ? 1.1 : 1,
-                }}
                 transition={{
                   duration: 0.4,
                   ease: 'easeInOut',
@@ -307,14 +299,14 @@ export default function HeroSection({ theme }: HeroSectionProps) {
       <div className="px-4 py-6 md:px-6 md:py-8">
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold md:text-2xl">EXCLUSIVE OFFERS</h2>
+            <h2 className="text-xl font-bold text-light-100 md:text-2xl">EXCLUSIVE OFFERS</h2>
             <p className="text-sm text-gray-400 md:text-base">
               Don't miss our limited-time offers! Discover current deals today!
             </p>
           </div>
           <Link
             href="#"
-            className="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-gray-800 md:px-6 md:py-3">
+            className="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-gray-800 hover:scale-105 md:px-6 md:py-3">
             View more
             <ChevronRight className="h-4 w-4" />
           </Link>
@@ -328,7 +320,7 @@ export default function HeroSection({ theme }: HeroSectionProps) {
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
               <Link
                 href="#"
-                className="block rounded-xl bg-dark-500/80 p-3 transition-all hover:bg-gray-800/80">
+                className="block rounded-xl bg-dark-500/80 p-3 transition-all duration-300 hover:bg-gray-800/80 hover:shadow-lg">
                 <div className="flex items-center gap-3">
                   <div className="flex-shrink-0">
                     <Image
