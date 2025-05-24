@@ -5,6 +5,7 @@ import React from 'react';
 import { Features } from '@/components/Features';
 import { features } from '@/constant';
 import { DOKMAI } from '@/components/DOKMAI';
+import FacebookChat from '../seller/public/FacebookChat';
 const Highlight = ({ text, bgcolor = 'bg-primary' }: { text: string; bgcolor?: string }) => (
   <span className={`text-dark-800 ${bgcolor} px-1`}>{text}</span>
 );
@@ -61,7 +62,7 @@ const HeroSection = () => {
           </Link>
         </div>
       </div>
-
+      <FacebookChat />
       <div className="pt-24 overflow-hidden relative w-full">
         <Features text={features} />
       </div>
