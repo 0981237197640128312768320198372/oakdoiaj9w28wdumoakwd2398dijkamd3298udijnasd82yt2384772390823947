@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define the available views in the seller dashboard
-export type DashboardView = 'profile' | 'products' | 'orders' | 'analytics';
+export type DashboardView = 'profile' | 'products' | 'orders' | 'analytics' | 'edit-profile';
 
 // Define the context type
 interface SellerDashboardContextType {

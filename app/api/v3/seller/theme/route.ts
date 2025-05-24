@@ -25,7 +25,6 @@ export interface ThemeType {
   adsImageUrl: string | null;
 }
 
-// Existing POST method to fetch theme data
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

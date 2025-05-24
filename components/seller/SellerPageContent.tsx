@@ -10,6 +10,7 @@ import SellerAnalytics from './SellerAnalytics';
 import { UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import SellerProducts from './product/SellerProducts';
+import CustomizeYourPage from './profile/CustomizeYourPage';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();
@@ -36,6 +37,8 @@ const SellerPageContent = () => {
     switch (displayedView) {
       case 'profile':
         return <SellerInfo />;
+      case 'edit-profile':
+        return <CustomizeYourPage />;
       case 'products':
         return (
           <SellerProducts seller={seller ? { id: seller._id, name: seller.store.name } : null} />

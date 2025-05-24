@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -7,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Edit, ShoppingCart, Star, ThumbsDown, ThumbsUp } from 'lucide-react';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { cn } from '@/lib/utils';
-import Link from 'next/link';
+import { useSellerDashboard } from '@/context/SellerDashboardContext';
 
 interface StoreHeaderProps {
   seller: any;
@@ -15,6 +16,15 @@ interface StoreHeaderProps {
 
 export function StoreHeader({ seller }: StoreHeaderProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { activeView, setActiveView } = useSellerDashboard();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleNavigation = (
+    view: 'profile' | 'products' | 'orders' | 'analytics' | 'edit-profile'
+  ) => {
+    setActiveView(view);
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className="relative">
@@ -66,11 +76,11 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
             </Badge>
           </div>
         </div>
-        <Link
-          href="/seller/edit"
+        <button
+          onClick={() => handleNavigation('edit-profile')}
           className="absolute top-3 right-3 flex gap-2 items-center text-light-200 bg-dark-600 hover:bg-dark-500 px-2 py-1 border-[0.5px] text-xs border-dark-400 rounded-md">
           <Edit size={16} /> Edit Profile
-        </Link>
+        </button>
       </div>
     </div>
   );

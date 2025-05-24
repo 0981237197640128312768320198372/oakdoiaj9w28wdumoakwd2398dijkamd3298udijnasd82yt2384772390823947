@@ -15,7 +15,9 @@ const SellerNavbar = () => {
   const { activeView, setActiveView } = useSellerDashboard();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleNavigation = (view: 'profile' | 'products' | 'orders' | 'analytics') => {
+  const handleNavigation = (
+    view: 'profile' | 'products' | 'orders' | 'analytics' | 'edit-profile'
+  ) => {
     setActiveView(view);
     setIsMenuOpen(false);
   };

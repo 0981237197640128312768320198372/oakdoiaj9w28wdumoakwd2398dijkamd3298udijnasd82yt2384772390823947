@@ -45,17 +45,14 @@ export async function PUT(req: NextRequest) {
     const whatsapp = formData.get('whatsapp') as string;
     const logo = formData.get('logo') as File | null;
 
-    // Update seller information
     if (storeName) seller.store.name = storeName;
     if (storeDescription) seller.store.description = storeDescription;
     if (email) seller.email = email;
 
-    // Update password if provided
     if (password) {
       seller.password = await bcrypt.hash(password, 10);
     }
 
-    // Update contact information
     seller.contact = {
       facebook: facebook ? `fb.com/${facebook}` : seller.contact.facebook,
       line: line ? `@${line}` : seller.contact.line,
@@ -63,7 +60,6 @@ export async function PUT(req: NextRequest) {
       whatsapp: whatsapp || seller.contact.whatsapp,
     };
 
-    // Upload and update logo if provided
     if (logo && logo.size > 0) {
       try {
         const logoUrl = await uploadImage(logo);
