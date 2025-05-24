@@ -2,6 +2,7 @@
 // app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import FacebookChat from '@/components/seller/public/FacebookChat';
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
 import PublicStoreProfile from '@/components/seller/public/PublicStoreProfile';
 import StoreProducts from '@/components/seller/public/StoreProducts';
@@ -71,6 +72,7 @@ export default async function StorePage(props: StorePageProps) {
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
         <PublicStoreProfile seller={seller} products={products} categories={categories} />
         <StoreProducts store={seller.username} />
+        <FacebookChat />
       </PublicStoreLayout>
     );
   } catch (error) {
