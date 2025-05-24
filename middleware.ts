@@ -22,7 +22,6 @@ export async function middleware(req: GeoRequest) {
     'http://localhost:3000',
     'http://localhost',
     'https://dokmai.store',
-    'https://connect.facebook.net',
   ];
 
   if (req.method === 'OPTIONS') {

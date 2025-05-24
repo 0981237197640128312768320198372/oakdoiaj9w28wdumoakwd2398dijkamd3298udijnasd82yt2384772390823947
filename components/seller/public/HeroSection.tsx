@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FacebookChat from './FacebookChat';
 
 export default function HeroSection() {
   const banners = [
@@ -344,7 +343,6 @@ export default function HeroSection() {
           ))}
         </div>
       </div>
-      <FacebookChat />
     </div>
   );
 }
