@@ -98,7 +98,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller, activePage, on
           />
           <button
             onClick={handleSearch}
-            className="flex md:hidden justify-between items-center hover:bg-dark-400 bg-dark-500 py-1 px-3 rounded-full w-fit gap-10 text-light-300">
+            className="flex md:hidden whitespace-nowrap justify-between items-center hover:bg-dark-400 bg-dark-500 py-1 px-3 rounded-full w-fit gap-10 text-light-300">
             Search Anything
             <Search size={18} />
           </button>

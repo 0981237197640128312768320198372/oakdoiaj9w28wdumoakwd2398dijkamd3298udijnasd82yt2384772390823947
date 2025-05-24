@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ThemeType } from '@/lib/utils';
-
 interface StoreData {
-  theme: ThemeType;
+  theme: any;
   seller: any;
 }
 
@@ -26,7 +24,7 @@ export async function fetchStoreData(subdomain: string): Promise<StoreData> {
       throw new Error('Failed to fetch data');
     }
 
-    const themeData: ThemeType = await themeResponse.json();
+    const themeData = await themeResponse.json();
     const sellerData = await sellerResponse.json();
 
     return {

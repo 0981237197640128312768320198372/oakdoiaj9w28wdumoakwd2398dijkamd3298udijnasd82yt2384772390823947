@@ -10,6 +10,7 @@ import Image from 'next/image';
 import PublicStoreProfile from './PublicStoreProfile';
 import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
+import StoreFooter from './StoreFooter';
 
 interface PublicStoreLayoutProps {
   theme: any;
@@ -35,27 +36,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
     return () => clearTimeout(timer);
   }, []);
 
-  const getButtonStyles = () => {
-    return {
-      backgroundColor: theme?.buttonBgColor || '#B9FE13',
-      color: theme?.buttonTextColor || '#0F0F0F',
-      borderRadius:
-        theme?.roundedness === 'rounded-full'
-          ? '9999px'
-          : theme?.roundedness === 'square'
-          ? '0px'
-          : '0.375rem',
-      border:
-        theme?.buttonBorder === 'border-none'
-          ? 'none'
-          : theme?.buttonBorder === 'border'
-          ? '1px solid'
-          : '2px solid',
-      borderColor: theme?.primaryColor,
-    };
-  };
-
-  // Render the appropriate content based on the active page
   const renderContent = () => {
     switch (activePage) {
       case 'profile':
@@ -122,48 +102,8 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         </div>
       </motion.div>
 
-      <footer
-        className="w-full py-6 mt-20 border-t"
-        style={{ borderColor: `${theme?.primaryColor}40` }}>
-        <div className="max-w-screen-lg mx-auto px-5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-sm opacity-70">
-            © {new Date().getFullYear()} {seller?.store?.name} | Powered by Dokmai Store
-          </div>
-
-          <div className="flex gap-4">
-            {seller?.contact?.facebook && (
-              <a
-                href={`https://${seller.contact.facebook}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                style={{ color: theme?.primaryColor }}>
-                Facebook
-              </a>
-            )}
-            {seller?.contact?.line && (
-              <a
-                href={`https://line.me/ti/p/${seller.contact.line.replace('@', '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                style={{ color: theme?.primaryColor }}>
-                Line
-              </a>
-            )}
-            {seller?.contact?.instagram && (
-              <a
-                href={`https://instagram.com/${seller.contact.instagram.replace('@', '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                style={{ color: theme?.primaryColor }}>
-                Instagram
-              </a>
-            )}
-          </div>
-        </div>
-      </footer>
+      {/* Use the updated StoreFooter component */}
+      <StoreFooter seller={seller} theme={theme} />
     </div>
   );
 };
