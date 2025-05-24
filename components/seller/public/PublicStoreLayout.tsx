@@ -63,43 +63,16 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}>
-        <div className="w-full max-w-screen-lg px-5 lg:px-0 relative">
-          {theme?.adsImageUrl && theme.adsImageUrl !== 'null' && (
-            <div
-              className="w-full mb-8 overflow-hidden rounded-lg shadow-xl"
-              style={{
-                borderRadius:
-                  theme?.roundedness === 'rounded-full'
-                    ? '1rem'
-                    : theme?.roundedness === 'square'
-                    ? '0'
-                    : '0.5rem',
-                boxShadow:
-                  theme?.shadow !== 'shadow-none'
-                    ? '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-                    : 'none',
-              }}>
-              <Image
-                src={theme.adsImageUrl || '/placeholder.svg'}
-                alt={`${seller?.store?.name} promotion`}
-                width={1200}
-                height={300}
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          )}
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePage}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}>
-              {renderContent()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activePage}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}>
+            {renderContent()}
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
 
       <StoreFooter seller={seller} theme={theme} />

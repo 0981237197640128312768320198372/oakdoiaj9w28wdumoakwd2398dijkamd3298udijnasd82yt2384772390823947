@@ -53,10 +53,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Handle backward compatibility - if images array exists, use the first image
-    const adsImageUrl =
-      theme.customizations.ads.images?.length > 0
-        ? theme.customizations.ads.images[0]
-        : theme.customizations.ads.imageUrl || null;
 
     const themeData: ThemeType = {
       primaryColor: theme.customizations.colors.primary || 'primary',
@@ -108,15 +104,6 @@ export async function PUT(req: NextRequest) {
 
     if (updatedThemeData.customizations?.ads?.images !== undefined) {
       theme.customizations.ads.images = updatedThemeData.customizations.ads.images;
-    }
-
-    if (
-      updatedThemeData.adsImageUrl !== undefined &&
-      !updatedThemeData.customizations?.ads?.images
-    ) {
-      theme.customizations.ads.images = updatedThemeData.adsImageUrl
-        ? [updatedThemeData.adsImageUrl]
-        : [];
     }
 
     Object.assign(theme, updatedThemeData);

@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest) {
       buttonBorder,
       spacing,
       shadow,
-      adsImageUrl,
+      ads,
     } = body;
 
     seller.store.theme = {
@@ -54,7 +54,7 @@ export async function PUT(req: NextRequest) {
       buttonBorder,
       spacing,
       shadow,
-      adsImageUrl,
+      ads,
     };
 
     await seller.save();
