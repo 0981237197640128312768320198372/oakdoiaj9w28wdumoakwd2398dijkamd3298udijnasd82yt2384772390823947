@@ -1,10 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 
 export async function POST(req: NextRequest) {
   try {
@@ -50,27 +48,19 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
     }
 
-    // Parse form data
-    const formData = await req.formData();
-    const storeName = formData.get('storeName') as string;
-    const storeDescription = formData.get('storeDescription') as string;
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const facebook = formData.get('facebook') as string;
-    const line = formData.get('line') as string;
-    const instagram = formData.get('instagram') as string;
-    const whatsapp = formData.get('whatsapp') as string;
-    const logo = formData.get('logo');
-
-    // Handle logo file upload
-    let logoUrl = seller.store.logoUrl;
-    if (logo instanceof File) {
-      const fileName = `${Date.now()}-${logo.name}`;
-      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
-      const arrayBuffer = await logo.arrayBuffer();
-      await writeFile(filePath, Buffer.from(arrayBuffer));
-      logoUrl = `/uploads/${fileName}`;
-    }
+    // Parse JSON data
+    const body = await req.json();
+    const {
+      storeName,
+      storeDescription,
+      email,
+      password,
+      facebook,
+      line,
+      instagram,
+      whatsapp,
+      logoUrl,
+    } = body;
 
     // Update seller fields
     seller.store.name = storeName || seller.store.name;
@@ -83,13 +73,22 @@ export async function PUT(req: NextRequest) {
     seller.contact.line = line ? `@${line}` : seller.contact.line;
     seller.contact.instagram = instagram ? `@${instagram}` : seller.contact.instagram;
     seller.contact.whatsapp = whatsapp || seller.contact.whatsapp;
-    seller.store.logoUrl = logoUrl;
+
+    if (logoUrl) {
+      seller.store.logoUrl = logoUrl;
+    }
 
     await seller.save();
 
     return NextResponse.json({ message: 'Profile updated successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error updating seller profile:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 }

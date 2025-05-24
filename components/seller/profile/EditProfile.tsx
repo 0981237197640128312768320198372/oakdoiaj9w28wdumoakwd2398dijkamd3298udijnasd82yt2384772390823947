@@ -15,6 +15,8 @@ import {
   Instagram,
   MessageCircle,
   AlertCircle,
+  Upload,
+  Check,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useSellerAuth } from '@/context/SellerAuthContext';
@@ -43,11 +45,13 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
     line: '',
     instagram: '',
     whatsapp: '',
+    logoUrl: '',
   });
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -64,6 +68,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         line: seller.contact?.line?.replace('@', '') || '',
         instagram: seller.contact?.instagram?.replace('@', '') || '',
         whatsapp: seller.contact?.whatsapp || '',
+        logoUrl: seller.store?.logoUrl || '',
       });
       setLogoPreview(seller.store?.logoUrl || null);
     }
@@ -98,36 +103,75 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
     return Object.keys(errors).length === 0;
   };
 
+  const uploadImages = async (files: File[]): Promise<string[]> => {
+    if (files.length === 0) return [];
+
+    setIsUploading(true);
+
+    const formData = new FormData();
+    files.forEach((file) => formData.append('images', file));
+
+    try {
+      const response = await fetch('/api/v3/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload images');
+      }
+
+      const data = await response.json();
+      setIsUploading(false);
+      return data.urls;
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      setIsUploading(false);
+      return [];
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear field error when user starts typing
     if (fieldErrors[name]) {
       setFieldErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         setError('Logo file size must be less than 5MB');
         return;
       }
 
-      // Validate file type
       if (!file.type.startsWith('image/')) {
         setError('Please upload an image file');
         return;
       }
 
       setLogoFile(file);
+
+      // Create a preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
+
+      // Upload the image using the uploadImages function
+      try {
+        const urls = await uploadImages([file]);
+        if (urls.length > 0) {
+          setFormData((prev) => ({ ...prev, logoUrl: urls[0] }));
+        } else {
+          setError('Failed to upload image. Please try again.');
+        }
+      } catch (err) {
+        setError('Failed to upload image. Please try again.');
+      }
     }
   };
 
@@ -143,23 +187,18 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
     setIsLoading(true);
 
     try {
-      const updateData = new FormData();
-      updateData.append('storeName', formData.storeName);
-      updateData.append('storeDescription', formData.storeDescription);
-      updateData.append('email', formData.email);
-
-      if (formData.password) {
-        updateData.append('password', formData.password);
-      }
-
-      updateData.append('facebook', formData.facebook);
-      updateData.append('line', formData.line);
-      updateData.append('instagram', formData.instagram);
-      updateData.append('whatsapp', formData.whatsapp);
-
-      if (logoFile) {
-        updateData.append('logo', logoFile);
-      }
+      // Prepare the data to send to the API
+      const updateData = {
+        storeName: formData.storeName,
+        storeDescription: formData.storeDescription,
+        email: formData.email,
+        password: formData.password || undefined,
+        facebook: formData.facebook,
+        line: formData.line,
+        instagram: formData.instagram,
+        whatsapp: formData.whatsapp,
+        logoUrl: formData.logoUrl,
+      };
 
       const token = localStorage.getItem('token');
       if (!token) {
@@ -169,9 +208,10 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
       const response = await fetch('/api/v3/seller/details', {
         method: 'PUT',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: updateData,
+        body: JSON.stringify(updateData),
       });
 
       const data = await response.json();
@@ -225,7 +265,24 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                       </div>
                     )}
                     <div className="absolute inset-0 bg-dark-800/70 opacity-0 group-hover:opacity-100 rounded-full flex items-center justify-center transition-opacity duration-300">
-                      <div className="text-light-100 text-sm font-medium">Change Logo</div>
+                      <div className="text-light-100 text-sm font-medium flex flex-col items-center gap-2">
+                        {isUploading ? (
+                          <>
+                            <Loader2 size={24} className="animate-spin" />
+                            <span>Uploading...</span>
+                          </>
+                        ) : formData.logoUrl ? (
+                          <>
+                            <Check size={24} className="text-primary-500" />
+                            <span>Change Logo</span>
+                          </>
+                        ) : (
+                          <>
+                            <Upload size={24} />
+                            <span>Upload Logo</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <input
@@ -233,6 +290,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                     accept="image/*"
                     className="hidden"
                     onChange={handleLogoChange}
+                    disabled={isUploading}
                   />
                 </label>
               </TooltipTrigger>
@@ -241,7 +299,13 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <p className="text-xs text-light-500">Click to upload a new logo</p>
+          <p className="text-xs text-light-500">
+            {isUploading
+              ? 'Uploading your logo...'
+              : formData.logoUrl
+              ? 'Logo uploaded successfully'
+              : 'Click to upload a new logo'}
+          </p>
         </div>
       </Card>
 
@@ -491,7 +555,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
       {success && (
         <Alert className="bg-green-500/10 border-green-500/30 text-green-400">
           <AlertDescription className="flex items-center gap-2">
-            <Save className="h-4 w-4" />
+            <Check className="h-4 w-4" />
             {success}
           </AlertDescription>
         </Alert>
@@ -501,7 +565,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
       <div className="flex justify-end pt-2">
         <Button2
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isUploading}
           className="bg-primary-500 hover:bg-primary-600 text-dark-800 font-medium min-w-[140px]">
           {isLoading ? (
             <>

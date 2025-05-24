@@ -62,7 +62,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller, activePage, on
               </>
             )}
             {seller && (
-              <h1 className="font-aktivGroteskBold sm:hidden select-none text-sm px-2 py-1 group-hover:border-dark-300 border-dark-700 border-[1px] rounded-full group-hover:bg-dark-700 tracking-widest text-light-100 transition-all duration-500">
+              <h1 className="font-aktivGroteskBold select-none text-sm px-2 py-1 group-hover:border-dark-300 border-dark-700 border-[1px] rounded-full group-hover:bg-dark-700 tracking-widest text-light-100 transition-all duration-500">
                 {seller.store.name}
               </h1>
             )}

@@ -29,6 +29,8 @@ export function PublicStoreHeader({ seller }: PublicStoreHeaderProps) {
           <Image
             src={seller.store.logoUrl || dokmailogosquare}
             alt={seller.store.name}
+            width={50}
+            height={50}
             className="transition-transform duration-700 ease-out"
             onLoad={() => setImageLoaded(true)}
           />

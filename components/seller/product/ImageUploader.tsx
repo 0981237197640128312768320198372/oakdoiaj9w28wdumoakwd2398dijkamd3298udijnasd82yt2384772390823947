@@ -23,7 +23,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const imageUrlInputRef = useRef<HTMLInputElement>(null);
 
   async function uploadImages(files: File[]): Promise<string[]> {
-    // Limit the number of files to upload
     const filesToUpload = files.slice(0, maxImages - images.length);
 
     if (filesToUpload.length === 0) return [];
@@ -34,7 +33,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     filesToUpload.forEach((file) => formData.append('images', file));
 
     try {
-      // Use relative URL to avoid CORS issues
       const response = await fetch('/api/v3/upload-image', {
         method: 'POST',
         body: formData,

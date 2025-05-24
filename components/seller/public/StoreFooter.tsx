@@ -87,11 +87,8 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
         animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-screen-lg mx-auto">
-        {/* Main Footer Content */}
         <div className="flex flex-col gap-6">
-          {/* Store Info & Social Links Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {/* Store Info */}
             <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl flex flex-col items-start gap-5">
               <div className="flex items-center gap-3 w-full">
                 <div className="relative w-12 h-12 border-dark-400 border-[1px] overflow-hidden rounded-full bg-cover bg-center flex-shrink-0">
@@ -107,17 +104,31 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   <h3 className="font-aktivGroteskBold text-sm tracking-widest text-light-100">
                     {seller?.store?.name || 'Store Name'}
                   </h3>
-                  <p className="text-[10px] text-light-400">Official Store</p>
+                  {/* <p className="text-[10px] text-light-400">Official Store</p> */}
                 </div>
               </div>
-              <p className="text-xs text-light-300 line-clamp-3">
+              <div className="flex flex-wrap gap-2">
+                {socialLinks.map((link, index) => (
+                  <Link
+                    key={index}
+                    href={link.url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 rounded-full transition-all duration-200 bg-dark-600 text-light-800 hover:bg-dark-500 hover:text-light-100 text-xs"
+                    aria-label={link.name}>
+                    {link.icon}
+                    <span className="hidden sm:inline">{link.name}</span>
+                  </Link>
+                ))}
+              </div>
+              <p className="text-xs text-light-300">
                 {seller?.store?.description ||
                   'Welcome to our store. We offer high-quality products with excellent customer service.'}
               </p>
             </div>
 
             {/* Quick Links */}
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl flex flex-col items-start gap-5">
+            <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl hidden lg:flex flex-col items-start gap-5">
               <h4 className="text-sm font-medium text-light-100 tracking-wider">Quick Links</h4>
               <div className="grid grid-cols-2 gap-2 w-full">
                 <Link
@@ -162,8 +173,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
               </div>
             </div>
 
-            {/* Newsletter */}
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
+            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden lg:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
               <h4 className="text-sm font-medium text-light-100 tracking-wider">Search Anything</h4>
               <p className="text-xs text-light-300">
                 Search Any digital product you want, like streaming app, or email account
@@ -180,20 +190,20 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
             </div>
           </div>
 
-          {/* Promotion Bar */}
-          <div className="w-full bg-dark-700 border-[1px] border-dark-500 flex flex-col gap-4 sm:flex-row sm:gap-0 sm:justify-between px-4 py-3 rounded-full items-center">
-            <div className="flex flex-col text-light-300 px-3 text-center sm:text-left">
-              <h4 className="text-base sm:text-lg font-bold">
+          <div className="w-full bg-dark-700 border-[1px] border-dark-500 flex gap-4 lg:gap-0 justify-between px-4 py-3 rounded-full items-center">
+            <div className="flex flex-col text-start  px-3">
+              <h4 className="text-xs md:text-lg font-bold text-light-100">
                 Start Selling with Dokmai Store For FREE Now!
               </h4>
-              <p className="font-light text-xs sm:text-sm">Open Store and Get Profit</p>
+              <p className="font-light text-xs md:text-sm text-light-500">
+                Open Store and Get Profit
+              </p>
             </div>
-
             <Link
               href="https://dokmaistore.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex bg-primary w-fit items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 text-dark-800 text-xs sm:text-sm font-medium hover:bg-opacity-90 whitespace-nowrap">
+              className="flex bg-primary w-fit font-bold items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 text-dark-800 text-xs sm:text-sm hover:bg-opacity-90 whitespace-nowrap">
               Learn More
               <HiOutlineArrowNarrowRight size={14} />
             </Link>
