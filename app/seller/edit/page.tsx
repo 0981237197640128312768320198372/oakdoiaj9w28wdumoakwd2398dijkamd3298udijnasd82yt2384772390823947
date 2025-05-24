@@ -30,6 +30,7 @@ export default function CustomizeYourPage() {
     window.location.reload();
   };
 
+  // Update the handleThemeChange function to use the new API endpoint and structure
   const handleThemeChange = async (theme: any) => {
     try {
       const token = localStorage.getItem('token');
@@ -37,13 +38,16 @@ export default function CustomizeYourPage() {
         throw new Error('Authentication token not found');
       }
 
-      const response = await fetch('/api/v3/seller/update-theme', {
+      const response = await fetch('/api/v3/seller/theme', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(theme),
+        body: JSON.stringify({
+          username: seller.username,
+          theme: theme,
+        }),
       });
 
       const data = await response.json();
@@ -52,7 +56,6 @@ export default function CustomizeYourPage() {
         throw new Error(data.error || 'Failed to update theme');
       }
 
-      // Update the seller data in local storage and context
       const updatedSeller = { ...seller, store: { ...seller.store, theme } };
       localStorage.setItem('seller', JSON.stringify(updatedSeller));
       login(token);

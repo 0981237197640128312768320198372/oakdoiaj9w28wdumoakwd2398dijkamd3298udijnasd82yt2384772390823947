@@ -27,7 +27,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller, activePage, on
   return (
     <>
       <nav className="fixed flex flex-col px-5 xl:p-0 items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform">
-        <div className="w-full mt-5 gap-4 bg-dark-700 border-[1px] border-dark-500 flex py-1 px-2 lg:p-2 rounded-full max-w-screen-lg justify-between duration-1000 items-center">
+        <div className="w-full mt-5 gap-4 bg-dark-700 border-[1px] border-dark-500 flex p-2 rounded-full max-w-screen-lg justify-between duration-1000 items-center">
           <div className="flex items-center gap-1 w-fit select-none group transition-all duration-500">
             {seller ? (
               <>
@@ -68,7 +68,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller, activePage, on
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="items-center gap-2 hidden md:flex">
             <NavButton
               icon={<Home size={18} />}
               label="Home"
@@ -90,13 +90,45 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller, activePage, on
           </div>
 
           <NavButton
+            className="hidden md:!flex"
             icon={<Search size={18} />}
             label="Search"
             isActive={false}
             onClick={handleSearch}
           />
+          <button
+            onClick={handleSearch}
+            className="flex md:hidden justify-between items-center hover:bg-dark-400 bg-dark-500 py-1 px-3 rounded-full w-fit gap-10 text-light-300">
+            Search Anything
+            <Search size={18} />
+          </button>
         </div>
       </nav>
+      <div className="fixed flex flex-col px-5 items-center justify-center bottom-0 left-0 w-full transition-transform duration-500 z-50 transform md:hidden">
+        <div className="w-fit mb-10 gap-5 bg-dark-700/10 shadow-xl backdrop-blur shadow-black  border-[1px] border-dark-500 flex p-3 rounded-full max-w-screen-lg justify-between duration-1000 items-center">
+          <NavButton
+            className="!p-3"
+            icon={<Home size={24} />}
+            label="Home"
+            isActive={activePage === 'home'}
+            onClick={() => onNavigate('home')}
+          />
+          <NavButton
+            className="!p-3"
+            icon={<Info size={24} />}
+            label="Profile"
+            isActive={activePage === 'profile'}
+            onClick={() => onNavigate('profile')}
+          />
+          <NavButton
+            className="!p-3"
+            icon={<Package size={24} />}
+            label="Products"
+            isActive={activePage === 'products'}
+            onClick={() => onNavigate('products')}
+          />
+        </div>
+      </div>
 
       {seller && (
         <SearchModal
@@ -112,15 +144,16 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({ seller, activePage, on
 interface NavButtonProps {
   icon: React.ReactNode;
   label: string;
+  className?: string;
   isActive: boolean;
   onClick: () => void;
 }
 
-const NavButton: React.FC<NavButtonProps> = ({ icon, label, isActive, onClick }) => {
+const NavButton: React.FC<NavButtonProps> = ({ icon, label, isActive, className, onClick }) => {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 ${
+      className={`${className} flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 ${
         isActive
           ? 'bg-primary text-dark-800 font-medium'
           : 'bg-dark-600 text-light-300 hover:bg-dark-500 hover:text-light-100'

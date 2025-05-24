@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, seller.password);
+    const isPasswordValid = await seller.comparePassword(password);
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: 'Invalid credentials Password is Invalid' },
         { status: 401 }
       );
     }
-    // ad
+
     const sellerObj = seller.toObject();
     const { password: _, ...sellerData } = sellerObj;
     console.log(sellerObj);

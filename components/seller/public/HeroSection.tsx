@@ -267,7 +267,7 @@ export default function HeroSection() {
             </AnimatePresence>
           </div>
 
-          <div className="mt-6 flex justify-center gap-3 md:mt-8">
+          <div className="mt-6 flex justify-center gap-5 md:mt-8">
             {banners.map((_, index) => (
               <motion.button
                 key={index}

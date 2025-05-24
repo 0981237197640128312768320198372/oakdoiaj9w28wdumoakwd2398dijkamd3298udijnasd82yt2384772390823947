@@ -486,7 +486,6 @@ const CategoryForm = ({
                       width={128}
                       height={128}
                       className="object-contain w-full h-full"
-                      style={{ objectFit: 'contain' }}
                     />
                   </div>
                   <button
@@ -593,7 +592,6 @@ const CategoryList = ({ categories, onEdit, onDelete }: CategoryListProps) => {
                       src={category.logoUrl}
                       alt={category.name}
                       className="w-full h-full object-contain"
-                      style={{ objectFit: 'contain' }}
                     />
                   </div>
                 ) : (

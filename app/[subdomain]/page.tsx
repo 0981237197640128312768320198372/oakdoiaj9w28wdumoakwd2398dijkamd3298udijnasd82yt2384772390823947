@@ -41,14 +41,18 @@ export default async function StorePage(props: StorePageProps) {
   const { subdomain } = await props.params;
   try {
     const { theme, seller } = await fetchStoreData(subdomain);
+
     if (!seller) {
       notFound();
     }
+
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
     const productsResponse = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
+
     if (!productsResponse.ok) {
       throw new Error('Failed to fetch products');
     }
+
     const productsData = await productsResponse.json();
     const products = productsData.products;
     const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
@@ -62,6 +66,7 @@ export default async function StorePage(props: StorePageProps) {
     });
     const categoriesResults = await Promise.all(categoriesPromises);
     const categories = categoriesResults.filter(Boolean).map((result) => result.category);
+
     return (
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
         <PublicStoreProfile seller={seller} products={products} categories={categories} />

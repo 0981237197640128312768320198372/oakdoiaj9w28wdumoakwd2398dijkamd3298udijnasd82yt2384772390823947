@@ -54,13 +54,7 @@ export default function LoginSellerPage() {
       <div className="w-full max-w-md space-y-8 bg-dark-700 p-8 rounded-2xl border border-dark-400">
         <div className="flex flex-col items-center gap-3">
           <div className="relative w-16 h-16 overflow-hidden">
-            <Image
-              src={dokmailogosquare}
-              alt="Dokmai Logo"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-xl"
-            />
+            <Image src={dokmailogosquare} alt="Dokmai Logo" layout="fill" className="rounded-xl" />
           </div>
           <h2 className="text-2xl font-bold text-light-100 flex items-center gap-2">
             <Store size={24} className="text-primary" />

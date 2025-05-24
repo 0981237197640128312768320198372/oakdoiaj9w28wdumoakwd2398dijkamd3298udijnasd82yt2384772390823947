@@ -31,9 +31,8 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
             src={seller.store.logoUrl || dokmailogosquare}
             alt={seller.store.name}
             layout="fill"
-            objectFit="cover"
             className="transition-transform duration-700 ease-out"
-            onLoadingComplete={() => setImageLoaded(true)}
+            onLoad={() => setImageLoaded(true)}
           />
         </div>
         <div className="flex-1 pt-1 ">

@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { ThemeType } from '@/lib/utils';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
 interface StoreContextProps {
-  theme: ThemeType | null;
+  theme: any;
   seller: any;
 }
 
@@ -40,7 +39,7 @@ const getSubdomain = (hostname: string): string | null => {
 };
 
 export const StoreData = ({ children }: StoreDataProps) => {
-  const [theme, setTheme] = useState<ThemeType | null>(null);
+  const [theme, setTheme] = useState(null);
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -120,7 +119,7 @@ export const StoreData = ({ children }: StoreDataProps) => {
       </div>
     );
   }
-
+  console.log(theme);
   return <StoreContext.Provider value={{ theme, seller }}>{children}</StoreContext.Provider>;
 };
 

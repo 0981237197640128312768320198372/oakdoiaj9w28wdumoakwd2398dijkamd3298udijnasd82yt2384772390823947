@@ -60,9 +60,21 @@ const sellerSchema = new Schema<ISeller>(
       whatsapp: { type: String, default: null },
     },
     store: {
-      name: { type: String, required: true, index: true },
-      description: { type: String, required: true },
+      name: {
+        type: String,
+        required: true,
+        index: true,
+        minlength: [3, 'Store name must be at least 3 characters long'],
+        maxlength: [50, 'Store name cannot exceed 50 characters'],
+      },
+      description: {
+        type: String,
+        required: true,
+        minlength: [10, 'Description must be at least 10 characters long'],
+        maxlength: [500, 'Description cannot exceed 500 characters'],
+      },
       logoUrl: { type: String, default: null },
+      adsImageUrl: { type: String, default: null },
       rating: {
         type: Number,
         default: 0,
@@ -78,19 +90,6 @@ const sellerSchema = new Schema<ISeller>(
   },
   { timestamps: true }
 );
-
-sellerSchema.pre('save', async function (next) {
-  const seller = this as ISeller;
-  if (!seller.isModified('password')) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    seller.password = await bcrypt.hash(seller.password, salt);
-    next();
-  } catch (error) {
-    next(error as Error);
-  }
-});
 
 sellerSchema.methods.comparePassword = async function (
   candidatePassword: string

@@ -4,7 +4,6 @@
 
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import type { ThemeType } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StoreNavbar } from './StoreNavbar';
 import Image from 'next/image';
@@ -13,7 +12,7 @@ import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
 
 interface PublicStoreLayoutProps {
-  theme: ThemeType;
+  theme: any;
   seller: any;
   products: any[];
   categories: any[];
