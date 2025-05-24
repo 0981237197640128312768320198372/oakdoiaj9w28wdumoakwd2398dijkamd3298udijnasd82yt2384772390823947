@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { StoreData, useStoreData } from '../StoreData';
 
 export default function HeroSection() {
   const banners = [
@@ -29,7 +30,8 @@ export default function HeroSection() {
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-
+  const { theme } = useStoreData();
+  console.log('OAKOAKOAKOKAOKOA\n', theme);
   const nextBanner = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
@@ -146,13 +148,13 @@ export default function HeroSection() {
                 return (
                   <motion.div
                     key={index}
-                    className="absolute left-1/2 top-1/2 cursor-pointer"
+                    className="absolute left-1/2 top-1/2 cursor-pointer "
                     initial={false}
                     animate={{
                       x: xPos,
                       y: '-50%',
                       zIndex: isCenter ? 30 : 20,
-                      opacity: isCenter ? 1 : 0.25,
+                      opacity: isCenter ? 1 : 0.35,
                       filter: isCenter
                         ? 'grayscale(0%) brightness(1)'
                         : 'grayscale(100%) brightness(0.7)',
@@ -208,9 +210,7 @@ export default function HeroSection() {
                         ease: 'easeInOut',
                       }}>
                       <Image
-                        src={
-                          banner.image || '/placeholder.svg?height=360&width=640&query=game banner'
-                        }
+                        src={banner.image || '/placeholder.svg?height=360&width=640&query=movies'}
                         alt="Ads"
                         fill
                         className="object-cover"
@@ -229,15 +229,7 @@ export default function HeroSection() {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (!isTransitioning) prevBanner();
-                          }}>
-                          {/* <motion.div
-                            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-dark-800 shadow-lg sm:h-10 sm:w-10 md:h-12 md:w-12"
-                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 1)' }}
-                            whileTap={{ scale: 0.9 }}
-                            transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
-                            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                          </motion.div> */}
-                        </motion.div>
+                          }}></motion.div>
                       )}
 
                       {isNext && (
@@ -250,15 +242,7 @@ export default function HeroSection() {
                           onClick={(e) => {
                             e.stopPropagation();
                             if (!isTransitioning) nextBanner();
-                          }}>
-                          {/* <motion.div
-                            className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-dark-800 shadow-lg sm:h-10 sm:w-10 md:h-12 md:w-12"
-                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 1)' }}
-                            whileTap={{ scale: 0.9 }}
-                            transition={{ type: 'spring', stiffness: 400, damping: 17 }}>
-                            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                          </motion.div> */}
-                        </motion.div>
+                          }}></motion.div>
                       )}
                     </motion.div>
                   </motion.div>
@@ -314,9 +298,9 @@ export default function HeroSection() {
         </div>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {products.map((product) => (
+          {categories.map((product, i) => (
             <motion.div
-              key={product.id}
+              key={i}
               whileHover={{ y: -4, scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
               <Link
@@ -347,11 +331,10 @@ export default function HeroSection() {
   );
 }
 
-const products = [
+const categories = [
   {
-    id: 1,
-    title: 'Monster Hunter Wilds Steam',
-    subtitle: 'Monster Hunter Wilds Steam CD Key',
+    title: 'Spotify',
+    subtitle: 'Spotify Premium | Thai Account',
     image: '/images/og-dokmaistore.webp',
   },
 ];

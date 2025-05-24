@@ -561,7 +561,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         <Button2
           type="submit"
           disabled={isLoading || isUploading}
-          className="bg-primary-500 hover:bg-primary-600 text-dark-800 font-medium min-w-[140px]">
+          className="bg-primary hover:bg-primary/80 text-dark-800 font-medium min-w-[140px]">
           {isLoading ? (
             <>
               <Loader2 size={16} className="mr-2 animate-spin" />

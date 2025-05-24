@@ -1,4 +1,4 @@
-import { Schema, model, models, Types } from 'mongoose';
+import { Schema, model, models, type Types } from 'mongoose';
 
 interface ITheme {
   sellerId: Types.ObjectId;
@@ -42,12 +42,12 @@ const themeSchema = new Schema<ITheme>({
   },
   customizations: {
     colors: {
-      primary: { type: String, default: '#B9FE13' },
-      secondary: { type: String, default: '#0F0F0F' },
+      primary: { type: String, default: 'primary' },
+      secondary: { type: String, default: 'bg-dark-800' },
     },
     button: {
-      textColor: { type: String, default: '#0F0F0F' },
-      backgroundColor: { type: String, default: '#B9FE13' },
+      textColor: { type: String, default: 'text-dark-800' },
+      backgroundColor: { type: String, default: 'bg-primary' },
       roundedness: {
         type: String,
         enum: ['none', 'sm', 'md', 'lg', 'full'],
@@ -55,7 +55,7 @@ const themeSchema = new Schema<ITheme>({
       },
       shadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
       border: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'none' },
-      borderColor: { type: String, default: '#B9FE13' },
+      borderColor: { type: String, default: 'border-primary' },
     },
     componentStyles: {
       cardRoundedness: {
@@ -66,7 +66,7 @@ const themeSchema = new Schema<ITheme>({
       cardShadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
     },
     ads: {
-      imageUrl: { type: String, default: null },
+      images: { type: [String], default: [] },
       roundedness: {
         type: String,
         enum: ['none', 'sm', 'md', 'lg', 'full'],

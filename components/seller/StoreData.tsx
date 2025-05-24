@@ -119,7 +119,6 @@ export const StoreData = ({ children }: StoreDataProps) => {
       </div>
     );
   }
-  console.log(theme);
   return <StoreContext.Provider value={{ theme, seller }}>{children}</StoreContext.Provider>;
 };
 

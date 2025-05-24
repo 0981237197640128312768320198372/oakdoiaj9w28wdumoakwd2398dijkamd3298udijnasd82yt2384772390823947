@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 import { Theme } from '@/models/v3/Theme'; // Import Theme model
@@ -23,6 +23,7 @@ export interface ThemeType {
   spacing: string;
   shadow: string;
   adsImageUrl: string | null;
+  adsImages?: string[]; // Add support for multiple images
 }
 
 export async function POST(req: NextRequest) {
@@ -52,19 +53,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Theme not found for this seller' }, { status: 404 });
     }
 
+    // Handle backward compatibility - if images array exists, use the first image
+    const adsImageUrl =
+      theme.customizations.ads.images?.length > 0
+        ? theme.customizations.ads.images[0]
+        : theme.customizations.ads.imageUrl || null;
+
     const themeData: ThemeType = {
-      primaryColor: theme.customizations.colors.primary || '#B9FE13',
-      secondaryColor: theme.customizations.colors.secondary || '#5E5E5E',
+      primaryColor: theme.customizations.colors.primary || 'primary',
+      secondaryColor: theme.customizations.colors.secondary || 'bg-dark-800',
       fontFamily: 'AktivGroteskRegular',
       roundedness: theme.customizations.button.roundedness || 'default',
-      textColor: theme.customizations.button.textColor || '#ECECEC',
+      textColor: theme.customizations.button.textColor || 'text-light-100',
       backgroundImage: null,
-      buttonTextColor: theme.customizations.button.textColor || '#0F0F0F',
-      buttonBgColor: theme.customizations.button.backgroundColor || '#B9FE13',
+      buttonTextColor: theme.customizations.button.textColor || 'text-dark-800',
+      buttonBgColor: theme.customizations.button.backgroundColor || 'bg-primary',
       buttonBorder: theme.customizations.button.border || 'border-none',
       spacing: 'normal',
       shadow: theme.customizations.button.shadow || 'shadow-none',
-      adsImageUrl: theme.customizations.ads.imageUrl || 'null',
+      adsImageUrl: adsImageUrl,
+      adsImages: theme.customizations.ads.images || [], // Include all images
     };
 
     return NextResponse.json(themeData);
@@ -100,6 +108,22 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
     }
 
+    // Handle the update - if adsImages is provided, update the images array
+    if (updatedThemeData.customizations?.ads?.images !== undefined) {
+      theme.customizations.ads.images = updatedThemeData.customizations.ads.images;
+    }
+
+    // Handle backward compatibility - if only adsImageUrl is provided
+    if (
+      updatedThemeData.adsImageUrl !== undefined &&
+      !updatedThemeData.customizations?.ads?.images
+    ) {
+      theme.customizations.ads.images = updatedThemeData.adsImageUrl
+        ? [updatedThemeData.adsImageUrl]
+        : [];
+    }
+
+    // Update other fields
     Object.assign(theme, updatedThemeData);
 
     await theme.save();

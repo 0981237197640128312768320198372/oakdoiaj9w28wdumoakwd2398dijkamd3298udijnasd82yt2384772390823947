@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Store, LogIn, UserPlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
+import ButtonWithLoader from '../ui/ButtonWithLoader';
 
 export default function LoginSellerPage() {
   const [username, setUsername] = useState('');
@@ -104,7 +105,7 @@ export default function LoginSellerPage() {
           )}
 
           <div className="space-y-4">
-            <button
+            <ButtonWithLoader
               type="submit"
               disabled={isLoading}
               className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 py-2 rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -119,7 +120,7 @@ export default function LoginSellerPage() {
                   Login
                 </>
               )}
-            </button>
+            </ButtonWithLoader>
 
             <div className="text-center">
               <Link
