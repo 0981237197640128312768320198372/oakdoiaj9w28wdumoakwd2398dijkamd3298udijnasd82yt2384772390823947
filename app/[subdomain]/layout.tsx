@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import FacebookChat from '@/components/seller/public/FacebookChat';
 import { StoreData } from '@/components/seller/StoreData';
 import '@/styles/globals.css';
 
@@ -11,6 +12,8 @@ export default function SubdomainLayout({ children }: SubdomainLayoutProps) {
     <html lang="en">
       <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/50 selection:text-primary">
         <StoreData>{children}</StoreData>
+
+        <FacebookChat />
       </body>
     </html>
   );
