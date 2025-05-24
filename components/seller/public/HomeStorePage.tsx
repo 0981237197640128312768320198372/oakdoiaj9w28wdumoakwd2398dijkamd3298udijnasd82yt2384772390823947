@@ -9,9 +9,10 @@ import HeroSection from './HeroSection';
 interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
+  theme: any;
 }
 
-const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories }) => {
+const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories, theme }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -19,7 +20,7 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories }) =
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
       className="w-full space-y-8">
-      <HeroSection />
+      <HeroSection theme={theme} />
 
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         <FeaturedCard

@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Palette, User } from 'lucide-react';
 import { useState } from 'react';
 
-// Dynamic imports to improve initial load performance
 const ThemeCustomizer = dynamic(() => import('@/components/seller/profile/ThemeCustomizer'));
 const EditProfile = dynamic(() => import('@/components/seller/profile/EditProfile'));
 
@@ -30,7 +29,6 @@ export default function CustomizeYourPage() {
     window.location.reload();
   };
 
-  // Update the handleThemeChange function to use the new API endpoint and structure
   const handleThemeChange = async (theme: any) => {
     try {
       const token = localStorage.getItem('token');

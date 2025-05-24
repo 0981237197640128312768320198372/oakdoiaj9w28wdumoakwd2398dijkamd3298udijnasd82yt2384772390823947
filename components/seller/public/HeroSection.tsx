@@ -5,33 +5,46 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { StoreData, useStoreData } from '../StoreData';
 
-export default function HeroSection() {
-  const banners = [
-    {
-      image: '/images/og-dokmaistore.webp',
-    },
-    {
-      image: '/images/og-dokmaistore.webp',
-    },
-    {
-      image: '/images/og-dokmaistore.webp',
-    },
-    {
-      image: '/images/og-dokmaistore.webp',
-    },
-    {
-      image: '/images/og-dokmaistore.webp',
-    },
-  ];
+// Define the theme type
+interface ThemeType {
+  primaryColor: string;
+  secondaryColor: string;
+  fontFamily: string;
+  roundedness: string;
+  textColor: string;
+  backgroundImage: string | null;
+  buttonTextColor: string;
+  buttonBgColor: string;
+  buttonBorder: string;
+  spacing: string;
+  shadow: string;
+  adsImages?: string[];
+}
+
+interface HeroSectionProps {
+  theme: ThemeType | null;
+}
+
+export default function HeroSection({ theme }: HeroSectionProps) {
+  const defaultBanner = '/placeholder.svg?height=360&width=640&query=banner';
+
+  const banners =
+    theme?.adsImages && theme.adsImages.length > 0
+      ? theme.adsImages.map((image) => ({ image }))
+      : [
+          { image: '/images/og-dokmaistore.webp' },
+          { image: '/images/og-dokmaistore.webp' },
+          { image: '/images/og-dokmaistore.webp' },
+          { image: '/images/og-dokmaistore.webp' },
+          { image: '/images/og-dokmaistore.webp' },
+        ];
 
   const [currentBanner, setCurrentBanner] = useState(2);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [containerWidth, setContainerWidth] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const { theme } = useStoreData();
-  console.log('OAKOAKOAKOKAOKOA\n', theme);
+
   const nextBanner = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
@@ -99,6 +112,13 @@ export default function HeroSection() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [nextBanner, prevBanner]);
+
+  // Get primary color for borders and shadows
+  const primaryColor = theme?.primaryColor || 'primary';
+  const primaryColorRgba =
+    primaryColor === 'primary'
+      ? 'rgba(79, 70, 229, 0.3)' // Default indigo color
+      : 'rgba(79, 70, 229, 0.3)'; // Fallback to default
 
   return (
     <div className="w-full bg-dark-800 text-light-100">
@@ -195,14 +215,17 @@ export default function HeroSection() {
                     <motion.div
                       className={`relative h-full w-full overflow-hidden shadow-2xl rounded-xl ${
                         isCenter
-                          ? 'border-2 border-primary-500/30 shadow-primary-500/10'
+                          ? `border-2 border-${primaryColor}/30 shadow-${primaryColor}/10`
                           : ' border border-gray-700/50 shadow-black/20'
                       }`}
                       initial={false}
                       animate={{
-                        borderColor: isCenter ? 'rgba(79, 70, 229, 0.3)' : 'rgba(75, 85, 99, 0.5)',
+                        borderColor: isCenter ? primaryColorRgba : 'rgba(75, 85, 99, 0.5)',
                         boxShadow: isCenter
-                          ? '0 20px 25px -5px rgba(79, 70, 229, 0.05), 0 10px 10px -5px rgba(79, 70, 229, 0.1)'
+                          ? `0 20px 25px -5px ${primaryColorRgba.replace(
+                              '0.3',
+                              '0.05'
+                            )}, 0 10px 10px -5px ${primaryColorRgba.replace('0.3', '0.1')}`
                           : '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.2)',
                       }}
                       transition={{
@@ -210,7 +233,7 @@ export default function HeroSection() {
                         ease: 'easeInOut',
                       }}>
                       <Image
-                        src={banner.image || '/placeholder.svg?height=360&width=640&query=movies'}
+                        src={banner.image || defaultBanner}
                         alt="Ads"
                         fill
                         className="object-cover"

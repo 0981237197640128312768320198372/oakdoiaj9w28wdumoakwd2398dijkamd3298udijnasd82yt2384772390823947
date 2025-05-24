@@ -88,7 +88,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-screen-lg mx-auto">
         <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl flex flex-col items-start gap-5">
               <div className="flex items-center gap-3 w-full">
                 <div className="relative w-12 h-12 border-dark-400 border-[1px] overflow-hidden rounded-full bg-cover bg-center flex-shrink-0">
@@ -127,36 +127,16 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
               </p>
             </div>
 
-            {/* Quick Links */}
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl hidden md:flex flex-col items-start gap-5">
-              <h4 className="text-sm font-medium text-light-100 tracking-wider">Quick Links</h4>
-              <div className="grid grid-cols-2 gap-2 w-full">
-                <Link
-                  href="#home"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 bg-dark-600 text-light-300 hover:bg-dark-500 hover:text-light-100 text-xs">
-                  Home
-                </Link>
-                <Link
-                  href="#products"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 bg-dark-600 text-light-300 hover:bg-dark-500 hover:text-light-100 text-xs">
-                  Products
-                </Link>
-                <Link
-                  href="#profile"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 bg-dark-600 text-light-300 hover:bg-dark-500 hover:text-light-100 text-xs">
-                  About Us
-                </Link>
-                <Link
-                  href="#contact"
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 bg-dark-600 text-light-300 hover:bg-dark-500 hover:text-light-100 text-xs">
-                  Contact
-                </Link>
-              </div>
-
-              {/* Social Links */}
-              <h4 className="text-sm font-medium text-light-100 tracking-wider mt-2">
-                Connect With Us
-              </h4>
+            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
+              <button
+                onClick={handleSearch}
+                className="relative w-full px-4 py-2 rounded-full bg-dark-600 border-[1px] border-dark-500 text-light-100 text-xs transition-colors"
+                aria-label="Search App Premium">
+                <span className="block pr-8 text-light-100/50 text-start">Search Anything</span>
+                <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-primary text-dark-800 rounded-full p-1.5 hover:bg-opacity-90 transition-all">
+                  <Search size={16} />
+                </div>
+              </button>
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((link, index) => (
                   <Link
@@ -171,22 +151,6 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   </Link>
                 ))}
               </div>
-            </div>
-
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
-              <h4 className="text-sm font-medium text-light-100 tracking-wider">Search Anything</h4>
-              <p className="text-xs text-light-300">
-                Search Any digital product you want, like streaming app, or email account
-              </p>
-              <button
-                onClick={handleSearch}
-                className="relative w-full px-4 py-2 rounded-full bg-dark-600 border-[1px] border-dark-500 text-light-100 text-xs focus:outline-none focus:border-primary transition-colors"
-                aria-label="Search App Premium">
-                <span className="block pr-8 text-light-100/50 text-start">App Premium</span>
-                <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-primary text-dark-800 rounded-full p-1.5 hover:bg-opacity-90 transition-all">
-                  <Search size={16} />
-                </div>
-              </button>
             </div>
           </div>
 

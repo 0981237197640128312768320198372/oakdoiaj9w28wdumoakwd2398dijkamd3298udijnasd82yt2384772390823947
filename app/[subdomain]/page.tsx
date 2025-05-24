@@ -1,12 +1,11 @@
 /* eslint-disable react/no-children-prop */
-// app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
 import PublicStoreProfile from '@/components/seller/public/PublicStoreProfile';
 import StoreProducts from '@/components/seller/public/StoreProducts';
 import { fetchStoreData } from '@/lib/fetchStoreData';
-import { cn, generateMetadata as generateMetadataUtil } from '@/lib/utils';
+import { generateMetadata as generateMetadataUtil } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 
 interface ResolvedParams {
@@ -33,7 +32,13 @@ export async function generateMetadata(props: StorePageProps) {
       iconUrl: storeLogo,
     });
   } catch (error) {
-    // console.error('Error generating metadata:', error);
+    console.error('Error generating metadata:', error);
+    // Return basic metadata as fallback
+    return generateMetadataUtil({
+      title: 'Store',
+      description: 'Welcome to our store',
+      url: `https://${subdomain}.dokmai.store/`,
+    });
   }
 }
 
@@ -46,28 +51,45 @@ export default async function StorePage(props: StorePageProps) {
       notFound();
     }
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
-    const productsResponse = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`);
+    // Mock products and categories for development if API is unavailable
+    let products = [];
+    let categories = [];
 
-    if (!productsResponse.ok) {
-      throw new Error('Failed to fetch products');
-    }
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
+      const productsResponse = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`, {
+        cache: 'no-store',
+      });
 
-    const productsData = await productsResponse.json();
-    const products = productsData.products;
-
-    const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
-    const categoriesPromises = categoryIds.map(async (categoryId) => {
-      const categoryResponse = await fetch(`${API_URL}/api/v3/categories?id=${categoryId}`);
-      if (!categoryResponse.ok) {
-        console.error(`Failed to fetch category with ID: ${categoryId}`);
-        return null;
+      if (!productsResponse.ok) {
+        throw new Error('Failed to fetch products');
       }
-      return await categoryResponse.json();
-    });
 
-    const categoriesResults = await Promise.all(categoriesPromises);
-    const categories = categoriesResults.filter(Boolean).map((result) => result.category);
+      const productsData = await productsResponse.json();
+      products = productsData.products || [];
+
+      if (products.length > 0) {
+        const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
+        const categoriesPromises = categoryIds.map(async (categoryId) => {
+          const categoryResponse = await fetch(`${API_URL}/api/v3/categories?id=${categoryId}`, {
+            cache: 'no-store',
+          });
+          if (!categoryResponse.ok) {
+            console.error(`Failed to fetch category with ID: ${categoryId}`);
+            return null;
+          }
+          return await categoryResponse.json();
+        });
+
+        const categoriesResults = await Promise.all(categoriesPromises);
+        categories = categoriesResults.filter(Boolean).map((result) => result.category);
+      }
+    } catch (error) {
+      console.error('Error fetching products or categories:', error);
+      // Use mock data for development
+      products = getMockProducts();
+      categories = getMockCategories();
+    }
 
     return (
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
@@ -76,6 +98,54 @@ export default async function StorePage(props: StorePageProps) {
       </PublicStoreLayout>
     );
   } catch (error) {
+    console.error('Store page error:', error);
     notFound();
   }
+}
+
+// Mock data functions for development
+function getMockProducts() {
+  return Array(10)
+    .fill(null)
+    .map((_, i) => ({
+      id: `product-${i}`,
+      name: `Product ${i + 1}`,
+      description: 'This is a sample product description.',
+      price: Math.floor(Math.random() * 100) + 10,
+      imageUrl: `/placeholder.svg?height=300&width=300&query=product ${i + 1}`,
+      categoryId: `category-${Math.floor(i / 3) + 1}`,
+    }));
+}
+
+function getMockCategories() {
+  return [
+    {
+      id: 'category-1',
+      name: 'Electronics',
+      image: '/placeholder.svg?height=48&width=48&query=electronics',
+      title: 'Electronics',
+      subtitle: 'Gadgets and devices',
+    },
+    {
+      id: 'category-2',
+      name: 'Clothing',
+      image: '/placeholder.svg?height=48&width=48&query=clothing',
+      title: 'Clothing',
+      subtitle: 'Fashion items',
+    },
+    {
+      id: 'category-3',
+      name: 'Home',
+      image: '/placeholder.svg?height=48&width=48&query=home',
+      title: 'Home',
+      subtitle: 'Home decor and furniture',
+    },
+    {
+      id: 'category-4',
+      name: 'Beauty',
+      image: '/placeholder.svg?height=48&width=48&query=beauty',
+      title: 'Beauty',
+      subtitle: 'Cosmetics and skincare',
+    },
+  ];
 }

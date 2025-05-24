@@ -44,7 +44,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         return <StoreProducts store={seller?.username} />;
       case 'home':
       default:
-        return <HomeStorePage products={products} categories={categories} />;
+        return <HomeStorePage products={products} categories={categories} theme={theme} />;
     }
   };
 

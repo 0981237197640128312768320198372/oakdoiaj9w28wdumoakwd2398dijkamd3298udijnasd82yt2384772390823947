@@ -22,8 +22,7 @@ export interface ThemeType {
   buttonBorder: string;
   spacing: string;
   shadow: string;
-  adsImageUrl: string | null;
-  adsImages?: string[]; // Add support for multiple images
+  adsImages: string[];
 }
 
 export async function POST(req: NextRequest) {
@@ -71,7 +70,6 @@ export async function POST(req: NextRequest) {
       buttonBorder: theme.customizations.button.border || 'border-none',
       spacing: 'normal',
       shadow: theme.customizations.button.shadow || 'shadow-none',
-      adsImageUrl: adsImageUrl,
       adsImages: theme.customizations.ads.images || [], // Include all images
     };
 
@@ -108,12 +106,10 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
     }
 
-    // Handle the update - if adsImages is provided, update the images array
     if (updatedThemeData.customizations?.ads?.images !== undefined) {
       theme.customizations.ads.images = updatedThemeData.customizations.ads.images;
     }
 
-    // Handle backward compatibility - if only adsImageUrl is provided
     if (
       updatedThemeData.adsImageUrl !== undefined &&
       !updatedThemeData.customizations?.ads?.images
@@ -123,7 +119,6 @@ export async function PUT(req: NextRequest) {
         : [];
     }
 
-    // Update other fields
     Object.assign(theme, updatedThemeData);
 
     await theme.save();

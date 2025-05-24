@@ -17,7 +17,6 @@ interface IStore {
   name: string;
   description: string;
   logoUrl?: string;
-  adsImageUrl?: string;
   rating: number;
   credits: IStoreCredits;
   theme: Schema.Types.ObjectId;
@@ -74,7 +73,6 @@ const sellerSchema = new Schema<ISeller>(
         maxlength: [500, 'Description cannot exceed 500 characters'],
       },
       logoUrl: { type: String, default: null },
-      adsImageUrl: { type: String, default: null },
       rating: {
         type: Number,
         default: 0,
