@@ -5,12 +5,9 @@ import { cn } from '@/lib/utils';
 import { Check, ChevronDown } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-// Global state to track which ColorGrid is currently open
-let activeColorGridId: string | null = null;
 const colorGridOpenStateListeners: Array<(id: string | null) => void> = [];
 
 function notifyColorGridStateChange(id: string | null) {
-  activeColorGridId = id;
   colorGridOpenStateListeners.forEach((listener) => listener(id));
 }
 
