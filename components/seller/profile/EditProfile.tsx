@@ -48,7 +48,6 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
     logoUrl: '',
   });
 
-  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -152,16 +151,12 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         return;
       }
 
-      setLogoFile(file);
-
-      // Create a preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
       };
       reader.readAsDataURL(file);
 
-      // Upload the image using the uploadImages function
       try {
         const urls = await uploadImages([file]);
         if (urls.length > 0) {
