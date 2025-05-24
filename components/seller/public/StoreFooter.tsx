@@ -88,7 +88,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-screen-lg mx-auto">
         <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl flex flex-col items-start gap-5">
               <div className="flex items-center gap-3 w-full">
                 <div className="relative w-12 h-12 border-dark-400 border-[1px] overflow-hidden rounded-full bg-cover bg-center flex-shrink-0">
@@ -107,7 +107,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   {/* <p className="text-[10px] text-light-400">Official Store</p> */}
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex md:hidden flex-wrap gap-2">
                 {socialLinks.map((link, index) => (
                   <Link
                     key={index}
@@ -128,7 +128,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
             </div>
 
             {/* Quick Links */}
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl hidden lg:flex flex-col items-start gap-5">
+            <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl hidden md:flex flex-col items-start gap-5">
               <h4 className="text-sm font-medium text-light-100 tracking-wider">Quick Links</h4>
               <div className="grid grid-cols-2 gap-2 w-full">
                 <Link
@@ -173,7 +173,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
               </div>
             </div>
 
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden lg:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
+            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
               <h4 className="text-sm font-medium text-light-100 tracking-wider">Search Anything</h4>
               <p className="text-xs text-light-300">
                 Search Any digital product you want, like streaming app, or email account

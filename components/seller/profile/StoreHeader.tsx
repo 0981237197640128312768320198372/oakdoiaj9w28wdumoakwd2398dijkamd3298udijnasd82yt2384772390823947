@@ -40,8 +40,8 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
           <Image
             src={seller.store.logoUrl || dokmailogosquare}
             alt={seller.store.name}
-            width={50}
-            height={50}
+            layout="fill"
+            sizes="100"
             className="transition-transform duration-700 ease-out"
             onLoad={() => setImageLoaded(true)}
           />

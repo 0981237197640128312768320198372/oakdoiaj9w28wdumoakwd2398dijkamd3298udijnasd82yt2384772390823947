@@ -59,7 +59,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
       <StoreNavbar seller={seller} activePage={activePage} onNavigate={setActivePage} />
 
       <motion.div
-        className="flex flex-col items-center justify-start w-full pb-20 pt-28 lg:pt-32 relative z-10"
+        className="flex flex-col items-center min-h-screen justify-start w-full pb-20 pt-28 lg:pt-32 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}>
@@ -102,7 +102,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         </div>
       </motion.div>
 
-      {/* Use the updated StoreFooter component */}
       <StoreFooter seller={seller} theme={theme} />
     </div>
   );
