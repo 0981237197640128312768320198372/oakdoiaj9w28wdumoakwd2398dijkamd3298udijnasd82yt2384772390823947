@@ -2,7 +2,6 @@
 // app/[subdomain]/page.tsx
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import FacebookChat from '@/components/seller/public/FacebookChat';
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
 import PublicStoreProfile from '@/components/seller/public/PublicStoreProfile';
 import StoreProducts from '@/components/seller/public/StoreProducts';
@@ -56,6 +55,7 @@ export default async function StorePage(props: StorePageProps) {
 
     const productsData = await productsResponse.json();
     const products = productsData.products;
+
     const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
     const categoriesPromises = categoryIds.map(async (categoryId) => {
       const categoryResponse = await fetch(`${API_URL}/api/v3/categories?id=${categoryId}`);
@@ -65,6 +65,7 @@ export default async function StorePage(props: StorePageProps) {
       }
       return await categoryResponse.json();
     });
+
     const categoriesResults = await Promise.all(categoriesPromises);
     const categories = categoriesResults.filter(Boolean).map((result) => result.category);
 
@@ -72,7 +73,6 @@ export default async function StorePage(props: StorePageProps) {
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
         <PublicStoreProfile seller={seller} products={products} categories={categories} />
         <StoreProducts store={seller.username} />
-        <FacebookChat />
       </PublicStoreLayout>
     );
   } catch (error) {
