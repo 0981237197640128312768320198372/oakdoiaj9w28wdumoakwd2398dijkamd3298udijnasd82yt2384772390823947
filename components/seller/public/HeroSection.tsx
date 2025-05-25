@@ -115,26 +115,36 @@ export default function HeroSection({ theme }: HeroSectionProps) {
 
   const primaryColor = theme?.primaryColor || 'primary';
 
-  const getPrimaryColorClasses = (isCenter: boolean) => {
+  const getBorderClass = (isCenter: boolean) => {
     if (isCenter) {
-      return {
-        border: `border-2 border-${primaryColor}/30`,
-        shadow: `shadow-2xl shadow-${primaryColor}/10`,
-      };
+      if (primaryColor === 'primary') {
+        return 'border-2 border-primary/30';
+      }
+      return `border-2 border-${primaryColor}/30`;
     }
-    return {
-      border: 'border border-gray-700/50',
-      shadow: 'shadow-2xl shadow-black/20',
-    };
+    return 'border border-gray-700/50';
   };
 
+  const getShadowClass = (isCenter: boolean) => {
+    if (isCenter) {
+      if (primaryColor === 'primary') {
+        return 'shadow-2xl shadow-primary/10';
+      }
+      return `shadow-2xl shadow-${primaryColor}/10`;
+    }
+    return 'shadow-2xl shadow-black/20';
+  };
+  console.log(theme);
   return (
     <div className="w-full">
       <div className="relative w-full overflow-hidden py-6 md:py-12">
         <div
           id="carousel-container"
           className="relative mx-auto max-w-[1800px] px-2 sm:px-4 md:px-6">
-          <div className="relative mx-auto h-[180px] sm:h-[220px] md:h-[280px] lg:h-[320px] xl:h-[380px] 2xl:h-[420px]">
+          <div
+            className="relative mx-auto 
+            h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[380px] 2xl:h-[420px]
+            aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]">
             <AnimatePresence>
               {banners.map((banner, index) => {
                 const position = (index - currentBanner + banners.length) % banners.length;
@@ -159,7 +169,6 @@ export default function HeroSection({ theme }: HeroSectionProps) {
                 if (isNext) xPos = centerWidth / 2 + sideWidth / 2 + 4;
 
                 const width = isCenter ? centerWidth : sideWidth;
-                const colorClasses = getPrimaryColorClasses(isCenter);
 
                 return (
                   <motion.div
@@ -205,25 +214,16 @@ export default function HeroSection({ theme }: HeroSectionProps) {
                     }
                     style={{
                       width: width,
-                      height:
-                        window.innerWidth >= 1536
-                          ? 420
-                          : window.innerWidth >= 1280
-                          ? 380
-                          : window.innerWidth >= 1024
-                          ? 320
-                          : window.innerWidth >= 768
-                          ? 280
-                          : window.innerWidth >= 640
-                          ? 220
-                          : 180,
+                      height: '100%',
                       marginLeft: -width / 2,
                     }}>
                     <div
                       className={cn(
                         'relative h-full w-full overflow-hidden rounded-xl transition-all duration-500 ease-in-out',
-                        colorClasses.border,
-                        colorClasses.shadow
+
+                        'aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]',
+                        getBorderClass(isCenter),
+                        getShadowClass(isCenter)
                       )}>
                       <Image
                         src={banner.image || defaultBanner}

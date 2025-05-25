@@ -1,6 +1,9 @@
 'use client';
+import { FaFacebook } from 'react-icons/fa';
+import { FaSquareInstagram } from 'react-icons/fa6';
+import { BsLine } from 'react-icons/bs';
+import { IoLogoWhatsapp } from 'react-icons/io';
 
-import { Facebook, Instagram, MessageCircle, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SocialLinksProps {
@@ -24,7 +27,7 @@ export function SocialLinks({ contact }: SocialLinksProps) {
     <div className="grid grid-cols-1 gap-3">
       {facebook && (
         <SocialLink
-          icon={<Facebook />}
+          icon={<FaFacebook />}
           name="Facebook"
           value={facebook}
           url={`https://facebook.com/${facebook}`}
@@ -33,18 +36,21 @@ export function SocialLinks({ contact }: SocialLinksProps) {
       )}
       {instagram && (
         <SocialLink
-          icon={<Instagram />}
+          icon={<FaSquareInstagram />}
           name="Instagram"
           value={instagram}
           url={`https://instagram.com/${instagram}`}
           color="text-pink-600"
         />
       )}
-      {line && (
-        <SocialLink icon={<MessageCircle />} name="Line" value={line} color="text-green-600" />
-      )}
+      {line && <SocialLink icon={<BsLine />} name="Line" value={line} color="text-green-600" />}
       {whatsapp && (
-        <SocialLink icon={<Phone />} name="WhatsApp" value={whatsapp} color="text-green-500" />
+        <SocialLink
+          icon={<IoLogoWhatsapp />}
+          name="WhatsApp"
+          value={whatsapp}
+          color="text-green-500"
+        />
       )}
     </div>
   );

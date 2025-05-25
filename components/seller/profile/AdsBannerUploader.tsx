@@ -2,10 +2,11 @@
 
 import type React from 'react';
 import { useState, useRef } from 'react';
-import { Upload, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Upload, X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
 import Image from 'next/image';
 import { Button2 } from '@/components/ui/button2';
 import { cn } from '@/lib/utils';
+import { ResponsiveImagePlaceholder } from '../public/ResponsiveImagePlaceholder';
 
 interface AdsBannerUploaderProps {
   images: string[];
@@ -21,6 +22,7 @@ export function AdsBannerUploader({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showGuidelines, setShowGuidelines] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageUrlInputRef = useRef<HTMLInputElement>(null);
 
@@ -149,7 +151,20 @@ export function AdsBannerUploader({
         <span className="text-xs text-light-400">
           Banner Images ({images.length}/{maxImages})
         </span>
+        <button
+          type="button"
+          onClick={() => setShowGuidelines(!showGuidelines)}
+          className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors">
+          <Info size={12} />
+          Responsive Guidelines
+        </button>
       </div>
+
+      {showGuidelines && (
+        <div className="mb-4">
+          <ResponsiveImagePlaceholder />
+        </div>
+      )}
 
       {images.length < maxImages && (
         <>
@@ -160,7 +175,9 @@ export function AdsBannerUploader({
             onClick={handleBrowseClick}
             className={cn(
               'relative flex flex-col justify-center items-center px-4 py-6 border-2 border-dashed',
-              'rounded-lg transition-all cursor-pointer duration-300 h-32',
+              'rounded-lg transition-all cursor-pointer duration-300',
+              // Responsive aspect ratios for better mobile experience
+              'aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]',
               isDragging
                 ? 'border-primary bg-primary/10 scale-[1.01]'
                 : 'border-primary/20 hover:border-primary/50 bg-dark-800/50 hover:bg-primary/5'
@@ -168,17 +185,26 @@ export function AdsBannerUploader({
             <div className="space-y-2 text-center">
               <Upload
                 className={cn(
-                  'mx-auto h-6 w-6 transition-all duration-300',
+                  'mx-auto h-8 w-8 transition-all duration-300',
                   isDragging ? 'text-primary animate-bounce' : 'text-primary/70'
                 )}
               />
-              <div className="flex flex-col text-xs text-light-400">
+              <div className="flex flex-col text-sm text-light-400">
                 <span className="font-medium text-primary hover:text-primary/80 transition-colors">
                   Upload banner images
                 </span>
                 <p className="text-light-500">or drag and drop</p>
               </div>
-              <p className="text-[10px] text-light-600">PNG, JPG, GIF up to 10MB</p>
+              <div className="text-xs text-light-600 space-y-1">
+                <p>
+                  <strong>Responsive Design:</strong>
+                </p>
+                <p>Mobile: 4:3 • Tablet: 3:2 • Desktop: 16:9</p>
+                <p>
+                  <strong>Optimal size:</strong> 1920×1440px
+                </p>
+                <p>PNG, JPG, GIF up to 10MB</p>
+              </div>
             </div>
             <input
               ref={fileInputRef}
@@ -214,7 +240,8 @@ export function AdsBannerUploader({
         <div className="space-y-3">
           <div
             className="relative group overflow-hidden rounded-lg border border-dark-600 bg-dark-700/70
-                        transition-all duration-200 hover:shadow-lg hover:shadow-dark-900/50 h-40">
+                        transition-all duration-200 hover:shadow-lg hover:shadow-dark-900/50
+                        aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]">
             <div className="w-full h-full overflow-hidden relative">
               <Image
                 fill
@@ -283,7 +310,8 @@ export function AdsBannerUploader({
                   type="button"
                   onClick={() => setCurrentImageIndex(index)}
                   className={cn(
-                    'relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-all',
+                    'relative flex-shrink-0 w-20 h-15 rounded-md overflow-hidden border-2 transition-all',
+                    'aspect-[4/3]',
                     currentImageIndex === index
                       ? 'border-primary'
                       : 'border-dark-600 hover:border-primary/50'
@@ -293,7 +321,7 @@ export function AdsBannerUploader({
                     src={url || '/placeholder.svg'}
                     alt={`Thumbnail ${index + 1}`}
                     className="object-cover"
-                    sizes="64px"
+                    sizes="80px"
                   />
                 </button>
               ))}

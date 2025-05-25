@@ -10,7 +10,7 @@ import { FaSquareInstagram } from 'react-icons/fa6';
 import { BsLine } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io';
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
