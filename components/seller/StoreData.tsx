@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import LoadingAnimation from '../Loading';
 
 interface StoreContextProps {
   theme: any;
@@ -109,7 +110,7 @@ export const StoreData = ({ children }: StoreDataProps) => {
   }, [subdomain]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingAnimation />;
   }
 
   if (error) {

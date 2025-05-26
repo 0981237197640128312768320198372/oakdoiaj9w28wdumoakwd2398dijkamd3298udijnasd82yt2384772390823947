@@ -121,7 +121,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
   };
 
   const getNavbarBgClass = () => {
-    return baseTheme === 'light' ? 'bg-white/90 border-light-200' : 'bg-dark-700 border-dark-500';
+    return baseTheme === 'light' ? 'bg-white border-light-200' : 'bg-dark-700 border-dark-500';
   };
 
   const getNavbarTextClass = () => {
@@ -130,7 +130,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
   const getSearchButtonBgClass = () => {
     return baseTheme === 'light'
-      ? 'bg-light-200 hover:bg-light-300 duration-300 transition-all text-dark-500 shadow-md'
+      ? 'bg-light-100 hover:bg-light-300 duration-300 transition-all text-dark-500 shadow-md'
       : 'bg-dark-600 hover:bg-dark-500 duration-300 transition-all text-light-300 border-[1px] border-dark-400 shadow-md';
   };
 
