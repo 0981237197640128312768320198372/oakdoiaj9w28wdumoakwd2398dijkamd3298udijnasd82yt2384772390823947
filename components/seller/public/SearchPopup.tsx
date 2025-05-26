@@ -1,6 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+'use client';
+
+import type React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, X, History, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 interface SearchPopupProps {
   isOpen: boolean;
@@ -9,6 +15,7 @@ interface SearchPopupProps {
   placeholder?: string;
   recentSearches?: string[];
   trendingSearches?: string[];
+  theme?: any;
 }
 
 const SearchPopup: React.FC<SearchPopupProps> = ({
@@ -18,11 +25,36 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   placeholder = 'Search products, categories...',
   recentSearches = [],
   trendingSearches = ['Netflix Premium', 'Prime Video', 'Family Access'],
+  theme,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Use the centralized theme utility
+  const themeUtils = useThemeUtils(theme);
+
+  const getPopupStyles = () => {
+    const isLight = themeUtils.baseTheme === 'light';
+    return {
+      overlay: 'bg-dark-800/80 backdrop-blur-md',
+      container: isLight ? 'bg-light-100 border-light-300' : 'bg-dark-700 border-dark-500',
+      input: isLight
+        ? 'bg-light-100 border-light-300 text-dark-800 placeholder-dark-500'
+        : 'bg-dark-700 border-dark-500 text-light-100 placeholder-light-500',
+      text: isLight ? 'text-dark-800' : 'text-light-100',
+      secondaryText: isLight ? 'text-dark-600' : 'text-light-300',
+      mutedText: isLight ? 'text-dark-500' : 'text-light-500',
+      button: isLight
+        ? 'bg-light-200 hover:bg-light-300 text-dark-800'
+        : 'bg-dark-600 hover:bg-dark-500 text-light-200',
+      hoverBg: isLight ? 'hover:bg-light-200' : 'hover:bg-dark-600',
+      kbd: isLight ? 'bg-light-200 border-light-400' : 'bg-dark-600 border-dark-400',
+    };
+  };
+
+  const popupStyles = getPopupStyles();
 
   // Focus input when popup opens
   useEffect(() => {
@@ -82,21 +114,31 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-dark-800/80 backdrop-blur-md"
+          className={cn(
+            'fixed inset-0 z-50 flex items-start justify-center pt-20',
+            popupStyles.overlay
+          )}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}>
           <motion.div
             ref={containerRef}
-            className="w-full max-w-2xl bg-dark-700 border border-dark-500 rounded-lg shadow-2xl overflow-hidden"
+            className={cn(
+              'w-full max-w-2xl border shadow-2xl overflow-hidden',
+              popupStyles.container,
+              themeUtils.getComponentRoundednessClass()
+            )}
             initial={{ y: -20, opacity: 0, scale: 0.98 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: -20, opacity: 0, scale: 0.98 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}>
             <form onSubmit={handleSubmit} className="relative">
               <Search
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-primary"
+                className={cn(
+                  'absolute left-4 top-1/2 transform -translate-y-1/2',
+                  themeUtils.getPrimaryColorClass('text')
+                )}
                 size={20}
               />
               <input
@@ -108,7 +150,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                   setShowSuggestions(true);
                 }}
                 placeholder={placeholder}
-                className="w-full py-5 pl-12 pr-12 bg-dark-700 border-b border-dark-500 text-light-100 placeholder-light-500 focus:outline-none focus:ring-1 focus:ring-primary/50 text-lg"
+                className={cn(
+                  'w-full py-5 pl-12 pr-12 border-b focus:outline-none text-lg',
+                  `focus:ring-1 focus:ring-${themeUtils.primaryColor}/50`,
+                  popupStyles.input
+                )}
               />
               {searchQuery && (
                 <button
@@ -117,13 +163,23 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                     setSearchQuery('');
                     inputRef.current?.focus();
                   }}
-                  className="absolute right-12 top-1/2 transform -translate-y-1/2 text-light-400 hover:text-light-200 transition-colors p-1 rounded-full hover:bg-dark-600">
+                  className={cn(
+                    'absolute right-12 top-1/2 transform -translate-y-1/2 transition-colors p-1',
+                    themeUtils.getButtonRoundednessClass(),
+                    popupStyles.secondaryText,
+                    popupStyles.hoverBg
+                  )}>
                   <X size={18} />
                 </button>
               )}
               <button
                 type="submit"
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-primary hover:text-primary/80 transition-colors p-1 rounded-full hover:bg-primary/10">
+                className={cn(
+                  'absolute right-4 top-1/2 transform -translate-y-1/2 transition-colors p-1',
+                  themeUtils.getButtonRoundednessClass(),
+                  themeUtils.getPrimaryColorClass('text'),
+                  `hover:bg-${themeUtils.primaryColor}/10`
+                )}>
                 <Search size={18} />
               </button>
             </form>
@@ -140,8 +196,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                     {/* Recent searches section */}
                     {recentSearches.length > 0 && (
                       <div className="mb-6">
-                        <div className="flex items-center gap-2 mb-2 text-light-300">
-                          <History size={16} className="text-light-400" />
+                        <div
+                          className={cn('flex items-center gap-2 mb-2', popupStyles.secondaryText)}>
+                          <History size={16} className={popupStyles.mutedText} />
                           <h3 className="text-sm font-medium">Recent Searches</h3>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -149,7 +206,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                             <button
                               key={index}
                               onClick={() => handleSuggestionClick(search)}
-                              className="text-left px-3 py-2 rounded-md bg-dark-600 hover:bg-dark-500 text-light-200 text-sm transition-colors truncate">
+                              className={cn(
+                                'text-left px-3 py-2 text-sm transition-colors truncate',
+                                themeUtils.getButtonRoundednessClass(),
+                                popupStyles.button
+                              )}>
                               {search}
                             </button>
                           ))}
@@ -159,8 +220,9 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
 
                     {/* Trending searches section */}
                     <div>
-                      <div className="flex items-center gap-2 mb-2 text-light-300">
-                        <TrendingUp size={16} className="text-light-400" />
+                      <div
+                        className={cn('flex items-center gap-2 mb-2', popupStyles.secondaryText)}>
+                        <TrendingUp size={16} className={popupStyles.mutedText} />
                         <h3 className="text-sm font-medium">Popular Searches</h3>
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -168,7 +230,11 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                           <button
                             key={index}
                             onClick={() => handleSuggestionClick(search)}
-                            className="text-left px-3 py-2 rounded-md bg-dark-600 hover:bg-dark-500 text-light-200 text-sm transition-colors truncate">
+                            className={cn(
+                              'text-left px-3 py-2 text-sm transition-colors truncate',
+                              themeUtils.getButtonRoundednessClass(),
+                              popupStyles.button
+                            )}>
                             {search}
                           </button>
                         ))}
@@ -176,19 +242,22 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
                     </div>
 
                     {/* Keyboard shortcuts */}
-                    <div className="mt-6 pt-4 border-t border-dark-500 flex justify-between text-xs text-light-500">
+                    <div
+                      className={cn(
+                        'mt-6 pt-4 border-t flex justify-between text-xs',
+                        popupStyles.mutedText,
+                        popupStyles.input.includes('border-light')
+                          ? 'border-light-300'
+                          : 'border-dark-500'
+                      )}>
                       <p>
                         Press{' '}
-                        <kbd className="px-2 py-1 bg-dark-600 rounded border border-dark-400">
-                          Enter
-                        </kbd>{' '}
+                        <kbd className={cn('px-2 py-1 rounded border', popupStyles.kbd)}>Enter</kbd>{' '}
                         to search
                       </p>
                       <p>
                         Press{' '}
-                        <kbd className="px-2 py-1 bg-dark-600 rounded border border-dark-400">
-                          Esc
-                        </kbd>{' '}
+                        <kbd className={cn('px-2 py-1 rounded border', popupStyles.kbd)}>Esc</kbd>{' '}
                         to close
                       </p>
                     </div>

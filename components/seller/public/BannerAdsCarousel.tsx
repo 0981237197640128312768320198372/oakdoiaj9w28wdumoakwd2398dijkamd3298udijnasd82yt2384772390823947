@@ -7,7 +7,8 @@ import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { ThemeType } from '@/types';
+import type { ThemeType } from '@/types';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 interface BannerAdsCarouselProps {
   theme: ThemeType | null;
@@ -17,12 +18,22 @@ interface Banner {
   image: string;
 }
 
+const categories = [
+  {
+    title: 'Spotify',
+    subtitle: 'Spotify Premium | Thai Account',
+    image: '/images/og-dokmaistore.webp',
+  },
+];
+
 export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
   const defaultBanner = '/placeholder.svg?height=360&width=640&query=banner';
 
+  const themeUtils = useThemeUtils(theme);
+
   const banners: Banner[] =
-    theme?.customizations?.ads?.images && theme.customizations.ads.images.length > 0
-      ? theme.customizations.ads.images.map((image: any) => ({ image }))
+    themeUtils.adsImages && themeUtils.adsImages.length > 0
+      ? themeUtils.adsImages.map((image: any) => ({ image }))
       : [
           { image: '/images/og-dokmaistore.webp' },
           { image: '/images/og-dokmaistore.webp' },
@@ -112,64 +123,19 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
     }
   }, [banners.length, currentBanner]);
 
-  // Get theme values from the new structure
-  const primaryColor = theme?.customizations?.colors?.primary || 'primary';
-  const adsRoundedness = theme?.customizations?.ads?.roundedness || 'md';
-  const adsShadow = theme?.customizations?.ads?.shadow || 'sm';
-
-  // Helper function to get roundedness class
-  const getRoundednessClass = () => {
-    switch (adsRoundedness) {
-      case 'none':
-        return 'rounded-none';
-      case 'sm':
-        return 'rounded-sm';
-      case 'md':
-        return 'rounded-md';
-      case 'lg':
-        return 'rounded-lg';
-      case 'full':
-        return 'rounded-full';
-      default:
-        return 'rounded-xl';
-    }
-  };
-
-  // Helper function to get shadow class
-  const getAdsShadowClass = () => {
-    switch (adsShadow) {
-      case 'none':
-        return 'shadow-none';
-      case 'sm':
-        return 'shadow-sm';
-      case 'md':
-        return 'shadow-md';
-      case 'lg':
-        return 'shadow-lg';
-      default:
-        return 'shadow-2xl';
-    }
-  };
-
   const getBorderClass = (isCenter: boolean) => {
     if (isCenter) {
-      if (primaryColor === 'primary') {
-        return 'border-2 border-primary/50';
-      }
-      return `border-2 border-${primaryColor}/50`;
+      return `border-2 ${themeUtils.getPrimaryColorClass('border')}/50`;
     }
     return 'border border-gray-700/50';
   };
 
   const getShadowClass = (isCenter: boolean) => {
     if (isCenter) {
-      const baseShadow = getAdsShadowClass();
-      if (primaryColor === 'primary') {
-        return `${baseShadow} shadow-primary/50`;
-      }
-      return `${baseShadow} shadow-${primaryColor}/50`;
+      const baseShadow = themeUtils.getAdsShadowClass();
+      return `${baseShadow} ${themeUtils.getPrimaryColorClass('border')}/50`;
     }
-    return `${getAdsShadowClass()} shadow-black/20`;
+    return `${themeUtils.getAdsShadowClass()} shadow-black/20`;
   };
 
   if (banners.length === 0) {
@@ -261,7 +227,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
                       className={cn(
                         'relative h-full w-full overflow-hidden transition-all duration-500 ease-in-out',
                         'aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]',
-                        getRoundednessClass(),
+                        themeUtils.getAdsRoundednessClass(),
                         getBorderClass(isCenter),
                         getShadowClass(isCenter)
                       )}>
@@ -316,7 +282,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
                 className={cn(
                   'h-1.5 w-6 rounded-full md:h-2 md:w-8 transition-all duration-400 ease-in-out',
                   currentBanner === index
-                    ? `bg-${primaryColor} opacity-100 scale-110`
+                    ? `${themeUtils.getPrimaryColorClass('bg')} opacity-100 scale-110`
                     : 'bg-gray-600 opacity-70 scale-100 hover:opacity-90'
                 )}
                 aria-label={`Go to banner ${index + 1}`}
@@ -388,11 +354,3 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
     </>
   );
 }
-
-const categories = [
-  {
-    title: 'Spotify',
-    subtitle: 'Spotify Premium | Thai Account',
-    image: '/images/og-dokmaistore.webp',
-  },
-];

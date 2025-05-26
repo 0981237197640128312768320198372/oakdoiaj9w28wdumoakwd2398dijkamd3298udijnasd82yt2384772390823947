@@ -51,7 +51,7 @@ const themeSchema = new Schema<ITheme>({
       roundedness: {
         type: String,
         enum: ['none', 'sm', 'md', 'lg', 'full'],
-        default: 'md',
+        default: 'full',
       },
       shadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
       border: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'none' },
@@ -61,7 +61,7 @@ const themeSchema = new Schema<ITheme>({
       cardRoundedness: {
         type: String,
         enum: ['none', 'sm', 'md', 'lg', 'full'],
-        default: 'md',
+        default: 'lg',
       },
       cardShadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
     },
@@ -70,7 +70,7 @@ const themeSchema = new Schema<ITheme>({
       roundedness: {
         type: String,
         enum: ['none', 'sm', 'md', 'lg', 'full'],
-        default: 'md',
+        default: 'lg',
       },
       shadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
     },

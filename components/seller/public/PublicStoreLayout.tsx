@@ -11,9 +11,11 @@ import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
 import StoreFooter from './StoreFooter';
 import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
+import { ThemeType } from '@/types';
 
 interface PublicStoreLayoutProps {
-  theme: any;
+  theme: ThemeType | null;
   seller: any;
   products: any[];
   categories: any[];
@@ -29,6 +31,9 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const [loaded, setLoaded] = useState(false);
   const [activePage, setActivePage] = useState('home');
 
+  // Use the centralized theme utility
+  const themeUtils = useThemeUtils(theme);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoaded(true);
@@ -39,21 +44,35 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const renderContent = () => {
     switch (activePage) {
       case 'profile':
-        return <PublicStoreProfile seller={seller} products={products} categories={categories} />;
+        return (
+          <PublicStoreProfile
+            seller={seller}
+            products={products}
+            categories={categories}
+            theme={theme}
+          />
+        );
       case 'products':
-        return <StoreProducts store={seller?.username} />;
+        return <StoreProducts store={seller?.username} theme={theme} />;
       case 'home':
       default:
         return <HomeStorePage products={products} categories={categories} theme={theme} />;
     }
   };
-  console.log('AOWKOAKWOAKOWAKOAKOWK');
-  const baseTheme = theme?.baseTheme;
-  const getBaseTheme = () => {
-    return baseTheme === 'light' ? 'bg-light-100 text-dark-800' : 'bg-dark-800 text-light-100';
+
+  // Get layout styles using theme utils
+  const getLayoutStyles = () => {
+    const isLight = themeUtils.baseTheme === 'light';
+    return {
+      background: isLight ? 'bg-light-100' : 'bg-dark-800',
+      text: isLight ? 'text-dark-800' : 'text-light-100',
+    };
   };
+
+  const layoutStyles = getLayoutStyles();
+
   return (
-    <div className={cn('min-h-screen w-full', getBaseTheme())}>
+    <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>
       <StoreNavbar
         theme={theme}
         seller={seller}

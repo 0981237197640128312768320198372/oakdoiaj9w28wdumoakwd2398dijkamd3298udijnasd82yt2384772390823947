@@ -106,7 +106,7 @@ export function AdsBannerUploader({
     <div className="space-y-3">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="text-sm text-gray-400">
+        <span className="text-sm text-light-500">
           Banner Images ({images.length}/{maxImages})
         </span>
       </div>
@@ -122,17 +122,15 @@ export function AdsBannerUploader({
             onClick={() => fileInputRef.current?.click()}
             className={cn(
               'relative flex flex-col items-center justify-center h-24 border border-dashed rounded-lg cursor-pointer transition-colors',
-              isDragging
-                ? 'border-blue-500 bg-blue-500/5'
-                : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800/50'
+              isDragging ? 'border-primary bg-primary/5' : 'border-dark-700 hover:border-dark-400'
             )}>
             <div className="flex flex-col items-center gap-1">
-              <Upload className={cn('h-4 w-4', isDragging ? 'text-blue-500' : 'text-gray-400')} />
+              <Upload className={cn('h-4 w-4', isDragging ? 'text-blue-500' : 'text-dark-400')} />
               <div className="text-center">
-                <p className="text-xs text-gray-300">
+                <p className="text-xs text-dark-300">
                   <span className="font-medium">Click to upload</span> or drag and drop
                 </p>
-                <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                <p className="text-xs text-dark-500">PNG, JPG up to 10MB</p>
               </div>
             </div>
             <input
@@ -151,7 +149,7 @@ export function AdsBannerUploader({
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               placeholder="Or paste image URL"
-              className="h-8 text-xs bg-gray-900 border-gray-700 focus:border-gray-600"
+              className="h-8 text-xs bg-dark-700 border-dark-600 focus:border-dark-400"
               onKeyDown={(e) => e.key === 'Enter' && handleAddUrl()}
             />
             <Button2
@@ -159,7 +157,7 @@ export function AdsBannerUploader({
               disabled={!imageUrl.trim()}
               size="sm"
               variant="outline"
-              className="h-8 px-3 text-xs border-gray-700 hover:bg-gray-800">
+              className="h-8 px-3 text-xs border-dark-600 hover:bg-dark-500">
               Add
             </Button2>
           </div>
@@ -171,7 +169,7 @@ export function AdsBannerUploader({
         <div className="space-y-2">
           {/* Main Preview */}
           <div className="relative group">
-            <div className="relative h-32 w-full rounded-lg overflow-hidden bg-gray-900 border border-gray-700">
+            <div className="relative h-40 lg:h-96 w-full rounded-lg overflow-hidden bg-dark-700 border border-dark-600">
               <Image
                 src={images[currentImageIndex] || '/placeholder.svg'}
                 alt={`Banner ${currentImageIndex + 1}`}
@@ -226,8 +224,8 @@ export function AdsBannerUploader({
                   className={cn(
                     'relative flex-shrink-0 h-12 w-16 rounded border-2 overflow-hidden transition-colors',
                     currentImageIndex === index
-                      ? 'border-blue-500'
-                      : 'border-gray-600 hover:border-gray-500'
+                      ? 'border-primary'
+                      : 'border-dark-600 hover:border-dark-500'
                   )}>
                   <Image
                     src={url || '/placeholder.svg'}

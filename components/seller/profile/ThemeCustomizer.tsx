@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import {
   Palette,
   Circle,
-  Square,
   ImageIcon,
   Save,
   Loader2,
@@ -15,6 +14,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
+import { MdOutlineSmartButton } from 'react-icons/md';
 import {
   Select,
   SelectContent,
@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import { AdsBannerUploader } from './AdsBannerUploader';
 import { ColorGrid } from './ColorGrid';
 import type { ThemeType } from '@/types';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 const THEME_STORAGE_KEY = 'theme-customizer-draft';
 
@@ -77,6 +78,9 @@ export default function ThemeCustomizer({
 
   const [baseTheme, setBaseTheme] = useState<ThemeType>(() => currentTheme || getDefaultTheme());
   const [theme, setTheme] = useState<ThemeType>(() => currentTheme || getDefaultTheme());
+
+  // Add this after the theme state declarations:
+  const themeUtils = useThemeUtils(theme);
 
   // Update base theme when currentTheme prop changes
   useEffect(() => {
@@ -277,7 +281,7 @@ export default function ThemeCustomizer({
       <Card className="bg-dark-800 border-dark-700">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <Loader2 className="h-6 w-6 animate-spin text-blue-500 mx-auto mb-3" />
+            <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mb-3" />
             <p className="text-sm text-light-400">Initializing theme customizer...</p>
           </div>
         </div>
@@ -329,7 +333,7 @@ export default function ThemeCustomizer({
           <Card className="bg-dark-800 border-dark-700 p-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Circle className="h-4 w-4 text-blue-500" />
+                <Circle className="h-4 w-4 text-primary" />
                 <h3 className="text-sm font-medium text-white">Base Theme</h3>
               </div>
 
@@ -338,8 +342,8 @@ export default function ThemeCustomizer({
                   onClick={() => handleBaseThemeChange('light')}
                   className={cn(
                     'p-3 rounded-lg border transition-all text-left',
-                    'bg-light-100 border-light-200 hover:border-blue-400',
-                    theme.baseTheme === 'light' && 'ring-2 ring-blue-500'
+                    'bg-light-100 border-light-200 hover:border-primary',
+                    theme.baseTheme === 'light' && 'ring-2 ring-primary'
                   )}>
                   <div className="flex items-center gap-2 mb-2">
                     <Sun className="h-4 w-4 text-amber-500" />
@@ -355,11 +359,11 @@ export default function ThemeCustomizer({
                   onClick={() => handleBaseThemeChange('dark')}
                   className={cn(
                     'p-3 rounded-lg border transition-all text-left',
-                    'bg-dark-700 border-dark-600 hover:border-blue-400',
-                    theme.baseTheme === 'dark' && 'ring-2 ring-blue-500'
+                    'bg-dark-700 border-dark-600 hover:border-primary',
+                    theme.baseTheme === 'dark' && 'ring-2 ring-primary'
                   )}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Moon className="h-4 w-4 text-blue-400" />
+                    <Moon className="h-4 w-4 text-primary" />
                     <span className="text-sm font-medium text-light-200">Dark</span>
                   </div>
                   <div className="h-6 w-full bg-dark-800 border border-dark-600 rounded flex items-center px-2">
@@ -375,7 +379,7 @@ export default function ThemeCustomizer({
           <Card className="bg-dark-800 border-dark-700 p-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <ImageIcon className="h-4 w-4 text-blue-500" />
+                <ImageIcon className="h-4 w-4 text-primary" />
                 <h3 className="text-sm font-medium text-white">Banner Settings</h3>
               </div>
 
@@ -432,7 +436,7 @@ export default function ThemeCustomizer({
           <Card className="bg-dark-800 border-dark-700 p-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Palette className="h-4 w-4 text-blue-500" />
+                <Palette className="h-4 w-4 text-primary" />
                 <h3 className="text-sm font-medium text-white">Brand Colors</h3>
               </div>
 
@@ -467,7 +471,7 @@ export default function ThemeCustomizer({
           <Card className="bg-dark-800 border-dark-700 p-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Square className="h-4 w-4 text-blue-500" />
+                <MdOutlineSmartButton className="h-4 w-4 text-primary" />
                 <h3 className="text-sm font-medium text-white">Button Styles</h3>
               </div>
 
@@ -563,7 +567,7 @@ export default function ThemeCustomizer({
           <Card className="bg-dark-800 border-dark-700 p-4">
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4 text-blue-500" />
+                <CreditCard className="h-4 w-4 text-primary" />
                 <h3 className="text-sm font-medium text-white">Card Styles</h3>
               </div>
 
@@ -626,7 +630,7 @@ export default function ThemeCustomizer({
           onClick={handleSaveTheme}
           disabled={isLoading || !hasUnsavedChanges}
           size="sm"
-          className="bg-blue-600 hover:bg-blue-700 text-white h-8">
+          className="bg-primary hover:bg-primary/80 text-dark-800 h-8">
           {isLoading ? (
             <>
               <Loader2 className="h-3 w-3 mr-2 animate-spin" />

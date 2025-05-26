@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type React from 'react';
@@ -7,15 +8,36 @@ import Image from 'next/image';
 import ProductCard from './ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tag } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 interface SellerCategoriesProps {
   products: Product[];
   categories: Category[];
+  theme?: any;
 }
 
-const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categories }) => {
+const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categories, theme }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+
+  // Use the centralized theme utility
+  const themeUtils = useThemeUtils(theme);
+
+  const getCategoryStyles = () => {
+    const isLight = themeUtils.baseTheme === 'light';
+    return {
+      background: isLight
+        ? 'bg-light-200/80 hover:bg-light-300'
+        : 'bg-dark-700/80 hover:bg-dark-600',
+      border: isLight ? 'border-light-300' : 'border-dark-500',
+      text: isLight ? 'text-dark-800' : 'text-light-200',
+      noResults: isLight ? 'bg-light-100/50 border-light-200' : 'bg-dark-700/50 border-dark-600',
+      noResultsText: isLight ? 'text-dark-600' : 'text-light-300',
+    };
+  };
+
+  const categoryStyles = getCategoryStyles();
 
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory((prevCategory) => (prevCategory === categoryId ? null : categoryId));
@@ -28,6 +50,7 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
       setFilteredProducts([]);
     }
   }, [selectedCategory, products]);
+
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-wrap gap-3 mb-5">
@@ -36,15 +59,18 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
             key={category._id}
             onClick={() => handleCategoryClick(category._id)}
             whileTap={{ scale: 0.95 }}
-            className={`
-              px-3
-              border border-dark-500 backdrop-blur-sm rounded-md font-aktivGroteskRegular
-              ${
-                selectedCategory === category._id
-                  ? 'bg-primary/10 border-primary/40 shadow-lg shadow-primary/10'
-                  : 'bg-dark-700/80 hover:bg-dark-600'
-              }flex items-center justify-center min-h-[50px]
-            `}
+            className={cn(
+              'px-3 border backdrop-blur-sm font-aktivGroteskRegular flex items-center justify-center min-h-[50px]',
+              themeUtils.getButtonRoundednessClass(),
+              selectedCategory === category._id
+                ? cn(
+                    themeUtils.getPrimaryColorClass('bg') + '/10',
+                    themeUtils.getPrimaryColorClass('border') + '/40',
+                    themeUtils.getButtonShadowClass(),
+                    `shadow-${themeUtils.primaryColor}/10`
+                  )
+                : cn(categoryStyles.background, categoryStyles.border)
+            )}
             aria-label={category.name}>
             {category.logoUrl ? (
               <Image
@@ -55,7 +81,7 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
                 className="w-auto h-6 object-contain"
               />
             ) : (
-              <Tag className="w-auto h-5 text-light-200" />
+              <Tag className={cn('w-auto h-5', categoryStyles.text)} />
             )}
           </motion.button>
         ))}
@@ -82,8 +108,13 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
               ))
             ) : (
               <div className="col-span-full py-12 text-center">
-                <div className="bg-dark-700/50 rounded-xl p-8 border border-dark-600">
-                  <p className="text-light-300">No products found in this category</p>
+                <div
+                  className={cn(
+                    'p-8 border',
+                    categoryStyles.noResults,
+                    themeUtils.getComponentRoundednessClass()
+                  )}>
+                  <p className={categoryStyles.noResultsText}>No products found in this category</p>
                 </div>
               </div>
             )}

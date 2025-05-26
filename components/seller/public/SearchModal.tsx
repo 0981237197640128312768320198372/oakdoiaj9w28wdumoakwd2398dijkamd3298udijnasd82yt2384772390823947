@@ -1,11 +1,16 @@
+'use client';
+
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useRef } from 'react';
+import type React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, X, Store, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 interface SearchResult {
   type: 'product' | 'seller';
@@ -22,15 +27,36 @@ interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   storeUsername: string;
+  theme?: any;
 }
 
-const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsername }) => {
+const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsername, theme }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [noResults, setNoResults] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // Use the centralized theme utility
+  const themeUtils = useThemeUtils(theme);
+
+  const getModalStyles = () => {
+    const isLight = themeUtils.baseTheme === 'light';
+    return {
+      overlay: 'bg-dark-800/80 backdrop-blur-sm',
+      modal: isLight ? 'bg-light-100 border-light-300' : 'bg-dark-700 border-dark-500',
+      input: isLight
+        ? 'bg-light-100 text-dark-800 placeholder-dark-500 border-light-300'
+        : 'bg-transparent text-light-100 placeholder-light-500 border-dark-500',
+      text: isLight ? 'text-dark-800' : 'text-light-100',
+      secondaryText: isLight ? 'text-dark-600' : 'text-light-400',
+      hoverBg: isLight ? 'hover:bg-light-200' : 'hover:bg-dark-600',
+      itemBg: isLight ? 'bg-light-200' : 'bg-dark-500',
+    };
+  };
+
+  const modalStyles = getModalStyles();
 
   // Focus input when modal opens
   useEffect(() => {
@@ -173,35 +199,58 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-dark-800/80 backdrop-blur-sm flex items-start justify-center pt-20 px-4">
+    <div
+      className={cn(
+        'fixed inset-0 z-50 flex items-start justify-center pt-20 px-4',
+        modalStyles.overlay
+      )}>
       <motion.div
         ref={modalRef}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.2 }}
-        className="w-full max-w-2xl bg-dark-700 rounded-xl border border-dark-500 shadow-xl overflow-hidden">
+        className={cn(
+          'w-full max-w-2xl border shadow-xl overflow-hidden',
+          modalStyles.modal,
+          themeUtils.getComponentRoundednessClass()
+        )}>
         {/* Search input */}
-        <div className="relative flex items-center border-b border-dark-500">
-          <Search className="absolute left-4 text-light-400" size={18} />
+        <div
+          className={cn(
+            'relative flex items-center border-b',
+            modalStyles.input.includes('border-light') ? 'border-light-300' : 'border-dark-500'
+          )}>
+          <Search
+            className={cn('absolute left-4', themeUtils.getPrimaryColorClass('text'))}
+            size={18}
+          />
           <input
             ref={inputRef}
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search products, categories..."
-            className="w-full py-4 pl-12 pr-12 bg-transparent text-light-100 placeholder-light-500 focus:outline-none"
+            className={cn('w-full py-4 pl-12 pr-12 focus:outline-none', modalStyles.input)}
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-12 text-light-400 hover:text-light-200 p-1">
+              className={cn(
+                'absolute right-12 p-1 transition-colors',
+                modalStyles.secondaryText,
+                modalStyles.hoverBg
+              )}>
               <X size={18} />
             </button>
           )}
           <button
             onClick={onClose}
-            className="absolute right-4 text-light-400 hover:text-light-200 p-1">
+            className={cn(
+              'absolute right-4 p-1 transition-colors',
+              modalStyles.secondaryText,
+              modalStyles.hoverBg
+            )}>
             <X size={18} />
           </button>
         </div>
@@ -211,12 +260,16 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
           <AnimatePresence>
             {isLoading ? (
               <div className="p-8 text-center">
-                <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
-                <p className="text-light-400">Searching...</p>
+                <div
+                  className={cn(
+                    'inline-block w-6 h-6 border-2 border-t-transparent rounded-full animate-spin mb-2',
+                    themeUtils.getPrimaryColorClass('border')
+                  )}></div>
+                <p className={modalStyles.secondaryText}>Searching...</p>
               </div>
             ) : noResults ? (
               <div className="p-8 text-center">
-                <p className="text-light-400">No results found for "{searchTerm}"</p>
+                <p className={modalStyles.secondaryText}>No results found for "{searchTerm}"</p>
               </div>
             ) : results.length > 0 ? (
               <div className="p-2">
@@ -230,45 +283,59 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                     <Link
                       href={result.url}
                       onClick={onClose}
-                      className="flex items-center gap-4 p-3 rounded-lg hover:bg-dark-600 transition-colors">
+                      className={cn(
+                        'flex items-center gap-4 p-3 transition-colors',
+                        themeUtils.getButtonRoundednessClass(),
+                        modalStyles.hoverBg
+                      )}>
                       {/* Image or icon */}
-                      <div className="w-12 h-12 flex-shrink-0 bg-dark-500 rounded-md overflow-hidden flex items-center justify-center">
+                      <div
+                        className={cn(
+                          'w-12 h-12 flex-shrink-0 overflow-hidden flex items-center justify-center',
+                          modalStyles.itemBg,
+                          themeUtils.getButtonRoundednessClass()
+                        )}>
                         {result.image ? (
                           <Image
-                            src={result.image}
+                            src={result.image || '/placeholder.svg'}
                             alt={result.title}
                             width={48}
                             height={48}
                             className="object-cover w-full h-full"
                           />
                         ) : (
-                          <Store className="text-light-400" size={24} />
+                          <Store className={modalStyles.secondaryText} size={24} />
                         )}
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-light-100 font-medium text-sm truncate">
+                        <h4 className={cn('font-medium text-sm truncate', modalStyles.text)}>
                           {result.title}
                         </h4>
                         {result.description && (
-                          <p className="text-light-400 text-xs line-clamp-1">
+                          <p className={cn('text-xs line-clamp-1', modalStyles.secondaryText)}>
                             {result.description}
                           </p>
                         )}
                         {result.price && (
                           <div className="flex items-center mt-1">
                             <Image
-                              src={dokmaicoin}
+                              src={dokmaicoin || '/placeholder.svg'}
                               alt="Dokmai Coin"
                               width={16}
                               height={16}
                               className="mr-1"
                             />
-                            <span className="text-xs text-primary font-medium">
+                            <span
+                              className={cn(
+                                'text-xs font-medium',
+                                themeUtils.getPrimaryColorClass('text')
+                              )}>
                               {result.discountedPrice !== result.price ? (
                                 <>
-                                  <span className="line-through text-light-500 mr-1">
+                                  <span
+                                    className={cn('line-through mr-1', modalStyles.secondaryText)}>
                                     {result.price}
                                   </span>
                                   {result.discountedPrice}
@@ -282,19 +349,19 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                       </div>
 
                       {/* Arrow */}
-                      <ChevronRight size={16} className="text-light-400" />
+                      <ChevronRight size={16} className={modalStyles.secondaryText} />
                     </Link>
                   </motion.div>
                 ))}
               </div>
             ) : searchTerm ? (
               <div className="p-8 text-center">
-                <p className="text-light-400">Type to search</p>
+                <p className={modalStyles.secondaryText}>Type to search</p>
               </div>
             ) : (
               <div className="p-8 text-center">
-                <Search className="mx-auto text-light-500 mb-2" size={24} />
-                <p className="text-light-400">Search for products or information</p>
+                <Search className={cn('mx-auto mb-2', modalStyles.secondaryText)} size={24} />
+                <p className={modalStyles.secondaryText}>Search for products or information</p>
               </div>
             )}
           </AnimatePresence>

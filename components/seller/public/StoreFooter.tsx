@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-
-import type React from 'react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaFacebook } from 'react-icons/fa';
@@ -15,14 +13,21 @@ import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import SearchModal from './SearchModal';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
+import type { ThemeType } from '@/types';
 
 interface StoreFooterProps {
   seller: any;
-  theme: any;
+  theme: ThemeType | null;
 }
 
 export default function StoreFooter({ seller, theme }: StoreFooterProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  // Use the centralized theme utility
+  const themeUtils = useThemeUtils(theme);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,15 +37,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
   }, []);
 
   const currentYear = new Date().getFullYear();
-
-  const primaryColor = theme?.customizations?.colors?.primary || theme?.primaryColor || '#B9FE13';
-  const secondaryColor =
-    theme?.customizations?.colors?.secondary || theme?.secondaryColor || '#0F0F0F';
-  const textColor = theme?.customizations?.button?.textColor || theme?.textColor || '#ECECEC';
-  const buttonBgColor =
-    theme?.customizations?.button?.backgroundColor || theme?.buttonBgColor || '#B9FE13';
-  const buttonTextColor =
-    theme?.customizations?.button?.textColor || theme?.buttonTextColor || '#0F0F0F';
+  const footerStyles = themeUtils.getFooterStyles();
 
   const socialLinks = [
     {
@@ -69,43 +66,56 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
     },
   ].filter((link) => link.url);
 
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   const handleSearch = () => {
     setIsSearchOpen(true);
   };
+
   return (
-    <footer
-      className="w-full py-8 pt-16 pb-36 px-5 xl:px-0"
-      style={{
-        backgroundColor: secondaryColor,
-        color: textColor,
-      }}>
+    <footer className={cn('w-full py-8 pt-16 pb-36 px-5 xl:px-0 ', footerStyles.background)}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-screen-lg mx-auto font-aktivGroteskRegular">
         <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl flex flex-col items-start gap-5">
+          <div
+            className={cn(
+              'grid grid-cols-1 lg:grid-cols-2 gap-5 rounded-xl',
+              themeUtils.getCardClass()
+            )}>
+            {/* Store Info Card */}
+            <div className="p-4 flex flex-col items-start gap-5">
               <div className="flex items-center gap-3 w-full">
-                <div className="relative w-12 h-12 border-dark-400 border-[1px] overflow-hidden rounded-full bg-cover bg-center flex-shrink-0">
+                <div
+                  className={cn(
+                    'relative w-12 h-12 overflow-hidden bg-cover bg-center flex-shrink-0 border-[1px]',
+                    themeUtils.getComponentRoundednessClass(),
+                    themeUtils.baseTheme === 'light' ? 'border-light-300' : 'border-dark-400'
+                  )}>
                   <Image
                     src={seller?.store?.logoUrl || dokmailogosquare}
                     alt={seller?.store?.name || 'Store logo'}
                     width={100}
                     height={100}
-                    className="border-[1px] border-dark-600 w-full h-full overflow-hidden rounded-full object-cover"
+                    className={cn(
+                      'w-full h-full overflow-hidden object-cover border-[1px]',
+                      themeUtils.getComponentRoundednessClass(),
+                      themeUtils.baseTheme === 'light' ? 'border-light-400' : 'border-dark-600'
+                    )}
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h3 className="font-aktivGroteskBold text-sm tracking-widest text-light-100">
+                  <h3
+                    className={cn(
+                      'font-aktivGroteskBold text-sm tracking-widest',
+                      footerStyles.text
+                    )}>
                     {seller?.store?.name || 'Store Name'}
                   </h3>
-                  {/* <p className="text-[10px] text-light-400">Official Store</p> */}
                 </div>
               </div>
+
+              {/* Mobile Social Links */}
               <div className="flex md:hidden flex-wrap gap-2">
                 {socialLinks.map((link, index) => (
                   <Link
@@ -113,28 +123,52 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                     href={link.url || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-2 rounded-full transition-all duration-200 bg-dark-600 text-light-800 hover:bg-dark-500 hover:text-light-100 text-xs"
+                    className={cn(
+                      'flex items-center gap-2 p-2 transition-all duration-200 text-xs',
+                      themeUtils.getButtonClass('secondary')
+                    )}
                     aria-label={link.name}>
                     {link.icon}
                     <span className="hidden sm:inline">{link.name}</span>
                   </Link>
                 ))}
               </div>
-              <p className="text-xs text-light-300">
+
+              <p className={cn('text-xs', footerStyles.secondaryText)}>
                 {seller?.store?.description ||
                   'Welcome to our store. We offer high-quality products with excellent customer service.'}
               </p>
             </div>
-            <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
+
+            {/* Desktop Social & Search Card */}
+            <div className="p-5 hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
+              {/* Search Button */}
               <button
                 onClick={handleSearch}
-                className="relative w-full px-4 py-2 rounded-full bg-dark-600 border-[1px] border-dark-500 text-light-100 text-xs transition-colors"
+                className={cn(
+                  'relative w-full px-4 py-2 text-xs transition-colors border-[1px]',
+                  footerStyles.searchBg,
+                  themeUtils.getButtonRoundednessClass()
+                )}
                 aria-label="Search App Premium">
-                <span className="block pr-8 text-light-100/50 text-start">Search Anything</span>
-                <div className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-primary text-dark-800 rounded-full p-1.5 hover:bg-opacity-90 transition-all">
+                <span
+                  className={cn(
+                    'block pr-8 text-start',
+                    themeUtils.baseTheme === 'light' ? 'text-dark-500' : 'text-light-100/50'
+                  )}>
+                  Search Anything
+                </span>
+                <div
+                  className={cn(
+                    'absolute right-1 top-1/2 transform -translate-y-1/2 p-1.5 hover:opacity-90 transition-all',
+                    themeUtils.getPrimaryColorClass('bg'),
+                    themeUtils.buildColorClass(themeUtils.buttonTextColor, 'text'),
+                    themeUtils.getButtonRoundednessClass()
+                  )}>
                   <Search size={16} />
                 </div>
               </button>
+
               <div className="flex flex-wrap gap-2">
                 {socialLinks.map((link, index) => (
                   <Link
@@ -142,24 +176,35 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                     href={link.url || '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200 bg-dark-600 text-light-300 hover:bg-dark-500 hover:text-light-100 text-xs"
+                    className={cn(
+                      'text-xs',
+                      themeUtils.getButtonClass('secondary'),
+                      themeUtils.getButtonRoundednessClass()
+                    )}
                     aria-label={link.name}>
                     {link.icon}
                     <span className="hidden sm:inline">{link.name}</span>
                   </Link>
                 ))}
               </div>
-              <p className="items-center text-light-500 text-xs font-light">
+
+              <p className={cn('text-xs font-light', footerStyles.secondaryText)}>
                 © {currentYear} Dokmai Store
               </p>
             </div>
           </div>
-          <div className="w-full bg-dark-700 border-[1px] border-dark-500 flex gap-4 lg:gap-0 justify-between px-4 py-3 rounded-full items-center">
-            <div className="flex flex-col text-start  px-3">
-              <h4 className="text-xs md:text-lg font-bold text-light-100">
+
+          <div
+            className={cn(
+              'w-full flex gap-4 lg:gap-0 justify-between px-4 py-3 items-center ',
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass()
+            )}>
+            <div className="flex flex-col text-start px-3">
+              <h4 className={cn('text-xs md:text-lg font-bold', footerStyles.text)}>
                 Start Selling with Dokmai Store For FREE Now!
               </h4>
-              <p className="font-light text-xs md:text-sm text-light-500">
+              <p className={cn('font-light text-xs md:text-sm', footerStyles.secondaryText)}>
                 Open Store and Get Profit
               </p>
             </div>
@@ -167,13 +212,16 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
               href="https://dokmaistore.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex bg-primary w-fit font-bold items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 text-dark-800 text-xs sm:text-sm hover:bg-opacity-90 whitespace-nowrap">
+              className={cn(
+                'text-xs sm:text-sm bg-primary text-dark-800 rounded-full flex gap-1 items-center px-2 py-1 font-bold'
+              )}>
               Learn More
               <HiOutlineArrowNarrowRight size={14} />
             </Link>
           </div>
         </div>
       </motion.div>
+
       {seller && (
         <SearchModal
           isOpen={isSearchOpen}

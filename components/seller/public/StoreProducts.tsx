@@ -6,12 +6,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { Product } from '@/types';
 import { ShoppingCart, X, RefreshCw } from 'lucide-react';
 import ProductCard from './ProductCard';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 interface StoreProductsProps {
   store: string | undefined;
+  theme?: any;
 }
 
-export default function StoreProducts({ store }: StoreProductsProps) {
+export default function StoreProducts({ store, theme }: StoreProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +23,41 @@ export default function StoreProducts({ store }: StoreProductsProps) {
   const [sortOption, setSortOption] = useState<'default' | 'price-asc' | 'price-desc' | 'name'>(
     'default'
   );
+
+  // Use the centralized theme utility
+  const themeUtils = useThemeUtils(theme);
+
+  const getComponentStyles = () => {
+    const isLight = themeUtils.baseTheme === 'light';
+    return {
+      // Loading skeleton styles
+      skeletonBg: isLight ? 'bg-light-200' : 'bg-dark-700',
+      skeletonCard: isLight ? 'bg-light-100 border-light-300' : 'bg-dark-750 border-dark-600',
+      skeletonContent: isLight ? 'bg-light-300' : 'bg-dark-700',
+
+      // Error state styles
+      errorBg: 'bg-red-500/10 border-red-500/30 text-red-400',
+      errorButton: 'bg-red-500/20 hover:bg-red-500/30',
+
+      // Empty state styles
+      emptyIcon: isLight ? 'bg-light-200 border-light-300' : 'bg-dark-700 border-dark-600',
+      emptyIconColor: isLight ? 'text-dark-500' : 'text-light-400',
+      emptyTitle: isLight ? 'text-dark-800' : 'text-light-200',
+      emptyText: isLight ? 'text-dark-600' : 'text-light-400',
+
+      // Filter button styles
+      filterButton: cn(
+        'px-4 py-2 border text-sm transition-colors',
+        themeUtils.getButtonRoundednessClass(),
+        themeUtils.getPrimaryColorClass('bg') + '/10',
+        'hover:' + themeUtils.getPrimaryColorClass('bg') + '/20',
+        themeUtils.getPrimaryColorClass('text'),
+        themeUtils.getPrimaryColorClass('border') + '/30'
+      ),
+    };
+  };
+
+  const componentStyles = getComponentStyles();
 
   useEffect(() => {
     if (!store) return;
@@ -104,19 +142,23 @@ export default function StoreProducts({ store }: StoreProductsProps) {
     return (
       <div className="w-full py-8">
         <div className="flex justify-between items-center mb-8">
-          <div className="h-8 bg-dark-700 rounded w-32 animate-pulse"></div>
-          <div className="h-10 bg-dark-700 rounded w-64 animate-pulse"></div>
+          <div className={cn('h-8 rounded w-32 animate-pulse', componentStyles.skeletonBg)}></div>
+          <div className={cn('h-10 rounded w-64 animate-pulse', componentStyles.skeletonBg)}></div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={index}
-              className="bg-dark-750 rounded-xl overflow-hidden border border-dark-600 animate-pulse shadow-lg">
-              <div className="h-48 bg-dark-700"></div>
+              className={cn(
+                'overflow-hidden border animate-pulse shadow-lg',
+                componentStyles.skeletonCard,
+                themeUtils.getComponentRoundednessClass()
+              )}>
+              <div className={cn('h-48', componentStyles.skeletonContent)}></div>
               <div className="p-4 space-y-3">
-                <div className="h-5 bg-dark-700 rounded w-3/4"></div>
-                <div className="h-4 bg-dark-700 rounded w-1/2"></div>
-                <div className="h-6 bg-dark-700 rounded w-1/3"></div>
+                <div className={cn('h-5 rounded w-3/4', componentStyles.skeletonContent)}></div>
+                <div className={cn('h-4 rounded w-1/2', componentStyles.skeletonContent)}></div>
+                <div className={cn('h-6 rounded w-1/3', componentStyles.skeletonContent)}></div>
               </div>
             </div>
           ))}
@@ -129,9 +171,19 @@ export default function StoreProducts({ store }: StoreProductsProps) {
   if (error) {
     return (
       <div className="w-full py-10 flex justify-center">
-        <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-6 py-5 rounded-lg max-w-md shadow-lg">
+        <div
+          className={cn(
+            'px-6 py-5 max-w-md shadow-lg',
+            componentStyles.errorBg,
+            themeUtils.getComponentRoundednessClass()
+          )}>
           <h3 className="font-medium mb-2 flex items-center gap-2">
-            <span className="bg-red-500/20 p-1 rounded">
+            <span
+              className={cn(
+                'p-1',
+                themeUtils.getButtonRoundednessClass(),
+                componentStyles.errorButton
+              )}>
               <X size={18} />
             </span>
             Error Loading Products
@@ -139,7 +191,11 @@ export default function StoreProducts({ store }: StoreProductsProps) {
           <p className="text-sm opacity-90 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="text-sm flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 transition-colors px-4 py-2 rounded-md">
+            className={cn(
+              'text-sm flex items-center gap-2 transition-colors px-4 py-2',
+              componentStyles.errorButton,
+              themeUtils.getButtonRoundednessClass()
+            )}>
             <RefreshCw size={14} />
             Retry
           </button>
@@ -164,19 +220,24 @@ export default function StoreProducts({ store }: StoreProductsProps) {
             initial="hidden"
             animate="visible"
             exit="hidden">
-            <div className="w-16 h-16 rounded-full bg-dark-700 flex items-center justify-center mb-4 border border-dark-600">
-              <ShoppingCart className="h-8 w-8 text-light-400" />
+            <div
+              className={cn(
+                'w-16 h-16 flex items-center justify-center mb-4 border',
+                componentStyles.emptyIcon,
+                themeUtils.getComponentRoundednessClass()
+              )}>
+              <ShoppingCart className={cn('h-8 w-8', componentStyles.emptyIconColor)} />
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-light-200">No products found</h3>
-            <p className="text-light-400 max-w-md mb-6">
+            <h3 className={cn('text-xl font-semibold mb-2', componentStyles.emptyTitle)}>
+              No products found
+            </h3>
+            <p className={cn('max-w-md mb-6', componentStyles.emptyText)}>
               {searchTerm || selectedCategory
                 ? 'Try adjusting your search or filter criteria'
                 : "This store doesn't have any products yet"}
             </p>
             {(searchTerm || selectedCategory || sortOption !== 'default') && (
-              <button
-                onClick={handleClearFilters}
-                className="px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 rounded-lg text-sm transition-colors">
+              <button onClick={handleClearFilters} className={componentStyles.filterButton}>
                 Clear All Filters
               </button>
             )}
