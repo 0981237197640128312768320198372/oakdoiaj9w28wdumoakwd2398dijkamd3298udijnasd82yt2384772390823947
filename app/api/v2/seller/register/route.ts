@@ -30,8 +30,7 @@ export async function POST(req: NextRequest) {
     await newSeller.save();
     const token = jwt.sign(
       { userId: newSeller._id, username: newSeller.username },
-      process.env.JWT_SECRET as string,
-      { expiresIn: '6h' }
+      process.env.JWT_SECRET as string
     );
     const redirectUrl = '/app/seller';
     return NextResponse.json({ message: 'Seller registered successfully', token, redirectUrl });

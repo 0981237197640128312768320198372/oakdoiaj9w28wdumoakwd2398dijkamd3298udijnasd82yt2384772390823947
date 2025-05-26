@@ -44,9 +44,7 @@ export async function POST(req: NextRequest) {
       storeStatistics: storeStatsObj,
     };
     console.log(tokenData);
-    const token = jwt.sign(tokenData, process.env.JWT_SECRET as string, {
-      expiresIn: '6h',
-    });
+    const token = jwt.sign(tokenData, process.env.JWT_SECRET as string);
 
     return NextResponse.json({ token });
   } catch (error) {

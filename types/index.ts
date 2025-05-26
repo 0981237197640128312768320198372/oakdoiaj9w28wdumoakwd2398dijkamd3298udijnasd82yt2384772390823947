@@ -100,3 +100,31 @@ export interface ProductFormData {
 export type FormErrors = {
   [key in keyof ProductFormData]?: string;
 };
+
+export interface ThemeType {
+  sellerId: string;
+  baseTheme: 'light' | 'dark';
+  customizations: {
+    colors: {
+      primary?: string;
+      secondary?: string;
+    };
+    button: {
+      textColor?: string;
+      backgroundColor?: string;
+      roundedness?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+      shadow?: 'none' | 'sm' | 'md' | 'lg';
+      border?: 'none' | 'sm' | 'md' | 'lg';
+      borderColor?: string;
+    };
+    componentStyles: {
+      cardRoundedness?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+      cardShadow?: 'none' | 'sm' | 'md' | 'lg';
+    };
+    ads: {
+      images?: string[];
+      roundedness?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+      shadow?: 'none' | 'sm' | 'md' | 'lg';
+    };
+  };
+}

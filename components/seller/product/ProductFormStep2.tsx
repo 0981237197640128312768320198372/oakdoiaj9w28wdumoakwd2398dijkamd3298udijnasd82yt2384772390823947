@@ -42,7 +42,7 @@ export default function ProductFormStep2({
         const emptyDetail: Record<string, string> = {};
 
         // Initialize with default keys if available, otherwise use default keys
-        const keysToUse = keys.length > 0 ? keys : ['Color', 'Size', 'Material'];
+        const keysToUse = keys.length > 0 ? keys : ['Email', 'Password'];
 
         keysToUse.forEach((key) => {
           emptyDetail[key] = '';

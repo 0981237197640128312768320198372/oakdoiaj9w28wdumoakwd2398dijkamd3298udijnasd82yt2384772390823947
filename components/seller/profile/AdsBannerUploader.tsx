@@ -2,11 +2,11 @@
 
 import type React from 'react';
 import { useState, useRef } from 'react';
-import { Upload, X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { Upload, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { Button2 } from '@/components/ui/button2';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { ResponsiveImagePlaceholder } from '../public/ResponsiveImagePlaceholder';
 
 interface AdsBannerUploaderProps {
   images: string[];
@@ -22,17 +22,14 @@ export function AdsBannerUploader({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [showGuidelines, setShowGuidelines] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const imageUrlInputRef = useRef<HTMLInputElement>(null);
 
   async function uploadImages(files: File[]): Promise<string[]> {
     const filesToUpload = files.slice(0, maxImages - images.length);
-
     if (filesToUpload.length === 0) return [];
 
     setIsUploading(true);
-
     const formData = new FormData();
     filesToUpload.forEach((file) => formData.append('images', file));
 
@@ -42,17 +39,14 @@ export function AdsBannerUploader({
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to upload images');
-      }
-
+      if (!response.ok) throw new Error('Failed to upload images');
       const data = await response.json();
-      setIsUploading(false);
       return data.urls;
     } catch (error) {
       console.error('Error uploading images:', error);
-      setIsUploading(false);
       return [];
+    } finally {
+      setIsUploading(false);
     }
   }
 
@@ -61,149 +55,84 @@ export function AdsBannerUploader({
     setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+  const handleDragLeave = () => setIsDragging(false);
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
 
-    if (images.length >= maxImages) {
-      alert(`Maximum ${maxImages} images allowed`);
-      return;
-    }
+    if (images.length >= maxImages) return;
 
-    const files = e.dataTransfer.files;
-    if (files && files.length > 0) {
-      try {
-        const urls = await uploadImages(Array.from(files));
-        if (urls.length > 0) {
-          onImagesChange([...images, ...urls].slice(0, maxImages));
-        }
-      } catch (err) {
-        console.error('Error uploading images:', err);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      const urls = await uploadImages(files);
+      if (urls.length > 0) {
+        onImagesChange([...images, ...urls].slice(0, maxImages));
       }
-    }
-  };
-
-  const handleBrowseClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
     }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (images.length >= maxImages) return;
+
     const files = e.target.files;
-
-    if (images.length >= maxImages) {
-      alert(`Maximum ${maxImages} images allowed`);
-      return;
-    }
-
     if (files && files.length > 0) {
-      try {
-        const urls = await uploadImages(Array.from(files));
-        if (urls.length > 0) {
-          onImagesChange([...images, ...urls].slice(0, maxImages));
-        }
-        e.target.value = '';
-      } catch (err) {
-        console.error('Error uploading images:', err);
+      const urls = await uploadImages(Array.from(files));
+      if (urls.length > 0) {
+        onImagesChange([...images, ...urls].slice(0, maxImages));
       }
+      e.target.value = '';
     }
   };
 
-  const handleImageUrlAdd = () => {
-    if (images.length >= maxImages) {
-      alert(`Maximum ${maxImages} images allowed`);
-      return;
-    }
-
-    if (imageUrlInputRef.current?.value) {
-      onImagesChange([...images, imageUrlInputRef.current.value].slice(0, maxImages));
-      imageUrlInputRef.current.value = '';
+  const handleAddUrl = () => {
+    if (imageUrl.trim() && images.length < maxImages) {
+      onImagesChange([...images, imageUrl.trim()]);
+      setImageUrl('');
     }
   };
 
   const handleRemoveImage = (index: number) => {
-    const updatedImages = [...images];
-    updatedImages.splice(index, 1);
+    const updatedImages = images.filter((_, i) => i !== index);
     onImagesChange(updatedImages);
-
-    // Adjust current index if needed
     if (currentImageIndex >= updatedImages.length && currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
     }
   };
 
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
-  };
+  const canAddMore = images.length < maxImages;
 
   return (
     <div className="space-y-3">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="text-xs text-light-400">
+        <span className="text-sm text-gray-400">
           Banner Images ({images.length}/{maxImages})
         </span>
-        <button
-          type="button"
-          onClick={() => setShowGuidelines(!showGuidelines)}
-          className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors">
-          <Info size={12} />
-          Responsive Guidelines
-        </button>
       </div>
 
-      {showGuidelines && (
-        <div className="mb-4">
-          <ResponsiveImagePlaceholder />
-        </div>
-      )}
-
-      {images.length < maxImages && (
-        <>
+      {/* Upload Area - Only show if can add more */}
+      {canAddMore && (
+        <div className="space-y-2">
+          {/* Drag & Drop Area */}
           <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onClick={handleBrowseClick}
+            onClick={() => fileInputRef.current?.click()}
             className={cn(
-              'relative flex flex-col justify-center items-center px-4 py-6 border-2 border-dashed',
-              'rounded-lg transition-all cursor-pointer duration-300',
-              // Responsive aspect ratios for better mobile experience
-              'aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]',
+              'relative flex flex-col items-center justify-center h-24 border border-dashed rounded-lg cursor-pointer transition-colors',
               isDragging
-                ? 'border-primary bg-primary/10 scale-[1.01]'
-                : 'border-primary/20 hover:border-primary/50 bg-dark-800/50 hover:bg-primary/5'
+                ? 'border-blue-500 bg-blue-500/5'
+                : 'border-gray-600 hover:border-gray-500 hover:bg-gray-800/50'
             )}>
-            <div className="space-y-2 text-center">
-              <Upload
-                className={cn(
-                  'mx-auto h-8 w-8 transition-all duration-300',
-                  isDragging ? 'text-primary animate-bounce' : 'text-primary/70'
-                )}
-              />
-              <div className="flex flex-col text-sm text-light-400">
-                <span className="font-medium text-primary hover:text-primary/80 transition-colors">
-                  Upload banner images
-                </span>
-                <p className="text-light-500">or drag and drop</p>
-              </div>
-              <div className="text-xs text-light-600 space-y-1">
-                <p>
-                  <strong>Responsive Design:</strong>
+            <div className="flex flex-col items-center gap-1">
+              <Upload className={cn('h-4 w-4', isDragging ? 'text-blue-500' : 'text-gray-400')} />
+              <div className="text-center">
+                <p className="text-xs text-gray-300">
+                  <span className="font-medium">Click to upload</span> or drag and drop
                 </p>
-                <p>Mobile: 4:3 • Tablet: 3:2 • Desktop: 16:9</p>
-                <p>
-                  <strong>Optimal size:</strong> 1920×1440px
-                </p>
-                <p>PNG, JPG, GIF up to 10MB</p>
+                <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
               </div>
             </div>
             <input
@@ -216,112 +145,96 @@ export function AdsBannerUploader({
             />
           </div>
 
-          <div className="flex items-center space-x-1.5">
-            <input
-              ref={imageUrlInputRef}
-              type="text"
-              placeholder="Or paste image URL here"
-              className="flex-1 px-3 py-1.5 rounded-lg border border-dark-500 bg-dark-700/50 text-light-300 
-                       focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all duration-200
-                       text-xs"
+          {/* URL Input */}
+          <div className="flex gap-2">
+            <Input
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="Or paste image URL"
+              className="h-8 text-xs bg-gray-900 border-gray-700 focus:border-gray-600"
+              onKeyDown={(e) => e.key === 'Enter' && handleAddUrl()}
             />
             <Button2
-              variant="outline"
+              onClick={handleAddUrl}
+              disabled={!imageUrl.trim()}
               size="sm"
-              onClick={handleImageUrlAdd}
-              className="text-xs border-primary/50 text-primary hover:bg-primary/10">
-              Add URL
+              variant="outline"
+              className="h-8 px-3 text-xs border-gray-700 hover:bg-gray-800">
+              Add
             </Button2>
           </div>
-        </>
+        </div>
       )}
 
+      {/* Image Preview */}
       {images.length > 0 && (
-        <div className="space-y-3">
-          <div
-            className="relative group overflow-hidden rounded-lg border border-dark-600 bg-dark-700/70
-                        transition-all duration-200 hover:shadow-lg hover:shadow-dark-900/50
-                        aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]">
-            <div className="w-full h-full overflow-hidden relative">
+        <div className="space-y-2">
+          {/* Main Preview */}
+          <div className="relative group">
+            <div className="relative h-32 w-full rounded-lg overflow-hidden bg-gray-900 border border-gray-700">
               <Image
-                fill
                 src={images[currentImageIndex] || '/placeholder.svg'}
-                alt={`Ads Banner ${currentImageIndex + 1}`}
+                alt={`Banner ${currentImageIndex + 1}`}
+                fill
                 className="object-cover"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <div
-                className="absolute inset-0 bg-gradient-to-t from-dark-900/70 to-transparent opacity-0 
-                              group-hover:opacity-100 transition-opacity duration-200"
-              />
+
+              {/* Navigation */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={() =>
+                      setCurrentImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1))
+                    }
+                    className="absolute left-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80">
+                    <ChevronLeft className="h-3 w-3 text-white" />
+                  </button>
+                  <button
+                    onClick={() =>
+                      setCurrentImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0))
+                    }
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 rounded-full bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80">
+                    <ChevronRight className="h-3 w-3 text-white" />
+                  </button>
+                </>
+              )}
+
+              {/* Remove Button */}
+              <button
+                onClick={() => handleRemoveImage(currentImageIndex)}
+                className="absolute top-2 right-2 h-6 w-6 rounded-full bg-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600">
+                <X className="h-3 w-3 text-white" />
+              </button>
+
+              {/* Counter */}
+              {images.length > 1 && (
+                <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-black/60 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                  {currentImageIndex + 1} / {images.length}
+                </div>
+              )}
             </div>
-
-            {/* Navigation arrows */}
-            {images.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={handlePrevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-dark-800/80 text-white rounded-full p-1
-                           opacity-0 group-hover:opacity-100 transition-all duration-200 
-                           hover:bg-dark-700 hover:scale-110 transform-gpu"
-                  aria-label="Previous image">
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-dark-800/80 text-white rounded-full p-1
-                           opacity-0 group-hover:opacity-100 transition-all duration-200 
-                           hover:bg-dark-700 hover:scale-110 transform-gpu"
-                  aria-label="Next image">
-                  <ChevronRight size={16} />
-                </button>
-              </>
-            )}
-
-            {/* Image counter */}
-            {images.length > 1 && (
-              <div
-                className="absolute bottom-2 left-2 bg-dark-800/80 text-white rounded-md px-2 py-1
-                           opacity-0 group-hover:opacity-100 transition-all duration-200 text-xs">
-                {currentImageIndex + 1} / {images.length}
-              </div>
-            )}
-
-            {/* Remove button */}
-            <button
-              type="button"
-              onClick={() => handleRemoveImage(currentImageIndex)}
-              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1
-                         opacity-0 group-hover:opacity-100 transition-all duration-200 
-                         hover:bg-red-600 hover:scale-110 transform-gpu"
-              aria-label="Remove image">
-              <X size={16} />
-            </button>
           </div>
 
-          {/* Thumbnail strip */}
+          {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-1 overflow-x-auto pb-1">
               {images.map((url, index) => (
                 <button
                   key={index}
-                  type="button"
                   onClick={() => setCurrentImageIndex(index)}
                   className={cn(
-                    'relative flex-shrink-0 w-20 h-15 rounded-md overflow-hidden border-2 transition-all',
-                    'aspect-[4/3]',
+                    'relative flex-shrink-0 h-12 w-16 rounded border-2 overflow-hidden transition-colors',
                     currentImageIndex === index
-                      ? 'border-primary'
-                      : 'border-dark-600 hover:border-primary/50'
+                      ? 'border-blue-500'
+                      : 'border-gray-600 hover:border-gray-500'
                   )}>
                   <Image
-                    fill
                     src={url || '/placeholder.svg'}
                     alt={`Thumbnail ${index + 1}`}
+                    fill
                     className="object-cover"
-                    sizes="80px"
+                    sizes="64px"
                   />
                 </button>
               ))}
@@ -330,8 +243,12 @@ export function AdsBannerUploader({
         </div>
       )}
 
+      {/* Upload Status */}
       {isUploading && (
-        <div className="mt-2 text-xs text-primary animate-pulse">Uploading images...</div>
+        <div className="flex items-center gap-2 text-xs text-blue-400">
+          <div className="h-1 w-1 rounded-full bg-blue-400 animate-pulse" />
+          Uploading images...
+        </div>
       )}
     </div>
   );

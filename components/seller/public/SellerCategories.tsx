@@ -17,38 +17,33 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
-  // Toggle category selection
   const handleCategoryClick = (categoryId: string) => {
     setSelectedCategory((prevCategory) => (prevCategory === categoryId ? null : categoryId));
   };
 
-  // Update filtered products when category changes
   useEffect(() => {
     if (selectedCategory) {
       setFilteredProducts(products.filter((product) => product.categoryId === selectedCategory));
     } else {
-      setFilteredProducts([]); // Show no products when no category is selected
+      setFilteredProducts([]);
     }
   }, [selectedCategory, products]);
   return (
     <div className="w-full space-y-6">
-      {/* Category Filter Section */}
       <div className="flex flex-wrap gap-3 mb-5">
         {categories.map((category) => (
           <motion.button
             key={category._id}
             onClick={() => handleCategoryClick(category._id)}
-            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={`
-              p-3 rounded-full transition-all duration-300
-              border border-dark-500 backdrop-blur-sm
+              px-3
+              border border-dark-500 backdrop-blur-sm rounded-md font-aktivGroteskRegular
               ${
                 selectedCategory === category._id
-                  ? 'bg-primary/20 border-primary shadow-lg shadow-primary/10'
+                  ? 'bg-primary/10 border-primary/40 shadow-lg shadow-primary/10'
                   : 'bg-dark-700/80 hover:bg-dark-600'
-              }
-              aspect-square flex items-center justify-center min-w-[50px] min-h-[50px]
+              }flex items-center justify-center min-h-[50px]
             `}
             aria-label={category.name}>
             {category.logoUrl ? (
@@ -57,16 +52,15 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
                 alt={category.name}
                 width={30}
                 height={30}
-                className="w-6 h-6 object-contain"
+                className="w-auto h-6 object-contain"
               />
             ) : (
-              <Tag className="w-5 h-5 text-light-200" />
+              <Tag className="w-auto h-5 text-light-200" />
             )}
           </motion.button>
         ))}
       </div>
 
-      {/* Products Grid - Only show when a category is selected */}
       <AnimatePresence>
         {selectedCategory && (
           <motion.div

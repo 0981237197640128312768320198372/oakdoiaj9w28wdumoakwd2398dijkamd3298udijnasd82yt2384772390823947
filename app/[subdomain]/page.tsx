@@ -33,9 +33,8 @@ export async function generateMetadata(props: StorePageProps) {
     });
   } catch (error) {
     console.error('Error generating metadata:', error);
-    // Return basic metadata as fallback
     return generateMetadataUtil({
-      title: 'Store',
+      title: 'Store Name',
       description: 'Welcome to our store',
       url: `https://${subdomain}.dokmai.store/`,
     });
@@ -51,7 +50,6 @@ export default async function StorePage(props: StorePageProps) {
       notFound();
     }
 
-    // Mock products and categories for development if API is unavailable
     let products = [];
     let categories = [];
 
@@ -86,7 +84,7 @@ export default async function StorePage(props: StorePageProps) {
       }
     } catch (error) {
       console.error('Error fetching products or categories:', error);
-      // Use mock data for development
+
       products = getMockProducts();
       categories = getMockCategories();
     }

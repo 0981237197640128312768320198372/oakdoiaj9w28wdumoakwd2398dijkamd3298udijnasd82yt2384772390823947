@@ -22,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script async src="https://cdn.tailwindcss.com"></script>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-X6ZTVB6G8L"></script>
         <script
           dangerouslySetInnerHTML={{

@@ -6,11 +6,11 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StoreNavbar } from './StoreNavbar';
-import Image from 'next/image';
 import PublicStoreProfile from './PublicStoreProfile';
 import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
 import StoreFooter from './StoreFooter';
+import { cn } from '@/lib/utils';
 
 interface PublicStoreLayoutProps {
   theme: any;
@@ -47,19 +47,22 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         return <HomeStorePage products={products} categories={categories} theme={theme} />;
     }
   };
-
+  console.log('AOWKOAKWOAKOWAKOAKOWK');
+  const baseTheme = theme?.baseTheme;
+  const getBaseTheme = () => {
+    return baseTheme === 'light' ? 'bg-light-100 text-dark-800' : 'bg-dark-800 text-light-100';
+  };
   return (
-    <div
-      className="min-h-screen w-full"
-      style={{
-        backgroundColor: theme?.secondaryColor || '#0F0F0F',
-        color: theme?.textColor || '#ECECEC',
-        fontFamily: theme?.fontFamily || 'AktivGrotesk-Regular',
-      }}>
-      <StoreNavbar seller={seller} activePage={activePage} onNavigate={setActivePage} />
+    <div className={cn('min-h-screen w-full', getBaseTheme())}>
+      <StoreNavbar
+        theme={theme}
+        seller={seller}
+        activePage={activePage}
+        onNavigate={setActivePage}
+      />
 
       <motion.div
-        className="flex flex-col items-center min-h-screen justify-start w-full pb-20 pt-28 lg:pt-32 relative z-10"
+        className="flex flex-col items-center min-h-screen justify-start w-full py-20 lg:pt-32 relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}>

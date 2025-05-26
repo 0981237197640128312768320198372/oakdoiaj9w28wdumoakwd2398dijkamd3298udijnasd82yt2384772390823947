@@ -76,17 +76,16 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
   };
   return (
     <footer
-      className="w-full py-8 mt-16 mb-32 px-5 xl:px-0"
+      className="w-full py-8 pt-16 pb-36 px-5 xl:px-0"
       style={{
         backgroundColor: secondaryColor,
         color: textColor,
-        fontFamily: theme?.fontFamily || 'AktivGrotesk-Regular',
       }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="max-w-screen-lg mx-auto">
+        className="max-w-screen-lg mx-auto font-aktivGroteskRegular">
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div className="bg-dark-700 border-[1px] border-dark-500 p-4 rounded-2xl flex flex-col items-start gap-5">
@@ -126,7 +125,6 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   'Welcome to our store. We offer high-quality products with excellent customer service.'}
               </p>
             </div>
-
             <div className="bg-dark-700 border-[1px] border-dark-500 p-5 rounded-2xl hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
               <button
                 onClick={handleSearch}
@@ -151,9 +149,11 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   </Link>
                 ))}
               </div>
+              <p className="items-center text-light-500 text-xs font-light">
+                © {currentYear} Dokmai Store
+              </p>
             </div>
           </div>
-
           <div className="w-full bg-dark-700 border-[1px] border-dark-500 flex gap-4 lg:gap-0 justify-between px-4 py-3 rounded-full items-center">
             <div className="flex flex-col text-start  px-3">
               <h4 className="text-xs md:text-lg font-bold text-light-100">

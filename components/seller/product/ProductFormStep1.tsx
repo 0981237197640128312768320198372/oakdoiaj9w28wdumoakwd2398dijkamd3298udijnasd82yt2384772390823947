@@ -190,13 +190,13 @@ export default function ProductFormStep1({
                 {selectedCategory ? (
                   <div className="flex items-center gap-2">
                     {selectedCategory.logoUrl ? (
-                      <div className="relative w-6 h-6 overflow-hidden rounded-md flex-shrink-0">
+                      <div className="relative flex items-center overflow-hidden flex-shrink-0">
                         <Image
                           src={selectedCategory.logoUrl || '/placeholder.svg'}
                           alt={selectedCategory.name}
                           width={24}
                           height={24}
-                          className="object-cover"
+                          className="w-7 h-auto"
                         />
                       </div>
                     ) : (
@@ -217,7 +217,6 @@ export default function ProductFormStep1({
                 />
               </button>
 
-              {/* Dropdown menu */}
               {isDropdownOpen && (
                 <div className="absolute z-10 w-full mt-2 bg-dark-700 border border-dark-600 shadow-lg overflow-hidden">
                   <ul
@@ -239,12 +238,13 @@ export default function ProductFormStep1({
                               : 'text-light-200 hover:bg-dark-700'
                           }`}>
                         {category.logoUrl ? (
-                          <div className="relative w-auto h-12  flex items-center overflow-hidden flex-shrink-0">
+                          <div className="relative w-auto h-12 flex items-center overflow-hidden flex-shrink-0">
                             <Image
                               src={category.logoUrl || '/placeholder.svg'}
                               alt={category.name}
                               width={50}
                               height={50}
+                              className="w-16"
                             />
                           </div>
                         ) : (
