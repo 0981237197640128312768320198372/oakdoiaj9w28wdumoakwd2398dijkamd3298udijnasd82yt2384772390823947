@@ -44,7 +44,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             'w-full mt-5 gap-4 border-[1px] flex p-2 max-w-screen-lg justify-between duration-1000 items-center backdrop-blur-sm',
             navbarStyles.background,
             themeUtils.getComponentShadowClass(),
-            themeUtils.getComponentRoundednessClass()
+            themeUtils.getButtonRoundednessClass()
           )}>
           <div
             className={cn(
@@ -151,7 +151,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             themeUtils.getComponentShadowClass()
           )}>
           <NavButton
-            className="!p-3"
+            className="!p-2"
             icon={<Home size={24} />}
             label="Home"
             isActive={activePage === 'home'}
@@ -159,7 +159,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             theme={theme}
           />
           <NavButton
-            className="!p-3"
+            className="!p-2"
             icon={<Info size={24} />}
             label="Profile"
             isActive={activePage === 'profile'}
@@ -167,7 +167,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             theme={theme}
           />
           <NavButton
-            className="!p-3"
+            className="!p-2"
             icon={<Package size={24} />}
             label="Products"
             isActive={activePage === 'products'}
@@ -182,6 +182,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
           storeUsername={seller.username}
+          theme={theme}
         />
       )}
     </>
@@ -208,18 +209,18 @@ const NavButton: React.FC<NavButtonProps> = ({
   const themeUtils = useThemeUtils(theme);
 
   const getActiveButtonClass = () => {
-    return themeUtils.getButtonClass('primary');
+    return themeUtils.getPrimaryColorClass('bg');
   };
 
   const getInactiveButtonClass = () => {
-    return themeUtils.getButtonClass('secondary');
+    return themeUtils.getCardClass();
   };
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2 px-3 py-1.5 transition-all duration-200 border-[1px]',
+        'flex items-center gap-2 px-2 py-1 transition-all duration-200 border-[1px]',
         themeUtils.getButtonRoundednessClass(),
         isActive ? getActiveButtonClass() : getInactiveButtonClass(),
         className

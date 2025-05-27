@@ -222,60 +222,6 @@ export default function ThemeCustomizer({
     setHasUnsavedChanges(false);
   };
 
-  const getShadowClass = (shadow: string) => {
-    switch (shadow) {
-      case 'none':
-        return 'shadow-none';
-      case 'sm':
-        return 'shadow-sm';
-      case 'md':
-        return 'shadow-md';
-      case 'lg':
-        return 'shadow-lg';
-      default:
-        return 'shadow-none';
-    }
-  };
-
-  const getRoundednessClass = (roundedness: string) => {
-    switch (roundedness) {
-      case 'none':
-        return 'rounded-none';
-      case 'sm':
-        return 'rounded-sm';
-      case 'md':
-        return 'rounded-md';
-      case 'lg':
-        return 'rounded-lg';
-      case 'full':
-        return 'rounded-full';
-      default:
-        return 'rounded-md';
-    }
-  };
-
-  const getBorderClass = (border: string) => {
-    switch (border) {
-      case 'none':
-        return 'border-0';
-      case 'sm':
-        return 'border';
-      case 'md':
-        return 'border-2';
-      case 'lg':
-        return 'border-4';
-      default:
-        return 'border-0';
-    }
-  };
-
-  const buildColorClass = (color: string, type: 'bg' | 'text' | 'border') => {
-    if (color === 'primary') {
-      return type === 'bg' ? 'bg-primary' : type === 'text' ? 'text-primary' : 'border-primary';
-    }
-    return `${type}-${color}`;
-  };
-
   if (!isInitialized || !currentTheme) {
     return (
       <Card className="bg-dark-800 border-dark-700">
@@ -291,7 +237,6 @@ export default function ThemeCustomizer({
 
   return (
     <div className="space-y-6">
-      {/* Unsaved Changes Banner */}
       {hasUnsavedChanges && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3">
           <div className="flex items-center gap-2 text-amber-400">
@@ -490,6 +435,8 @@ export default function ThemeCustomizer({
                         <SelectItem value="sm">Small</SelectItem>
                         <SelectItem value="md">Medium</SelectItem>
                         <SelectItem value="lg">Large</SelectItem>
+                        <SelectItem value="xl">X Large</SelectItem>
+                        <SelectItem value="3xl">XXX Large</SelectItem>
                         <SelectItem value="full">Full</SelectItem>
                       </SelectContent>
                     </Select>
@@ -587,7 +534,8 @@ export default function ThemeCustomizer({
                       <SelectItem value="sm">Small</SelectItem>
                       <SelectItem value="md">Medium</SelectItem>
                       <SelectItem value="lg">Large</SelectItem>
-                      <SelectItem value="full">Full</SelectItem>
+                      <SelectItem value="xl">X Large</SelectItem>
+                      <SelectItem value="3xl">XXX Large</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import SellerCategories from './SellerCategories';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
 interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
@@ -13,6 +15,7 @@ interface HomeStorePageProps {
 }
 
 const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories, theme }) => {
+  const themeUtils = useThemeUtils(theme);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -21,7 +24,12 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories, the
       transition={{ duration: 0.4 }}
       className="w-full space-y-8 max-w-screen-lg">
       <BannerAdsCarousel theme={theme} />
-      <section className="bg-dark-750 border border-dark-600 rounded-xl p-6 shadow-lg mt-8">
+      <section
+        className={cn(
+          'rounded-xl p-5 mt-8',
+          themeUtils.getCardClass(),
+          themeUtils.getTextColors()
+        )}>
         <SellerCategories products={products} categories={categories} />
       </section>
     </motion.div>

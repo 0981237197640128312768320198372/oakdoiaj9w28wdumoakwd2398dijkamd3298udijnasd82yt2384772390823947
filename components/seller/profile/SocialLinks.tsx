@@ -73,22 +73,19 @@ function SocialLink({ icon, name, value, url, color }: SocialLinkProps) {
     WhatsApp: 'green',
   };
 
-  // Define color styles for gradient and border hover effects, mirroring StatItem
   const colorStyles = {
-    blue: 'hover:border-blue-400/50 hover:via-blue-400/20 via-blue-400/5',
-    pink: 'hover:border-pink-400/50 hover:via-pink-400/20 via-pink-400/5',
-    green: 'hover:border-green-400/50 hover:via-green-400/20 via-green-400/5',
-    gray: 'hover:border-gray-400/50 hover:via-gray-400/20 via-gray-400/5',
+    blue: 'hover:border-blue-500 border-blue-500/30 hover:via-blue-500/20 via-blue-500/5',
+    pink: 'hover:border-pink-500 border-pink-500/30 hover:via-pink-500/20 via-pink-500/5',
+    green: 'hover:border-green-500 border-green-500/30 hover:via-green-500/20 via-green-500/5',
+    gray: 'hover:border-gray-500 border-gray-500/30 hover:via-gray-500/20 via-gray-500/5',
   };
 
-  // Determine the gradient color based on the social media name
   const gradientColor = gradientColors[name as keyof typeof gradientColors] || 'gray';
 
-  // Define the content with styles matching StatItem
   const content = (
     <div
       className={cn(
-        'rounded-md border-[0.5px] border-transparent p-2',
+        'rounded-md border-[1px] p-2',
         'bg-gradient-to-tr from-transparent to-transparent from-5% via-55% to-100%',
         'transition-all duration-500',
         colorStyles[gradientColor as keyof typeof colorStyles]

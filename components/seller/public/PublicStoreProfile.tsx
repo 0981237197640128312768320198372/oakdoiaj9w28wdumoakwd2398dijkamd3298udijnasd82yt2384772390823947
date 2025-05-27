@@ -10,14 +10,12 @@ import { CalendarDays, Info, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { PublicInfoSection } from './PublicInfoSection';
-import { StoreStats } from '../profile/StoreStats';
 import { SocialLinks } from '../profile/SocialLinks';
 import { useThemeUtils } from '@/lib/theme-utils';
-import type { ThemeType } from '@/types';
 
 import type { Product, Category } from '@/types';
-import SellerCategories from './SellerCategories';
 import { PublicStoreHeader } from './PublicStoreHeader';
+import { PublicStoreStats } from './PublicStoreStats';
 
 interface PublicStoreProfileProps {
   seller: any;
@@ -34,7 +32,6 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   const getProfileStyles = () => {
@@ -78,28 +75,35 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
       return dateString;
     }
   };
-
+  console.log('PUBLIC STORE PROFILE', theme);
   return (
     <div
       className={cn(
         'w-full max-w-screen-lg transition-all duration-500 transform',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
+        themeUtils.getTextColors()
       )}>
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden mt-10 lg:mt-0 px-5">
         <PublicStoreHeader seller={seller} theme={theme} />
         <CardContent className="p-5 lg:px-0 ">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 space-y-5">
-              <PublicInfoSection title="Store Information" icon={<Info className="h-5 w-5" />}>
+              <PublicInfoSection
+                title="Store Information"
+                theme={theme}
+                icon={<Info className="w-4 h-4" />}>
                 <p
                   className={cn(
-                    'text-sm leading-relaxed p-3',
-                    profileStyles.PublicInfoSection,
-                    themeUtils.getComponentRoundednessClass()
+                    'text-sm leading-relaxed p-3 rounded-md',
+                    profileStyles.PublicInfoSection
                   )}>
                   {seller.store.description || 'No description available'}
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                <div
+                  className={cn(
+                    'grid grid-cols-1 md:grid-cols-2 gap-4 mt-5',
+                    themeUtils.getTextColors()
+                  )}>
                   <div className="flex items-center gap-2">
                     <CalendarDays className={cn('h-4 w-4', profileStyles.secondaryText)} />
                     <span className={cn('text-sm', profileStyles.secondaryText)}>
@@ -120,14 +124,14 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
                   </div>
                 </div>
               </PublicInfoSection>
-              <SellerCategories products={products} categories={categories} theme={theme} />
             </div>
 
             <div className="space-y-6">
-              <StoreStats seller={seller} />
+              <PublicStoreStats theme={theme} seller={seller} />
               <PublicInfoSection
+                theme={theme}
                 title="Contact Information"
-                icon={<MessageCircle className="h-5 w-5" />}>
+                icon={<MessageCircle className="w-4 h-4" />}>
                 <SocialLinks contact={seller.contact} />
               </PublicInfoSection>
             </div>

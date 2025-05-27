@@ -121,16 +121,18 @@ export function AdsBannerUploader({
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             className={cn(
-              'relative flex flex-col items-center justify-center h-24 border border-dashed rounded-lg cursor-pointer transition-colors',
-              isDragging ? 'border-primary bg-primary/5' : 'border-dark-700 hover:border-dark-400'
+              'relative flex flex-col bg-primary/5 items-center justify-center h-24 border border-dashed rounded-lg cursor-pointer transition-colors',
+              isDragging
+                ? 'border-primary bg-primary/5'
+                : 'border-primary/60 hover:border-primary/80'
             )}>
             <div className="flex flex-col items-center gap-1">
-              <Upload className={cn('h-4 w-4', isDragging ? 'text-blue-500' : 'text-dark-400')} />
+              <Upload className={cn('h-4 w-4', isDragging ? 'text-primary' : 'text-light-100')} />
               <div className="text-center">
-                <p className="text-xs text-dark-300">
+                <p className="text-xs text-light-200">
                   <span className="font-medium">Click to upload</span> or drag and drop
                 </p>
-                <p className="text-xs text-dark-500">PNG, JPG up to 10MB</p>
+                <p className="text-xs text-light-200">PNG, JPG up to 10MB</p>
               </div>
             </div>
             <input
@@ -143,13 +145,12 @@ export function AdsBannerUploader({
             />
           </div>
 
-          {/* URL Input */}
           <div className="flex gap-2">
             <Input
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               placeholder="Or paste image URL"
-              className="h-8 text-xs bg-dark-700 border-dark-600 focus:border-dark-400"
+              className="h-8 text-xs bg-dark-700 border-primary/40 focus:border-primary/80"
               onKeyDown={(e) => e.key === 'Enter' && handleAddUrl()}
             />
             <Button2
@@ -157,7 +158,7 @@ export function AdsBannerUploader({
               disabled={!imageUrl.trim()}
               size="sm"
               variant="outline"
-              className="h-8 px-3 text-xs border-dark-600 hover:bg-dark-500">
+              className="h-8 px-3 text-xs border-[1px] border-primary hover:bg-primary">
               Add
             </Button2>
           </div>
@@ -222,9 +223,9 @@ export function AdsBannerUploader({
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
                   className={cn(
-                    'relative flex-shrink-0 h-12 w-16 rounded border-2 overflow-hidden transition-colors',
+                    'relative flex-shrink-0 h-12 w-16 rounded border-[1px] overflow-hidden transition-colors',
                     currentImageIndex === index
-                      ? 'border-primary'
+                      ? 'border-primary/40'
                       : 'border-dark-600 hover:border-dark-500'
                   )}>
                   <Image

@@ -48,7 +48,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
       // Filter button styles
       filterButton: cn(
         'px-4 py-2 border text-sm transition-colors',
-        themeUtils.getButtonRoundednessClass(),
+        // themeUtils.getButtonRoundednessClass(),
         themeUtils.getPrimaryColorClass('bg') + '/10',
         'hover:' + themeUtils.getPrimaryColorClass('bg') + '/20',
         themeUtils.getPrimaryColorClass('text'),
@@ -150,9 +150,8 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
             <div
               key={index}
               className={cn(
-                'overflow-hidden border animate-pulse shadow-lg',
-                componentStyles.skeletonCard,
-                themeUtils.getComponentRoundednessClass()
+                'overflow-hidden border animate-pulse shadow-lg rounded-lg',
+                componentStyles.skeletonCard
               )}>
               <div className={cn('h-48', componentStyles.skeletonContent)}></div>
               <div className="p-4 space-y-3">
@@ -167,23 +166,12 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="w-full py-10 flex justify-center">
-        <div
-          className={cn(
-            'px-6 py-5 max-w-md shadow-lg',
-            componentStyles.errorBg,
-            themeUtils.getComponentRoundednessClass()
-          )}>
+        <div className={cn('px-6 py-5 max-w-md shadow-lg', componentStyles.errorBg)}>
           <h3 className="font-medium mb-2 flex items-center gap-2">
-            <span
-              className={cn(
-                'p-1',
-                themeUtils.getButtonRoundednessClass(),
-                componentStyles.errorButton
-              )}>
+            <span className={cn('p-1', componentStyles.errorButton)}>
               <X size={18} />
             </span>
             Error Loading Products
@@ -193,8 +181,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
             onClick={() => window.location.reload()}
             className={cn(
               'text-sm flex items-center gap-2 transition-colors px-4 py-2',
-              componentStyles.errorButton,
-              themeUtils.getButtonRoundednessClass()
+              componentStyles.errorButton
             )}>
             <RefreshCw size={14} />
             Retry
@@ -206,16 +193,15 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
 
   return (
     <motion.div
-      className="w-full py-8"
+      className="w-full py-8 "
       variants={containerVariants}
       initial="hidden"
       animate="visible">
-      {/* Products grid or empty state */}
       <AnimatePresence mode="wait">
         {filteredProducts.length === 0 ? (
           <motion.div
             key="empty"
-            className="flex flex-col items-center justify-center py-16 text-center"
+            className="flex flex-col items-center justify-center py-16 text-center w-full"
             variants={itemVariants}
             initial="hidden"
             animate="visible"
@@ -223,8 +209,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
             <div
               className={cn(
                 'w-16 h-16 flex items-center justify-center mb-4 border',
-                componentStyles.emptyIcon,
-                themeUtils.getComponentRoundednessClass()
+                componentStyles.emptyIcon
               )}>
               <ShoppingCart className={cn('h-8 w-8', componentStyles.emptyIconColor)} />
             </div>
@@ -245,7 +230,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
         ) : (
           <motion.div
             key="grid"
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4  gap-5"
             variants={containerVariants}
             initial="hidden"
             animate="visible"

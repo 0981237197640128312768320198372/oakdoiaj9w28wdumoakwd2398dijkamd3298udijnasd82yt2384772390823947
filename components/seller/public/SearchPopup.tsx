@@ -32,7 +32,6 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   const getPopupStyles = () => {

@@ -21,51 +21,54 @@ export function PublicInfoSection({
   className,
   theme,
 }: PublicInfoSectionProps) {
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
-  console.log(theme);
+
   const getSectionStyles = () => {
     const isLight = themeUtils.baseTheme === 'light';
     return {
-      // Main container styles
       container: isLight
         ? 'bg-light-100 border-light-300 hover:border-primary/40'
         : 'bg-dark-700 border-dark-500 hover:border-primary/40',
 
-      // Icon container styles
       iconContainer: isLight
         ? 'bg-light-200 border-transparent group-hover:border-primary/70'
         : 'bg-dark-600 border-transparent group-hover:border-primary/70',
 
-      // Text styles
       title: isLight ? 'text-dark-800' : 'text-white',
 
-      // Shadow styles
       shadow: 'hover:shadow-sm',
     };
   };
 
   const sectionStyles = getSectionStyles();
 
+  console.log('PUBLIC INFO SECTION', theme);
   return (
     <div
       className={cn(
-        'group p-4 transition-all duration-300 border-[1px]',
+        'group p-4 transition-all duration-300 border-[1px] ',
+        themeUtils.getTextColors(),
         themeUtils.getCardClass(),
+        themeUtils.getComponentRoundednessClass(),
         className
       )}>
-      <div className="flex items-center gap-2 mb-5">
+      <div className={cn('flex items-center gap-2 text-xs pb-3 mb-3')}>
         {icon && (
           <div
             className={cn(
-              'transition-colors duration-300 border-[1px] w-fit p-2',
-              themeUtils.getButtonRoundednessClass(),
-              themeUtils.getTextColors()
+              'transition-colors duration-300 text-xs border-[1px] p-1',
+              themeUtils.getTextColors(),
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass()
             )}>
             {icon}
           </div>
         )}
-        <h3 className={cn('tracking-widest font-aktivGroteskBlack', sectionStyles.title)}>
+        <h3
+          className={cn(
+            'tracking-widest  text-xs font-aktivGroteskBlack select-none',
+            sectionStyles.title
+          )}>
           {title}
         </h3>
       </div>

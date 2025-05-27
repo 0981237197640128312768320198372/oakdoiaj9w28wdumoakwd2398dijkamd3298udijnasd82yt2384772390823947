@@ -50,7 +50,7 @@ const themeSchema = new Schema<ITheme>({
       backgroundColor: { type: String, default: 'bg-primary' },
       roundedness: {
         type: String,
-        enum: ['none', 'sm', 'md', 'lg', 'full'],
+        enum: ['none', 'sm', 'md', 'lg', 'xl', '3xl', 'full'],
         default: 'full',
       },
       shadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
@@ -60,7 +60,7 @@ const themeSchema = new Schema<ITheme>({
     componentStyles: {
       cardRoundedness: {
         type: String,
-        enum: ['none', 'sm', 'md', 'lg', 'full'],
+        enum: ['none', 'sm', 'md', 'lg'],
         default: 'lg',
       },
       cardShadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },
@@ -69,7 +69,7 @@ const themeSchema = new Schema<ITheme>({
       images: { type: [String], default: [] },
       roundedness: {
         type: String,
-        enum: ['none', 'sm', 'md', 'lg', 'full'],
+        enum: ['none', 'sm', 'md', 'lg', , 'xl', '3xl'],
         default: 'lg',
       },
       shadow: { type: String, enum: ['none', 'sm', 'md', 'lg'], default: 'sm' },

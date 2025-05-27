@@ -21,7 +21,6 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   const getCategoryStyles = () => {

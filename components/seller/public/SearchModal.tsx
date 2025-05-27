@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { FiDelete } from 'react-icons/fi';
 
 interface SearchResult {
   type: 'product' | 'seller';
@@ -38,7 +39,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
   const inputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   const getModalStyles = () => {
@@ -46,9 +46,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     return {
       overlay: 'bg-dark-800/80 backdrop-blur-sm',
       modal: isLight ? 'bg-light-100 border-light-300' : 'bg-dark-700 border-dark-500',
-      input: isLight
-        ? 'bg-light-100 text-dark-800 placeholder-dark-500 border-light-300'
-        : 'bg-transparent text-light-100 placeholder-light-500 border-dark-500',
       text: isLight ? 'text-dark-800' : 'text-light-100',
       secondaryText: isLight ? 'text-dark-600' : 'text-light-400',
       hoverBg: isLight ? 'hover:bg-light-200' : 'hover:bg-dark-600',
@@ -58,7 +55,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
 
   const modalStyles = getModalStyles();
 
-  // Focus input when modal opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
       setTimeout(() => {
@@ -67,7 +63,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     }
   }, [isOpen]);
 
-  // Handle click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -84,7 +79,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     };
   }, [isOpen, onClose]);
 
-  // Handle escape key to close
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -101,7 +95,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     };
   }, [isOpen, onClose]);
 
-  // Search function
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
       setResults([]);
@@ -113,21 +106,18 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     setNoResults(false);
 
     try {
-      // Fetch products from the store
       const response = await fetch(`/api/v3/products?store=${storeUsername}`);
       if (!response.ok) throw new Error('Failed to fetch products');
 
       const data = await response.json();
       const products = data.products || [];
 
-      // Filter products based on search term
       const filteredProducts = products.filter(
         (product: any) =>
           product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           product.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
-      // Get seller info
       const sellerResponse = await fetch('/api/v3/seller/details', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,15 +129,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
       const sellerData = await sellerResponse.json();
       const seller = sellerData.seller;
 
-      // Check if seller info matches search term
       const sellerMatches =
         seller.store.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         seller.store.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Combine results
       let searchResults: SearchResult[] = [];
 
-      // Add seller if it matches
       if (sellerMatches) {
         searchResults.push({
           type: 'seller',
@@ -159,7 +146,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
         });
       }
 
-      // Add products
       searchResults = [
         ...searchResults,
         ...filteredProducts.map((product: any) => ({
@@ -185,7 +171,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     }
   };
 
-  // Debounce search
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchTerm) {
@@ -210,17 +195,8 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.2 }}
-        className={cn(
-          'w-full max-w-2xl border shadow-xl overflow-hidden',
-          modalStyles.modal,
-          themeUtils.getComponentRoundednessClass()
-        )}>
-        {/* Search input */}
-        <div
-          className={cn(
-            'relative flex items-center border-b',
-            modalStyles.input.includes('border-light') ? 'border-light-300' : 'border-dark-500'
-          )}>
+        className={cn('w-full max-w-2xl shadow-xl overflow-hidden ', themeUtils.getTextColors())}>
+        <div className={cn('relative flex items-center')}>
           <Search
             className={cn('absolute left-4', themeUtils.getPrimaryColorClass('text'))}
             size={18}
@@ -230,24 +206,28 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search products, categories..."
-            className={cn('w-full py-4 pl-12 pr-12 focus:outline-none', modalStyles.input)}
+            placeholder="Search Anything you want..."
+            className={cn(
+              'w-full py-4 pl-12 pr-12 focus:outline-none',
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass()
+            )}
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
               className={cn(
-                'absolute right-12 p-1 transition-colors',
+                'absolute right-12 p-1 transition-colors rounded-full',
                 modalStyles.secondaryText,
                 modalStyles.hoverBg
               )}>
-              <X size={18} />
+              <FiDelete size={18} />
             </button>
           )}
           <button
             onClick={onClose}
             className={cn(
-              'absolute right-4 p-1 transition-colors',
+              'absolute right-4 p-1 transition-colors rounded-full',
               modalStyles.secondaryText,
               modalStyles.hoverBg
             )}>
@@ -255,8 +235,12 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
           </button>
         </div>
 
-        {/* Results area */}
-        <div className="max-h-[70vh] overflow-y-auto __dokmai_scrollbar">
+        <div
+          className={cn(
+            'max-h-[70vh] overflow-y-auto __dokmai_scrollbar mt-5',
+            themeUtils.getCardClass(),
+            themeUtils.getComponentRoundednessClass()
+          )}>
           <AnimatePresence>
             {isLoading ? (
               <div className="p-8 text-center">
@@ -285,7 +269,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                       onClick={onClose}
                       className={cn(
                         'flex items-center gap-4 p-3 transition-colors',
-                        themeUtils.getButtonRoundednessClass(),
+                        themeUtils.getComponentRoundednessClass(),
                         modalStyles.hoverBg
                       )}>
                       {/* Image or icon */}
@@ -293,7 +277,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                         className={cn(
                           'w-12 h-12 flex-shrink-0 overflow-hidden flex items-center justify-center',
                           modalStyles.itemBg,
-                          themeUtils.getButtonRoundednessClass()
+                          themeUtils.getComponentRoundednessClass()
                         )}>
                         {result.image ? (
                           <Image
@@ -329,7 +313,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                             />
                             <span
                               className={cn(
-                                'text-xs font-medium',
+                                'text-xs font-black',
                                 themeUtils.getPrimaryColorClass('text')
                               )}>
                               {result.discountedPrice !== result.price ? (
@@ -348,7 +332,6 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                         )}
                       </div>
 
-                      {/* Arrow */}
                       <ChevronRight size={16} className={modalStyles.secondaryText} />
                     </Link>
                   </motion.div>

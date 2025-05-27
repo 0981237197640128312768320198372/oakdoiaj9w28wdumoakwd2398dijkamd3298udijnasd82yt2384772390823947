@@ -16,6 +16,7 @@ import SearchModal from './SearchModal';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
+import dokmailogo from '@/assets/images/dokmaiwhitewithtext.png';
 
 interface StoreFooterProps {
   seller: any;
@@ -71,19 +72,19 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
   };
 
   return (
-    <footer className={cn('w-full py-8 pt-16 pb-36 px-5 xl:px-0 ', footerStyles.background)}>
+    <footer className={cn('w-full py-8 pt-16 pb-36 px-5 xl:px-0 text-xs', footerStyles.background)}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="max-w-screen-lg mx-auto font-aktivGroteskRegular">
-        <div className="flex flex-col gap-6">
+        className="max-w-screen-lg mx-auto font-aktivGroteskRegular text-xs">
+        <div className="flex flex-col gap-5">
           <div
             className={cn(
-              'grid grid-cols-1 lg:grid-cols-2 gap-5 rounded-xl',
+              'grid grid-cols-1 lg:grid-cols-2',
+              themeUtils.getComponentRoundednessClass(),
               themeUtils.getCardClass()
             )}>
-            {/* Store Info Card */}
             <div className="p-4 flex flex-col items-start gap-5">
               <div className="flex items-center gap-3 w-full">
                 <div
@@ -105,71 +106,47 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   />
                 </div>
                 <div className="flex flex-col">
-                  <h3
-                    className={cn(
-                      'font-aktivGroteskBold text-sm tracking-widest',
-                      footerStyles.text
-                    )}>
+                  <h3 className={cn('font-aktivGroteskBold tracking-widest', footerStyles.text)}>
                     {seller?.store?.name || 'Store Name'}
                   </h3>
                 </div>
               </div>
 
-              {/* Mobile Social Links */}
-              <div className="flex md:hidden flex-wrap gap-2">
-                {socialLinks.map((link, index) => (
-                  <Link
-                    key={index}
-                    href={link.url || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cn(
-                      'flex items-center gap-2 p-2 transition-all duration-200 text-xs',
-                      themeUtils.getButtonClass('secondary')
-                    )}
-                    aria-label={link.name}>
-                    {link.icon}
-                    <span className="hidden sm:inline">{link.name}</span>
-                  </Link>
-                ))}
-              </div>
-
-              <p className={cn('text-xs', footerStyles.secondaryText)}>
+              <p className={cn('', footerStyles.secondaryText)}>
                 {seller?.store?.description ||
                   'Welcome to our store. We offer high-quality products with excellent customer service.'}
               </p>
             </div>
 
-            {/* Desktop Social & Search Card */}
-            <div className="p-5 hidden md:flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
-              {/* Search Button */}
+            <div className="p-5 justify-between flex flex-col items-start gap-5 md:col-span-2 lg:col-span-1">
               <button
                 onClick={handleSearch}
                 className={cn(
-                  'relative w-full px-4 py-2 text-xs transition-colors border-[1px]',
+                  'relative w-full px-4 py-2 transition-colors border-[1px]',
                   footerStyles.searchBg,
-                  themeUtils.getButtonRoundednessClass()
+                  themeUtils.getComponentRoundednessClass()
                 )}
                 aria-label="Search App Premium">
                 <span
                   className={cn(
                     'block pr-8 text-start',
-                    themeUtils.baseTheme === 'light' ? 'text-dark-500' : 'text-light-100/50'
+                    themeUtils.baseTheme === 'light' ? 'text-dark-500' : 'text-light-100/50',
+                    themeUtils.getComponentRoundednessClass()
                   )}>
                   Search Anything
                 </span>
                 <div
                   className={cn(
-                    'absolute right-1 top-1/2 transform -translate-y-1/2 p-1.5 hover:opacity-90 transition-all',
+                    'absolute right-0 top-1/2 transform -translate-y-1/2 p-2 hover:opacity-90 transition-all',
                     themeUtils.getPrimaryColorClass('bg'),
                     themeUtils.buildColorClass(themeUtils.buttonTextColor, 'text'),
-                    themeUtils.getButtonRoundednessClass()
+                    themeUtils.getComponentRoundednessClass()
                   )}>
                   <Search size={16} />
                 </div>
               </button>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 w-full justify-center lg:justify-end">
                 {socialLinks.map((link, index) => (
                   <Link
                     key={index}
@@ -177,9 +154,9 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      'text-xs',
+                      '',
                       themeUtils.getButtonClass('secondary'),
-                      themeUtils.getButtonRoundednessClass()
+                      themeUtils.getComponentRoundednessClass()
                     )}
                     aria-label={link.name}>
                     {link.icon}
@@ -188,24 +165,37 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                 ))}
               </div>
 
-              <p className={cn('text-xs font-light', footerStyles.secondaryText)}>
-                © {currentYear} Dokmai Store
-              </p>
+              <span
+                className={cn(
+                  'font-light flex gap-1 items-center w-full justify-center lg:justify-end',
+                  footerStyles.secondaryText
+                )}>
+                © {currentYear}, <p className="font-bold">{seller?.store?.name || 'Store Name'}</p>
+                <p className="text-[8px]">Powered By</p>
+                <Link href="https://dokmaistore.com" target="_blank" rel="noopener noreferrer">
+                  <Image
+                    src={dokmailogo}
+                    alt="Dokmai Store"
+                    className="w-auto h-4 opacity-50 hover:opacity-80 cursor-pointer active:opacity-100"
+                  />
+                </Link>
+              </span>
             </div>
           </div>
 
           <div
             className={cn(
-              'w-full flex gap-4 lg:gap-0 justify-between px-4 py-3 items-center ',
+              'w-full flex gap-5 lg:gap-0 justify-between px-4 py-3 items-center ',
               themeUtils.getCardClass(),
               themeUtils.getComponentRoundednessClass()
             )}>
             <div className="flex flex-col text-start px-3">
-              <h4 className={cn('text-xs md:text-lg font-bold', footerStyles.text)}>
-                Start Selling with Dokmai Store For FREE Now!
+              <h4 className={cn('font-bold', footerStyles.text)}>
+                Launch Your Digital Products with Dokmai Store – Free to Start, Profitable from Day
+                One!
               </h4>
-              <p className={cn('font-light text-xs md:text-sm', footerStyles.secondaryText)}>
-                Open Store and Get Profit
+              <p className={cn('font-light', footerStyles.secondaryText)}>
+                Elevate Your Digital Business with Dokmai Store – Start Free, Earn Today!
               </p>
             </div>
             <Link
@@ -213,7 +203,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                'text-xs sm:text-sm bg-primary text-dark-800 rounded-full flex gap-1 items-center px-2 py-1 font-bold'
+                'bg-primary text-dark-800 rounded-full flex gap-1 items-center px-2 py-1 font-bold'
               )}>
               Learn More
               <HiOutlineArrowNarrowRight size={14} />
