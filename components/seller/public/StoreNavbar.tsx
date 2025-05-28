@@ -1,23 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import dokmaiwithtext from '@/assets/images/dokmaiwithtext.png';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
-import { Search, Home, Package, Info } from 'lucide-react';
+import { Search, Home, Package, LogOut, LogIn, UserPlus } from 'lucide-react';
 import SearchModal from './SearchModal';
 import { cn } from '@/lib/utils';
 import type { ThemeType } from '@/types';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { CircleUserRound } from 'lucide-react';
+import { useBuyerAuth } from '@/context/BuyerAuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TbInfoHexagon } from 'react-icons/tb';
 
 interface StoreNavbarProps {
   seller: any;
   theme: ThemeType | null;
   activePage: string;
   onNavigate: (page: string) => void;
+  isAuthenticated: boolean;
 }
 
 export const StoreNavbar: React.FC<StoreNavbarProps> = ({
@@ -25,103 +28,94 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
   theme,
   activePage,
   onNavigate,
+  isAuthenticated,
 }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { buyer, logout } = useBuyerAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSearch = () => {
     setIsSearchOpen(true);
   };
 
-  // Replace all the existing theme extraction and helper functions with:
+  const handleLogout = () => {
+    logout();
+    onNavigate('home');
+  };
+
   const themeUtils = useThemeUtils(theme);
-  const navbarStyles = themeUtils.getNavbarStyles();
+  const isLight = themeUtils.baseTheme === 'light';
 
   return (
     <>
-      <nav className="fixed text-xs font-aktivGroteskRegular flex flex-col px-5 xl:p-0 items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transform">
+      <motion.nav
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="fixed font-aktivGroteskRegular flex flex-col px-5 xl:px-0 items-center justify-center top-0 left-0 w-full z-50">
         <div
           className={cn(
-            'w-full mt-5 gap-4 border-[1px] flex p-2 max-w-screen-lg justify-between duration-1000 items-center backdrop-blur-sm',
-            navbarStyles.background,
-            themeUtils.getComponentShadowClass(),
+            'w-full max-w-screen-lg mt-4 border transition-all duration-300 flex items-center justify-between backdrop-blur-md',
+            scrolled ? 'py-2 px-4' : 'py-3 px-5',
+            scrolled ? 'shadow-md' : 'shadow-sm',
+            themeUtils.getCardClass(),
             themeUtils.getButtonRoundednessClass()
           )}>
-          <div
-            className={cn(
-              'flex items-center gap-2 w-fit select-none group transition-all duration-500',
-              navbarStyles.text
-            )}>
-            {seller ? (
-              <>
-                <div
-                  className={cn(
-                    'relative w-10 h-10 overflow-hidden bg-cover bg-center',
-                    themeUtils.getComponentRoundednessClass(),
-                    themeUtils.getButtonRoundednessClass()
-                  )}>
-                  <Image
-                    src={seller.store.logoUrl || dokmailogosquare}
-                    alt={seller.store.name}
-                    width={100}
-                    height={100}
-                    className={cn(
-                      'w-full h-full overflow-hidden',
-                      themeUtils.getComponentRoundednessClass(),
-                      themeUtils.getButtonRoundednessClass()
-                    )}
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                <Image
-                  width={100}
-                  height={100}
-                  src={dokmaiwithtext || '/placeholder.svg'}
-                  loading="lazy"
-                  alt="Logo of Dokmai Store"
-                  className="duration-700 hidden max-xl:h-10 max-xl:w-auto xl:block"
-                />
-                <Image
-                  width={60}
-                  height={60}
-                  src={dokmailogosquare || '/placeholder.svg'}
-                  loading="lazy"
-                  alt="Logo of Dokmai Store"
-                  className="duration-700 max-xl:h-10 max-xl:w-auto xl:hidden"
-                />
-              </>
-            )}
+          {/* Logo and Store Name */}
+          <div className="flex items-center gap-3">
+            <div
+              className={cn(
+                'relative overflow-hidden transition-all duration-300',
+                scrolled ? 'w-8 h-8' : 'w-10 h-10',
+                themeUtils.getButtonRoundednessClass()
+              )}>
+              <Image
+                src={seller?.store?.logoUrl || dokmailogosquare}
+                alt={seller?.store?.name || 'Dokmai'}
+                width={100}
+                height={100}
+                className="w-full h-full object-cover"
+              />
+            </div>
             {seller && (
-              <h1
-                className={cn(
-                  'font-aktivGroteskBold select-none text-xs shadow px-2 py-1 border-[1px] tracking-widest transition-all duration-500',
-                  navbarStyles.storeBadge,
-                  navbarStyles.text,
-                  themeUtils.getButtonRoundednessClass()
-                )}>
-                {seller.store.name}
-              </h1>
+              <div className="flex flex-col">
+                <h1
+                  className={cn(
+                    'font-aktivGroteskBold text-sm tracking-wide transition-all duration-300 select-none',
+                    isLight ? 'text-gray-800' : 'text-white'
+                  )}>
+                  {seller.store.name}
+                </h1>
+              </div>
             )}
           </div>
 
-          <div className="items-center gap-2 hidden md:flex">
+          {/* Main Navigation - Desktop */}
+          <div className="items-center gap-1 hidden md:flex">
             <NavButton
-              icon={<Home size={18} />}
+              icon={<Home size={16} />}
               label="Home"
               isActive={activePage === 'home'}
               onClick={() => onNavigate('home')}
               theme={theme}
             />
             <NavButton
-              icon={<Info size={18} />}
-              label="Profile"
+              icon={<TbInfoHexagon size={16} />}
+              label="Store"
               isActive={activePage === 'profile'}
               onClick={() => onNavigate('profile')}
               theme={theme}
             />
             <NavButton
-              icon={<Package size={18} />}
+              icon={<Package size={16} />}
               label="Products"
               isActive={activePage === 'products'}
               onClick={() => onNavigate('products')}
@@ -129,52 +123,150 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             />
           </div>
 
-          <button
-            onClick={handleSearch}
-            className={cn(
-              'flex whitespace-nowrap me-1 justify-between items-center py-1 px-3 w-fit gap-10',
-              navbarStyles.searchButton,
-              themeUtils.getButtonRoundednessClass()
-            )}>
-            Search Anything
-            <Search size={18} />
-          </button>
-        </div>
-      </nav>
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-2">
+            {/* Search Button */}
+            <button
+              onClick={handleSearch}
+              className={cn(
+                'flex items-center justify-center transition-all duration-300 p-2',
+                isLight ? 'hover:bg-gray-100' : 'hover:bg-dark-700',
+                themeUtils.getButtonRoundednessClass()
+              )}
+              aria-label="Search">
+              <Search size={18} className={isLight ? 'text-gray-700' : 'text-gray-300'} />
+            </button>
 
-      <div className="fixed text-xs flex flex-col px-5 items-center justify-center bottom-0 left-0 w-full transition-transform duration-500 z-50 transform md:hidden">
-        <div
+            {/* Auth Buttons */}
+            <AnimatePresence mode="wait">
+              {isAuthenticated ? (
+                <motion.div
+                  key="authenticated"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-2">
+                  <button
+                    onClick={() => onNavigate('buyerdashboard')}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
+                      activePage === 'buyerdashboard'
+                        ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
+                        : isLight
+                        ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                        : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
+                      themeUtils.getComponentRoundednessClass()
+                    )}>
+                    <CircleUserRound size={16} />
+                    <span className="hidden lg:inline font-medium truncate max-w-[100px]">
+                      {buyer?.name?.split(' ')[0] || 'Dashboard'}
+                    </span>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className={cn(
+                      'flex items-center justify-center p-2 transition-all duration-300',
+                      isLight
+                        ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                        : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
+                      themeUtils.getComponentRoundednessClass()
+                    )}
+                    aria-label="Logout">
+                    <LogOut size={16} />
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="unauthenticated"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-2">
+                  <button
+                    onClick={() => onNavigate('loginbuyer')}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
+                      activePage === 'loginbuyer'
+                        ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
+                        : isLight
+                        ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                        : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
+                      themeUtils.getComponentRoundednessClass()
+                    )}>
+                    <LogIn size={16} />
+                    <span className="hidden lg:inline font-medium">Login</span>
+                  </button>
+                  <button
+                    onClick={() => onNavigate('registerbuyer')}
+                    className={cn(
+                      'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
+                      themeUtils.getPrimaryColorClass('bg'),
+                      'text-white',
+                      themeUtils.getComponentRoundednessClass()
+                    )}>
+                    <UserPlus size={16} />
+                    <span className="hidden lg:inline font-medium">Register</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* Mobile Navigation */}
+      <div className="fixed flex flex-col px-5 items-center justify-center bottom-0 left-0 w-full z-50 transform md:hidden">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
           className={cn(
-            'w-fit mb-10 gap-5 backdrop-blur border-[1px] flex p-3 max-w-screen-lg justify-between duration-1000 items-center',
-            navbarStyles.mobileNav,
-            themeUtils.getComponentRoundednessClass(),
-            themeUtils.getComponentShadowClass()
+            'mb-6 border backdrop-blur flex items-center justify-around gap-1 shadow-lg',
+            isLight
+              ? 'bg-light-500/10 border-light-300 shadow-black/20'
+              : 'bg-dark-100/10 border-dark-300 shadow-black',
+            'rounded-full w-auto'
           )}>
-          <NavButton
-            className="!p-2"
-            icon={<Home size={24} />}
-            label="Home"
+          <MobileNavButton
+            icon={<Home size={20} />}
             isActive={activePage === 'home'}
             onClick={() => onNavigate('home')}
             theme={theme}
+            label="Home"
           />
-          <NavButton
-            className="!p-2"
-            icon={<Info size={24} />}
-            label="Profile"
+          <MobileNavButton
+            icon={<TbInfoHexagon size={20} />}
             isActive={activePage === 'profile'}
             onClick={() => onNavigate('profile')}
             theme={theme}
+            label="Store"
           />
-          <NavButton
-            className="!p-2"
-            icon={<Package size={24} />}
-            label="Products"
+          <MobileNavButton
+            icon={<Package size={20} />}
             isActive={activePage === 'products'}
             onClick={() => onNavigate('products')}
             theme={theme}
+            label="Products"
           />
-        </div>
+          <MobileNavButton
+            icon={<Search size={20} />}
+            isActive={false}
+            onClick={handleSearch}
+            theme={theme}
+            label="Search"
+          />
+          {isAuthenticated && (
+            <MobileNavButton
+              icon={<CircleUserRound size={20} />}
+              isActive={activePage === 'buyerdashboard'}
+              onClick={() => onNavigate('buyerdashboard')}
+              theme={theme}
+              label="Account"
+            />
+          )}
+        </motion.div>
       </div>
 
       {seller && (
@@ -191,7 +283,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
 interface NavButtonProps {
   icon: React.ReactNode;
-  label: string;
+  label?: string;
   className?: string;
   isActive: boolean;
   onClick: () => void;
@@ -207,26 +299,58 @@ const NavButton: React.FC<NavButtonProps> = ({
   theme,
 }) => {
   const themeUtils = useThemeUtils(theme);
-
-  const getActiveButtonClass = () => {
-    return themeUtils.getPrimaryColorClass('bg');
-  };
-
-  const getInactiveButtonClass = () => {
-    return themeUtils.getCardClass();
-  };
+  const isLight = themeUtils.baseTheme === 'light';
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2 px-2 py-1 transition-all duration-200 border-[1px]',
+        'flex items-center gap-2 px-3 py-1.5 text-sm transition-all duration-300 relative',
+        isActive
+          ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
+          : isLight
+          ? 'text-gray-700 hover:bg-gray-100'
+          : 'text-gray-300 hover:bg-dark-700',
         themeUtils.getButtonRoundednessClass(),
-        isActive ? getActiveButtonClass() : getInactiveButtonClass(),
         className
       )}>
       {icon}
-      <span className="hidden md:inline text-sm">{label}</span>
+      {label && <span className="font-medium">{label}</span>}
+    </button>
+  );
+};
+
+interface MobileNavButtonProps {
+  icon: React.ReactNode;
+  isActive: boolean;
+  onClick: () => void;
+  theme: ThemeType | null;
+  label: string;
+}
+
+const MobileNavButton: React.FC<MobileNavButtonProps> = ({
+  icon,
+  isActive,
+  onClick,
+  theme,
+  label,
+}) => {
+  const themeUtils = useThemeUtils(theme);
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'flex flex-col transition-all duration-500 items-center justify-center relative p-3 ',
+        themeUtils.getTextColors(),
+        themeUtils.getButtonRoundednessClass(),
+        isActive && themeUtils.getPrimaryColorClass('bg')
+      )}
+      aria-label={label}>
+      <div className="flex flex-col justify-center items-center px-3">
+        {icon}
+        <span className={cn('text-[9px] font-medium transition-all duration-300')}>{label}</span>
+      </div>
     </button>
   );
 };

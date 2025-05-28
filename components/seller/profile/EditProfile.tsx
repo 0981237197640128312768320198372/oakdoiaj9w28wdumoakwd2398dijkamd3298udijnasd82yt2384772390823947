@@ -198,7 +198,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         logoUrl: formData.logoUrl,
       };
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       if (!token) {
         throw new Error('Authentication token not found');
       }

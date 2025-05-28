@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import LoadingAnimation from '../Loading';
+import { getSubdomain } from '@/lib/utils';
 
 interface StoreContextProps {
   theme: any;
@@ -14,30 +15,6 @@ const StoreContext = createContext<StoreContextProps | undefined>(undefined);
 interface StoreDataProps {
   children: React.ReactNode;
 }
-
-const getSubdomain = (hostname: string): string | null => {
-  let domain = hostname;
-
-  if (hostname.includes(':')) {
-    domain = hostname.split(':')[0];
-  }
-
-  if (domain.endsWith('.localhost')) {
-    const parts = domain.split('.');
-    if (parts.length >= 2 && parts[parts.length - 1] === 'localhost') {
-      return parts[0];
-    }
-  } else if (domain.endsWith('.dokmai.store')) {
-    const parts = domain.split('.');
-    if (parts.length >= 3 && parts.slice(-2).join('.') === 'dokmai.store') {
-      return parts[0];
-    }
-  } else if (domain.includes('vercel.app')) {
-    const parts = domain.split('.');
-    return parts[0];
-  }
-  return null;
-};
 
 export const StoreData = ({ children }: StoreDataProps) => {
   const [theme, setTheme] = useState(null);

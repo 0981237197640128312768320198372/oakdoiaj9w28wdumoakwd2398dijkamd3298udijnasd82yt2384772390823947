@@ -42,7 +42,6 @@ export function PublicInfoSection({
 
   const sectionStyles = getSectionStyles();
 
-  console.log('PUBLIC INFO SECTION', theme);
   return (
     <div
       className={cn(

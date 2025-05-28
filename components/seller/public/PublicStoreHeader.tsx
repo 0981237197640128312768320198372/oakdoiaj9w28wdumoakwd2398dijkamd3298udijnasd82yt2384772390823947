@@ -33,7 +33,11 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
   return (
     <div className="relative">
       <div
-        className={cn('absolute inset-0 h-40 border-[1px] rounded-3xl', themeUtils.getCardClass())}
+        className={cn(
+          'absolute inset-0 h-40 border-[1px] ',
+          themeUtils.getCardClass(),
+          themeUtils.getComponentRoundednessClass()
+        )}
       />
       <div className="relative p-5 pt-16 flex items-start gap-5 z-10">
         <div

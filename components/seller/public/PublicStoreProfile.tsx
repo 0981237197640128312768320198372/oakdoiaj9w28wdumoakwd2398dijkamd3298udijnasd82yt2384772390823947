@@ -13,23 +13,15 @@ import { PublicInfoSection } from './PublicInfoSection';
 import { SocialLinks } from '../profile/SocialLinks';
 import { useThemeUtils } from '@/lib/theme-utils';
 
-import type { Product, Category } from '@/types';
 import { PublicStoreHeader } from './PublicStoreHeader';
 import { PublicStoreStats } from './PublicStoreStats';
 
 interface PublicStoreProfileProps {
   seller: any;
-  products: Product[];
-  categories: Category[];
   theme?: any;
 }
 
-const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({
-  seller,
-  products,
-  categories,
-  theme,
-}) => {
+const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const themeUtils = useThemeUtils(theme);

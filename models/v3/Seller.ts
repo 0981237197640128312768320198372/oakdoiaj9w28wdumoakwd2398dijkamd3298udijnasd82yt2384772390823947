@@ -1,4 +1,4 @@
-import { Schema, model, Document, models } from 'mongoose';
+import { Schema, model, type Document, models } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 interface IContact {
@@ -28,6 +28,7 @@ interface ISeller extends Document {
   password: string;
   contact: IContact;
   store: IStore;
+  activities: Schema.Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -49,7 +50,7 @@ const sellerSchema = new Schema<ISeller>(
       required: true,
       unique: true,
       index: true,
-      match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please provide a valid email address'],
+      match: [/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please provide a valid email address'],
     },
     password: { type: String, required: true },
     contact: {
@@ -85,14 +86,39 @@ const sellerSchema = new Schema<ISeller>(
       },
       theme: { type: Schema.Types.ObjectId, ref: 'Theme' },
     },
+    activities: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Activity',
+      },
+    ],
   },
   { timestamps: true }
 );
+
+sellerSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
+});
 
 sellerSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
+
+sellerSchema.virtual('recentActivities', {
+  ref: 'Activity',
+  localField: '_id',
+  foreignField: 'actors.secondary.id',
+  options: { sort: { createdAt: -1 }, limit: 10 },
+});
 
 export const Seller = models.Seller || model<ISeller>('Seller', sellerSchema);

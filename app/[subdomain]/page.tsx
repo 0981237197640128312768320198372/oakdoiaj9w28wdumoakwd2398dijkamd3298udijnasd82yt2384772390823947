@@ -1,4 +1,3 @@
-/* eslint-disable react/no-children-prop */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
@@ -54,7 +53,7 @@ export default async function StorePage(props: StorePageProps) {
     let categories = [];
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://dokmaistore.com';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL;
       const productsResponse = await fetch(`${API_URL}/api/v3/products?store=${seller.username}`, {
         cache: 'no-store',
       });
@@ -85,13 +84,13 @@ export default async function StorePage(props: StorePageProps) {
     } catch (error) {
       console.error('Error fetching products or categories:', error);
 
-      products = getMockProducts();
-      categories = getMockCategories();
+      products = [];
+      categories = [];
     }
 
     return (
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
-        <PublicStoreProfile seller={seller} products={products} categories={categories} />
+        <PublicStoreProfile seller={seller} />
         <StoreProducts store={seller.username} />
       </PublicStoreLayout>
     );
@@ -99,51 +98,4 @@ export default async function StorePage(props: StorePageProps) {
     console.error('Store page error:', error);
     notFound();
   }
-}
-
-// Mock data functions for development
-function getMockProducts() {
-  return Array(10)
-    .fill(null)
-    .map((_, i) => ({
-      id: `product-${i}`,
-      name: `Product ${i + 1}`,
-      description: 'This is a sample product description.',
-      price: Math.floor(Math.random() * 100) + 10,
-      imageUrl: `/placeholder.svg?height=300&width=300&query=product ${i + 1}`,
-      categoryId: `category-${Math.floor(i / 3) + 1}`,
-    }));
-}
-
-function getMockCategories() {
-  return [
-    {
-      id: 'category-1',
-      name: 'Electronics',
-      image: '/placeholder.svg?height=48&width=48&query=electronics',
-      title: 'Electronics',
-      subtitle: 'Gadgets and devices',
-    },
-    {
-      id: 'category-2',
-      name: 'Clothing',
-      image: '/placeholder.svg?height=48&width=48&query=clothing',
-      title: 'Clothing',
-      subtitle: 'Fashion items',
-    },
-    {
-      id: 'category-3',
-      name: 'Home',
-      image: '/placeholder.svg?height=48&width=48&query=home',
-      title: 'Home',
-      subtitle: 'Home decor and furniture',
-    },
-    {
-      id: 'category-4',
-      name: 'Beauty',
-      image: '/placeholder.svg?height=48&width=48&query=beauty',
-      title: 'Beauty',
-      subtitle: 'Cosmetics and skincare',
-    },
-  ];
 }

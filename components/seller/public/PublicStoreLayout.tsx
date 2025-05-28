@@ -12,7 +12,11 @@ import HomeStorePage from './HomeStorePage';
 import StoreFooter from './StoreFooter';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { ThemeType } from '@/types';
+import type { ThemeType } from '@/types';
+import { LoginBuyerPage } from '@/components/buyer/LoginBuyerPage';
+import { useBuyerAuth } from '@/context/BuyerAuthContext';
+import { RegisterBuyerPage } from '@/components/buyer/RegisterBuyerPage';
+import BuyerDashboard from '@/components/buyer/BuyerDashboard';
 
 interface PublicStoreLayoutProps {
   theme: ThemeType | null;
@@ -31,7 +35,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const [loaded, setLoaded] = useState(false);
   const [activePage, setActivePage] = useState('home');
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   useEffect(() => {
@@ -40,27 +43,25 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
     }, 100);
     return () => clearTimeout(timer);
   }, []);
-
+  console.log(seller._id);
   const renderContent = () => {
     switch (activePage) {
       case 'profile':
-        return (
-          <PublicStoreProfile
-            seller={seller}
-            products={products}
-            categories={categories}
-            theme={theme}
-          />
-        );
+        return <PublicStoreProfile seller={seller} theme={theme} />;
       case 'products':
         return <StoreProducts store={seller?.username} theme={theme} />;
+      case 'loginbuyer':
+        return <LoginBuyerPage onNavigate={setActivePage} />;
+      case 'registerbuyer':
+        return <RegisterBuyerPage sellerId={seller._id} onNavigate={setActivePage} />;
+      case 'buyerdashboard':
+        return <BuyerDashboard theme={theme} onNavigate={setActivePage} />;
       case 'home':
       default:
         return <HomeStorePage products={products} categories={categories} theme={theme} />;
     }
   };
 
-  // Get layout styles using theme utils
   const getLayoutStyles = () => {
     const isLight = themeUtils.baseTheme === 'light';
     return {
@@ -71,12 +72,18 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
 
   const layoutStyles = getLayoutStyles();
 
+  const { isAuthenticated, buyer, logout } = useBuyerAuth();
+
+  console.log('Public Store Layout isAuthenticated\n', isAuthenticated);
+  console.log('Public Store Layout buyer\n', buyer);
+
   return (
     <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>
       <StoreNavbar
         theme={theme}
         seller={seller}
         activePage={activePage}
+        isAuthenticated={isAuthenticated}
         onNavigate={setActivePage}
       />
 

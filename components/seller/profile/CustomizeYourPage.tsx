@@ -159,7 +159,7 @@ export default function CustomizeYourPage() {
 
   const handleThemeChange = async (theme: ThemeType) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       if (!token) {
         throw new Error('Authentication token not found');
       }

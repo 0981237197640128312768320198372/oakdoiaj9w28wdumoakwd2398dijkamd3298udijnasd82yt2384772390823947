@@ -9,31 +9,31 @@ export const SellerAuthProvider = ({ children }: { children: React.ReactNode }) 
   const [seller, setSeller] = useState<Seller | null>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('sellerToken');
     if (token) {
       try {
         const decoded = jwtDecode<Seller>(token);
         setSeller(decoded);
       } catch (error) {
         console.error('Invalid token');
-        localStorage.removeItem('token');
+        localStorage.removeItem('sellerToken');
       }
     }
   }, []);
 
   const login = (token: string) => {
-    localStorage.setItem('token', token);
+    localStorage.setItem('sellerToken', token);
     try {
       const decoded = jwtDecode<Seller>(token);
       setSeller(decoded);
     } catch (error) {
       console.error('Invalid token');
-      localStorage.removeItem('token');
+      localStorage.removeItem('sellerToken');
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('sellerToken');
     setSeller(null);
   };
   return (

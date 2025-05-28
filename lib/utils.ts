@@ -4,6 +4,8 @@ import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Metadata } from 'next';
 import { put } from '@vercel/blob';
+import jwt from 'jsonwebtoken';
+import { NextRequest } from 'next/server';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -218,3 +220,95 @@ export async function uploadImage(file: File): Promise<string> {
   });
   return url;
 }
+
+export function generatePersonalKey(): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+
+  // Ensure at least one uppercase, one lowercase, and one number
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowercase = 'dokmaistre';
+  const numbers = '0123456789';
+
+  // Add one character from each category
+  result += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
+  result += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
+  result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+
+  // Fill the remaining 7 characters randomly
+  for (let i = 3; i < 10; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+
+  // Shuffle the result to randomize the position of guaranteed characters
+  return result
+    .split('')
+    .sort(() => Math.random() - 0.5)
+    .join('');
+}
+
+interface BuyerAuthResult {
+  success: boolean;
+  message?: string;
+  userId?: string;
+}
+
+export async function verifyBuyerAuth(request: NextRequest): Promise<BuyerAuthResult> {
+  try {
+    const authHeader = request.headers.get('authorization');
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return { success: false, message: 'Authorization header missing or invalid' };
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      return { success: false, message: 'Token not provided' };
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'fallback_secret_not_for_production'
+    ) as { id: string };
+
+    if (!decoded || !decoded.id) {
+      return { success: false, message: 'Invalid token' };
+    }
+
+    return { success: true, userId: decoded.id };
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return { success: false, message: 'Invalid token' };
+    } else if (error instanceof jwt.TokenExpiredError) {
+      return { success: false, message: 'Token expired' };
+    } else {
+      console.error('Auth verification error:', error);
+      return { success: false, message: 'Authentication error' };
+    }
+  }
+}
+
+export const getSubdomain = (hostname: string): string | null => {
+  let domain = hostname;
+
+  if (hostname.includes(':')) {
+    domain = hostname.split(':')[0];
+  }
+
+  if (domain.endsWith('.localhost')) {
+    const parts = domain.split('.');
+    if (parts.length >= 2 && parts[parts.length - 1] === 'localhost') {
+      return parts[0];
+    }
+  } else if (domain.endsWith('.dokmai.store')) {
+    const parts = domain.split('.');
+    if (parts.length >= 3 && parts.slice(-2).join('.') === 'dokmai.store') {
+      return parts[0];
+    }
+  } else if (domain.includes('vercel.app')) {
+    const parts = domain.split('.');
+    return parts[0];
+  }
+  return null;
+};

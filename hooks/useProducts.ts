@@ -54,7 +54,7 @@ export const useProducts = (sellerId?: string) => {
     setError(null);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       const response = await fetch(`${apiUrl}/api/v3/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -139,7 +139,7 @@ export const useProducts = (sellerId?: string) => {
     setSuccess(null);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       const method = editMode ? 'PUT' : 'POST';
       const url = editMode ? `${apiUrl}/api/v3/products` : `${apiUrl}/api/v3/products`;
 
@@ -190,7 +190,7 @@ export const useProducts = (sellerId?: string) => {
     setSuccess(null);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       const response = await fetch(`${apiUrl}/api/v3/products?id=${productId}`, {
         method: 'DELETE',
         headers: {

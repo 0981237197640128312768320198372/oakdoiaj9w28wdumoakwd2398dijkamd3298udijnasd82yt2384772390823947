@@ -82,7 +82,6 @@ const Authenticator = ({ children }: { children: React.ReactNode }) => {
         JSON.stringify({
           username,
           name: data.name,
-          // role: data.role,
           expiration,
           token: data.token,
         })

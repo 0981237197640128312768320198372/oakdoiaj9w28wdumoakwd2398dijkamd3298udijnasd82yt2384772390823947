@@ -128,3 +128,53 @@ export interface ThemeType {
     };
   };
 }
+
+// Buyer types for better type safety
+export interface Buyer {
+  id: string;
+  email: string;
+  username?: string;
+  contact?: {
+    facebook?: string;
+    line?: string;
+    instagram?: string;
+    whatsapp?: string;
+  };
+  balance?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface BuyerAuthContextType {
+  buyer: Buyer | null;
+  login: (token: string) => void;
+  logout: () => void;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
+export interface BuyerTransaction {
+  type: 'purchase' | 'deposit' | 'withdrawal' | 'refund' | 'other';
+  amount: number;
+  description: string;
+  reference?: string;
+  status: 'pending' | 'completed' | 'failed' | 'cancelled';
+  createdAt: string;
+}
+
+export interface SellerInteraction {
+  id: string;
+  seller: {
+    id: string;
+    username: string;
+    storeName: string;
+    logoUrl?: string;
+  };
+  action: 'review' | 'credit';
+  rating?: number;
+  credit?: {
+    type: 'positive' | 'negative';
+    value: number;
+  };
+  comment?: string;
+  createdAt: string;
+}

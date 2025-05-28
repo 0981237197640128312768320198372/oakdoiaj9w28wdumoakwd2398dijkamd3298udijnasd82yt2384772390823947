@@ -206,7 +206,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search Anything you want..."
+            placeholder="ค้นหา"
             className={cn(
               'w-full py-4 pl-12 pr-12 focus:outline-none',
               themeUtils.getCardClass(),

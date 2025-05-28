@@ -3,11 +3,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+
 import { FaFacebook } from 'react-icons/fa';
 import { FaSquareInstagram } from 'react-icons/fa6';
 import { BsLine } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io';
-import { HiOutlineArrowNarrowRight } from 'react-icons/hi';
+
 import { motion } from 'framer-motion';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import Link from 'next/link';
@@ -16,7 +17,9 @@ import SearchModal from './SearchModal';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
-import dokmailogo from '@/assets/images/dokmaiwhitewithtext.png';
+import dokmaiwithtext from '@/assets/images/dokmaiwithtext.png';
+import dokmaiwithblacktext from '@/assets/images/dokmaiwithblacktext.png';
+import { VscTriangleRight } from 'react-icons/vsc';
 
 interface StoreFooterProps {
   seller: any;
@@ -27,7 +30,6 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   useEffect(() => {
@@ -133,7 +135,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                     themeUtils.baseTheme === 'light' ? 'text-dark-500' : 'text-light-100/50',
                     themeUtils.getComponentRoundednessClass()
                   )}>
-                  Search Anything
+                  ค้นหา
                 </span>
                 <div
                   className={cn(
@@ -171,42 +173,44 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   footerStyles.secondaryText
                 )}>
                 © {currentYear}, <p className="font-bold">{seller?.store?.name || 'Store Name'}</p>
-                <p className="text-[8px]">Powered By</p>
-                <Link href="https://dokmaistore.com" target="_blank" rel="noopener noreferrer">
+                <p className="text-[9px]">Powered By</p>
+                <Link
+                  href="https://seller.dokmaistore.com/auth/register"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1 rounded">
                   <Image
-                    src={dokmailogo}
+                    src={themeUtils.baseTheme === 'light' ? dokmaiwithblacktext : dokmaiwithtext}
                     alt="Dokmai Store"
-                    className="w-auto h-4 opacity-50 hover:opacity-80 cursor-pointer active:opacity-100"
+                    className="w-auto h-4 opacity-100 hover:scale-110 cursor-pointer duration-500 transition-all"
                   />
                 </Link>
               </span>
             </div>
           </div>
-
           <div
             className={cn(
               'w-full flex gap-5 lg:gap-0 justify-between px-4 py-3 items-center ',
               themeUtils.getCardClass(),
               themeUtils.getComponentRoundednessClass()
             )}>
-            <div className="flex flex-col text-start px-3">
+            <div className="flex flex-col text-start">
               <h4 className={cn('font-bold', footerStyles.text)}>
-                Launch Your Digital Products with Dokmai Store – Free to Start, Profitable from Day
-                One!
+                สร้างเว็บไซต์ธุรกิจดิจิทัลของคุณด้วย Dokmai Store
               </h4>
               <p className={cn('font-light', footerStyles.secondaryText)}>
-                Elevate Your Digital Business with Dokmai Store – Start Free, Earn Today!
+                รวดเร็ว ปรับแต่งได้ด้วยสไตล์ของคุณเอง
               </p>
             </div>
             <Link
-              href="https://dokmaistore.com"
+              href="https://seller.dokmaistore.com/auth/register"
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                'bg-primary text-dark-800 rounded-full flex gap-1 items-center px-2 py-1 font-bold'
+                'bg-primary text-dark-800 rounded-full flex gap-1 items-center px-3 py-1 font-bold'
               )}>
-              Learn More
-              <HiOutlineArrowNarrowRight size={14} />
+              เริ่มเลย
+              <VscTriangleRight size={14} />
             </Link>
           </div>
         </div>

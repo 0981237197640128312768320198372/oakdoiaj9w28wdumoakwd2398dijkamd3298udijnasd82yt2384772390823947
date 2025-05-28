@@ -65,7 +65,7 @@ const CategoryManagement = () => {
   const handleAddCategory = async (formData: FormData) => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       const response = await fetch('/api/v3/categories', {
         method: 'POST',
         headers: {
@@ -92,7 +92,7 @@ const CategoryManagement = () => {
   const handleEditCategory = async (formData: FormData) => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       const response = await fetch('/api/v3/categories', {
         method: 'PUT',
         headers: {
@@ -124,7 +124,7 @@ const CategoryManagement = () => {
 
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('sellerToken');
       const response = await fetch(`/api/v3/categories?id=${categoryToDelete}`, {
         method: 'DELETE',
         headers: {

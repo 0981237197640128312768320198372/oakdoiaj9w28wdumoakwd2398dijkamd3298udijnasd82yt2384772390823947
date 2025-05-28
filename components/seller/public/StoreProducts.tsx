@@ -24,7 +24,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
     'default'
   );
 
-  // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
   const getComponentStyles = () => {
