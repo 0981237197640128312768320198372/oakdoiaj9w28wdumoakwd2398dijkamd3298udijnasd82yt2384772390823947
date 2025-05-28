@@ -17,7 +17,7 @@ interface RegisterBuyerPageProps {
 export const RegisterBuyerPage: React.FC<RegisterBuyerPageProps> = ({ onNavigate, sellerId }) => {
   const [authMethod, setAuthMethod] = useState<'credentials' | 'personalKey'>('credentials');
   const [isLoading, setIsLoading] = useState(false);
-  const { ipAddress, error: ipError } = useClientIP() || '';
+  const { ipAddress, error: ipError } = useClientIP();
 
   const [formData, setFormData] = useState({
     name: '',

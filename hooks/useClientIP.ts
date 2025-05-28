@@ -21,8 +21,7 @@ export function useClientIP() {
   useEffect(() => {
     const fetchIP = async () => {
       try {
-        // https://api.ipify.org?format=json
-        const response = await fetch('https://ipinfo.io/json');
+        const response = await fetch('https://ipinfo.io/json?token=9fe5d75694fb66');
         if (!response.ok) {
           throw new Error('Failed to fetch IP');
         }
@@ -41,7 +40,7 @@ export function useClientIP() {
     ipAddress: ipData?.ip || null,
     city: ipData?.city || null,
     postal: ipData?.postal || null,
-    loc: ipData?.loc || null,
+    coordinate: ipData?.loc || null,
     region: ipData?.region || null,
     country: ipData?.country || null,
     hostname: ipData?.hostname || null,

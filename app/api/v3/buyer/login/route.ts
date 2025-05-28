@@ -4,41 +4,13 @@ import jwt from 'jsonwebtoken';
 import { createLoginActivity } from '@/lib/activityHelpers';
 import { connectToDatabase } from '@/lib/db';
 
-function getClientIP(request: NextRequest): string | undefined {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  const realIp = request.headers.get('x-real-ip');
-  const clientIp = request.headers.get('x-client-ip');
-
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
-  }
-
-  if (realIp) {
-    return realIp.trim();
-  }
-
-  if (clientIp) {
-    return clientIp.trim();
-  }
-
-  try {
-    const url = new URL(request.url);
-    if (url.hostname && url.hostname !== 'localhost') {
-      return url.hostname;
-    }
-  } catch {
-    // Ignore URL parsing errors
-  }
-
-  return undefined;
-}
-
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
     const body = await request.json();
-    const { email, username, password, personalKey } = body;
+    const { email, username, password, personalKey, ipAddress, country, city, postal, coordinate } =
+      body;
 
     if (!email && !username && !personalKey) {
       return NextResponse.json(
@@ -93,13 +65,18 @@ export async function POST(request: NextRequest) {
 
     try {
       const userAgent = request.headers.get('user-agent') || undefined;
-      const ipAddress = getClientIP(request);
 
       await createLoginActivity({
         userId: buyer._id.toString(),
         userType: 'buyer',
         ipAddress,
         userAgent,
+        location: {
+          country,
+          city,
+          postal,
+          coordinate,
+        },
       });
     } catch (activityError) {
       console.error('Failed to create login activity:', activityError);

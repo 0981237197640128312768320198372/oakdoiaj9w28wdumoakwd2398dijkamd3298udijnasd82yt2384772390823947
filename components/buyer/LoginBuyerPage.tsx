@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import type React from 'react';
@@ -7,6 +8,7 @@ import { User, LogIn, UserPlus, Loader2, Key } from 'lucide-react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
+import { useClientIP } from '@/hooks/useClientIP';
 
 interface LoginBuyerPageProps {
   onNavigate: (page: string) => void;
@@ -21,6 +23,7 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useBuyerAuth();
+  const { ipAddress, country, city, postal, coordinate, error: ipError } = useClientIP();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,11 +45,20 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
     }
 
     try {
-      const payload =
+      const credentials =
         authMethod === 'credentials'
           ? { username: username || undefined, email: email || undefined, password }
           : { personalKey };
+      const payload = {
+        ...credentials,
+        ipAddress,
+        country,
+        city,
+        postal,
+        coordinate,
+      };
 
+      console.log('KAKAKAKAKAKAKAKAKA\n', payload);
       const response = await fetch('/api/v3/buyer/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,6 +71,7 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
         login(data.token);
       } else {
         setError(data.message || 'Invalid credentials');
+        setError(ipError);
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');

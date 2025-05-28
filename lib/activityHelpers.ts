@@ -137,7 +137,6 @@ export async function createCreditActivity(data: {
     reason: data.reason,
   });
 
-  // Add activity to both buyer and seller
   await Buyer.findByIdAndUpdate(data.buyerId, {
     $push: { activities: activity._id },
   });
@@ -146,7 +145,6 @@ export async function createCreditActivity(data: {
     $push: { activities: activity._id },
   });
 
-  // Update seller credits
   const creditField =
     data.type === 'positive' ? 'store.credits.positive' : 'store.credits.negative';
   await Seller.findByIdAndUpdate(data.sellerId, {

@@ -5,12 +5,11 @@ import { connectToDatabase } from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 import { Types } from 'mongoose';
 
-// GET - Fetch activities with filters
+// GET - Fetch activities (list or specific activity)
 export async function GET(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    // Verify authentication
     const authResult = await verifyAuth(request);
     if (!authResult.success) {
       return NextResponse.json({ success: false, message: authResult.message }, { status: 401 });
@@ -18,78 +17,111 @@ export async function GET(request: NextRequest) {
 
     const userId = authResult.userId;
     const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
-    // Query parameters
-    const category = searchParams.get('category');
-    const type = searchParams.get('type');
-    const status = searchParams.get('status');
-    const limit = Number.parseInt(searchParams.get('limit') || '20');
-    const skip = Number.parseInt(searchParams.get('skip') || '0');
-    const userType = searchParams.get('userType') || 'buyer'; // buyer or seller
-
-    // Build query
-    const query: any = {};
-
-    if (userType === 'buyer') {
-      query['actors.primary.id'] = userId;
-    } else {
-      query.$or = [{ 'actors.primary.id': userId }, { 'actors.secondary.id': userId }];
-    }
-
-    if (category) {
-      query.category = category;
-    }
-
-    if (type) {
-      query.type = type;
-    }
-
-    if (status) {
-      query.status = status;
-    }
-
-    // Fetch activities
-    const activities = await Activity.find(query)
-      .populate({
+    if (id) {
+      // Fetch a specific activity
+      const activity = await Activity.findById(id).populate({
         path: 'actors.secondary.id',
         select: 'username store.name store.logoUrl',
         model: 'Seller',
-      })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .skip(skip);
+      });
 
-    // Get total count for pagination
-    const totalCount = await Activity.countDocuments(query);
+      if (!activity) {
+        return NextResponse.json(
+          { success: false, message: 'Activity not found' },
+          { status: 404 }
+        );
+      }
 
-    // Format activities for frontend
-    const formattedActivities = activities.map((activity) => ({
-      id: activity._id,
-      type: activity.type,
-      category: activity.category,
-      status: activity.status,
-      metadata: activity.metadata,
-      references: activity.references,
-      visibility: activity.visibility,
-      actors: activity.actors,
-      createdAt: activity.createdAt,
-      updatedAt: activity.updatedAt,
-      completedAt: activity.completedAt,
-      tags: activity.tags,
-      priority: activity.priority,
-      notes: activity.notes,
-    }));
+      const hasAccess =
+        activity.actors.primary.id.toString() === userId ||
+        (activity.actors.secondary && activity.actors.secondary.id.toString() === userId);
 
-    return NextResponse.json({
-      success: true,
-      activities: formattedActivities,
-      pagination: {
-        total: totalCount,
-        limit,
-        skip,
-        hasMore: skip + limit < totalCount,
-      },
-    });
+      if (!hasAccess) {
+        return NextResponse.json({ success: false, message: 'Access denied' }, { status: 403 });
+      }
+
+      return NextResponse.json({
+        success: true,
+        activity: {
+          id: activity._id,
+          type: activity.type,
+          category: activity.category,
+          status: activity.status,
+          metadata: activity.metadata,
+          references: activity.references,
+          visibility: activity.visibility,
+          actors: activity.actors,
+          createdAt: activity.createdAt,
+          updatedAt: activity.updatedAt,
+          completedAt: activity.completedAt,
+          tags: activity.tags,
+          priority: activity.priority,
+          notes: activity.notes,
+        },
+      });
+    } else {
+      // Fetch list of activities with filters
+      const category = searchParams.get('category');
+      const type = searchParams.get('type');
+      const status = searchParams.get('status');
+      const limit = Number.parseInt(searchParams.get('limit') || '20');
+      const skip = Number.parseInt(searchParams.get('skip') || '0');
+      const userType = searchParams.get('userType') || 'buyer';
+
+      const query: any = {};
+
+      if (userType === 'buyer') {
+        query['actors.primary.id'] = userId;
+      } else {
+        query.$or = [{ 'actors.primary.id': userId }, { 'actors.secondary.id': userId }];
+      }
+
+      if (category) query.category = category;
+      if (type) query.type = type;
+      if (status) query.status = status;
+
+      const activities = await Activity.find(query)
+        .populate({
+          path: 'actors.secondary.id',
+          select: 'username store.name store.logoUrl',
+          model: 'Seller',
+        })
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip(skip);
+
+      const totalCount = await Activity.countDocuments(query);
+
+      const formattedActivities = activities.map((activity) => ({
+        id: activity._id,
+        type: activity.type,
+        category: activity.category,
+        status: activity.status,
+        metadata: activity.metadata,
+        references: activity.references,
+        visibility: activity.visibility,
+        actors: activity.actors,
+        createdAt: activity.createdAt,
+        updatedAt: activity.updatedAt,
+        completedAt: activity.completedAt,
+        tags: activity.tags,
+        priority: activity.priority,
+        notes: activity.notes,
+      }));
+
+      return NextResponse.json({
+        success: true,
+        activities: formattedActivities,
+        pagination: {
+          total: totalCount,
+          limit,
+          skip,
+          hasMore: skip + limit < totalCount,
+        },
+      });
+    }
   } catch (error) {
     console.error('Fetch activities error:', error);
     return NextResponse.json(
@@ -99,12 +131,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create new activity
+// POST - Create new activity (unchanged)
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    // Verify authentication
     const authResult = await verifyAuth(request);
     if (!authResult.success) {
       return NextResponse.json({ success: false, message: authResult.message }, { status: 401 });
@@ -134,7 +165,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create activity
     const activityData: any = {
       type,
       category,
@@ -145,7 +175,7 @@ export async function POST(request: NextRequest) {
       actors: {
         primary: {
           id: new Types.ObjectId(userId),
-          type: 'buyer', // Assuming buyer for now, can be dynamic
+          type: 'buyer',
         },
       },
       tags,
@@ -153,7 +183,6 @@ export async function POST(request: NextRequest) {
       notes,
     };
 
-    // Add secondary actor if provided
     if (secondaryActorId && secondaryActorType) {
       activityData.actors.secondary = {
         id: new Types.ObjectId(secondaryActorId),
@@ -161,7 +190,6 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    // Convert references to ObjectIds
     if (references) {
       for (const [key, value] of Object.entries(references)) {
         if (value && typeof value === 'string') {
@@ -188,6 +216,136 @@ export async function POST(request: NextRequest) {
     console.error('Create activity error:', error);
     return NextResponse.json(
       { success: false, message: 'An error occurred while creating activity' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH - Update an activity
+export async function PATCH(request: NextRequest) {
+  try {
+    await connectToDatabase();
+
+    const authResult = await verifyAuth(request);
+    if (!authResult.success) {
+      return NextResponse.json({ success: false, message: authResult.message }, { status: 401 });
+    }
+
+    const userId = authResult.userId;
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const body = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'Activity ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const activity = await Activity.findById(id);
+
+    if (!activity) {
+      return NextResponse.json({ success: false, message: 'Activity not found' }, { status: 404 });
+    }
+
+    const hasAccess =
+      activity.actors.primary.id.toString() === userId ||
+      (activity.actors.secondary && activity.actors.secondary.id.toString() === userId);
+
+    if (!hasAccess) {
+      return NextResponse.json({ success: false, message: 'Access denied' }, { status: 403 });
+    }
+
+    const allowedUpdates = ['status', 'metadata', 'notes', 'tags', 'priority', 'completedAt'];
+    const updates: any = {};
+
+    for (const field of allowedUpdates) {
+      if (body[field] !== undefined) {
+        updates[field] = body[field];
+      }
+    }
+
+    if (body.status === 'completed' && !updates.completedAt) {
+      updates.completedAt = new Date();
+    }
+
+    const updatedActivity = await Activity.findByIdAndUpdate(id, updates, { new: true });
+    if (!updatedActivity) {
+      return NextResponse.json(
+        { success: false, message: 'No updated activity found' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Activity updated successfully',
+      activity: {
+        id: updatedActivity._id,
+        type: updatedActivity.type,
+        category: updatedActivity.category,
+        status: updatedActivity.status,
+        metadata: updatedActivity.metadata,
+        updatedAt: updatedActivity.updatedAt,
+        completedAt: updatedActivity.completedAt,
+      },
+    });
+  } catch (error) {
+    console.error('Update activity error:', error);
+    return NextResponse.json(
+      { success: false, message: 'An error occurred while updating activity' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE - Mark an activity as cancelled
+export async function DELETE(request: NextRequest) {
+  try {
+    await connectToDatabase();
+
+    const authResult = await verifyAuth(request);
+    if (!authResult.success) {
+      return NextResponse.json({ success: false, message: authResult.message }, { status: 401 });
+    }
+
+    const userId = authResult.userId;
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'Activity ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const activity = await Activity.findById(id);
+
+    if (!activity) {
+      return NextResponse.json({ success: false, message: 'Activity not found' }, { status: 404 });
+    }
+
+    const hasAccess = activity.actors.primary.id.toString() === userId;
+
+    if (!hasAccess) {
+      return NextResponse.json({ success: false, message: 'Access denied' }, { status: 403 });
+    }
+
+    await Activity.findByIdAndUpdate(id, {
+      status: 'cancelled',
+      completedAt: new Date(),
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Activity deleted successfully',
+    });
+  } catch (error) {
+    console.error('Delete activity error:', error);
+    return NextResponse.json(
+      { success: false, message: 'An error occurred while deleting activity' },
       { status: 500 }
     );
   }
