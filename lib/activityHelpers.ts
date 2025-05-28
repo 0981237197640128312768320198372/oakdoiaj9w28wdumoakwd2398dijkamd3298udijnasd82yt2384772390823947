@@ -19,24 +19,24 @@ export async function createPurchaseActivity(data: {
     category: 'financial',
     actors: {
       primary: {
-        id: new Schema.Types.ObjectId(data.buyerId),
+        id: new Types.ObjectId(data.buyerId),
         type: 'buyer',
       },
       secondary: {
-        id: new Schema.Types.ObjectId(data.sellerId),
+        id: new Types.ObjectId(data.sellerId),
         type: 'seller',
       },
     },
     metadata: {
       amount: data.amount,
       currency: 'THB',
-      productId: new Schema.Types.ObjectId(data.productId),
+      productId: new Types.ObjectId(data.productId),
       productName: data.productName,
       quantity: data.quantity,
     },
     references: {
-      order: data.orderId ? new Schema.Types.ObjectId(data.orderId) : undefined,
-      product: new Schema.Types.ObjectId(data.productId),
+      order: data.orderId ? new Types.ObjectId(data.orderId) : undefined,
+      product: new Types.ObjectId(data.productId),
     },
     status: 'pending',
   });
@@ -203,7 +203,7 @@ export async function createLoginActivity(data: {
     category: 'system',
     actors: {
       primary: {
-        id: new Schema.Types.ObjectId(data.userId),
+        id: new Types.ObjectId(data.userId), // Use Types.ObjectId here
         type: data.userType,
       },
     },

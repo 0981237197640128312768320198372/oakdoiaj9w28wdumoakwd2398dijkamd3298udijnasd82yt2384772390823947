@@ -51,7 +51,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
 
   const themeUtils = useThemeUtils(theme);
 
-  // Fetch activities with current filter
   const {
     activities,
     loading: activitiesLoading,
@@ -373,6 +372,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
                     <div
                       key={activity.id}
                       className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                      <p className="text-red-500 font-black">{activity.metadata.ipAddress}</p>
                       <div className="flex items-center gap-3">
                         {getActivityIcon(activity.type, activity.category)}
                         <div>

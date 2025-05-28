@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
     const id = searchParams.get('id');
 
     if (id) {
-      // Fetch a specific activity
       const activity = await Activity.findById(id).populate({
         path: 'actors.secondary.id',
         select: 'username store.name store.logoUrl',
@@ -62,7 +61,6 @@ export async function GET(request: NextRequest) {
         },
       });
     } else {
-      // Fetch list of activities with filters
       const category = searchParams.get('category');
       const type = searchParams.get('type');
       const status = searchParams.get('status');
