@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { Wallet, Eye, EyeOff, TrendingUp, TrendingDown } from 'lucide-react';
+import { Wallet, Eye, EyeOff, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';

@@ -7,14 +7,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivities } from '@/hooks/useBuyerActivities';
-import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
-import { DashboardHeader } from './DashbaordHeader';
 import { BalanceCard } from './BalanceCard';
 import { ActivityTabs } from './ActivityTabs';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { ContactInfo } from './ContactInfo';
+import { DashboardHeader } from './DashboardHeader';
 
 interface BuyerDashboardProps {
   theme: ThemeType | null;
@@ -30,8 +29,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
     type?: string;
     search?: string;
   }>({});
-
-  const themeUtils = useThemeUtils(theme);
 
   const {
     activities,
