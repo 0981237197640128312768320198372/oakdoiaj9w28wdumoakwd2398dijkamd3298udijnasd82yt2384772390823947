@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import ActivityLogs from '@/components/Private/ActivityLogs';
 import AdminDeposit from './AdminDeposit';
 import EmailsViewer from './EmailsViewer';
 import ManageHelps from './ManageHelps';
@@ -14,6 +13,7 @@ import { AdminSidebar } from './AdminSidebar';
 import RealTimeClock from './RealTimeClock';
 import Management from './Management';
 import CategoryManagement from './CategoryManagement';
+import ActivityLogs from './ActivityLogs';
 
 const AdminPageContent = () => {
   const [currentSection, setCurrentSection] = useState('AdminDeposit');

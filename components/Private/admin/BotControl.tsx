@@ -9,7 +9,7 @@ import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatTime } from '@/lib/utils';
 import { SiHackaday } from 'react-icons/si';
-import CopyToClipboard from '../CopyToClipboard';
+import CopyToClipboard from '@/components/home/general/CopyToClipboard';
 
 interface BotActivity {
   _id: string;
