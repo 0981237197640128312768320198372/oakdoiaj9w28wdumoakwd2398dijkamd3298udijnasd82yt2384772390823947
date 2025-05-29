@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
-import BuyerDashboard from '@/components/public/buyer/BuyerDashboard';
+import BuyerDashboard from '@/components/public/buyer/dashboard/BuyerDashboard';
 import AuthBuyerPage from '@/components/public/buyer/AuthBuyerPage';
 
 interface PublicStoreLayoutProps {
@@ -81,13 +81,13 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
       />
 
       <motion.div
-        className="flex flex-col items-center min-h-screen justify-start w-full py-20 lg:pt-32 relative z-10"
+        className="flex flex-col items-center min-h-fit justify-start w-full relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}>
         <AnimatePresence mode="wait">
           <motion.div
-            className="w-full px-5 lg:px-0 max-w-screen-lg"
+            className="w-full px-5 lg:px-0 max-w-screen-lg pt-28 lg:pt-32"
             key={activePage}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
