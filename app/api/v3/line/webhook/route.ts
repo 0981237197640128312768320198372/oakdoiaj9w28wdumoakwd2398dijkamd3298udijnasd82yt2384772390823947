@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const channelSecret = process.env.CHANNEL_SECRET || 'asd';
+const channelSecret = process.env.LINE_CHANNEL_SECRET || 'asd';
 
 async function handleEvent(event: any) {
   if (event.type === 'message' && event.message.type === 'text') {
