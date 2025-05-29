@@ -81,7 +81,6 @@ interface UseBuyerActivitiesReturn {
   getActivity: (id: string) => Promise<Activity | null>;
   updateActivity: (id: string, updates: Partial<Activity>) => Promise<boolean>;
   deleteActivity: (id: string) => Promise<boolean>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createActivity: (activityData: any) => Promise<Activity | null>;
 }
 
@@ -114,6 +113,7 @@ export function useBuyerActivities(initialFilters?: ActivityFilters): UseBuyerAc
 
       const params = new URLSearchParams();
 
+      // Set default userType to buyer if not specified
       const userType = filters?.userType || 'buyer';
       params.append('userType', userType);
 
@@ -185,6 +185,7 @@ export function useBuyerActivities(initialFilters?: ActivityFilters): UseBuyerAc
       const data = await response.json();
 
       if (response.ok) {
+        // Update the activity in the local state
         setActivities((prev) =>
           prev.map((activity) =>
             activity.id === id ? { ...activity, ...data.activity } : activity

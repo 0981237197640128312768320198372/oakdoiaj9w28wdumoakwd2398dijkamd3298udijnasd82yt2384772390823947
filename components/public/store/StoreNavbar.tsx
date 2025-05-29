@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -5,7 +6,7 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
-import { Search, Home, Package, LogOut, LogIn, UserPlus } from 'lucide-react';
+import { Search, Home, Package, LogOut, Power } from 'lucide-react';
 import SearchModal from './SearchModal';
 import { cn } from '@/lib/utils';
 import type { ThemeType } from '@/types';
@@ -102,21 +103,21 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
           <div className="items-center gap-1 hidden md:flex">
             <NavButton
               icon={<Home size={16} />}
-              label="Home"
+              label="บ้าน"
               isActive={activePage === 'home'}
               onClick={() => onNavigate('home')}
               theme={theme}
             />
             <NavButton
               icon={<TbInfoHexagon size={16} />}
-              label="Store"
+              label="ร้านค้า"
               isActive={activePage === 'profile'}
               onClick={() => onNavigate('profile')}
               theme={theme}
             />
             <NavButton
               icon={<Package size={16} />}
-              label="Products"
+              label="สินค้า"
               isActive={activePage === 'products'}
               onClick={() => onNavigate('products')}
               theme={theme}
@@ -125,7 +126,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
-            {/* Search Button */}
             <button
               onClick={handleSearch}
               className={cn(
@@ -133,7 +133,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                 isLight ? 'hover:bg-gray-100' : 'hover:bg-dark-700',
                 themeUtils.getButtonRoundednessClass()
               )}
-              aria-label="Search">
+              aria-label="ค้นหา">
               <Search size={18} className={isLight ? 'text-gray-700' : 'text-gray-300'} />
             </button>
 
@@ -185,29 +185,15 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                   transition={{ duration: 0.2 }}
                   className="flex items-center gap-2">
                   <button
-                    onClick={() => onNavigate('loginbuyer')}
-                    className={cn(
-                      'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
-                      activePage === 'loginbuyer'
-                        ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
-                        : isLight
-                        ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                        : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
-                      themeUtils.getComponentRoundednessClass()
-                    )}>
-                    <LogIn size={16} />
-                    <span className="hidden lg:inline font-medium">Login</span>
-                  </button>
-                  <button
-                    onClick={() => onNavigate('registerbuyer')}
+                    onClick={() => onNavigate('authbuyer')}
                     className={cn(
                       'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
                       themeUtils.getPrimaryColorClass('bg'),
                       'text-white',
                       themeUtils.getComponentRoundednessClass()
                     )}>
-                    <UserPlus size={16} />
-                    <span className="hidden lg:inline font-medium">Register</span>
+                    <Power size={16} />
+                    <span className="hidden lg:inline font-medium">เข้าสู่ระบบ</span>
                   </button>
                 </motion.div>
               )}
@@ -216,7 +202,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         </div>
       </motion.nav>
 
-      {/* Mobile Navigation */}
       <div className="fixed flex flex-col px-5 items-center justify-center bottom-0 left-0 w-full z-50 transform md:hidden">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
@@ -234,36 +219,44 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             isActive={activePage === 'home'}
             onClick={() => onNavigate('home')}
             theme={theme}
-            label="Home"
+            label="บ้าน"
           />
           <MobileNavButton
             icon={<TbInfoHexagon size={20} />}
             isActive={activePage === 'profile'}
             onClick={() => onNavigate('profile')}
             theme={theme}
-            label="Store"
+            label="ร้านค้า"
           />
           <MobileNavButton
             icon={<Package size={20} />}
             isActive={activePage === 'products'}
             onClick={() => onNavigate('products')}
             theme={theme}
-            label="Products"
+            label="สินค้า"
           />
           <MobileNavButton
             icon={<Search size={20} />}
             isActive={false}
             onClick={handleSearch}
             theme={theme}
-            label="Search"
+            label="ค้นหา"
           />
-          {isAuthenticated && (
+          {isAuthenticated ? (
             <MobileNavButton
               icon={<CircleUserRound size={20} />}
               isActive={activePage === 'buyerdashboard'}
               onClick={() => onNavigate('buyerdashboard')}
               theme={theme}
-              label="Account"
+              label="บัญชี"
+            />
+          ) : (
+            <MobileNavButton
+              icon={<Power size={20} />}
+              isActive={activePage === 'authbuyer'}
+              onClick={() => onNavigate('authbuyer')}
+              theme={theme}
+              label="Login"
             />
           )}
         </motion.div>

@@ -1,4 +1,4 @@
-import { ShowPremiumApps } from '@/components/ShowPremiumApps';
+import { ShowPremiumApps } from '@/components/home/general/ShowPremiumApps';
 import { generateMetadata } from '@/lib/utils';
 import React from 'react';
 

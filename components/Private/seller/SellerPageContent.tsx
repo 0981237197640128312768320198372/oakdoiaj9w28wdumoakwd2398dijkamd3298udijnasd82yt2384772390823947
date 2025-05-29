@@ -3,14 +3,14 @@
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerDashboard } from '@/context/SellerDashboardContext';
 import React, { useState, useEffect } from 'react';
-import SellerInfo from './profile/SellerInfo';
 import SellerNavbar from './SellerNavbar';
 import SellerOrders from './SellerOrders';
 import SellerAnalytics from './SellerAnalytics';
 import { UserPlus } from 'lucide-react';
 import Link from 'next/link';
-import SellerProducts from './product/SellerProducts';
 import CustomizeYourPage from './profile/CustomizeYourPage';
+import SellerInfo from './profile/SellerInfo';
+import SellerProducts from './product/SellerProducts';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();

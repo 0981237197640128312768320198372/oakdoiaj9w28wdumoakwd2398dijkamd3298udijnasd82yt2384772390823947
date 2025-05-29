@@ -10,11 +10,11 @@ import { CalendarDays, Info, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { PublicInfoSection } from './PublicInfoSection';
-import { SocialLinks } from '../profile/SocialLinks';
 import { useThemeUtils } from '@/lib/theme-utils';
 
 import { PublicStoreHeader } from './PublicStoreHeader';
 import { PublicStoreStats } from './PublicStoreStats';
+import { SocialLinks } from '@/components/Private/seller/profile/SocialLinks';
 
 interface PublicStoreProfileProps {
   seller: any;

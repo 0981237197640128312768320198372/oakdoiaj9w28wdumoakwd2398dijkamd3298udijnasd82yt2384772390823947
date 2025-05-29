@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect, ReactNode } from 'react';
-import LoadingAnimation from '@/components/Loading';
+import LoadingAnimation from '@/components/home/general/Loading';
 
 interface HomeWrapperProps {
   children: ReactNode;

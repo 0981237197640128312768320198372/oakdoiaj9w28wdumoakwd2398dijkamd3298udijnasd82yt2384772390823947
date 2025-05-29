@@ -13,7 +13,7 @@ import netflixpremiumlogo from '@/assets/images/netflixpremiumuhd.png';
 import primevideo from '@/assets/images/amazonprimevideo.png';
 import { PiWallet } from 'react-icons/pi';
 import Link from 'next/link';
-import Loading from '@/components/Loading';
+import Loading from '@/components/home/general/Loading';
 import EmailList from './EmailList';
 import CopyToClipboard from './CopyToClipboard';
 import { logActivity } from '@/lib/utils';

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
-import DepositForm from '@/components/DepositForm';
+import DepositForm from '@/components/home/general/DepositForm';
 import { generateMetadata, logActivity } from '@/lib/utils';
 import React, { useEffect, useState } from 'react';
 import Loading from '../../loading';

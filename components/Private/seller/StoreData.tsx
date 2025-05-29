@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import LoadingAnimation from '../Loading';
+import LoadingAnimation from '../../home/general/Loading';
 import { getSubdomain } from '@/lib/utils';
 
 interface StoreContextProps {

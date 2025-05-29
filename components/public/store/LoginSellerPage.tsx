@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Store, LogIn, UserPlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
-import ButtonWithLoader from '../ui/ButtonWithLoader';
+import ButtonWithLoader from '../../ui/ButtonWithLoader';
 
 export default function LoginSellerPage() {
   const [username, setUsername] = useState('');

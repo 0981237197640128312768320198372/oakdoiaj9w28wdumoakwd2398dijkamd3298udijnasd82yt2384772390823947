@@ -1,5 +1,5 @@
-import PageHeadline from '@/components/PageHeadline';
-import PaginatedRecommendations from '@/components/PaginatedRecommendations';
+import PageHeadline from '@/components/home/general/PageHeadline';
+import PaginatedRecommendations from '@/components/home/general/PaginatedRecommendations';
 import { Recommendations } from '@/lib/CRUD';
 import { generateMetadata } from '@/lib/utils';
 import React from 'react';

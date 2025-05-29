@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import PublicStoreLayout from '@/components/seller/public/PublicStoreLayout';
-import PublicStoreProfile from '@/components/seller/public/PublicStoreProfile';
-import StoreProducts from '@/components/seller/public/StoreProducts';
+import PublicStoreLayout from '@/components/public/store/PublicStoreLayout';
+import PublicStoreProfile from '@/components/public/store/PublicStoreProfile';
+import StoreProducts from '@/components/public/store/StoreProducts';
 import { fetchStoreData } from '@/lib/fetchStoreData';
 import { generateMetadata as generateMetadataUtil } from '@/lib/utils';
 import { notFound } from 'next/navigation';

@@ -4,9 +4,7 @@
 import type React from 'react';
 
 import { useState } from 'react';
-import { User, LogIn, UserPlus, Loader2, Key } from 'lucide-react';
-import Image from 'next/image';
-import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
+import { LogIn, UserPlus, Loader2, Key } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useClientIP } from '@/hooks/useClientIP';
 
@@ -58,7 +56,6 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
         coordinate,
       };
 
-      console.log('KAKAKAKAKAKAKAKAKA\n', payload);
       const response = await fetch('/api/v3/buyer/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,26 +78,8 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 animate-in fade-in duration-500">
-      <div className="w-full max-w-md space-y-8 bg-dark-700 p-8 rounded-2xl border border-dark-400">
-        <div className="flex flex-col items-center gap-3">
-          <div className="relative w-16 h-16 overflow-hidden">
-            <Image
-              src={dokmailogosquare || '/placeholder.svg'}
-              alt="Dokmai Logo"
-              layout="fill"
-              className="rounded-xl"
-            />
-          </div>
-          <h2 className="text-2xl font-bold text-light-100 flex items-center gap-2">
-            <User size={24} className="text-primary" />
-            Buyer Login
-          </h2>
-          <p className="text-light-500 text-sm text-center">
-            Welcome back! Please login to your buyer account.
-          </p>
-        </div>
-
+    <div className="w-full max-w-md mx-auto animate-in fade-in duration-500">
+      <div className="w-full space-y-8 bg-dark-700 p-8 rounded-2xl border border-dark-400">
         {/* Auth Method Selector */}
         <div className="flex rounded-xl overflow-hidden border border-dark-400">
           <button
@@ -125,7 +104,8 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Rest of the form content remains the same */}
           <div className="space-y-4">
             {authMethod === 'credentials' ? (
               <>
@@ -220,6 +200,7 @@ export const LoginBuyerPage: React.FC<LoginBuyerPageProps> = ({ onNavigate }) =>
 
             <div className="text-center">
               <button
+                type="button"
                 onClick={() => onNavigate('registerbuyer')}
                 className="inline-flex items-center gap-2 text-light-500 hover:text-light-100 text-sm transition-colors duration-300">
                 <UserPlus size={16} />

@@ -5,9 +5,7 @@
 import type React from 'react';
 
 import { useState } from 'react';
-import { User, ArrowLeft, ArrowRight, Send, Loader2, LogIn, Key } from 'lucide-react';
-import Image from 'next/image';
-import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
+import { ArrowLeft, ArrowRight, Send, Loader2, LogIn, Key } from 'lucide-react';
 import { useClientIP } from '@/hooks/useClientIP';
 
 interface RegisterBuyerPageProps {
@@ -170,24 +168,8 @@ export const RegisterBuyerPage: React.FC<RegisterBuyerPageProps> = ({ onNavigate
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 animate-in fade-in duration-500">
-      <div className="w-full max-w-2xl space-y-8 bg-dark-600 p-8 rounded-2xl border border-dark-400">
-        {/* Header */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="relative w-16 h-16 overflow-hidden">
-            <Image
-              src={dokmailogosquare || '/placeholder.svg'}
-              alt="Dokmai Logo"
-              layout="fill"
-              className="rounded-xl"
-            />
-          </div>
-          <h2 className="text-2xl font-bold text-light-100 flex items-center gap-2">
-            <User size={24} className="text-primary" />
-            Create Buyer Account
-          </h2>
-        </div>
-
+    <div className="w-full max-w-2xl mx-auto animate-in fade-in duration-500">
+      <div className="w-full space-y-8 bg-dark-600 p-8 rounded-2xl border border-dark-400">
         {/* Progress Steps */}
         <div className="flex justify-center items-center gap-4 mb-8">
           {[1, 2].map((s) => (
@@ -253,6 +235,7 @@ export const RegisterBuyerPage: React.FC<RegisterBuyerPageProps> = ({ onNavigate
                 </p>
               </div>
 
+              {/* Continue with the rest of the form fields... */}
               {/* Name field (required for all methods) */}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-light-100 mb-1">
@@ -345,9 +328,11 @@ export const RegisterBuyerPage: React.FC<RegisterBuyerPageProps> = ({ onNavigate
             </div>
           )}
 
+          {/* Continue with step 2 and the rest of the component exactly as it was... */}
           {step === 2 && (
             <div className="space-y-4 animate-in fade-in duration-300">
               <h3 className="text-xl font-semibold text-light-100 mb-4">Contact Information</h3>
+              {/* All the contact form fields remain the same */}
               <div>
                 <label
                   htmlFor="contact.facebook"
@@ -544,6 +529,7 @@ export const RegisterBuyerPage: React.FC<RegisterBuyerPageProps> = ({ onNavigate
           {/* Login Link */}
           <div className="mt-6 text-center">
             <button
+              type="button"
               onClick={() => onNavigate('loginbuyer')}
               className="inline-flex items-center gap-2 text-light-500 hover:text-light-100 text-sm transition-colors duration-300">
               <LogIn size={16} />

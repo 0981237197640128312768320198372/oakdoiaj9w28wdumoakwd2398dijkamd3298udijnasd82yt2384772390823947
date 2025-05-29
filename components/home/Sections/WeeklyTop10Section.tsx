@@ -1,0 +1,15 @@
+import React from 'react';
+import SubTitle from '../general/SubTitle';
+import NetflixTop10 from '../general/NetflixTop10';
+
+const WeeklyTop10Section = () => {
+  return (
+    <section id="10 อันดับประจำสัปดาห์" className="w-full __container mt-24 flex flex-col">
+      <SubTitle title="10 อันดับประจำสัปดาห์" className="mb-16" />
+
+      <NetflixTop10 />
+    </section>
+  );
+};
+
+export default WeeklyTop10Section;

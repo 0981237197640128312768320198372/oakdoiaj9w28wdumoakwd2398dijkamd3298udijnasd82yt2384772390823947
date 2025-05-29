@@ -1,5 +1,5 @@
 import React from 'react';
-import PromptPayQR from '@/components/PromptPayQR';
+import PromptPayQR from '@/components/home/general/PromptPayQR';
 import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import DepositTimer from './DepositTimer';
 

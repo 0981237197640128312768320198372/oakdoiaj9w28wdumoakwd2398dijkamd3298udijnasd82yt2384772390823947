@@ -1,7 +1,7 @@
 import React from 'react';
 import { RiVipCrownLine } from 'react-icons/ri';
 import { IoDiamondOutline } from 'react-icons/io5';
-import BadgePlan from '@/components/BadgePlan';
+import BadgePlan from '@/components/home/general/BadgePlan';
 
 export const navButtons = [
   {

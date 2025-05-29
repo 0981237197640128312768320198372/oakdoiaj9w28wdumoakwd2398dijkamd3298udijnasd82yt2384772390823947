@@ -9,7 +9,7 @@ import Image from 'next/image';
 import netflixpremium from '@/assets/images/netflixpremiumuhd.png';
 import primevideo from '@/assets/images/amazonprimevideo.png';
 import Link from 'next/link';
-import PersonalKeyModal from '@/components/PersonalKeyModal';
+import PersonalKeyModal from '@/components/home/general/PersonalKeyModal';
 import { MdOutlineAccountBalanceWallet } from 'react-icons/md';
 import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
 import Loading from './Loading';

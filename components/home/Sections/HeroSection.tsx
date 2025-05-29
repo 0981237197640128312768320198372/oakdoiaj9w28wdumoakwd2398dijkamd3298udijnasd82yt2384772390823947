@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { Features } from '@/components/Features';
+import { Features } from '@/components/home/general/Features';
 import { features } from '@/constant';
-import { DOKMAI } from '@/components/DOKMAI';
+import { DOKMAI } from '@/components/home/general/DOKMAI';
 const Highlight = ({ text, bgcolor = 'bg-primary' }: { text: string; bgcolor?: string }) => (
   <span className={`text-dark-800 ${bgcolor} px-1`}>{text}</span>
 );

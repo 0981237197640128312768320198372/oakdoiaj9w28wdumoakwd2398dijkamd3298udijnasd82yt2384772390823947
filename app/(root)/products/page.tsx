@@ -1,4 +1,4 @@
-import ShowProducts from '@/components/ShowProducts';
+import ShowProducts from '@/components/home/general/ShowProducts';
 import { generateMetadata } from '@/lib/utils';
 
 export const metadata = generateMetadata({

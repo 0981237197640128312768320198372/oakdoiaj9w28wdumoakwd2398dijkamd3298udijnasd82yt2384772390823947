@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import HeroSection from '@/components/Sections/HeroSection';
 import React from 'react';
-import FAQSection from '@/components/Sections/FAQSection';
-import ReviewSection from '@/components/Sections/ReviewSection';
-import CreditsSection from '@/components/Sections/CreditsSection';
-// import AlertAnnouncement from "@/components/AlertAnnouncement"
 import { generateMetadata } from '@/lib/utils';
-import RecomendationsSection from '@/components/Sections/RecomendationsSection';
-import WeeklyTop10Section from '@/components/Sections/WeeklyTop10Section';
-import { HomeWrapper } from '@/components/Sections/HomeWrapper';
+import { HomeWrapper } from '@/components/home/Sections/HomeWrapper';
+import HeroSection from '@/components/home/Sections/HeroSection';
+import RecomendationsSection from '@/components/home/Sections/RecomendationsSection';
+import WeeklyTop10Section from '@/components/home/Sections/WeeklyTop10Section';
+import FAQSection from '@/components/home/Sections/FAQSection';
+import ReviewSection from '@/components/home/Sections/ReviewSection';
 
 export const metadata = generateMetadata({
   title: 'แอพพรีเมียมคุณภาพสูง',

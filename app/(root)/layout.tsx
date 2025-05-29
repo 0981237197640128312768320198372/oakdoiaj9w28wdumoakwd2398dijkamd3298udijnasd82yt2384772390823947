@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/next-script-for-ga */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import '@/styles/globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/home/general/Navbar';
+import Footer from '@/components/home/general/Footer';
 import { Analytics } from '@vercel/analytics/react';
 import { CartProvider } from '@/context/CartContext';
 import { generateMetadata } from '@/lib/utils';

@@ -1,6 +1,6 @@
 'use client';
 
-import PageHeadline from '@/components/PageHeadline';
+import PageHeadline from '@/components/home/general/PageHeadline';
 import EmailsViewer from './EmailsViewer';
 
 const StaffPageContent = () => {

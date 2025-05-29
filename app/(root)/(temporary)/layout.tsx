@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/next-script-for-ga */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import AppNavbar from '@/components/seller/SellerNavbar';
+import AppNavbar from '@/components/Private/seller/SellerNavbar';
 import { CartProvider } from '@/context/CartContext';
 import { SellerAuthProvider } from '@/context/SellerAuthContext';
 import '@/styles/globals.css';

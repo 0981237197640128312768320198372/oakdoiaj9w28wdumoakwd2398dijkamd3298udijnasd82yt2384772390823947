@@ -13,10 +13,9 @@ import StoreFooter from './StoreFooter';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
-import { LoginBuyerPage } from '@/components/buyer/LoginBuyerPage';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
-import { RegisterBuyerPage } from '@/components/buyer/RegisterBuyerPage';
-import BuyerDashboard from '@/components/buyer/BuyerDashboard';
+import BuyerDashboard from '@/components/public/buyer/BuyerDashboard';
+import AuthBuyerPage from '@/components/public/buyer/AuthBuyerPage';
 
 interface PublicStoreLayoutProps {
   theme: ThemeType | null;
@@ -36,6 +35,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const [activePage, setActivePage] = useState('home');
 
   const themeUtils = useThemeUtils(theme);
+  const { isAuthenticated, buyer, logout } = useBuyerAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,17 +43,15 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
     }, 100);
     return () => clearTimeout(timer);
   }, []);
-  console.log(seller._id);
+
   const renderContent = () => {
     switch (activePage) {
       case 'profile':
         return <PublicStoreProfile seller={seller} theme={theme} />;
       case 'products':
         return <StoreProducts store={seller?.username} theme={theme} />;
-      case 'loginbuyer':
-        return <LoginBuyerPage onNavigate={setActivePage} />;
-      case 'registerbuyer':
-        return <RegisterBuyerPage sellerId={seller._id} onNavigate={setActivePage} />;
+      case 'authbuyer':
+        return <AuthBuyerPage onNavigate={setActivePage} sellerId={seller._id} theme={theme} />;
       case 'buyerdashboard':
         return <BuyerDashboard theme={theme} onNavigate={setActivePage} />;
       case 'home':
@@ -71,11 +69,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   };
 
   const layoutStyles = getLayoutStyles();
-
-  const { isAuthenticated, buyer, logout } = useBuyerAuth();
-
-  console.log('Public Store Layout isAuthenticated\n', isAuthenticated);
-  console.log('Public Store Layout buyer\n', buyer);
 
   return (
     <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>

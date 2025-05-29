@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ProductsList } from '@/components/ProductsList';
-import CartModal from '@/components/CartModal';
+import { ProductsList } from '@/components/home/general/ProductsList';
+import CartModal from '@/components/home/general/CartModal';
 import PageHeadline from './PageHeadline';
-import LoadingAnimation from '@/components/Loading';
+import LoadingAnimation from '@/components/home/general/Loading';
 import { useCart } from '@/context/CartContext';
 
 const ShowProducts = () => {

@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import LoadingAnimation from '@/components/Loading';
+import LoadingAnimation from '@/components/home/general/Loading';
 
 interface AuthData {
   username: string;
