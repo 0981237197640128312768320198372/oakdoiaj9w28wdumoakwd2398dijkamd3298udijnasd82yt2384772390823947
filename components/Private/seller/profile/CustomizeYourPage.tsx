@@ -11,8 +11,10 @@ import { useState, useEffect } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { ThemeType } from '@/types';
 
-const ThemeCustomizer = dynamic(() => import('@/components/seller/profile/ThemeCustomizer'));
-const EditProfile = dynamic(() => import('@/components/seller/profile/EditProfile'));
+const ThemeCustomizer = dynamic(
+  () => import('@/components/Private/seller/profile/ThemeCustomizer')
+);
+const EditProfile = dynamic(() => import('@/components/Private/seller/profile/EditProfile'));
 
 export default function CustomizeYourPage() {
   const { seller, login } = useSellerAuth();

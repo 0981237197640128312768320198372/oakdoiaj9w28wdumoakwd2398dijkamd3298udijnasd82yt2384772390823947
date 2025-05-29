@@ -8,9 +8,9 @@ import SellerOrders from './SellerOrders';
 import SellerAnalytics from './SellerAnalytics';
 import { UserPlus } from 'lucide-react';
 import Link from 'next/link';
-import CustomizeYourPage from './profile/CustomizeYourPage';
 import SellerInfo from './profile/SellerInfo';
 import SellerProducts from './product/SellerProducts';
+import CustomizeYourPage from './profile/CustomizeYourPage';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();
