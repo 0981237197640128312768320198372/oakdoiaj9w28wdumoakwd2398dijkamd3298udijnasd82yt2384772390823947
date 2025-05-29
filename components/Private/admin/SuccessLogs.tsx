@@ -9,7 +9,7 @@ import { TbRefresh } from 'react-icons/tb';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import CopyToClipboard from '../CopyToClipboard';
+import CopyToClipboard from '@/components/home/general/CopyToClipboard';
 
 interface SuccessLog {
   message: string;
