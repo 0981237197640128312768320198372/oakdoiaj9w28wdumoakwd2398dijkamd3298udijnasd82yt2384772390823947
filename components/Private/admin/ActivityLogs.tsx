@@ -13,8 +13,8 @@ import primevideo from '@/assets/images/amazonprimevideo.png';
 import Image from 'next/image';
 import { RxActivityLog } from 'react-icons/rx';
 import { TbRefresh } from 'react-icons/tb';
-import ShowHideText from '../ShowHideText';
 import { formatTime } from '@/lib/utils';
+import ShowHideText from '@/components/home/general/ShowHideText';
 
 export default function ActivityLogs() {
   const [logs, setLogs] = useState<any[]>([]);
