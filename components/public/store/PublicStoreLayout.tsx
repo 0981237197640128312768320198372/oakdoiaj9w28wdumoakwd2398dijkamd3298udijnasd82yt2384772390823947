@@ -53,7 +53,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
       case 'authbuyer':
         return <AuthBuyerPage onNavigate={setActivePage} seller={seller} theme={theme} />;
       case 'buyerdashboard':
-        return <BuyerDashboard theme={theme} onNavigate={setActivePage} />;
+        return <BuyerDashboard theme={theme} />;
       case 'home':
       default:
         return <HomeStorePage products={products} categories={categories} theme={theme} />;

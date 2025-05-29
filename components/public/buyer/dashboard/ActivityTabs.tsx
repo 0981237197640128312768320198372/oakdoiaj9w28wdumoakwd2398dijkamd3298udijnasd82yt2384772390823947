@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { User, History, Wallet, Star, MessageSquare } from 'lucide-react';
+import { User, History, Wallet, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
@@ -21,11 +21,10 @@ export const ActivityTabs: React.FC<ActivityTabsProps> = ({ activeTab, onTabChan
     { id: 'activities', label: 'Activities', icon: History },
     { id: 'transactions', label: 'Transactions', icon: Wallet },
     { id: 'interactions', label: 'Interactions', icon: Star },
-    { id: 'contact', label: 'Contact', icon: MessageSquare },
   ];
 
   return (
-    <div className="grid grid-cols-3 lg:grid-cols-5 gap-3">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
       {tabs.map((tab) => (
         <motion.button
           key={tab.id}

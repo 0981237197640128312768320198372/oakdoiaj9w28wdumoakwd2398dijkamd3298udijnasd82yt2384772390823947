@@ -35,7 +35,7 @@ export const BalanceCard: React.FC<BalanceCardProps> = ({
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3, delay: 0.1 }}
       className={cn(
-        'p-4 border backdrop-blur-sm transition-all duration-300',
+        'p-4 border backdrop-blur-sm transition-all duration-300 w-full',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass(),
         themeUtils.getComponentShadowClass()

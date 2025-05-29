@@ -2,20 +2,22 @@
 'use client';
 
 import type React from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Edit, LogOut, User } from 'lucide-react';
+import { Edit, User, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
+import { ContactInfo } from './ContactInfo';
 
 interface DashboardHeaderProps {
   buyer: any;
   theme: ThemeType | null;
-  onLogout: () => void;
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ buyer, theme, onLogout }) => {
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ buyer, theme }) => {
   const themeUtils = useThemeUtils(theme);
+  const [showContactInfo, setShowContactInfo] = useState(false);
 
   return (
     <motion.div
@@ -44,8 +46,18 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ buyer, theme, 
             {buyer.username && <p className="text-xs text-gray-400">@{buyer.username}</p>}
           </div>
         </div>
-
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowContactInfo(!showContactInfo)}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-80',
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass(),
+              'border hover:shadow-sm'
+            )}>
+            <MessageSquare size={14} />
+            <span className="hidden sm:inline">Contact</span>
+          </button>
           <button
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-80',
@@ -56,19 +68,19 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ buyer, theme, 
             <Edit size={14} />
             <span className="hidden sm:inline">Edit</span>
           </button>
-          <button
-            onClick={onLogout}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-80',
-              'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100',
-              'dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/30',
-              themeUtils.getComponentRoundednessClass()
-            )}>
-            <LogOut size={14} />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
         </div>
       </div>
+
+      {showContactInfo && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-4">
+          <ContactInfo buyer={buyer} theme={theme} />
+        </motion.div>
+      )}
     </motion.div>
   );
 };

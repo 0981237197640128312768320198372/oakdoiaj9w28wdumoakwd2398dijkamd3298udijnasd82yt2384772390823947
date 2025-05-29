@@ -12,16 +12,14 @@ import { BalanceCard } from './BalanceCard';
 import { ActivityTabs } from './ActivityTabs';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
-import { ContactInfo } from './ContactInfo';
 import { DashboardHeader } from './DashboardHeader';
 
 interface BuyerDashboardProps {
   theme: ThemeType | null;
-  onNavigate: (page: string) => void;
 }
 
-const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) => {
-  const { buyer, logout } = useBuyerAuth();
+const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
+  const { buyer } = useBuyerAuth();
   const [showBalance, setShowBalance] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [activityFilter, setActivityFilter] = useState<{
@@ -41,7 +39,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
 
   if (!buyer) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center ">
         <div className="text-center space-y-3">
           <div className="w-12 h-12 mx-auto bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
             <User size={24} className="text-gray-400" />
@@ -56,11 +54,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
       </div>
     );
   }
-
-  const handleLogout = () => {
-    logout();
-    onNavigate('home');
-  };
 
   const handleFilterChange = (newFilter: { category?: string; type?: string; search?: string }) => {
     setActivityFilter(newFilter);
@@ -84,22 +77,20 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="w-full max-w-6xl mx-auto space-y-4">
-      {/* Header */}
-      <DashboardHeader buyer={buyer} theme={theme} onLogout={handleLogout} />
+      className="w-full max-w-screen-lg mx-auto space-y-4 min-h-[75vh]">
+      <div className="flex flex-col lg:flex-row gap-5 w-full">
+        <DashboardHeader buyer={buyer} theme={theme} />
 
-      {/* Balance Card */}
-      <BalanceCard
-        balance={buyer.balance || 0}
-        showBalance={showBalance}
-        onToggleBalance={() => setShowBalance(!showBalance)}
-        theme={theme}
-      />
+        <BalanceCard
+          balance={buyer.balance || 0}
+          showBalance={showBalance}
+          onToggleBalance={() => setShowBalance(!showBalance)}
+          theme={theme}
+        />
+      </div>
 
-      {/* Navigation Tabs */}
       <ActivityTabs activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
 
-      {/* Content Area */}
       <div className="space-y-4">
         <AnimatePresence mode="wait">
           <motion.div
@@ -126,8 +117,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme, onNavigate }) =>
                 theme={theme}
               />
             )}
-
-            {activeTab === 'contact' && <ContactInfo buyer={buyer} theme={theme} />}
           </motion.div>
         </AnimatePresence>
       </div>
