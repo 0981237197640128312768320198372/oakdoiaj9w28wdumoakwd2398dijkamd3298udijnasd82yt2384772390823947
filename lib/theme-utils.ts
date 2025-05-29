@@ -236,7 +236,7 @@ export function useThemeUtils(theme: ThemeType | null): ThemeUtilsReturn {
 
   // Pre-built component classes
   const getButtonClass = (variant: 'primary' | 'secondary' | 'outline' = 'primary'): string => {
-    const baseClasses = 'flex items-center gap-2 px-4 py-2 font-medium transition-all duration-200';
+    const baseClasses = 'flex items-center gap-2 font-medium transition-all duration-200';
     const roundednessClass = getButtonRoundednessClass();
     const shadowClass = getButtonShadowClass();
     const borderClass = getButtonBorderClass();

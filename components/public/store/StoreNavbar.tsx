@@ -70,8 +70,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             themeUtils.getCardClass(),
             themeUtils.getButtonRoundednessClass()
           )}>
-          {/* Logo and Store Name */}
-          <div className="flex items-center gap-3">
+          <button onClick={() => onNavigate('home')} className="flex items-center gap-3">
             <div
               className={cn(
                 'relative overflow-hidden transition-all duration-300',
@@ -97,9 +96,8 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                 </h1>
               </div>
             )}
-          </div>
+          </button>
 
-          {/* Main Navigation - Desktop */}
           <div className="items-center gap-1 hidden md:flex">
             <NavButton
               icon={<Home size={16} />}
@@ -124,20 +122,25 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             />
           </div>
 
-          {/* Right Side Actions */}
           <div className="flex items-center gap-2">
             <button
               onClick={handleSearch}
               className={cn(
-                'flex items-center justify-center transition-all duration-300 p-2',
-                isLight ? 'hover:bg-gray-100' : 'hover:bg-dark-700',
+                'flex items-center justify-center transition-all duration-300 p-2 group',
+                isLight ? 'hover:bg-light-300 bg-light-100' : 'hover:bg-dark-500 bg-dark-600',
                 themeUtils.getButtonRoundednessClass()
               )}
               aria-label="ค้นหา">
-              <Search size={18} className={isLight ? 'text-gray-700' : 'text-gray-300'} />
+              <Search
+                size={18}
+                className={
+                  isLight
+                    ? 'text-dark-600 group-hover:text-dark-800'
+                    : 'text-light-500 group-hover:text-light-100'
+                }
+              />
             </button>
 
-            {/* Auth Buttons */}
             <AnimatePresence mode="wait">
               {isAuthenticated ? (
                 <motion.div
@@ -190,7 +193,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                       'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
                       themeUtils.getPrimaryColorClass('bg'),
                       'text-white',
-                      themeUtils.getComponentRoundednessClass()
+                      themeUtils.getButtonRoundednessClass()
                     )}>
                     <Power size={16} />
                     <span className="hidden lg:inline font-medium">เข้าสู่ระบบ</span>
@@ -208,11 +211,12 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.2 }}
           className={cn(
-            'mb-6 border backdrop-blur flex items-center justify-around gap-1 shadow-lg',
+            'mb-6 border backdrop-blur flex items-center justify-around shadow-lg',
             isLight
               ? 'bg-light-500/10 border-light-300 shadow-black/20'
               : 'bg-dark-100/10 border-dark-300 shadow-black',
-            'rounded-full w-auto'
+            'rounded-full w-auto',
+            themeUtils.getButtonRoundednessClass()
           )}>
           <MobileNavButton
             icon={<Home size={20} />}
@@ -256,7 +260,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
               isActive={activePage === 'authbuyer'}
               onClick={() => onNavigate('authbuyer')}
               theme={theme}
-              label="Login"
+              label="เข้าสู่ระบบ"
             />
           )}
         </motion.div>
@@ -334,13 +338,13 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
     <button
       onClick={onClick}
       className={cn(
-        'flex flex-col transition-all duration-500 items-center justify-center relative p-3 ',
+        'flex flex-col  transition-all duration-500 items-center justify-center relative p-3 ',
         themeUtils.getTextColors(),
         themeUtils.getButtonRoundednessClass(),
         isActive && themeUtils.getPrimaryColorClass('bg')
       )}
       aria-label={label}>
-      <div className="flex flex-col justify-center items-center px-3">
+      <div className="flex flex-col justify-center items-center px-3 gap-1">
         {icon}
         <span className={cn('text-[9px] font-medium transition-all duration-300')}>{label}</span>
       </div>
