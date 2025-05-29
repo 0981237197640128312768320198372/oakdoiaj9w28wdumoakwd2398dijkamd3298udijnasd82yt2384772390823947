@@ -312,3 +312,36 @@ export const getSubdomain = (hostname: string): string | null => {
   }
   return null;
 };
+
+export async function sendLineMessage(
+  userId: any,
+  message: any,
+  endpoint = '/api/v3/line/send-message'
+) {
+  if (!userId || typeof userId !== 'string') {
+    throw new Error('Invalid or missing userId');
+  }
+  if (!message || typeof message !== 'string') {
+    throw new Error('Invalid or missing message');
+  }
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, message }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to send message');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error in sendLineMessage:', error);
+    throw error; // Let the caller handle the error
+  }
+}
