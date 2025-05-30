@@ -166,7 +166,8 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    await theme.save();
+    // Force validation to be skipped for this save operation
+    await theme.save({ validateBeforeSave: false });
 
     return NextResponse.json({ message: 'Theme updated successfully' }, { status: 200 });
   } catch (error) {

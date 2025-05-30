@@ -72,7 +72,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
               variant="outline"
               className={cn(
                 'flex items-center gap-2 border-[1px] hover:border-yellow-500 border-yellow-500/30 bg-gradient-to-tr cursor-default from-transparent hover:via-yellow-400/30 via-yellow-400/10 to-transparent from-5% via-55% to-100% transition-all duration-500',
-                themeUtils.getButtonRoundednessClass()
+                themeUtils.getComponentRoundednessClass()
               )}>
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
               <span className={cn(themeUtils.getTextColors())}>
@@ -83,7 +83,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
               variant="outline"
               className={cn(
                 'flex items-center gap-2 border-[1px] hover:border-fuchsia-500 border-fuchsia-500/30 bg-gradient-to-tr cursor-default from-transparent hover:via-fuchsia-400/30 via-fuchsia-400/10 to-transparent from-5% via-55% to-100% transition-all duration-500',
-                themeUtils.getButtonRoundednessClass()
+                themeUtils.getComponentRoundednessClass()
               )}>
               <ShoppingCart className="h-3 w-3 fill-fuchsia-400 text-fuchsia-400" />
               <span className={cn(themeUtils.getTextColors())}>
@@ -94,7 +94,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
               variant="outline"
               className={cn(
                 'flex items-center gap-2 border-[1px] hover:border-green-500 border-green-500/30 bg-gradient-to-tr cursor-default from-transparent hover:via-green-500/30 via-green-500/10 to-transparent from-5% via-55% to-100% transition-all duration-500',
-                themeUtils.getButtonRoundednessClass()
+                themeUtils.getComponentRoundednessClass()
               )}>
               <ThumbsUp className="h-3 w-3 text-green-500" />
               <span className={cn(themeUtils.getTextColors())}>
@@ -105,7 +105,8 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
               variant="outline"
               className={cn(
                 'flex items-center gap-2 border-[1px] hover:border-rose-500 border-rose-500/30 bg-gradient-to-tr cursor-default from-transparent hover:via-rose-500/30 via-rose-500/10 to-transparent from-5% via-55% to-100% transition-all duration-500',
-                themeUtils.getButtonRoundednessClass()
+
+                themeUtils.getComponentRoundednessClass()
               )}>
               <ThumbsDown className="h-3 w-3 text-rose-500" />
               <span className={cn(themeUtils.getTextColors())}>

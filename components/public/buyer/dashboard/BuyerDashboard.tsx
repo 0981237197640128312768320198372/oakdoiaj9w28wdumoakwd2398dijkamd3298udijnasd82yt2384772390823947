@@ -9,7 +9,6 @@ import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivities } from '@/hooks/useBuyerActivities';
 import type { ThemeType } from '@/types';
 import { BalanceCard } from './BalanceCard';
-import { ActivityTabs } from './ActivityTabs';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { DashboardHeader } from './DashboardHeader';
@@ -21,7 +20,7 @@ interface BuyerDashboardProps {
 const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   const { buyer } = useBuyerAuth();
   const [showBalance, setShowBalance] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('');
   const [activityFilter, setActivityFilter] = useState<{
     category?: string;
     type?: string;
@@ -89,34 +88,28 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
         />
       </div>
 
-      <ActivityTabs activeTab={activeTab} onTabChange={setActiveTab} theme={theme} />
-
       <div className="space-y-4">
+        <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
+
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={activeTab || 'latest'}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}>
-            {activeTab === 'overview' && <StatsGrid stats={stats} theme={theme} />}
-
-            {(activeTab === 'activities' ||
-              activeTab === 'transactions' ||
-              activeTab === 'interactions') && (
-              <ActivityList
-                activities={activities}
-                loading={activitiesLoading}
-                error={activitiesError}
-                pagination={pagination}
-                activeTab={activeTab}
-                filter={activityFilter}
-                onFilterChange={handleFilterChange}
-                onLoadMore={loadMore}
-                onRefresh={() => refetch()}
-                theme={theme}
-              />
-            )}
+            <ActivityList
+              activities={activities}
+              loading={activitiesLoading}
+              error={activitiesError}
+              pagination={pagination}
+              activeTab={activeTab || 'latest'}
+              filter={activityFilter}
+              onFilterChange={handleFilterChange}
+              onLoadMore={loadMore}
+              onRefresh={() => refetch()}
+              theme={theme}
+            />
           </motion.div>
         </AnimatePresence>
       </div>

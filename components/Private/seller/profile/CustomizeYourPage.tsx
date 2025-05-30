@@ -210,25 +210,29 @@ export default function CustomizeYourPage() {
     <div className="min-h-screen bg-black">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-white mb-2">Store Customization</h1>
-          <p className="text-sm text-light-400">Customize your store's appearance and settings</p>
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-xl md:text-2xl font-semibold text-white mb-1 md:mb-2">
+            Store Customization
+          </h1>
+          <p className="text-xs md:text-sm text-light-400">
+            Customize your store's appearance and settings
+          </p>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-dark-800 border border-dark-700 p-1 h-10">
+          <TabsList className="grid w-full grid-cols-2 bg-dark-800 border border-dark-700 p-1 h-9 md:h-10">
             <TabsTrigger
               value="theme"
-              className="data-[state=active]:bg-dark-700 data-[state=active]:text-white text-light-400 text-sm font-medium h-8">
-              <Palette className="h-4 w-4 mr-2" />
-              Theme
+              className="data-[state=active]:bg-dark-700 data-[state=active]:text-white text-light-400 text-xs md:text-sm font-medium h-7 md:h-8">
+              <Palette className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+              <span className="hidden xs:inline">Theme</span>
             </TabsTrigger>
             <TabsTrigger
               value="profile"
-              className="data-[state=active]:bg-dark-700 data-[state=active]:text-white text-light-400 text-sm font-medium h-8">
-              <User className="h-4 w-4 mr-2" />
-              Profile
+              className="data-[state=active]:bg-dark-700 data-[state=active]:text-white text-light-400 text-xs md:text-sm font-medium h-7 md:h-8">
+              <User className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+              <span className="hidden xs:inline">Profile</span>
             </TabsTrigger>
           </TabsList>
 

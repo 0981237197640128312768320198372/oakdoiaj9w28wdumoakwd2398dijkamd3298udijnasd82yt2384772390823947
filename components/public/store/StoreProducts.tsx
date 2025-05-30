@@ -47,7 +47,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
       // Filter button styles
       filterButton: cn(
         'px-4 py-2 border text-sm transition-colors',
-        // themeUtils.getButtonRoundednessClass(),
         themeUtils.getPrimaryColorClass('bg') + '/10',
         'hover:' + themeUtils.getPrimaryColorClass('bg') + '/20',
         themeUtils.getPrimaryColorClass('text'),

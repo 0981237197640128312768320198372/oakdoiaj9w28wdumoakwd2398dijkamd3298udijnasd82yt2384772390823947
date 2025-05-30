@@ -239,13 +239,13 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Logo Upload Section */}
-        <Card className="bg-dark-800 border-dark-700 p-6 w-full items-center">
-          <div className="flex items-center gap-6">
+        <Card className="bg-dark-800 border-dark-700 p-4 md:p-6 w-full items-center">
+          <div className="flex items-center gap-3 md:gap-6">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <label className="relative group cursor-pointer">
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-dark-600 group-hover:border-priamry transition-all duration-300 bg-dark-700">
+                    <div className="w-16 h-16 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-dark-600 group-hover:border-priamry transition-all duration-300 bg-dark-700">
                       {logoPreview ? (
                         <Image
                           src={logoPreview || '/placeholder.svg'}
@@ -302,17 +302,19 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         </Card>
 
         {/* Store Information */}
-        <Card className="bg-dark-800 border-dark-700 p-6">
-          <div className="space-y-4">
+        <Card className="bg-dark-800 border-dark-700 p-4 md:p-6">
+          <div className="space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
-              <Store size={18} className="text-priamry" />
-              <h3 className="text-lg font-semibold text-white">Store Information</h3>
+              <Store size={16} className="text-priamry md:h-[18px] md:w-[18px]" />
+              <h3 className="text-base md:text-lg font-semibold text-white">Store Information</h3>
             </div>
             <Separator className="bg-dark-600" />
 
             <div className="grid gap-4">
               <div className="space-y-2">
-                <label htmlFor="storeName" className="text-sm font-medium text-light-300">
+                <label
+                  htmlFor="storeName"
+                  className="text-xs md:text-sm font-medium text-light-300">
                   Store Name *
                 </label>
                 <Input
@@ -332,7 +334,9 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="storeDescription" className="text-sm font-medium text-light-300">
+                <label
+                  htmlFor="storeDescription"
+                  className="text-xs md:text-sm font-medium text-light-300">
                   Store Description *
                 </label>
                 <Textarea
@@ -356,11 +360,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         </Card>
 
         {/* Account Information */}
-        <Card className="bg-dark-800 border-dark-700 p-6">
-          <div className="space-y-4">
+        <Card className="bg-dark-800 border-dark-700 p-4 md:p-6">
+          <div className="space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
-              <User size={18} className="text-priamry" />
-              <h3 className="text-lg font-semibold text-white">Account Information</h3>
+              <User size={16} className="text-priamry md:h-[18px] md:w-[18px]" />
+              <h3 className="text-base md:text-lg font-semibold text-white">Account Information</h3>
             </div>
             <Separator className="bg-dark-600" />
 
@@ -368,8 +372,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="text-sm font-medium text-light-300 flex items-center gap-2">
-                  <Mail size={14} className="text-primary " />
+                  className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                  <Mail size={12} className="text-primary md:h-[14px] md:w-[14px]" />
                   Email Address *
                 </label>
                 <Input
@@ -393,8 +397,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                 <div className="space-y-2">
                   <label
                     htmlFor="password"
-                    className="text-sm font-medium text-light-300 flex items-center gap-2">
-                    <Lock size={14} className="text-primary " />
+                    className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                    <Lock size={12} className="text-primary md:h-[14px] md:w-[14px]" />
                     New Password
                   </label>
                   <Input
@@ -417,8 +421,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                 <div className="space-y-2">
                   <label
                     htmlFor="confirmPassword"
-                    className="text-sm font-medium text-light-300 flex items-center gap-2">
-                    <Lock size={14} className="text-primary " />
+                    className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                    <Lock size={12} className="text-primary md:h-[14px] md:w-[14px]" />
                     Confirm Password
                   </label>
                   <Input
@@ -443,11 +447,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         </Card>
 
         {/* Contact Information */}
-        <Card className="bg-dark-800 border-dark-700 p-6">
-          <div className="space-y-4">
+        <Card className="bg-dark-800 border-dark-700 p-4 md:p-6">
+          <div className="space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
-              <MessageSquare size={18} className="text-priamry" />
-              <h3 className="text-lg font-semibold text-white">Contact Information</h3>
+              <MessageSquare size={16} className="text-priamry md:h-[18px] md:w-[18px]" />
+              <h3 className="text-base md:text-lg font-semibold text-white">Contact Information</h3>
             </div>
             <Separator className="bg-dark-600" />
 
@@ -455,8 +459,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="facebook"
-                  className="text-sm font-medium text-light-300 flex items-center gap-2">
-                  <FaFacebook size={14} className="text-primary " />
+                  className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                  <FaFacebook size={12} className="text-primary md:h-[14px] md:w-[14px]" />
                   Facebook
                 </label>
                 <div className="relative">
@@ -477,8 +481,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="line"
-                  className="text-sm font-medium text-light-300 flex items-center gap-2">
-                  <BsLine size={14} className="text-green-500 " />
+                  className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                  <BsLine size={12} className="text-green-500 md:h-[14px] md:w-[14px]" />
                   Line ID
                 </label>
                 <div className="relative">
@@ -499,8 +503,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="instagram"
-                  className="text-sm font-medium text-light-300 flex items-center gap-2">
-                  <FaSquareInstagram size={14} className="text-pink-500 " />
+                  className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                  <FaSquareInstagram size={12} className="text-pink-500 md:h-[14px] md:w-[14px]" />
                   Instagram
                 </label>
                 <div className="relative">
@@ -521,8 +525,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="whatsapp"
-                  className="text-sm font-medium text-light-300 flex items-center gap-2">
-                  <IoLogoWhatsapp size={14} className="text-green-500 " />
+                  className="text-xs md:text-sm font-medium text-light-300 flex items-center gap-2">
+                  <IoLogoWhatsapp size={12} className="text-green-500 md:h-[14px] md:w-[14px]" />
                   WhatsApp
                 </label>
                 <Input
@@ -560,15 +564,15 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
           <Button2
             type="submit"
             disabled={isLoading || isUploading}
-            className="bg-blue-600 hover:bg-blue-700 text-white h-9 px-6">
+            className="bg-blue-600 hover:bg-blue-700 text-white h-8 md:h-9 px-4 md:px-6 text-xs md:text-sm">
             {isLoading ? (
               <>
-                <Loader2 size={16} className="mr-2 animate-spin" />
+                <Loader2 size={14} className="mr-1 md:mr-2 animate-spin md:h-4 md:w-4" />
                 Saving...
               </>
             ) : (
               <>
-                <Save size={16} className="mr-2" />
+                <Save size={14} className="mr-1 md:mr-2 md:h-4 md:w-4" />
                 Save Changes
               </>
             )}

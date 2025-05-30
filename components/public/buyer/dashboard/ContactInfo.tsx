@@ -3,7 +3,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Facebook, Instagram, Phone, MessageSquare, Edit } from 'lucide-react';
+import { Mail, Facebook, Instagram, Phone, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
@@ -68,21 +68,11 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer, theme }) => {
         themeUtils.getComponentRoundednessClass(),
         themeUtils.getComponentShadowClass()
       )}>
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <MessageSquare size={16} />
           Contact Information
         </h3>
-        <button
-          className={cn(
-            'flex items-center gap-1.5 px-2 py-1 text-xs font-medium transition-all duration-300',
-            themeUtils.getCardClass(),
-            themeUtils.getComponentRoundednessClass(),
-            'border hover:shadow-sm'
-          )}>
-          <Edit size={12} />
-          Edit
-        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -126,14 +116,6 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer, theme }) => {
           <p className="text-xs text-gray-500">
             Add more contact methods to help sellers reach you
           </p>
-          <button
-            className={cn(
-              'mt-2 px-3 py-1.5 text-xs font-medium transition-all duration-300',
-              themeUtils.getButtonClass(),
-              themeUtils.getComponentRoundednessClass()
-            )}>
-            Add Contact Info
-          </button>
         </div>
       )}
     </div>

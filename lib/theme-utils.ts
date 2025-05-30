@@ -112,6 +112,8 @@ export function useThemeUtils(theme: ThemeType | null): ThemeUtilsReturn {
         return 'rounded-md';
       case 'lg':
         return 'rounded-lg';
+      case 'xl':
+        return 'rounded-xl';
       case 'full':
         return 'rounded-full';
       default:

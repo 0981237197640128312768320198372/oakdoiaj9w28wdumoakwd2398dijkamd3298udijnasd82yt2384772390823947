@@ -60,7 +60,7 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
             whileTap={{ scale: 0.95 }}
             className={cn(
               'px-3 border backdrop-blur-sm font-aktivGroteskRegular flex items-center justify-center min-h-[50px]',
-              themeUtils.getButtonRoundednessClass(),
+              themeUtils.getComponentRoundednessClass(),
               selectedCategory === category._id
                 ? cn(
                     themeUtils.getPrimaryColorClass('bg') + '/10',

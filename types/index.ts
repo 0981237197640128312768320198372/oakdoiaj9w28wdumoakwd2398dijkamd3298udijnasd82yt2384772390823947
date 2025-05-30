@@ -112,13 +112,13 @@ export interface ThemeType {
     button: {
       textColor?: string;
       backgroundColor?: string;
-      roundedness?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+      roundedness?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
       shadow?: 'none' | 'sm' | 'md' | 'lg';
       border?: 'none' | 'sm' | 'md' | 'lg';
       borderColor?: string;
     };
     componentStyles: {
-      cardRoundedness?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+      cardRoundedness?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
       cardShadow?: 'none' | 'sm' | 'md' | 'lg';
     };
     ads: {

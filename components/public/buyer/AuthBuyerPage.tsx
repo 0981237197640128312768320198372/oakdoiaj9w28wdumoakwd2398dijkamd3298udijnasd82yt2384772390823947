@@ -35,11 +35,11 @@ export const AuthBuyerPage: React.FC<AuthBuyerPageProps> = ({ onNavigate, seller
   const sellerId = seller?._id;
 
   return (
-    <div className="w-full min-h-[500px] flex flex-col items-center justify-center p-5 gap-5">
+    <div className="w-full min-h-[75vh] flex flex-col items-center justify-center p-5 gap-5">
       <div className=" flex flex-col lg:flex-row lg:gap-5 justify-center items-center">
         <div
           className={cn(
-            'w-14 h-14 mb-4  relative overflow-hidden shadow-md',
+            'w-14 h-14 mb-4  relative overflow-hidden shadow-md ',
             themeUtils.getButtonRoundednessClass(),
             themeUtils.getComponentShadowClass()
           )}>
