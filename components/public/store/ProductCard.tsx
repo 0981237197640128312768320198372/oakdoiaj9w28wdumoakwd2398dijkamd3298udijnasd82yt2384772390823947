@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Star, Tag } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 
@@ -76,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       card: cn(
         'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg ',
         isLight
-          ? 'bg-light-200 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
+          ? 'bg-light-100 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
           : 'bg-dark-600 border-dark-400 hover:border-dark-400 hover:shadow-dark-800/20'
       ),
       imageContainer: cn(
@@ -98,7 +98,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         isLight ? 'bg-dark-500/30 hover:bg-dark-500/50' : 'bg-light-500/50 hover:bg-light-500'
       ),
       discountBadge: cn(
-        'absolute top-1 right-1 px-1 py-0.5 rounded text-lg font-bold',
+        'absolute top-3 right-1 px-1 py-0.5 rounded text-sm lg:text-lg font-bold animate-bounce ',
         themeUtils?.getPrimaryColorClass('bg'),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
@@ -108,7 +108,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ),
       contentContainer: cn('p-3 space-y-2', isLight ? 'text-dark-800' : 'text-light-200'),
       title: cn(
-        'text-base font-semibold line-clamp-1',
+        'text-xs lg:text-base font-semibold line-clamp-2 w-full',
         isLight ? 'text-dark-800' : 'text-light-200'
       ),
       originalPrice: cn(
@@ -124,12 +124,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         themeUtils?.getPrimaryColorClass('text')
       ),
       footer: cn(
-        'flex items-center justify-between pt-2 border-t',
-        isLight ? 'border-light-300' : 'border-dark-600'
+        'flex items-center justify-between pt-2 mt-5 border-t',
+        isLight ? 'border-light-300' : 'border-dark-300'
       ),
       stockText: cn('text-xs', isLight ? 'text-dark-600' : 'text-light-600'),
       buyButton: cn(
-        'px-2 py-1 rounded text-xs font-medium flex items-center gap-1',
+        'md:px-2 md:py-1 px-2 pt-1 rounded text-xs lg:text-lg font-medium flex items-center gap-1 hover:scale-105',
         themeUtils?.getPrimaryColorClass('bg'),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
@@ -140,8 +140,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ratingContainer: cn('flex items-center gap-1', isLight ? 'text-amber-500' : 'text-amber-400'),
       dokmaiCoin: dokmaiCoinSymbol(isLight),
       categoryTag: cn(
-        'flex items-center gap-1 text-xs ',
-        isLight ? 'text-dark-600' : 'text-light-500'
+        'flex items-center justify-center gap-1 px-2 py-1 text-xs absolute top-1 left-1 border-[1px]',
+        isLight
+          ? 'text-dark-600 bg-light-300 border-light-700'
+          : 'text-light-500 bg-dark-500 border-dark-400'
       ),
     };
   };
@@ -198,7 +200,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       </div>
 
       <div className={styles.contentContainer}>
-        <div className="flex flex-col items-start justify-start gap-1">
+        <div className="flex flex-col items-end justify-start gap-1">
           {product.rating ? (
             <div className={styles.ratingContainer}>
               <div className="flex items-center bg-amber-500/10 px-2 py-1 rounded">
@@ -219,14 +221,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
           )}
           <div className="flex items-center gap-1 text-xs w-full justify-between">
             <h3 className={styles.title}>{product.title}</h3>
-            <div className={cn(styles.categoryTag, 'px-2 py-1 flex items-center')}>
+            <div className={cn(styles.categoryTag)}>
               {category?.logoUrl ? (
                 <Image
                   src={category.logoUrl}
                   alt={category.name}
                   width={25}
                   height={25}
-                  className="mr-1"
+                  className="w-full"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                     const nextElement = e.currentTarget.nextSibling as HTMLElement;
@@ -238,23 +240,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
               ) : (
                 <span>{category?.name}</span>
               )}
-              <Tag size={10} />
             </div>
           </div>
           <div className="flex w-full justify-between items-center">
             <div className="flex items-center gap-3">
               {hasDiscount ? (
-                <>
-                  <span className={styles.discountedPrice}>
-                    <Image
-                      src={styles.dokmaiCoin}
-                      alt="Dokmai Coin"
-                      className="h-4 w-auto"
-                      width={50}
-                      height={50}
-                    />
-                    {discountedPrice.toFixed(2)}
-                  </span>
+                <div className="flex flex-col lg:flex-row-reverse lg:gap-2 gap-1">
                   <span className={styles.originalPrice}>
                     <Image
                       src={styles.dokmaiCoin}
@@ -265,7 +256,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
                     />
                     {product.price.toFixed(2)}
                   </span>
-                </>
+                  <span className={styles.discountedPrice}>
+                    <Image
+                      src={styles.dokmaiCoin}
+                      alt="Dokmai Coin"
+                      className="h-4 w-auto"
+                      width={50}
+                      height={50}
+                    />
+                    {discountedPrice.toFixed(2)}
+                  </span>
+                </div>
               ) : (
                 <span className={styles.regularPrice}>
                   <Image
@@ -286,10 +287,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
           <span className={styles.stockText}>พร้อมส่ง: {product.stock}</span>
           <button
             onClick={handleBuyNow}
-            className={cn(
-              styles.buyButton,
-              'text-lg flex gap-1 transition-all duration-200 hover:scale-105'
-            )}>
+            className={cn(styles.buyButton, 'transition-all duration-200')}>
+            {/* buy now */}
             ซื้อเลย
             <LuArrowUpRight className="text-xl" />
           </button>

@@ -67,11 +67,10 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
       return dateString;
     }
   };
-  console.log('PUBLIC STORE PROFILE', theme);
   return (
     <div
       className={cn(
-        'w-full max-w-screen-lg transition-all duration-500 transform lg:px-5',
+        'w-full max-w-screen-lg min-h-[75vh] transition-all duration-500 transform lg:px-5',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
         themeUtils.getTextColors()
       )}>

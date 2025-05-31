@@ -46,7 +46,6 @@ export default function DiscountedProducts({
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
-  // If there are no discounted products, don't render the component
   if (discountedProducts.length === 0) {
     return null;
   }
@@ -54,11 +53,16 @@ export default function DiscountedProducts({
   return (
     <section
       className={cn(
-        'rounded-xl p-5 space-y-4',
+        'p-5 space-y-5',
         themeUtils.getCardClass(),
+        themeUtils.getComponentRoundednessClass(),
         themeUtils.getTextColors()
       )}>
-      <div className="flex justify-between items-center">
+      <div
+        className={cn(
+          'flex justify-between items-center w-full  border-b pb-5 mb-5',
+          themeUtils.getPrimaryColorClass('border')
+        )}>
         <h2 className="text-xl font-semibold flex gap-1">
           <RiDiscountPercentLine className="text-2xl" />
           ดีลส่วนลดสุดพิเศษ
