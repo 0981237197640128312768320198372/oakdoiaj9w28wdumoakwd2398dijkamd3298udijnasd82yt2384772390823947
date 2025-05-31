@@ -6,6 +6,8 @@ import { Metadata } from 'next';
 import { put } from '@vercel/blob';
 import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
+import DCSymbolWhite from '@/assets/icons/DCSymbolWhite.svg';
+import DCSymbolBlack from '@/assets/icons/DCSymbolBlack.svg';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -345,3 +347,7 @@ export async function sendLineMessage(
     throw error; // Let the caller handle the error
   }
 }
+
+export const dokmaiCoinSymbol = (isLight: boolean) => {
+  return isLight ? DCSymbolBlack : DCSymbolWhite;
+};

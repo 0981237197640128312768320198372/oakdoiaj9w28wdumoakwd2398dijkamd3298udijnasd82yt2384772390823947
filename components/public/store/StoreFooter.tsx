@@ -172,7 +172,8 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                   'font-light flex gap-1 items-center w-full justify-center lg:justify-end',
                   footerStyles.secondaryText
                 )}>
-                © {currentYear}, <p className="font-bold">{seller?.store?.name || 'Store Name'}</p>
+                Copyright © {currentYear},{' '}
+                <p className="font-bold">{seller?.store?.name || 'Store Name'}</p>
                 <p className="text-[9px]">Powered By</p>
                 <Link
                   href="https://seller.dokmaistore.com/auth/register"

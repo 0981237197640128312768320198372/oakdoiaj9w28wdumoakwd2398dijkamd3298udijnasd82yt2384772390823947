@@ -4,10 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Star, Tag, ShoppingCart } from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
-import DCSymbolWhite from '@/assets/icons/DCSymbolWhite.svg';
-import DCSymbolBlack from '@/assets/icons/DCSymbolBlack.svg';
 
-import { cn } from '@/lib/utils';
+import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 
 interface ProductCardProps {
@@ -72,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
   };
 
   const getCardStyles = () => {
-    const isLight = themeUtils?.baseTheme === 'light';
+    const isLight = themeUtils.baseTheme === 'light';
     return {
       card: cn(
         'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg ',
@@ -139,7 +137,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         isLight ? 'text-dark-500' : 'text-light-600'
       ),
       ratingContainer: cn('flex items-center gap-1', isLight ? 'text-amber-500' : 'text-amber-400'),
-      dokmaiCoin: isLight ? DCSymbolBlack : DCSymbolWhite,
+      dokmaiCoin: dokmaiCoinSymbol(isLight),
       categoryTag: cn(
         'flex items-center gap-1 text-xs ',
         isLight ? 'text-dark-600' : 'text-light-500'

@@ -58,11 +58,10 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.1 }}
           className={cn(
-            'p-4 border backdrop-blur-sm transition-all duration-300 hover:shadow-md cursor-pointer',
+            'p-4 backdrop-blur-sm transition-all duration-300 hover:shadow-md cursor-pointer',
             themeUtils.getCardClass(),
             themeUtils.getComponentRoundednessClass(),
-            activeTab === item.id &&
-              'ring-2 ring-offset-2 ' + themeUtils.getPrimaryColorClass('text')
+            activeTab === item.id && 'border ' + themeUtils.getPrimaryColorClass('border')
           )}
           onClick={() => onTabChange(item.id)}>
           <div className="flex items-center gap-3">
@@ -84,8 +83,12 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
                 'w-full flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300',
                 themeUtils.getComponentRoundednessClass(),
                 activeTab === item.id
-                  ? cn(themeUtils.getButtonClass(), 'shadow-sm')
-                  : cn('border hover:shadow-sm hover:opacity-80')
+                  ? cn(
+                      themeUtils.getButtonClass(),
+                      'shadow-sm',
+                      themeUtils.getPrimaryColorClass('border')
+                    )
+                  : cn('hover:shadow-sm hover:opacity-80 border', themeUtils.getCardClass())
               )}>
               <item.icon size={14} />
               <span>View {item.id.charAt(0).toUpperCase() + item.id.slice(1)}</span>

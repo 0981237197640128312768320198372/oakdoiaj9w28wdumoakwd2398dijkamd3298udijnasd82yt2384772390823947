@@ -16,7 +16,6 @@ import {
   AlertCircle,
   Star,
   TrendingUp,
-  TrendingDown,
   Wallet,
   MessageSquare,
   History,
@@ -114,7 +113,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         status === 'completed' && themeUtils.getPrimaryColorClass('text'),
         status === 'pending' && 'text-yellow-500',
         status === 'failed' && 'text-red-500',
-        status === 'cancelled' && 'text-gray-500',
+        status === 'cancelled' && 'text-orange-500',
         status === 'processing' && themeUtils.getPrimaryColorClass('text')
       ),
     };
@@ -149,8 +148,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       switch (type) {
         case 'deposit':
           return <TrendingUp {...iconProps} />;
-        case 'withdrawal':
-          return <TrendingDown {...iconProps} />;
         case 'purchase':
           return <CreditCard {...iconProps} />;
         default:
@@ -186,8 +183,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       switch (type) {
         case 'deposit':
           return `Deposit of ${formatCurrency(metadata.amount || 0)}`;
-        case 'withdrawal':
-          return `Withdrawal of ${formatCurrency(metadata.amount || 0)}`;
         case 'purchase':
           return `Purchase: ${metadata.productName || 'Unknown product'}`;
         default:
@@ -295,7 +290,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         <span
           className={cn(
             'font-mono px-1.5 py-0.5 rounded',
-            themeUtils.baseTheme === 'light' ? 'bg-gray-100' : 'bg-gray-800'
+            themeUtils.baseTheme === 'light' ? 'bg-dark-100' : 'bg-dark-800'
           )}>
           {formatIpAddress(value)}
         </span>
@@ -357,12 +352,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               </span>
             )}
             {locationObj.postal && (
-              <span className="text-xs text-gray-500 dark:text-gray-400 ml-4">
-                Postal: {locationObj.postal}
-              </span>
+              <span className="text-xs  ml-4">Postal: {locationObj.postal}</span>
             )}
             {locationObj.coordinate && (
-              <span className="text-xs text-gray-500 dark:text-gray-400 ml-4 font-mono">
+              <span className="text-xs  ml-4 font-mono">
                 {typeof locationObj.coordinate === 'string'
                   ? locationObj.coordinate
                   : Array.isArray(locationObj.coordinate)
@@ -411,7 +404,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 <span className={cn('font-medium', themeUtils.getPrimaryColorClass('text'))}>
                   {objKey.charAt(0).toUpperCase() + objKey.slice(1)}:
                 </span>
-                <span className="text-gray-700 dark:text-gray-300">
+                <span>
                   {typeof objValue === 'object'
                     ? JSON.stringify(objValue).substring(0, 30) +
                       (JSON.stringify(objValue).length > 30 ? '...' : '')
@@ -467,7 +460,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           <div className="relative">
             <Search
               size={14}
-              className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-light-700"
             />
             <input
               type="text"
@@ -516,7 +509,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         </div>
       </div>
 
-      {/* Filters */}
       <AnimatePresence>
         {showFilters && (
           <motion.div
@@ -526,7 +518,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             transition={{ duration: 0.2 }}
             className={cn(
               'mb-3 sm:mb-4 p-2 sm:p-3 border rounded-lg',
-              themeUtils.baseTheme === 'light' ? 'bg-gray-50' : 'bg-gray-800/50'
+              themeUtils.baseTheme === 'light'
+                ? 'bg-light-600 border-light-400'
+                : 'bg-dark-600 border-dark-400'
             )}>
             <div className="flex flex-wrap gap-2">
               <select
@@ -555,7 +549,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 )}>
                 <option value="">All Types</option>
                 <option value="deposit">Deposit</option>
-                <option value="withdrawal">Withdrawal</option>
                 <option value="purchase">Purchase</option>
                 <option value="review">Review</option>
                 <option value="login">Login</option>
@@ -566,7 +559,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Error State */}
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -574,21 +566,20 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           className={cn(
             'mb-3 sm:mb-4 px-3 py-2 text-xs border-l-4 flex items-center gap-2',
             themeUtils.getComponentRoundednessClass(),
-            'bg-red-50 border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-600 dark:text-red-300'
+            'bg-red-50 border-red-400 text-red-700  '
           )}>
           <AlertCircle size={14} />
           {error}
         </motion.div>
       )}
 
-      {/* Loading State */}
       {loading && filteredActivities.length === 0 ? (
         <div className="text-center py-6 sm:py-8">
           <RefreshCw
             size={20}
             className={cn('animate-spin mx-auto mb-2', themeUtils.getPrimaryColorClass('text'))}
           />
-          <p className="text-xs text-gray-500 dark:text-gray-400">Loading activities...</p>
+          <p className="text-xs  ">Loading activities...</p>
         </div>
       ) : filteredActivities.length === 0 ? (
         <div className="text-center py-6 sm:py-8">
@@ -596,14 +587,19 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             size={20}
             className={cn('mx-auto mb-2', themeUtils.getPrimaryColorClass('text'))}
           />
-          <p className="text-xs text-gray-500 dark:text-gray-400">No activities found</p>
+          <p className={cn('text-xs', themeUtils.getTextColors())}>No activities found</p>
         </div>
       ) : (
-        /* Activity List */
-        <div className="space-y-2">
+        <div className="space-y-5">
           <AnimatePresence>
             {filteredActivities.map((activity, index) => (
-              <div key={activity.id} className="space-y-1">
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleActivityExpand(activity.id);
+                }}
+                key={activity.id}
+                className="gap-1 flex-col flex cursor-pointer">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -621,7 +617,11 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                       <p className={cn('text-xs font-medium truncate', themeUtils.getTextColors())}>
                         {getActivityDescription(activity)}
                       </p>
-                      <div className="flex flex-wrap items-center gap-1 sm:gap-2 text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                      <div
+                        className={cn(
+                          'flex flex-wrap items-center gap-1 sm:gap-2 text-xs mt-0.5',
+                          themeUtils.getTextColors()
+                        )}>
                         <div className="flex items-center gap-1">
                           {getStatusIcon(activity.status)}
                           <span className="capitalize">{activity.status}</span>
@@ -632,8 +632,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                             className={cn(
                               'flex items-center gap-1 ml-1 sm:ml-2 px-1.5 py-0.5 rounded border',
                               themeUtils.baseTheme === 'light'
-                                ? 'bg-gray-100 border-gray-200'
-                                : 'bg-gray-800 border-gray-700'
+                                ? ' bg-light-200 border-light-400'
+                                : ' bg-dark-600 border-dark-400',
+                              themeUtils.getTextColors()
                             )}>
                             <Globe size={12} className={themeUtils.getPrimaryColorClass('text')} />
                             <span className="font-mono text-xs">
@@ -661,10 +662,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                         className={cn(
                           'p-1 rounded-full transition-colors',
                           themeUtils.baseTheme === 'light'
-                            ? 'hover:bg-gray-100'
-                            : 'hover:bg-gray-800',
+                            ? 'hover:bg-light-800'
+                            : 'hover:bg-dark-600',
                           expandedActivities[activity.id] &&
-                            (themeUtils.baseTheme === 'light' ? 'bg-gray-100' : 'bg-gray-800')
+                            (themeUtils.baseTheme === 'light' ? 'bg-light-700' : 'bg-dark-500')
                         )}>
                         {expandedActivities[activity.id] ? (
                           <ChevronDown
@@ -686,24 +687,22 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                           <Star
                             key={i}
                             size={12}
-                            className={
-                              i < activity.metadata.rating!
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300 dark:text-gray-600'
-                            }
+                            className={cn(
+                              i < activity.metadata.rating! ? 'text-yellow-400 fill-current' : '',
+                              themeUtils.getTextColors()
+                            )}
                           />
                         ))}
                       </div>
                     )}
 
-                    <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    <div className="flex items-center gap-1 text-xs text-light-800  mt-0.5">
                       <Calendar size={12} className={themeUtils.getPrimaryColorClass('text')} />
                       <span>{formatDate(activity.createdAt)}</span>
                     </div>
                   </div>
                 </motion.div>
 
-                {/* Expanded Metadata Section */}
                 <AnimatePresence>
                   {expandedActivities[activity.id] && (
                     <motion.div
@@ -712,14 +711,14 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2 }}
                       className={cn(
-                        'w-full p-3 border border-t-0 -mt-1',
+                        'w-full p-3 border',
                         themeUtils.getCardClass(),
                         themeUtils.getComponentRoundednessClass()
                       )}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
                         {Object.entries(activity.metadata).map(([key, value]) => (
                           <div key={key} className="flex items-start gap-2 text-xs">
-                            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 min-w-[100px] sm:min-w-[120px]">
+                            <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
                               {getMetadataIcon(key)}
                               <span>{getMetadataDisplayName(key)}:</span>
                             </div>
@@ -731,7 +730,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
                         {/* Activity Details */}
                         <div className="flex items-start gap-2 text-xs">
-                          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 min-w-[100px] sm:min-w-[120px]">
+                          <div className="flex items-center gap-1 min-w-[100px] sm:min-w-[120px]">
                             <Calendar
                               size={14}
                               className={themeUtils.getPrimaryColorClass('text')}
@@ -745,7 +744,11 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
                         {activity.completedAt && (
                           <div className="flex items-start gap-2 text-xs">
-                            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 min-w-[100px] sm:min-w-[120px]">
+                            <div
+                              className={cn(
+                                'flex items-center gap-1 min-w-[100px] sm:min-w-[120px]',
+                                themeUtils.getTextColors()
+                              )}>
                               <Calendar
                                 size={14}
                                 className={themeUtils.getPrimaryColorClass('text')}
@@ -760,7 +763,11 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
                         {activity.tags && activity.tags.length > 0 && (
                           <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
-                            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 min-w-[100px] sm:min-w-[120px]">
+                            <div
+                              className={cn(
+                                'flex items-center gap-1  min-w-[100px] sm:min-w-[120px]',
+                                themeUtils.getTextColors()
+                              )}>
                               <Tag size={14} className={themeUtils.getPrimaryColorClass('text')} />
                               <span>Tags:</span>
                             </div>
@@ -771,8 +778,8 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                                   className={cn(
                                     'px-2 py-0.5 rounded-full text-xs',
                                     themeUtils.baseTheme === 'light'
-                                      ? 'bg-gray-100'
-                                      : 'bg-gray-800',
+                                      ? 'bg-dark-100'
+                                      : 'bg-dark-800',
                                     themeUtils.getTextColors()
                                   )}>
                                   {tag}
@@ -784,7 +791,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
                         {activity.notes && (
                           <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
-                            <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 min-w-[100px] sm:min-w-[120px]">
+                            <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
                               <MessageSquare
                                 size={14}
                                 className={themeUtils.getPrimaryColorClass('text')}

@@ -4,23 +4,14 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import { motion } from 'framer-motion';
-import {
-  Edit,
-  User,
-  MessageSquare,
-  Calendar,
-  Mail,
-  Wallet,
-  Eye,
-  EyeOff,
-  TrendingUp,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Edit, User, MessageSquare, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
+import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
 import { ContactInfo } from './ContactInfo';
 import { EditProfileModal } from './EditProfileModal';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import Image from 'next/image';
 
 interface Contact {
   facebook?: string;
@@ -48,14 +39,6 @@ interface DashboardHeaderProps {
   theme: ThemeType | null;
   onProfileUpdate?: () => void;
 }
-
-// Helper function to format currency
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('th-TH', {
-    style: 'currency',
-    currency: 'THB',
-  }).format(amount);
-};
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   buyer: initialBuyer,
@@ -98,6 +81,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       localBuyer.contact.instagram ||
       localBuyer.contact.whatsapp);
 
+  const isLight = themeUtils.baseTheme === 'light';
   return (
     <>
       <motion.div
@@ -117,7 +101,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             {/* Avatar and Status Section */}
             <div className="flex-shrink-0">
               <div className="relative inline-block">
-                <Avatar className="w-20 h-20 md:w-24 md:h-24 border-2 shadow-md">
+                <Avatar
+                  className={cn(
+                    'w-20 h-20 md:w-24 md:h-24 border-[1px]',
+                    themeUtils.getPrimaryColorClass('border')
+                  )}>
                   {localBuyer.avatarUrl ? (
                     <AvatarImage
                       src={localBuyer.avatarUrl}
@@ -125,12 +113,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                       className="object-cover"
                     />
                   ) : (
-                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+                    <AvatarFallback
+                      className={cn(
+                        'w-20 h-20 md:w-24 md:h-24 border-2',
+                        themeUtils.getPrimaryColorClass('border'),
+                        themeUtils.getCardClass()
+                      )}>
                       {localBuyer.name?.charAt(0)?.toUpperCase() || <User className="w-8 h-8" />}
                     </AvatarFallback>
                   )}
                 </Avatar>
-                <div className="absolute -bottom-0 -right-0 w-3 h-3 rounded-full bg-green-500 border-2 flex items-center justify-center"></div>
               </div>
             </div>
 
@@ -166,7 +158,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     className={cn(
                       'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-90',
                       themeUtils.getCardClass(),
-                      themeUtils.getComponentRoundednessClass(),
+                      themeUtils.getButtonRoundednessClass(),
                       'border hover:shadow-sm'
                     )}>
                     <MessageSquare size={14} />
@@ -181,8 +173,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   className={cn(
                     'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-90',
                     themeUtils.getButtonClass(),
-                    themeUtils.getComponentRoundednessClass(),
-                    'hover:shadow-sm'
+                    themeUtils.getButtonRoundednessClass(),
+                    themeUtils.getPrimaryColorClass('border')
                   )}>
                   <Edit size={14} />
                   <span className="hidden sm:inline">Edit Profile</span>
@@ -224,8 +216,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-2xl font-bold text-green-600 ">
-              {showBalance ? formatCurrency(localBuyer.balance || 0) : '••••••'}
+              className="text-3xl font-bold">
+              <div className="flex items-center">
+                <Image
+                  src={dokmaiCoinSymbol(isLight)}
+                  alt="Dokmai Coin"
+                  className="h-6 w-auto"
+                  width={50}
+                  height={50}
+                />
+                <span className="ml-2"> {showBalance ? localBuyer.balance : '••••••'}</span>
+              </div>
             </motion.div>
             <p className="text-xs text-gray-500 mt-1">Available for transactions</p>
           </div>
@@ -234,10 +235,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <button
               className={cn(
                 'flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-medium transition-all duration-300',
-                'bg-green-50 text-green-600 border border-green-200 hover:bg-green-100',
-                themeUtils.getComponentRoundednessClass()
+                themeUtils.getButtonRoundednessClass(),
+                themeUtils.getCardClass()
               )}>
-              <TrendingUp size={14} />
+              <Image
+                src={dokmaiCoinSymbol(isLight)}
+                alt="Dokmai Coin"
+                className="h-4 w-auto"
+                width={50}
+                height={50}
+              />
               Deposit
             </button>
           </div>
