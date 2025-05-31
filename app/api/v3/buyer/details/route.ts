@@ -20,8 +20,11 @@ export async function GET(request: NextRequest) {
     const buyer = await Buyer.findById(buyerId)
       .select('-password -personalKey') // Exclude sensitive data
       .populate({
-        path: 'sellerInteractions.seller',
-        select: 'username store.name store.logoUrl', // Only select non-sensitive seller data
+        path: 'sellerInteractions',
+        populate: {
+          path: 'seller',
+          select: 'username store.name store.logoUrl', // Only select non-sensitive seller data
+        },
       });
 
     if (!buyer) {
@@ -35,47 +38,53 @@ export async function GET(request: NextRequest) {
       username: buyer.username,
       contact: buyer.contact,
       balance: buyer.balance,
-      history: buyer.history.map(
-        (item: {
-          type: any;
-          amount: any;
-          description: any;
-          reference: any;
-          status: any;
-          createdAt: any;
-        }) => ({
-          type: item.type,
-          amount: item.amount,
-          description: item.description,
-          reference: item.reference,
-          status: item.status,
-          createdAt: item.createdAt,
-        })
-      ),
-      sellerInteractions: buyer.sellerInteractions.map(
-        (interaction: {
-          _id: any;
-          seller: { _id: any; username: any; store: { name: any; logoUrl: any } };
-          action: any;
-          rating: any;
-          credit: any;
-          comment: any;
-          createdAt: any;
-        }) => ({
-          id: interaction._id,
-          seller: {
-            id: interaction.seller._id,
-            username: interaction.seller.username,
-            storeName: interaction.seller.store?.name,
-            logoUrl: interaction.seller.store?.logoUrl,
-          },
-          action: interaction.action,
-          rating: interaction.rating,
-          credit: interaction.credit,
-          comment: interaction.comment,
-          createdAt: interaction.createdAt,
-        })
-      ),
+      history: buyer.history
+        ? buyer.history.map(
+            (item: {
+              type: any;
+              amount: any;
+              description: any;
+              reference: any;
+              status: any;
+              createdAt: any;
+            }) => ({
+              type: item.type,
+              amount: item.amount,
+              description: item.description,
+              reference: item.reference,
+              status: item.status,
+              createdAt: item.createdAt,
+            })
+          )
+        : [],
+      sellerInteractions: buyer.sellerInteractions
+        ? buyer.sellerInteractions.map(
+            (interaction: {
+              _id: any;
+              seller: { _id: any; username: any; store: { name: any; logoUrl: any } };
+              action: any;
+              rating: any;
+              credit: any;
+              comment: any;
+              createdAt: any;
+            }) => ({
+              id: interaction._id,
+              seller: interaction.seller
+                ? {
+                    id: interaction.seller._id,
+                    username: interaction.seller.username,
+                    storeName: interaction.seller.store?.name,
+                    logoUrl: interaction.seller.store?.logoUrl,
+                  }
+                : null,
+              action: interaction.action,
+              rating: interaction.rating,
+              credit: interaction.credit,
+              comment: interaction.comment,
+              createdAt: interaction.createdAt,
+            })
+          )
+        : [],
       createdAt: buyer.createdAt,
       updatedAt: buyer.updatedAt,
     };

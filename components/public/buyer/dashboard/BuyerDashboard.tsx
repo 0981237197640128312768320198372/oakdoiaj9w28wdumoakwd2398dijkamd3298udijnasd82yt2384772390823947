@@ -9,7 +9,6 @@ import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivitiesWithSWR } from '@/hooks/useBuyerActivitiesWithSWR';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import type { ThemeType } from '@/types';
-import { BalanceCard } from './BalanceCard';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { DashboardHeader } from './DashboardHeader';
@@ -29,7 +28,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
       setLocalBuyer(buyer);
     }
   }, [buyer]);
-  const [showBalance, setShowBalance] = useState(true);
   const [activeTab, setActiveTab] = useState('');
   const [activityFilter, setActivityFilter] = useState<{
     category?: string;
@@ -87,15 +85,8 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="w-full max-w-screen-lg mx-auto space-y-4 min-h-[75vh]">
-      <div className="flex flex-col lg:flex-row gap-5 w-full">
+      <div className="w-full">
         <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
-
-        <BalanceCard
-          balance={localBuyer.balance || 0}
-          showBalance={showBalance}
-          onToggleBalance={() => setShowBalance(!showBalance)}
-          theme={theme}
-        />
       </div>
 
       <div className="space-y-4">
