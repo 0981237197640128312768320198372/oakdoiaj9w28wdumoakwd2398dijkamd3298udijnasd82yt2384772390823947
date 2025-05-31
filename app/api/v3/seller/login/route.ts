@@ -11,22 +11,25 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
 
     const { username, password } = await req.json();
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
 
-    if (!username || !password) {
+    if (!trimmedUsername || !trimmedPassword) {
       return NextResponse.json({ error: 'Missing username or password' }, { status: 400 });
     }
 
-    const seller = await Seller.findOne({ username });
+    const seller = await Seller.findOne({
+      $or: [{ username: trimmedUsername }, { email: trimmedUsername }],
+    });
+    console.log(seller);
     if (!seller) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const isPasswordValid = await seller.comparePassword(password);
+    console.log('Comparing password. Provided:', trimmedPassword, 'Stored hash:', seller.password);
+    const isPasswordValid = await seller.comparePassword(trimmedPassword);
     if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: 'Invalid credentials Password is Invalid' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
     const sellerObj = seller.toObject();

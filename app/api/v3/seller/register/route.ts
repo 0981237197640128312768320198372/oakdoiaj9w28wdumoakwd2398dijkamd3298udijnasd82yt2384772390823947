@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
 
     const body = await req.json();
-    const { username, email, password, contact, store } = body;
+    const { username: rawUsername, email: rawEmail, password: rawPassword, contact, store } = body;
+    const username = rawUsername.trim();
+    const email = rawEmail.trim();
+    const password = rawPassword.trim();
 
     // Validate required fields
     if (!username || !email || !password || !store?.name) {
