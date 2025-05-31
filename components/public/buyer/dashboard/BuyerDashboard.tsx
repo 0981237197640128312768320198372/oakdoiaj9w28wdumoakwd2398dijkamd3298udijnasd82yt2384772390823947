@@ -2,11 +2,12 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
-import { useBuyerActivities } from '@/hooks/useBuyerActivities';
+import { useBuyerActivitiesWithSWR } from '@/hooks/useBuyerActivitiesWithSWR';
+import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import type { ThemeType } from '@/types';
 import { BalanceCard } from './BalanceCard';
 import { ActivityList } from './ActivityList';
@@ -18,7 +19,16 @@ interface BuyerDashboardProps {
 }
 
 const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
-  const { buyer } = useBuyerAuth();
+  const { buyer: authBuyer } = useBuyerAuth();
+  const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
+  const [localBuyer, setLocalBuyer] = useState(authBuyer);
+
+  // Use the buyer from SWR if available, otherwise use the prop
+  useEffect(() => {
+    if (buyer) {
+      setLocalBuyer(buyer);
+    }
+  }, [buyer]);
   const [showBalance, setShowBalance] = useState(true);
   const [activeTab, setActiveTab] = useState('');
   const [activityFilter, setActivityFilter] = useState<{
@@ -34,9 +44,9 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     pagination,
     refetch,
     loadMore,
-  } = useBuyerActivities(activityFilter);
+  } = useBuyerActivitiesWithSWR(activityFilter);
 
-  if (!buyer) {
+  if (!localBuyer) {
     return (
       <div className="flex items-center justify-center ">
         <div className="text-center space-y-3">
@@ -68,7 +78,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     totalActivities: activities.length,
     completedTransactions: completedTransactions.length,
     interactions: interactionActivities.length,
-    memberSince: buyer.createdAt,
+    memberSince: localBuyer.createdAt,
   };
 
   return (
@@ -78,10 +88,10 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="w-full max-w-screen-lg mx-auto space-y-4 min-h-[75vh]">
       <div className="flex flex-col lg:flex-row gap-5 w-full">
-        <DashboardHeader buyer={buyer} theme={theme} />
+        <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
 
         <BalanceCard
-          balance={buyer.balance || 0}
+          balance={localBuyer.balance || 0}
           showBalance={showBalance}
           onToggleBalance={() => setShowBalance(!showBalance)}
           theme={theme}

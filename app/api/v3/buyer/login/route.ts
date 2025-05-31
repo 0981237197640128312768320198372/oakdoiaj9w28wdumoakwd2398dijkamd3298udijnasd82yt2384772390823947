@@ -87,6 +87,7 @@ export async function POST(request: NextRequest) {
       name: buyer.name,
       email: buyer.email,
       username: buyer.username,
+      avatarUrl: buyer.avatarUrl, // Add avatarUrl to the returned data
       contact: buyer.contact,
       balance: buyer.balance,
       createdAt: buyer.createdAt,

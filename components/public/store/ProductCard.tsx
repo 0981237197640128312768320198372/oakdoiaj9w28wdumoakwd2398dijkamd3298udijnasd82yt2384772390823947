@@ -1,20 +1,26 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Product } from '@/types';
+import { ChevronLeft, ChevronRight, Star, Tag, ShoppingCart } from 'lucide-react';
+import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
-import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { useThemeUtils } from '@/lib/theme-utils';
 
 interface ProductCardProps {
   product: Product;
+  theme: ThemeType;
+  onBuyNow?: (productId: string) => void;
+  category?: Category;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, category }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const themeUtils = useThemeUtils(theme || null);
+
   const currentImage =
     product.images.length > 0
       ? product.images[currentImageIndex]
@@ -57,31 +63,109 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     );
   };
 
+  const handleBuyNow = () => {
+    if (onBuyNow) {
+      onBuyNow(product._id);
+    }
+  };
+
+  const getCardStyles = () => {
+    const isLight = themeUtils?.baseTheme === 'light';
+    return {
+      card: cn(
+        'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg ',
+        isLight
+          ? 'bg-light-50 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
+          : 'bg-dark-600 border-dark-400 hover:border-dark-400 hover:shadow-dark-800/20'
+      ),
+      imageContainer: cn(
+        'relative aspect-square w-full overflow-hidden',
+        isLight ? 'bg-light-100/50' : 'bg-dark-700/50'
+      ),
+      navButton: cn(
+        'absolute top-1/2 -translate-y-1/2 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300',
+        isLight
+          ? 'bg-light-200/90 text-dark-800 hover:bg-light-300'
+          : 'bg-dark-700/90 text-light-200 hover:bg-dark-800'
+      ),
+      indicator: cn(
+        'w-1.5 h-1.5 rounded-full transition-all duration-300',
+        themeUtils?.getPrimaryColorClass('bg')
+      ),
+      inactiveIndicator: cn(
+        'w-1.5 h-1.5 rounded-full transition-all duration-300',
+        isLight ? 'bg-dark-500/30 hover:bg-dark-500/50' : 'bg-light-500/50 hover:bg-light-500'
+      ),
+      discountBadge: cn(
+        'absolute top-1 right-1 px-1.5 py-0.5 rounded text-xs font-bold',
+        themeUtils?.getPrimaryColorClass('bg'),
+        isLight ? 'text-light-100' : 'text-dark-800'
+      ),
+      statusBadge: cn(
+        'absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded-full backdrop-blur-sm border',
+        isLight ? 'bg-light-100/80 border-light-300' : 'bg-dark-800/80 border-dark-600'
+      ),
+      contentContainer: cn('p-3 space-y-2', isLight ? 'text-dark-800' : 'text-light-200'),
+      title: cn(
+        'text-base font-semibold line-clamp-1',
+        isLight ? 'text-dark-800' : 'text-light-200'
+      ),
+      originalPrice: cn(
+        'text-[12px] line-through whitespace-nowrap flex gap-1 items-center opacity-60',
+        isLight ? 'text-dark-500' : 'text-light-500'
+      ),
+      discountedPrice: cn(
+        'text-sm font-semibold whitespace-nowrap flex gap-1 items-center ',
+        themeUtils?.getPrimaryColorClass('text')
+      ),
+      regularPrice: cn(
+        'text-xs font-semibold whitespace-nowrap flex gap-1 items-center',
+        themeUtils?.getPrimaryColorClass('text')
+      ),
+      footer: cn(
+        'flex items-center justify-between pt-2 border-t',
+        isLight ? 'border-light-300' : 'border-dark-600'
+      ),
+      stockText: cn('text-xs', isLight ? 'text-dark-600' : 'text-light-600'),
+      buyButton: cn(
+        'px-2 py-1 rounded text-xs font-medium flex items-center gap-1',
+        themeUtils?.getPrimaryColorClass('bg'),
+        isLight ? 'text-light-100' : 'text-dark-800'
+      ),
+      createdDate: cn(
+        'text-xs flex items-center gap-1',
+        isLight ? 'text-dark-500' : 'text-light-600'
+      ),
+      ratingContainer: cn('flex items-center gap-1', isLight ? 'text-amber-500' : 'text-amber-400'),
+      categoryTag: cn(
+        'flex items-center gap-1 text-xs ',
+        isLight ? 'text-dark-600' : 'text-light-500'
+      ),
+    };
+  };
+
+  const styles = getCardStyles();
+
   return (
     <div
-      className="group relative bg-gradient-to-b from-dark-800 to-dark-850 rounded-lg overflow-hidden border border-dark-600 hover:border-dark-400 transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-dark-800/20 hover:-translate-y-0.5"
+      className={styles.card}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}>
-      <div className="relative aspect-square w-full overflow-hidden bg-dark-700/50">
+      <div className={styles.imageContainer}>
         <Image
           src={currentImage}
           alt={product.title}
           fill
-          className="object-contain p-2 group-hover:scale-102 transition-transform duration-500"
+          className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-dark-800/80 via-transparent to-transparent group-hover:opacity-0 opacity-100 transition-opacity duration-300" />
 
         {product.images.length > 1 && (
           <>
-            <button
-              onClick={goToPrevImage}
-              className="absolute left-1 top-1/2 -translate-y-1/2 bg-dark-800/80 text-light-200 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-primary/80 hover:text-dark-800">
+            <button onClick={goToPrevImage} className={cn(styles.navButton, 'left-1')}>
               <ChevronLeft size={16} />
             </button>
-            <button
-              onClick={goToNextImage}
-              className="absolute right-1 top-1/2 -translate-y-1/2 bg-dark-800/80 text-light-200 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-primary/80 hover:text-dark-800">
+            <button onClick={goToNextImage} className={cn(styles.navButton, 'right-1')}>
               <ChevronRight size={16} />
             </button>
           </>
@@ -92,11 +176,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.images.map((_, index) => (
               <div
                 key={index}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                className={
                   index === currentImageIndex
-                    ? 'bg-primary scale-125'
-                    : 'bg-light-500/50 hover:bg-light-500'
-                }`}
+                    ? cn(styles.indicator, 'scale-125')
+                    : styles.inactiveIndicator
+                }
                 onClick={(e) => {
                   e.stopPropagation();
                   setCurrentImageIndex(index);
@@ -107,44 +191,59 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
 
         {hasDiscount && (
-          <div className="absolute top-1 right-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
-            {product.discountPercentage}% OFF
-          </div>
+          <div className={styles.discountBadge}>{product.discountPercentage}% OFF</div>
         )}
       </div>
 
-      <div className="p-3 space-y-2">
-        <div className="flex flex-col items-start justify-start gap-2">
-          <h3 className="text-sm font-medium text-light-200 line-clamp-1">{product.title}</h3>
-          <div className="absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded-full bg-dark-800/80 backdrop-blur-sm border border-dark-600">
-            {product.status === 'active' ? (
-              <span className="flex items-center gap-1 text-green-400">
-                <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-                Available
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-amber-400">
-                <span className="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
-                Coming Soon
-              </span>
-            )}
+      <div className={styles.contentContainer}>
+        <div className="flex flex-col items-start justify-start gap-1">
+          {product.rating ? (
+            <div className={styles.ratingContainer}>
+              <div className="flex items-center bg-amber-500/10 px-2 py-1 rounded">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    size={12}
+                    fill={parseFloat(product.rating) >= star ? 'currentColor' : 'none'}
+                    stroke="currentColor"
+                    className="mr-0.5"
+                  />
+                ))}
+                <span className="text-xs ml-1 font-medium">{product.rating}</span>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+          <div className="flex items-center gap-1 text-xs w-full justify-between">
+            <h3 className={styles.title}>{product.title}</h3>
+            <div className={cn(styles.categoryTag, 'px-2 py-1 flex items-center')}>
+              {category?.logoUrl ? (
+                <Image
+                  src={category.logoUrl}
+                  alt={category.name}
+                  width={25}
+                  height={25}
+                  className="mr-1"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const nextElement = e.currentTarget.nextSibling as HTMLElement;
+                    if (nextElement) {
+                      nextElement.classList.remove('hidden');
+                    }
+                  }}
+                />
+              ) : (
+                <span>{category?.name}</span>
+              )}
+              <Tag size={10} />
+            </div>
           </div>
-
-          <div className="flex w-full justify-between">
+          <div className="flex w-full justify-between items-center">
             <div className="flex items-center gap-2">
               {hasDiscount ? (
                 <>
-                  <span className="text-xs line-through text-light-500 whitespace-nowrap flex gap-1 items-center">
-                    <Image
-                      src={dokmaicoin}
-                      alt="Dokmai Coin"
-                      className="h-3 w-3"
-                      width={50}
-                      height={50}
-                    />
-                    {product.price.toFixed(2)}
-                  </span>
-                  <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
+                  <span className={styles.discountedPrice}>
                     <Image
                       src={dokmaicoin}
                       alt="Dokmai Coin"
@@ -154,9 +253,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     />
                     {discountedPrice.toFixed(2)}
                   </span>
+                  <span className={styles.originalPrice}>
+                    <Image
+                      src={dokmaicoin}
+                      alt="Dokmai Coin"
+                      className="h-3 w-3"
+                      width={50}
+                      height={50}
+                    />
+                    {product.price.toFixed(2)}
+                  </span>
                 </>
               ) : (
-                <span className="text-xs font-semibold text-primary whitespace-nowrap flex gap-1 items-center">
+                <span className={styles.regularPrice}>
                   <Image
                     src={dokmaicoin}
                     alt="Dokmai Coin"
@@ -168,31 +277,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 </span>
               )}
             </div>
-
-            {/* {product.category && (
-              <div>
-                {product.category.logoUrl ? (
-                  <Image
-                    src={product.category.logoUrl}
-                    alt={product.category.name}
-                    width={50}
-                    height={50}
-                    className="w-auto h-3"
-                  />
-                ) : (
-                  <div className="w-5 h-5 bg-primary/20 rounded flex items-center justify-center">
-                    <span className="text-[8px] text-primary">CAT</span>
-                  </div>
-                )}
-              </div>
-            )} */}
           </div>
         </div>
-        <div className="flex items-center justify-between pt-2 border-t border-dark-600">
-          <span className="text-xs text-light-600">Stock: {product.stock}</span>
-          <Link href={'asd'} className="bg-primary text-dark-800 px-2 py-1 rounded text-xs">
+
+        <div className={styles.footer}>
+          <span className={styles.stockText}>Available: {product.stock}</span>
+          <button
+            onClick={handleBuyNow}
+            className={cn(styles.buyButton, 'transition-all duration-200 hover:scale-105')}>
+            <ShoppingCart size={12} />
             Buy Now
-          </Link>
+          </button>
         </div>
       </div>
     </div>

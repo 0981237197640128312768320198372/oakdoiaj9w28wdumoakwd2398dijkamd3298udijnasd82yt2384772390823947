@@ -17,6 +17,7 @@ interface Buyer {
   name: string;
   email: string;
   username?: string;
+  avatarUrl?: string; // Add avatarUrl field
   contact: BuyerContact;
   balance: number;
   createdAt: string;

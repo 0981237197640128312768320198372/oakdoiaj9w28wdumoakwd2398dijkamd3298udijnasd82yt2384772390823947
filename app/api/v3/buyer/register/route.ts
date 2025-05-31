@@ -134,6 +134,7 @@ export async function POST(request: NextRequest) {
       name: newBuyer.name,
       email: newBuyer.email,
       username: newBuyer.username,
+      avatarUrl: newBuyer.avatarUrl, // Add avatarUrl to the returned data
       contact: newBuyer.contact,
       balance: newBuyer.balance,
       storeId,

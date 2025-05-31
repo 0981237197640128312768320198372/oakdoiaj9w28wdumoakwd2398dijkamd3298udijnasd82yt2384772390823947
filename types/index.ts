@@ -75,6 +75,7 @@ export interface Product {
   discountedPrice: number;
   images: string[];
   status: 'active' | 'draft';
+  category?: Category;
 }
 
 export interface Category {

@@ -109,9 +109,13 @@ export async function PATCH(request: NextRequest) {
 
     // Fields that can be updated
     const {
+      name,
       username,
       contact,
-      // Don't allow direct updates to sensitive fields like password, personalKey, balance
+      password,
+      currentPassword,
+      avatarUrl,
+      // Don't allow direct updates to sensitive fields like personalKey, balance
     } = body;
 
     // Find buyer by ID
@@ -121,10 +125,15 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Buyer not found' }, { status: 404 });
     }
 
+    // Update name if provided
+    if (name) {
+      buyer.name = name;
+    }
+
     // Check if username is being changed and if it's already taken
     if (username && username !== buyer.username) {
       const existingUsername = await Buyer.findOne({ username });
-      if (existingUsername) {
+      if (existingUsername && existingUsername._id.toString() !== buyerId) {
         return NextResponse.json(
           { success: false, message: 'Username already in use' },
           { status: 400 }
@@ -141,6 +150,33 @@ export async function PATCH(request: NextRequest) {
       };
     }
 
+    // Update avatar if provided
+    if (avatarUrl) {
+      // In a real implementation, you might want to validate the URL
+      // or handle file uploads differently
+      buyer.avatarUrl = avatarUrl;
+    }
+
+    // Update password if provided
+    if (password && currentPassword) {
+      // Verify current password
+      const isPasswordValid = await buyer.comparePassword(currentPassword);
+      if (!isPasswordValid) {
+        return NextResponse.json(
+          { success: false, message: 'Current password is incorrect' },
+          { status: 400 }
+        );
+      }
+
+      // Set new password (will be hashed by the pre-save hook)
+      buyer.password = password;
+    } else if (password && !currentPassword) {
+      return NextResponse.json(
+        { success: false, message: 'Current password is required to update password' },
+        { status: 400 }
+      );
+    }
+
     await buyer.save();
 
     return NextResponse.json({
@@ -148,9 +184,11 @@ export async function PATCH(request: NextRequest) {
       message: 'Buyer details updated successfully',
       buyer: {
         id: buyer._id,
+        name: buyer.name,
         email: buyer.email,
         username: buyer.username,
         contact: buyer.contact,
+        avatarUrl: buyer.avatarUrl,
       },
     });
   } catch (error) {

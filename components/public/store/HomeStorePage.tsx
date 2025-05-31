@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import SellerCategories from './SellerCategories';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
+import DiscountedProducts from './DiscountedProducts';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 interface HomeStorePageProps {
@@ -24,13 +25,21 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories, the
       transition={{ duration: 0.4 }}
       className="w-full space-y-8 max-w-screen-lg">
       <BannerAdsCarousel theme={theme} />
+      <DiscountedProducts
+        products={products}
+        theme={theme}
+        onNavigate={(page) => {
+          // This would be handled by the parent component in a real implementation
+          console.log(`Navigate to ${page}`);
+        }}
+      />
       <section
         className={cn(
           'rounded-xl p-5 mt-8',
           themeUtils.getCardClass(),
           themeUtils.getTextColors()
         )}>
-        <SellerCategories products={products} categories={categories} />
+        <SellerCategories theme={theme} products={products} categories={categories} />
       </section>
     </motion.div>
   );

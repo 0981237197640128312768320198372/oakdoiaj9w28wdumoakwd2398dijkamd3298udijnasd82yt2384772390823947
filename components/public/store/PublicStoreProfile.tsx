@@ -71,11 +71,11 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
   return (
     <div
       className={cn(
-        'w-full max-w-screen-lg transition-all duration-500 transform',
+        'w-full max-w-screen-lg transition-all duration-500 transform lg:px-5',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
         themeUtils.getTextColors()
       )}>
-      <Card className="overflow-hidden mt-10 lg:mt-0 px-5">
+      <Card className="overflow-hidden mt-10 lg:mt-0 ">
         <PublicStoreHeader seller={seller} theme={theme} />
         <CardContent className="p-5 lg:px-0 ">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

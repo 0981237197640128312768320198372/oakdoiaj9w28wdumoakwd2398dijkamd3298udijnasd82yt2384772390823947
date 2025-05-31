@@ -7,7 +7,8 @@ import { useSellerAuth } from '@/context/SellerAuthContext';
 import dynamic from 'next/dynamic';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Palette, User, Loader2, AlertCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useSellerThemeWithSWR } from '@/hooks/useSellerThemeWithSWR';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { ThemeType } from '@/types';
 
@@ -19,107 +20,12 @@ const EditProfile = dynamic(() => import('@/components/Private/seller/profile/Ed
 export default function CustomizeYourPage() {
   const { seller, login } = useSellerAuth();
   const [activeTab, setActiveTab] = useState<string>('theme');
-  const [currentTheme, setCurrentTheme] = useState<ThemeType | null>(null);
-  const [isLoadingTheme, setIsLoadingTheme] = useState(false);
-  const [themeError, setThemeError] = useState<string | null>(null);
-
-  // Default theme structure
-  const getDefaultTheme = (): ThemeType => ({
-    sellerId: seller?._id || '',
-    baseTheme: 'dark',
-    customizations: {
-      colors: {
-        primary: 'primary',
-        secondary: 'bg-dark-800',
-      },
-      button: {
-        textColor: 'text-dark-800',
-        backgroundColor: 'bg-primary',
-        roundedness: 'md',
-        shadow: 'sm',
-        border: 'none',
-        borderColor: 'border-primary',
-      },
-      componentStyles: {
-        cardRoundedness: 'md',
-        cardShadow: 'sm',
-      },
-      ads: {
-        images: [],
-        roundedness: 'md',
-        shadow: 'sm',
-      },
-    },
-  });
-
-  useEffect(() => {
-    const fetchCurrentTheme = async () => {
-      if (!seller?.username) return;
-
-      setIsLoadingTheme(true);
-      setThemeError(null);
-
-      try {
-        const response = await fetch('/api/v3/seller/theme', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username: seller.username }),
-        });
-
-        if (!response.ok) {
-          if (response.status === 404) {
-            const defaultTheme = getDefaultTheme();
-            setCurrentTheme(defaultTheme);
-            return;
-          }
-          throw new Error('Failed to fetch theme data');
-        }
-
-        const themeData: ThemeType = await response.json();
-
-        const completeTheme: ThemeType = {
-          sellerId: themeData.sellerId || seller._id || '',
-          baseTheme: themeData.baseTheme || 'dark',
-          customizations: {
-            colors: {
-              primary: themeData.customizations?.colors?.primary || 'primary',
-              secondary: themeData.customizations?.colors?.secondary || 'bg-dark-800',
-            },
-            button: {
-              textColor: themeData.customizations?.button?.textColor || 'text-dark-800',
-              backgroundColor: themeData.customizations?.button?.backgroundColor || 'bg-primary',
-              roundedness: themeData.customizations?.button?.roundedness || 'md',
-              shadow: themeData.customizations?.button?.shadow || 'sm',
-              border: themeData.customizations?.button?.border || 'none',
-              borderColor: themeData.customizations?.button?.borderColor || 'border-primary',
-            },
-            componentStyles: {
-              cardRoundedness: themeData.customizations?.componentStyles?.cardRoundedness || 'md',
-              cardShadow: themeData.customizations?.componentStyles?.cardShadow || 'sm',
-            },
-            ads: {
-              images: themeData.customizations?.ads?.images || [],
-              roundedness: themeData.customizations?.ads?.roundedness || 'md',
-              shadow: themeData.customizations?.ads?.shadow || 'sm',
-            },
-          },
-        };
-
-        setCurrentTheme(completeTheme);
-      } catch (error) {
-        console.error('Error fetching theme:', error);
-        setThemeError('Failed to load theme data');
-        const defaultTheme = getDefaultTheme();
-        setCurrentTheme(defaultTheme);
-      } finally {
-        setIsLoadingTheme(false);
-      }
-    };
-
-    fetchCurrentTheme();
-  }, [seller]);
+  const {
+    theme: currentTheme,
+    loading: isLoadingTheme,
+    error: themeError,
+    updateTheme,
+  } = useSellerThemeWithSWR();
 
   if (!seller) {
     return (
@@ -135,74 +41,27 @@ export default function CustomizeYourPage() {
     );
   }
 
-  const refreshSellerData = () => {
-    if (seller?.username) {
-      const fetchTheme = async () => {
-        try {
-          const response = await fetch('/api/v3/seller/theme', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username: seller.username }),
-          });
-
-          if (response.ok) {
-            const themeData: ThemeType = await response.json();
-            setCurrentTheme(themeData);
-          }
-        } catch (error) {
-          console.error('Error refreshing theme:', error);
-        }
-      };
-      fetchTheme();
-    }
+  const refreshSellerData = async () => {
+    // This function is now a no-op since the SWR hook handles refreshing
   };
 
   const handleThemeChange = async (theme: ThemeType) => {
-    try {
-      const token = localStorage.getItem('sellerToken');
-      if (!token) {
-        throw new Error('Authentication token not found');
-      }
+    const success = await updateTheme(theme);
 
-      const response = await fetch('/api/v3/seller/theme', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          username: seller.username,
+    if (success && seller) {
+      const updatedSeller = {
+        ...seller,
+        store: {
+          ...seller.store,
           theme: theme,
-        }),
-      });
+        },
+      };
+      localStorage.setItem('seller', JSON.stringify(updatedSeller));
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to update theme');
-      }
-
-      setCurrentTheme(theme);
-
-      if (seller) {
-        const updatedSeller = {
-          ...seller,
-          store: {
-            ...seller.store,
-            theme: theme,
-          },
-        };
-        localStorage.setItem('seller', JSON.stringify(updatedSeller));
-      }
-
+      const token = localStorage.getItem('sellerToken');
       if (token) {
         login(token);
       }
-    } catch (err) {
-      console.error('Error updating theme:', err);
-      throw err;
     }
   };
 

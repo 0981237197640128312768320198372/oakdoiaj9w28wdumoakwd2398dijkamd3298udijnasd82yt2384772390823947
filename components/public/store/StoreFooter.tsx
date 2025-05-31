@@ -156,9 +156,9 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      '',
+                      'py-1 px-2',
                       themeUtils.getButtonClass('secondary'),
-                      themeUtils.getComponentRoundednessClass()
+                      themeUtils.getButtonRoundednessClass()
                     )}
                     aria-label={link.name}>
                     {link.icon}

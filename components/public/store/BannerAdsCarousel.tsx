@@ -3,8 +3,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import type { ThemeType } from '@/types';
@@ -18,16 +16,8 @@ interface Banner {
   image: string;
 }
 
-const categories = [
-  {
-    title: 'Spotify',
-    subtitle: 'Spotify Premium | Thai Account',
-    image: '/images/og-dokmaistore.webp',
-  },
-];
-
 export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
-  const defaultBanner = '/placeholder.svg?height=360&width=640&query=banner';
+  const defaultBanner = '/bannerplaceholder';
 
   const themeUtils = useThemeUtils(theme);
 
@@ -35,6 +25,8 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
     themeUtils.adsImages && themeUtils.adsImages.length > 0
       ? themeUtils.adsImages.map((image: any) => ({ image }))
       : [
+          { image: '/images/og-dokmaistore.webp' },
+          { image: '/images/og-dokmaistore.webp' },
           { image: '/images/og-dokmaistore.webp' },
           { image: '/images/og-dokmaistore.webp' },
           { image: '/images/og-dokmaistore.webp' },
@@ -298,55 +290,6 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
                   },
                 }}
               />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="px-4 py-6 md:px-6 md:py-8 w-full font-aktivGroteskRegular">
-        <div className="max-w-screen-lg mx-auto">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-light-100 md:text-2xl">EXCLUSIVE OFFERS</h2>
-              <p className="text-sm text-gray-400 md:text-base">
-                {"Don't miss our limited-time offers! Discover current deals today!"}
-              </p>
-            </div>
-            <Link
-              href="#"
-              className="flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-gray-800 hover:scale-105 md:px-6 md:py-3">
-              View more
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-            {categories.map((product, i) => (
-              <motion.div
-                key={`category-${i}`}
-                whileHover={{ y: -4, scale: 1.02 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
-                <Link
-                  href="#"
-                  className="block rounded-xl bg-dark-500/80 p-3 transition-all duration-300 hover:bg-gray-800/80 hover:shadow-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0">
-                      <Image
-                        src={product.image || '/placeholder.svg?height=48&width=48&query=game icon'}
-                        alt={product.title}
-                        width={48}
-                        height={48}
-                        draggable={false}
-                        className="h-12 w-12 rounded-lg object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <h3 className="truncate text-sm font-medium text-white">{product.title}</h3>
-                      <p className="truncate text-xs text-gray-400">{product.subtitle}</p>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
             ))}
           </div>
         </div>

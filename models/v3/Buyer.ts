@@ -14,6 +14,7 @@ interface IBuyer extends Document {
   email: string;
   password?: string;
   personalKey?: string;
+  avatarUrl?: string;
   contact: IContact;
   balance: number;
   storeId: Schema.Types.ObjectId;
@@ -59,6 +60,10 @@ const buyerSchema = new Schema<IBuyer>(
         },
         message: 'Personal key must be exactly 10 alphanumeric characters',
       },
+    },
+    avatarUrl: {
+      type: String,
+      default: null,
     },
     contact: {
       facebook: { type: String, default: null },

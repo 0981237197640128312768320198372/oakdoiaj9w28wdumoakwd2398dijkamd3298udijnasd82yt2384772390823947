@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { Product } from '@/models/v3/Product';
 import { Seller } from '@/models/v3/Seller';
+import { Category } from '@/models/v3/Category';
 import jwt from 'jsonwebtoken';
 import { connectToDatabase } from '@/lib/db';
 
@@ -75,8 +76,17 @@ export async function POST(req: NextRequest) {
 
     const savedProduct = await newProduct.save();
 
+    // Get category data
+    const category = await Category.findById(savedProduct.categoryId).lean();
+
     return NextResponse.json(
-      { message: 'Product created successfully', product: savedProduct },
+      {
+        message: 'Product created successfully',
+        product: {
+          ...savedProduct.toObject(),
+          category,
+        },
+      },
       { status: 201 }
     );
   } catch (error) {
@@ -90,19 +100,18 @@ export async function GET(req: NextRequest) {
     await connectToDatabase();
     const { searchParams } = new URL(req.url);
     const store = searchParams.get('store');
-    const categoryId = searchParams.get('categoryId'); // Get the categoryId from the query parameters
+    const categoryId = searchParams.get('categoryId');
+    const productId = searchParams.get('productId');
 
     let sellerId;
 
     if (store) {
-      // Find seller by username when store parameter is provided
       const seller = await Seller.findOne({ username: store });
       if (!seller) {
         return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
       }
       sellerId = seller._id;
     } else {
-      // Require authentication when no store parameter is provided
       const authResult = jwtAuthenticate(req);
       if ('error' in authResult) {
         return NextResponse.json({ error: authResult.error }, { status: authResult.status });
@@ -110,15 +119,49 @@ export async function GET(req: NextRequest) {
       sellerId = authResult.sellerId;
     }
 
+    if (productId) {
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
+      }
+
+      const product = await Product.findOne({
+        _id: productId,
+        sellerId,
+      }).lean('-details');
+
+      if (!product) {
+        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      }
+
+      // Get category data
+      const category = await Category.findById(product.categoryId).lean();
+
+      return NextResponse.json({
+        product: {
+          ...product,
+          category,
+        },
+      });
+    }
+
     let query: any = { sellerId };
 
-    // Add category filter if categoryId is provided
     if (categoryId) {
       query.categoryId = categoryId;
     }
 
-    const products = await Product.find(query).lean();
-    return NextResponse.json({ products });
+    const products = await Product.find(query).lean('-details');
+
+    const productsWithCategories = await Promise.all(
+      products.map(async (product) => {
+        const category = await Category.findById(product.categoryId).lean();
+        return {
+          ...product,
+          category,
+        };
+      })
+    );
+    return NextResponse.json({ products: productsWithCategories });
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -188,8 +231,17 @@ export async function PUT(req: NextRequest) {
 
     const updatedProduct = await product.save();
 
+    // Get category data
+    const category = await Category.findById(updatedProduct.categoryId).lean();
+
     return NextResponse.json(
-      { message: 'Product updated successfully', product: updatedProduct },
+      {
+        message: 'Product updated successfully',
+        product: {
+          ...updatedProduct.toObject(),
+          category,
+        },
+      },
       { status: 200 }
     );
   } catch (error) {

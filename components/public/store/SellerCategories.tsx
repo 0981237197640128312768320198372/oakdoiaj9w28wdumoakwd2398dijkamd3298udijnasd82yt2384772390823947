@@ -14,7 +14,7 @@ import { useThemeUtils } from '@/lib/theme-utils';
 interface SellerCategoriesProps {
   products: Product[];
   categories: Category[];
-  theme?: any;
+  theme: any;
 }
 
 const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categories, theme }) => {
@@ -102,7 +102,7 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}>
-                  <ProductCard product={product} />
+                  <ProductCard theme={theme} product={product} />
                 </motion.div>
               ))
             ) : (

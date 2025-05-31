@@ -8,13 +8,17 @@ import { ShoppingCart, X, RefreshCw } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { useSearchParams } from 'next/navigation';
 
 interface StoreProductsProps {
   store: string | undefined;
-  theme?: any;
+  theme: any;
 }
 
 export default function StoreProducts({ store, theme }: StoreProductsProps) {
+  const searchParams = useSearchParams();
+  const showDiscountedOnly = searchParams.get('discount') === 'true';
+
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +27,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
   const [sortOption, setSortOption] = useState<'default' | 'price-asc' | 'price-desc' | 'name'>(
     'default'
   );
-
+  console.log(theme);
   const themeUtils = useThemeUtils(theme);
 
   const getComponentStyles = () => {
@@ -85,6 +89,11 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
+    // Filter by discount if the discount parameter is true
+    if (showDiscountedOnly) {
+      result = result.filter((product) => product.discountPercentage > 0);
+    }
+
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       result = result.filter(
@@ -113,7 +122,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
     }
 
     return result;
-  }, [products, searchTerm, selectedCategory, sortOption]);
+  }, [products, searchTerm, selectedCategory, sortOption, showDiscountedOnly]);
 
   const handleClearFilters = () => {
     setSearchTerm('');
@@ -195,6 +204,25 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
       variants={containerVariants}
       initial="hidden"
       animate="visible">
+      {showDiscountedOnly && filteredProducts.length > 0 && (
+        <div className={cn('mb-6 flex items-center justify-between', themeUtils.getTextColors())}>
+          <div className="flex items-center gap-2">
+            <span
+              className={cn(
+                'px-3 py-1 rounded-full text-sm',
+                themeUtils.getPrimaryColorClass('bg') + '/10',
+                themeUtils.getPrimaryColorClass('text')
+              )}>
+              Showing discounted products only
+            </span>
+          </div>
+          <a
+            href={`/products?store=${store}`}
+            className={cn('text-sm underline', themeUtils.getPrimaryColorClass('text'))}>
+            View all products
+          </a>
+        </div>
+      )}
       <AnimatePresence mode="wait">
         {filteredProducts.length === 0 ? (
           <motion.div
@@ -215,7 +243,9 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
               No products found
             </h3>
             <p className={cn('max-w-md mb-6', componentStyles.emptyText)}>
-              {searchTerm || selectedCategory
+              {showDiscountedOnly
+                ? 'No discounted products available at the moment'
+                : searchTerm || selectedCategory
                 ? 'Try adjusting your search or filter criteria'
                 : "This store doesn't have any products yet"}
             </p>
@@ -235,7 +265,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
             exit="hidden">
             {filteredProducts.map((product) => (
               <motion.div key={product._id} variants={itemVariants}>
-                <ProductCard product={product} />
+                <ProductCard theme={theme} product={product} category={product.category} />
               </motion.div>
             ))}
           </motion.div>

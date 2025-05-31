@@ -287,7 +287,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                           authMethod === 'credentials' && themeUtils.getButtonClass(),
                           themeUtils.getPrimaryColorClass('border')
                         )}>
-                        <UserIcon size={14} /> Username & Password
+                        <UserIcon size={14} /> Credentials
                       </button>
                       <button
                         type="button"

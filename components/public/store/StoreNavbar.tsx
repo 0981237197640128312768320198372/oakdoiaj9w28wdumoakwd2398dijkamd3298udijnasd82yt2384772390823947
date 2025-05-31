@@ -159,7 +159,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                         : isLight
                         ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                         : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
-                      themeUtils.getComponentRoundednessClass()
+                      themeUtils.getButtonRoundednessClass()
                     )}>
                     <CircleUserRound size={16} />
                     <span className="hidden lg:inline font-medium truncate max-w-[100px]">
@@ -173,7 +173,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                       isLight
                         ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
                         : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
-                      themeUtils.getComponentRoundednessClass()
+                      themeUtils.getButtonRoundednessClass()
                     )}
                     aria-label="Logout">
                     <LogOut size={16} />
