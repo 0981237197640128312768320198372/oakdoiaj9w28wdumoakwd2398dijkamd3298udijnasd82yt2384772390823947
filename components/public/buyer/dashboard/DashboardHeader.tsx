@@ -3,8 +3,9 @@
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
+import { useBuyerAuth } from '@/hooks/useBuyerAuth';
 import { motion } from 'framer-motion';
-import { Edit, User, MessageSquare, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
+import { Edit, User, Calendar, Mail, Wallet, Eye, EyeOff, Power } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
@@ -58,6 +59,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const [showContactInfo, setShowContactInfo] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
+  const { logout } = useBuyerAuth();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
@@ -144,7 +146,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     <div className="flex items-center gap-1.5 text-xs ">
                       <Calendar size={12} className="text-purple-500" />
                       <span className="opacity-70">
-                        Member since {formatDate(localBuyer.createdAt)}
+                        เป็นสมาชิกตั้งแต่ {formatDate(localBuyer.createdAt)}
                       </span>
                     </div>
                   </div>
@@ -161,9 +163,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                       themeUtils.getButtonRoundednessClass(),
                       'border hover:shadow-sm'
                     )}>
-                    <MessageSquare size={14} />
                     <span className="hidden sm:inline">
-                      {showContactInfo ? 'Hide Contact' : 'All Contacts'}
+                      {showContactInfo ? 'ข้อมูลการติดต่อ' : 'ข้อมูลการติดต่อ'}
                     </span>
                   </button>
                 )}
@@ -177,7 +178,20 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     themeUtils.getPrimaryColorClass('border')
                   )}>
                   <Edit size={14} />
-                  <span className="hidden sm:inline">Edit Profile</span>
+                  <span className="hidden sm:inline">แก้ไขโปรไฟล์</span>
+                </button>
+                <button
+                  onClick={async () => {
+                    await logout();
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 700);
+                  }}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 bg-red-500/20 text-red-500 border-red-500 border hover:bg-red-500/40',
+                    themeUtils.getButtonRoundednessClass()
+                  )}>
+                  <Power size={16} /> แก้ไขโปรไฟล์
                 </button>
               </div>
             </div>
@@ -196,7 +210,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 )}>
                 <Wallet size={16} className={themeUtils.getPrimaryColorClass('text')} />
               </div>
-              <h2 className="text-sm font-semibold">Account Balance</h2>
+              <h2 className="text-sm font-semibold">ยอดคงเหลือ</h2>
             </div>
             <button
               onClick={() => setShowBalance(!showBalance)}
@@ -228,15 +242,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 <span className="ml-2"> {showBalance ? localBuyer.balance : '••••••'}</span>
               </div>
             </motion.div>
-            <p className="text-xs text-gray-500 mt-1">Available for transactions</p>
+            <p className="text-xs text-gray-500 mt-1">ยอดคงเหลือที่ใช้ได้</p>
           </div>
 
           <div className="flex gap-2">
             <button
               className={cn(
-                'flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-medium transition-all duration-300',
+                'flex-1 flex items-center justify-center gap-1.5 p-3 text-sm font-medium transition-all duration-300',
                 themeUtils.getButtonRoundednessClass(),
-                themeUtils.getCardClass()
+                themeUtils.getPrimaryColorClass('border'),
+                themeUtils.getButtonClass(),
+                isLight ? 'text-dark-800' : 'text-light-200'
               )}>
               <Image
                 src={dokmaiCoinSymbol(isLight)}
@@ -245,12 +261,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 width={50}
                 height={50}
               />
-              Deposit
+              เติมเงิน
             </button>
           </div>
         </div>
 
-        {/* Contact Info Section */}
         {showContactInfo && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}

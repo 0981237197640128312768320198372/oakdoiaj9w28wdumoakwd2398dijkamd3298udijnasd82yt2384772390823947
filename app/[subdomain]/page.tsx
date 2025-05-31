@@ -33,7 +33,7 @@ export async function generateMetadata(props: StorePageProps) {
   } catch (error) {
     console.error('Error generating metadata:', error);
     return generateMetadataUtil({
-      title: 'Store Name',
+      title: 'ชื่อร้าน',
       description: 'Welcome to our store',
       url: `https://${subdomain}.dokmai.store/`,
     });

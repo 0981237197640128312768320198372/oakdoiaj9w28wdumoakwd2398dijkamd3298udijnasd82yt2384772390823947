@@ -27,22 +27,19 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
     totalCredits > 0 ? Math.round((credits.positive / totalCredits) * 100) : 0;
 
   return (
-    <PublicInfoSection
-      title="Store Statistics"
-      icon={<TrendingUp className="w-4 h-4" />}
-      theme={theme}>
+    <PublicInfoSection title="สถิติร้าน" icon={<TrendingUp className="w-4 h-4" />} theme={theme}>
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <StatItem
             icon={<Package className="h-6 w-6" />}
-            label="Products"
+            label="สินค้า"
             value={totalProducts}
             color="blue"
             theme={theme}
           />
           <StatItem
             icon={<ShoppingCart className="h-6 w-6" />}
-            label="Sales"
+            label="ขายแล้ว(ชิ้น)"
             value={totalSales}
             color="fuchsia"
             theme={theme}
@@ -56,7 +53,7 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
           )}>
           <StatItem
             icon={<Star className="h-4 w-4 fill-yellow-400" />}
-            label="Store Rating"
+            label="คะแนนร้าน"
             value={rating.toFixed(1)}
             color="yellow"
             theme={theme}>
@@ -79,7 +76,7 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
                   'text-xs font-medium',
                   themeUtils.baseTheme === 'light' ? 'text-dark-800' : 'text-white'
                 )}>
-                Customer Satisfaction
+                เครดิต
               </p>
               <p
                 className={cn(
@@ -92,14 +89,14 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
             <div className="grid grid-cols-2 gap-4 mb-3">
               <StatItem
                 icon={<ThumbsUp className="h-6 w-6" />}
-                label="Positive"
+                label="บวก"
                 value={credits.positive}
                 color="green"
                 theme={theme}
               />
               <StatItem
                 icon={<ThumbsDown className="h-6 w-6" />}
-                label="Negative"
+                label="ลบ"
                 value={credits.negative}
                 color="red"
                 theme={theme}
@@ -120,7 +117,7 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
                 'text-xs font-medium mt-1',
                 themeUtils.baseTheme === 'light' ? 'text-dark-800' : 'text-white'
               )}>
-              {positivePercentage}% satisfaction rate
+              {positivePercentage}% ระดับความพอใจ
             </p>
           </div>
         </div>

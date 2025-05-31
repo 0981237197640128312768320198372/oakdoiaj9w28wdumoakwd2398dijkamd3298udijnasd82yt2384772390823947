@@ -13,9 +13,15 @@ interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
   theme: any;
+  onNavigate: (page: string) => void;
 }
 
-const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories, theme }) => {
+const HomeStorePage: React.FC<HomeStorePageProps> = ({
+  products,
+  categories,
+  theme,
+  onNavigate,
+}) => {
   const themeUtils = useThemeUtils(theme);
   return (
     <motion.div
@@ -25,14 +31,7 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({ products, categories, the
       transition={{ duration: 0.4 }}
       className="w-full space-y-8 max-w-screen-lg">
       <BannerAdsCarousel theme={theme} />
-      <DiscountedProducts
-        products={products}
-        theme={theme}
-        onNavigate={(page) => {
-          // This would be handled by the parent component in a real implementation
-          console.log(`Navigate to ${page}`);
-        }}
-      />
+      <DiscountedProducts products={products} theme={theme} onNavigate={onNavigate} />
       <section
         className={cn(
           'rounded-xl p-5 mt-8',

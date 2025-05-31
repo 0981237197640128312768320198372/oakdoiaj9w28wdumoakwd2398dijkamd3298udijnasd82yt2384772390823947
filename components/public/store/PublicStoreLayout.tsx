@@ -56,7 +56,14 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         return <BuyerDashboard theme={theme} />;
       case 'home':
       default:
-        return <HomeStorePage products={products} categories={categories} theme={theme} />;
+        return (
+          <HomeStorePage
+            onNavigate={setActivePage}
+            products={products}
+            categories={categories}
+            theme={theme}
+          />
+        );
     }
   };
 

@@ -30,7 +30,7 @@ export function StoreStats({ seller }: StoreStatsProps) {
 
   return (
     <InfoSection
-      title="Store Statistics"
+      title="สถิติร้าน"
       icon={<TrendingUp className="h-5 w-5" />}
       className="bg-dark-700 border-[1px] border-dark-500">
       <div className="space-y-6">
@@ -88,7 +88,7 @@ export function StoreStats({ seller }: StoreStatsProps) {
                 style={{ width: `${positivePercentage}%` }}
               />
             </div>
-            <p className="text-xs font-medium mt-1">{positivePercentage}% satisfaction rate</p>
+            <p className="text-xs font-medium mt-1">{positivePercentage}% ระดับความพอใจ</p>
           </div>
         </div>
       </div>

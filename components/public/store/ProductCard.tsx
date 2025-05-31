@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Star, Tag, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Tag } from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { LuArrowUpRight } from 'react-icons/lu';
 
 interface ProductCardProps {
   product: Product;
@@ -75,7 +76,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       card: cn(
         'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg ',
         isLight
-          ? 'bg-light-50 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
+          ? 'bg-light-200 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
           : 'bg-dark-600 border-dark-400 hover:border-dark-400 hover:shadow-dark-800/20'
       ),
       imageContainer: cn(
@@ -97,7 +98,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         isLight ? 'bg-dark-500/30 hover:bg-dark-500/50' : 'bg-light-500/50 hover:bg-light-500'
       ),
       discountBadge: cn(
-        'absolute top-1 right-1 px-1.5 py-0.5 rounded text-xs font-bold',
+        'absolute top-1 right-1 px-1 py-0.5 rounded text-lg font-bold',
         themeUtils?.getPrimaryColorClass('bg'),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
@@ -192,7 +193,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         )}
 
         {hasDiscount && (
-          <div className={styles.discountBadge}>{product.discountPercentage}% OFF</div>
+          <div className={styles.discountBadge}>ลด {product.discountPercentage}%</div>
         )}
       </div>
 
@@ -282,12 +283,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         </div>
 
         <div className={styles.footer}>
-          <span className={styles.stockText}>Available: {product.stock}</span>
+          <span className={styles.stockText}>พร้อมส่ง: {product.stock}</span>
           <button
             onClick={handleBuyNow}
-            className={cn(styles.buyButton, 'transition-all duration-200 hover:scale-105')}>
-            <ShoppingCart size={12} />
-            Buy Now
+            className={cn(
+              styles.buyButton,
+              'text-lg flex gap-1 transition-all duration-200 hover:scale-105'
+            )}>
+            ซื้อเลย
+            <LuArrowUpRight className="text-xl" />
           </button>
         </div>
       </div>

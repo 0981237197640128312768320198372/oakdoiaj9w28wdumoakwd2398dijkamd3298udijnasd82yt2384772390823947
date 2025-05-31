@@ -26,7 +26,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
     {
       id: 'activities',
       icon: History,
-      label: 'Total Activities',
+      label: 'กิจกรรมทั้งหมด',
       value: stats.totalActivities.toString(),
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/20',
@@ -34,7 +34,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
     {
       id: 'transactions',
       icon: Wallet,
-      label: 'Completed Transactions',
+      label: 'การชำระเงินที่สำเร็จเรียบร้อยแล้ว',
       value: stats.completedTransactions.toString(),
       color: 'text-green-500',
       bgColor: 'bg-green-500/20 ',
@@ -42,7 +42,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
     {
       id: 'interactions',
       icon: Star,
-      label: 'Interactions',
+      label: 'การโต้ตอบ',
       value: stats.interactions.toString(),
       color: 'text-yellow-500',
       bgColor: 'bg-yellow-500/20 ',

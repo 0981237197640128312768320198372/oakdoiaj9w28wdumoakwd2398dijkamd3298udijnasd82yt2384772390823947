@@ -54,7 +54,7 @@ export default function SellerInfo() {
         <CardContent className="p-5 lg:px-0">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 space-y-5">
-              <InfoSection title="Store Information" icon={<Info className="h-5 w-5" />}>
+              <InfoSection title="ข้อมูลร้านค้า" icon={<Info className="h-5 w-5" />}>
                 <p className="text-sm leading-relaxed p-3 bg-dark-700 rounded-xl">
                   {seller.store.description || 'No description available'}
                 </p>
@@ -75,12 +75,12 @@ export default function SellerInfo() {
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Member since:</span>
+                    <span className="text-sm text-muted-foreground">เป็นสมาชิกตั้งแต่</span>
                     <span className="font-medium text-xs">{formatDate(seller.createdAt)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">Last updated:</span>
+                    <span className="text-sm text-muted-foreground">อัพเดทล่าสุด</span>
                     <span className="font-medium text-xs">{formatDate(seller.updatedAt)}</span>
                   </div>
                 </div>

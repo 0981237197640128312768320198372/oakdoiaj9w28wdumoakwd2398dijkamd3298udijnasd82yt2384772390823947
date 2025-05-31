@@ -67,7 +67,7 @@ export function useBuyerDetailsWithSWR(): UseBuyerDetailsReturn {
       }
 
       const response = await fetch('/api/v3/buyer/details', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -92,8 +92,8 @@ export function useBuyerDetailsWithSWR(): UseBuyerDetailsReturn {
         setLocalBuyer(responseData.buyer);
       }
 
-      // Revalidate the cache
-      await mutate();
+      // Update cache immediately with new data and skip revalidation
+      await mutate(responseData, false);
 
       return true;
     } catch (err) {

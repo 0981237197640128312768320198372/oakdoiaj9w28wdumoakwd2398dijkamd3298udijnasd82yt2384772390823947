@@ -160,12 +160,12 @@ export default function RegisterForm() {
         <div className="transition-all duration-300">
           {step === 1 && (
             <div className="space-y-4 animate-in fade-in duration-300">
-              <h3 className="text-xl font-semibold text-light-100 mb-4">Store Information</h3>
+              <h3 className="text-xl font-semibold text-light-100 mb-4">ข้อมูลร้านค้า</h3>
               <div>
                 <label
                   htmlFor="store.name"
                   className="block text-sm font-medium text-light-100 mb-1">
-                  Store Name
+                  ชื่อร้าน
                 </label>
                 <input
                   id="store.name"

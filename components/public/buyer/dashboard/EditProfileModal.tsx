@@ -28,7 +28,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 }) => {
   const themeUtils = useThemeUtils(theme);
   const { isAuthenticated } = useBuyerAuth();
-  const { updateBuyerDetails } = useBuyerDetailsWithSWR();
+  const { updateBuyerDetails, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'profile' | 'password'>('profile');
@@ -71,7 +71,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
     if (name === 'name' || name === 'username' || name === 'email') {
       setFormData((prev) => ({ ...prev, [name]: value }));
-    } else if (name.startsWith('password')) {
+    } else if (['currentPassword', 'password', 'confirmPassword'].includes(name)) {
       setPasswordData((prev) => ({ ...prev, [name]: value }));
     } else {
       setFormData((prev) => ({
@@ -168,6 +168,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
       // Use the SWR hook to update buyer details
       const success = await updateBuyerDetails(requestBody);
+      if (success) {
+        await refreshBuyerDetails();
+      }
 
       if (!success) {
         throw new Error('Failed to update profile');
@@ -217,6 +220,9 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         password: passwordData.password,
         currentPassword: passwordData.currentPassword,
       });
+      if (success) {
+        await refreshBuyerDetails();
+      }
 
       if (!success) {
         throw new Error('Failed to update password');

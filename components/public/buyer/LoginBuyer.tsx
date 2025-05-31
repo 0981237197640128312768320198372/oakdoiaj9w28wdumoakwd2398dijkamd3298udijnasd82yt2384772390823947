@@ -21,7 +21,7 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [personalKeyInput, setPersonalKeyInput] = useState(''); // Renamed for clarity
+  const [personalKeyInput, setPersonalKeyInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,27 +29,27 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
   const [showPersonalKey, setShowPersonalKey] = useState(false);
 
   const { login } = useBuyerAuth();
-  const { ipAddress, country, city, postal, coordinate } = useClientIP(); // Removed ipError as it's not used
+  const { ipAddress, country, city, postal, coordinate } = useClientIP();
   const themeUtils = useThemeUtils(theme);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(null); // Clear success message on new submission
+    setSuccess(null);
     setIsLoading(true);
 
     let formValid = true;
     if (authMethod === 'credentials') {
       if ((!username && !email) || !password) {
-        setError('Please enter username/email and password.');
+        setError('โปรดกรอก username หรืออีเมล และรหัสผ่าน');
         formValid = false;
       }
     } else {
       if (!personalKeyInput) {
-        setError('Please enter your personal key.');
+        setError('โปรดกรอก Personal Key');
         formValid = false;
       } else if (personalKeyInput.length !== 10) {
-        setError('Personal key must be 10 characters long.');
+        setError('ERROR!.');
         formValid = false;
       }
     }
@@ -83,13 +83,13 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
 
       if (response.ok) {
         login(data.token);
-        setSuccess('Login successful! Redirecting...');
+        setSuccess('เข้าสู่ระบบเรียบร้อย! กำลังเข้าสู่เว็บไซต์...');
         setTimeout(() => onNavigate('buyerdashboard'), 1200);
       } else {
-        setError(data.message || 'Invalid credentials. Please try again.');
+        setError(data.message || 'ข้อมูลไม่ถูกต้อง โปรดลองอีกครั้ง');
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again later.');
+      setError('เกิดข้อผิดพลากที่ไม่คาดคิด โปรดลองอีกครั้งในภายหลัง');
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +101,7 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
     'w-full pl-8 pr-3 py-2 text-xs transition-all duration-300 focus:outline-none focus:ring-0 focus:ring-offset-0 border',
     isLight ? 'bg-light-100 placeholder-gray-400' : 'bg-dark-600 placeholder-gray-500',
     themeUtils.getComponentRoundednessClass(),
-    themeUtils.getPrimaryColorClass('border') // Focus border with primary color
+    themeUtils.getPrimaryColorClass('border')
   );
 
   const iconClasses = 'text-gray-400';
@@ -139,7 +139,7 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
               themeUtils.getPrimaryColorClass('border')
             )}>
             <UserIcon size={14} />
-            Credentials
+            ข้อมูลส่วนตัว
           </button>
           <button
             type="button"
@@ -168,10 +168,8 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
             {authMethod === 'credentials' ? (
               <>
                 <div className="space-y-1.5">
-                  {' '}
-                  {/* Compacted space-y */}
                   <label htmlFor="usernameOrEmail" className="block text-xs font-medium">
-                    Username or Email
+                    username หรืออีเมล
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
@@ -203,7 +201,7 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
 
                 <div className="space-y-1.5">
                   <label htmlFor="passwordLogin" className="block text-xs font-medium">
-                    Password
+                    รหัสผ่าน
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
@@ -230,8 +228,6 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
             ) : (
               <div className="space-y-1.5">
                 <label htmlFor="personalKeyLogin" className="block text-xs font-medium">
-                  {' '}
-                  {/* Unique ID */}
                   Personal Key
                 </label>
                 <div className="relative">
@@ -255,9 +251,7 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
                     {showPersonalKey ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Your 10-character key provided during registration.
-                </p>
+                <p className="text-xs text-gray-500 mt-1">คีย์ 10 ตัวอักษรที่ได้รับขณะลงทะเบียน</p>
               </div>
             )}
           </motion.div>
@@ -297,12 +291,12 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
             {isLoading ? (
               <>
                 <Loader2 size={14} className="animate-spin" />
-                Signing in...
+                กำลังเข้าสู่ระบบ...
               </>
             ) : (
               <>
                 <LogIn size={14} />
-                Sign In
+                เข้าสู่ระบบ
               </>
             )}
           </button>

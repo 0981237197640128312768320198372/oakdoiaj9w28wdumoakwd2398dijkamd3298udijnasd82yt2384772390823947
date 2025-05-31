@@ -62,7 +62,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to create theme' }, { status: 500 });
     }
 
-    // Create store statistics
     try {
       const newStoreStatistics = new StoreStatistics({
         sellerId: newSeller._id,

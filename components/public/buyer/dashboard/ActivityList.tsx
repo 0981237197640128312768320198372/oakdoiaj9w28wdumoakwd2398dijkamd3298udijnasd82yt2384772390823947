@@ -71,13 +71,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   const [expandedActivities, setExpandedActivities] = useState<Record<string, boolean>>({});
   const themeUtils = useThemeUtils(theme);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('th-TH', {
-      style: 'currency',
-      currency: 'THB',
-    }).format(amount);
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
       month: 'short',
@@ -182,60 +175,60 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     if (category === 'financial') {
       switch (type) {
         case 'deposit':
-          return `Deposit of ${formatCurrency(metadata.amount || 0)}`;
+          return `เติมเงิน ${metadata.amount} Dokmai Coin`;
         case 'purchase':
-          return `Purchase: ${metadata.productName || 'Unknown product'}`;
+          return `ซื้อ ${metadata.productName || 'สินค้าที่ไม่รู้จัก'}`;
         default:
-          return `${type.charAt(0).toUpperCase() + type.slice(1)} transaction`;
+          return `${type.charAt(0).toUpperCase() + type.slice(1)} การชำระเงิน`;
       }
     } else if (category === 'interaction') {
       switch (type) {
         case 'review':
-          return `Review: ${metadata.rating}/5 stars`;
+          return `รีวิว: ${metadata.rating}/5 ดาว`;
         case 'message':
-          return `Message: ${metadata.subject || 'No subject'}`;
+          return `ข้อความ: ${metadata.subject || 'ไม่มีหัวข้อ'}`;
         default:
-          return `${type.charAt(0).toUpperCase() + type.slice(1)} interaction`;
+          return `${type.charAt(0).toUpperCase() + type.slice(1)} การโต้ตอบ`;
       }
     } else if (category === 'system') {
       switch (type) {
         case 'login':
-          return `Login to account`;
+          return `เข้าสู่ระบบ`;
         case 'logout':
-          return `Logout from account`;
+          return `ออกจากระบบ`;
         case 'update':
           return `Profile update`;
         case 'registration':
-          return `Registration system activity`;
+          return `การลงทะเบียน`;
         default:
           return `${type.charAt(0).toUpperCase() + type.slice(1)} system activity`;
       }
     }
-    return `${type.charAt(0).toUpperCase() + type.slice(1)} activity`;
+    return `${type.charAt(0).toUpperCase() + type.slice(1)} กิจกรรม`;
   };
 
   // Function to get metadata display name
   const getMetadataDisplayName = (key: MetadataKey): string => {
     const displayNames: Record<string, string> = {
       ipAddress: 'IP Address',
-      amount: 'Amount',
+      amount: 'จำนวน',
       currency: 'Currency',
-      paymentMethod: 'Payment Method',
-      transactionId: 'Transaction ID',
-      rating: 'Rating',
-      comment: 'Comment',
+      paymentMethod: 'วิธีการชำระเงิน',
+      transactionId: 'ID การชำระเงิน',
+      rating: 'คะแนน',
+      comment: 'คอมเมนต์',
       creditType: 'Credit Type',
       creditValue: 'Credit Value',
-      productId: 'Product ID',
-      productName: 'Product Name',
-      quantity: 'Quantity',
-      price: 'Price',
-      orderId: 'Order ID',
-      orderNumber: 'Order Number',
+      productId: 'ID สินค้า',
+      productName: 'ชื่อสินค้า',
+      quantity: 'จำนวน',
+      price: 'ราคา',
+      orderId: 'ID คำสั่งซื้อ',
+      orderNumber: 'เลขคำสั่งซื้อ',
       browser: 'Browser',
       device: 'Device',
       os: 'Operating System',
-      location: 'Location',
+      location: 'โลเคชั่น',
       email: 'Email',
       userAgent: 'User Agent',
     };
@@ -290,7 +283,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         <span
           className={cn(
             'font-mono px-1.5 py-0.5 rounded',
-            themeUtils.baseTheme === 'light' ? 'bg-dark-100' : 'bg-dark-800'
+            themeUtils.baseTheme === 'light' ? 'bg-light-200' : 'bg-dark-600'
           )}>
           {formatIpAddress(value)}
         </span>
@@ -299,7 +292,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
     // Format currency values
     if ((key === 'amount' || key === 'price') && typeof value === 'number') {
-      return <span className="font-medium">{formatCurrency(value)}</span>;
+      return <span className="font-medium">{value}</span>;
     }
 
     // Format dates
@@ -448,10 +441,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           <History size={16} className={themeUtils.getPrimaryColorClass('text')} />
           <span className={themeUtils.getTextColors()}>
             {activeTab === 'transactions'
-              ? 'Financial Activities'
+              ? 'เกี่ยวกับการเงิน'
               : activeTab === 'interactions'
-              ? 'Interaction Activities'
-              : 'All Activities'}
+              ? 'การโต้ตอบ'
+              : 'กิจกรรมทั้งหมด'}
           </span>
         </h3>
 
@@ -464,7 +457,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             />
             <input
               type="text"
-              placeholder="Search activities..."
+              placeholder="การค้นหา..."
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
               className={cn(
@@ -487,7 +480,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               'border hover:shadow-sm'
             )}>
             <Filter size={14} className={themeUtils.getPrimaryColorClass('text')} />
-            <span className="hidden sm:inline">Filter</span>
+            <span className="hidden sm:inline">ตัวกรอง</span>
           </button>
 
           {/* Refresh */}
@@ -504,7 +497,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               size={14}
               className={cn(loading && 'animate-spin', themeUtils.getPrimaryColorClass('text'))}
             />
-            <span className="hidden sm:inline">Refresh</span>
+            <span className="hidden sm:inline">รีเฟรช</span>
           </button>
         </div>
       </div>
@@ -519,7 +512,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             className={cn(
               'mb-3 sm:mb-4 p-2 sm:p-3 border rounded-lg',
               themeUtils.baseTheme === 'light'
-                ? 'bg-light-600 border-light-400'
+                ? 'bg-light-100 border-light-300'
                 : 'bg-dark-600 border-dark-400'
             )}>
             <div className="flex flex-wrap gap-2">
@@ -533,10 +526,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   themeUtils.getCardClass(),
                   themeUtils.getComponentRoundednessClass()
                 )}>
-                <option value="">All Categories</option>
-                <option value="financial">Financial</option>
-                <option value="interaction">Interaction</option>
-                <option value="system">System</option>
+                <option value="">หมวดหมู่ทั้งหมด</option>
+                <option value="financial">เกี่ยวกับการเงิน</option>
+                <option value="interaction">การโต้ตอบ</option>
+                <option value="system">ระบบ</option>
               </select>
 
               <select
@@ -547,12 +540,12 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   themeUtils.getCardClass(),
                   themeUtils.getComponentRoundednessClass()
                 )}>
-                <option value="">All Types</option>
-                <option value="deposit">Deposit</option>
-                <option value="purchase">Purchase</option>
-                <option value="review">Review</option>
-                <option value="login">Login</option>
-                <option value="registration">Registration</option>
+                <option value="">กิจกรรมทั้งหมด</option>
+                <option value="deposit">เติมเงิน</option>
+                <option value="purchase">ซื้อ</option>
+                <option value="review">รีวิว</option>
+                <option value="login">เข้าสู่ระบบ</option>
+                <option value="registration">การลงทะเบียน</option>
               </select>
             </div>
           </motion.div>
@@ -566,7 +559,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           className={cn(
             'mb-3 sm:mb-4 px-3 py-2 text-xs border-l-4 flex items-center gap-2',
             themeUtils.getComponentRoundednessClass(),
-            'bg-red-50 border-red-400 text-red-700  '
+            'bg-red-500/20 border-red-400 text-red-700  '
           )}>
           <AlertCircle size={14} />
           {error}
@@ -579,7 +572,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             size={20}
             className={cn('animate-spin mx-auto mb-2', themeUtils.getPrimaryColorClass('text'))}
           />
-          <p className="text-xs  ">Loading activities...</p>
+          <p className="text-xs  ">กำลังโหลดกิจกรรม...</p>
         </div>
       ) : filteredActivities.length === 0 ? (
         <div className="text-center py-6 sm:py-8">
@@ -587,7 +580,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             size={20}
             className={cn('mx-auto mb-2', themeUtils.getPrimaryColorClass('text'))}
           />
-          <p className={cn('text-xs', themeUtils.getTextColors())}>No activities found</p>
+          <p className={cn('text-xs', themeUtils.getTextColors())}>ไม่พบกิจกรรม</p>
         </div>
       ) : (
         <div className="space-y-5">
@@ -650,7 +643,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                     <div className="flex items-center gap-2">
                       {activity.metadata.amount && (
                         <p className={cn('text-xs font-semibold', themeUtils.getTextColors())}>
-                          {formatCurrency(activity.metadata.amount)}
+                          {activity.metadata.amount}
                         </p>
                       )}
 
@@ -735,7 +728,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                               size={14}
                               className={themeUtils.getPrimaryColorClass('text')}
                             />
-                            <span>Date:</span>
+                            <span>วันที่</span>
                           </div>
                           <div className={cn('font-medium', themeUtils.getTextColors())}>
                             {formatDate(activity.createdAt)}
@@ -753,7 +746,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                                 size={14}
                                 className={themeUtils.getPrimaryColorClass('text')}
                               />
-                              <span>Completed:</span>
+                              <span>เสร็จสิ้น</span>
                             </div>
                             <div className={cn('font-medium', themeUtils.getTextColors())}>
                               {formatDate(activity.completedAt)}
@@ -769,7 +762,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                                 themeUtils.getTextColors()
                               )}>
                               <Tag size={14} className={themeUtils.getPrimaryColorClass('text')} />
-                              <span>Tags:</span>
+                              <span>แท็ก</span>
                             </div>
                             <div className="flex flex-wrap gap-1">
                               {activity.tags.map((tag: string) => (
@@ -778,8 +771,8 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                                   className={cn(
                                     'px-2 py-0.5 rounded-full text-xs',
                                     themeUtils.baseTheme === 'light'
-                                      ? 'bg-dark-100'
-                                      : 'bg-dark-800',
+                                      ? 'bg-light-300'
+                                      : 'bg-dark-600',
                                     themeUtils.getTextColors()
                                   )}>
                                   {tag}
@@ -796,7 +789,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                                 size={14}
                                 className={themeUtils.getPrimaryColorClass('text')}
                               />
-                              <span>Notes:</span>
+                              <span>โน้ต</span>
                             </div>
                             <div className={cn('font-medium', themeUtils.getTextColors())}>
                               {activity.notes}
@@ -826,12 +819,12 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 {loading ? (
                   <>
                     <RefreshCw size={14} className="animate-spin" />
-                    Loading...
+                    กำลังโหลด...
                   </>
                 ) : (
                   <>
                     <ChevronDown size={14} />
-                    Load More
+                    โหลดเพิ่มเติม
                   </>
                 )}
               </button>

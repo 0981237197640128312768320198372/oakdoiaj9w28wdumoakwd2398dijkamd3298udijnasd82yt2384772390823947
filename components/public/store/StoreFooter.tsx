@@ -109,7 +109,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
                 </div>
                 <div className="flex flex-col">
                   <h3 className={cn('font-aktivGroteskBold tracking-widest', footerStyles.text)}>
-                    {seller?.store?.name || 'Store Name'}
+                    {seller?.store?.name || 'ชื่อร้าน'}
                   </h3>
                 </div>
               </div>

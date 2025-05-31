@@ -42,7 +42,7 @@ export const ProductsList = ({ priceData }: { priceData: any[] }) => {
                 </h2>
                 <p className="">{product.description}</p>
                 <p className="font-aktivGroteskThin text-[11px] text-light-800">
-                  Stock Available: {product.stock}
+                  พร้อมส่ง: {product.stock}
                 </p>
               </div>
               {product.name.includes('Netflix') && (

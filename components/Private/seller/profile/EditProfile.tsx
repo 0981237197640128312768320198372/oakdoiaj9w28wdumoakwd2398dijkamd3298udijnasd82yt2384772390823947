@@ -301,12 +301,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
           </div>
         </Card>
 
-        {/* Store Information */}
         <Card className="bg-dark-800 border-dark-700 p-4 md:p-6">
           <div className="space-y-3 md:space-y-4">
             <div className="flex items-center gap-2">
               <Store size={16} className="text-priamry md:h-[18px] md:w-[18px]" />
-              <h3 className="text-base md:text-lg font-semibold text-white">Store Information</h3>
+              <h3 className="text-base md:text-lg font-semibold text-white">ข้อมูลร้านค้า</h3>
             </div>
             <Separator className="bg-dark-600" />
 
@@ -315,7 +314,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                 <label
                   htmlFor="storeName"
                   className="text-xs md:text-sm font-medium text-light-300">
-                  Store Name *
+                  ชื่อร้าน *
                 </label>
                 <Input
                   id="storeName"

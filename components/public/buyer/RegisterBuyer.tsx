@@ -62,9 +62,8 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
   const [step, setStep] = useState(1);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Removed HTMLTextAreaElement as it's not used
     const { name, value } = e.target;
-    setError(null); // Clear error on change
+    setError(null);
     setFormData((prev) => {
       if (name.startsWith('contact.')) {
         const field = name.split('.')[1];
@@ -93,7 +92,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
     if (generatedKey) {
       const element = document.createElement('a');
       const file = new Blob(
-        [`Your Personal Key: ${generatedKey}\n\nPlease keep this key secure for login.`],
+        [`Personal Key ของคุณ: ${generatedKey}\n\nโปรดเก็บไว้อย่างปลอดภัยสำหรับเข้าสู่ระบบ`],
         {
           type: 'text/plain',
         }
@@ -108,11 +107,11 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
 
   const validateStep1 = () => {
     if (!formData.name.trim() || !formData.email.trim()) {
-      setError('Full name and email are required.');
+      setError('จำเป็นต้องกรอกชื่อ-นามสกุล และอีเมล');
       return false;
     }
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setError('Please enter a valid email address.');
+      setError('โปรดกรอกอีเมลที่ถูกต้อง');
       return false;
     }
     if (authMethod === 'credentials') {
@@ -121,11 +120,11 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
         return false;
       }
       if (formData.password.length < 6) {
-        setError('Password must be at least 6 characters long.');
+        setError('จำเป็นต้องกรอก username และรหัสผ่าน');
         return false;
       }
       if (formData.password !== formData.repeatPassword) {
-        setError('Passwords do not match.');
+        setError('รหัสผ่านไม่ตรงกัน');
         return false;
       }
     }
@@ -134,7 +133,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
 
   const validateStep2 = () => {
     if (!formData.contact.facebook.trim() || !formData.contact.line.trim()) {
-      setError('Facebook username and Line ID are required.');
+      setError('จำเป็นต้องกรอก Facebook username และ Line ID');
       return false;
     }
     return true;
@@ -183,13 +182,13 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
 
       if (response.ok) {
         if (data.buyer.personalKey) setGeneratedKey(data.buyer.personalKey);
-        setSuccess('Registration successful!');
+        setSuccess('การลงทะเบียนสำเร็จ');
         if (!data.buyer.personalKey) setTimeout(() => onNavigate('loginbuyer'), 2000);
       } else {
-        setError(data.message || 'Registration failed. Please try again.');
+        setError(data.message || 'การลงทะเบียนไม่สำเร็จ โปรดลองอีกครั้ง');
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again later.');
+      setError('เกิดข้อผิดพลากที่ไม่คาดคิด โปรดลองอีกครั้งในภายหลัง');
     } finally {
       setIsLoading(false);
     }
@@ -233,7 +232,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                 <React.Fragment key={s}>
                   <div
                     className={cn(
-                      'w-7 h-7 text-xs rounded-full flex items-center justify-center transition-all duration-300 font-semibold' /* Compacted size */,
+                      'w-7 h-7 text-xs rounded-full flex items-center justify-center transition-all duration-300 font-semibold',
                       step >= s
                         ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
                         : themeUtils.getCardClass() + ' border'
@@ -250,7 +249,6 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                       )}
                     />
                   )}
-                  {/* Compacted line */}
                 </React.Fragment>
               ))}
             </div>
@@ -265,13 +263,12 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                   transition={{ duration: 0.25 }}
                   className="space-y-4">
                   <div className="text-center mb-4">
-                    <h3 className="text-lg font-semibold">Account Setup</h3>
-                    {/* Slightly larger for heading */}
-                    <p className="text-xs text-gray-500">Provide your basic account details.</p>
+                    <h3 className="text-lg font-semibold">ตั้งค่าบัญชี</h3>
+                    <p className="text-xs text-gray-500">ป้อนข้อมูลพื้นฐานบัญชีของคุณ</p>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium">Authentication Method</label>
+                    <label className="block text-xs font-medium">วิธีการเข้าสู่ระบบ</label>
                     <div
                       className={cn(
                         'flex overflow-hidden ',
@@ -287,7 +284,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                           authMethod === 'credentials' && themeUtils.getButtonClass(),
                           themeUtils.getPrimaryColorClass('border')
                         )}>
-                        <UserIcon size={14} /> Credentials
+                        <UserIcon size={14} /> ข้อมูลส่วนตัว
                       </button>
                       <button
                         type="button"
@@ -297,7 +294,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                           authMethod === 'personalKey' && themeUtils.getButtonClass(),
                           themeUtils.getPrimaryColorClass('border')
                         )}>
-                        <Key size={14} /> Personal Key Only
+                        <Key size={14} /> Personal Key
                       </button>
                     </div>
                   </div>
@@ -305,7 +302,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label htmlFor="nameRegister" className="block text-xs font-medium">
-                        Full Name <span className="text-red-500">*</span>
+                        ชื่อ-นามสกุล <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
@@ -318,14 +315,14 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                           value={formData.name}
                           onChange={handleChange}
                           className={inputBaseClasses}
-                          placeholder="e.g., Jane Doe"
+                          placeholder="Supathom"
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-1.5">
                       <label htmlFor="emailRegister" className="block text-xs font-medium">
-                        Email <span className="text-red-500">*</span>
+                        อีเมล <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
@@ -338,7 +335,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                           value={formData.email}
                           onChange={handleChange}
                           className={inputBaseClasses}
-                          placeholder="e.g., jane@example.com"
+                          placeholder="supathom@example.com"
                           required
                         />
                       </div>
@@ -354,7 +351,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label htmlFor="usernameRegister" className="block text-xs font-medium">
-                            Username <span className="text-red-500">*</span>
+                            ชื่อผู้ใช้ <span className="text-red-500">*</span>
                           </label>
                           <input
                             id="usernameRegister"
@@ -362,13 +359,13 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                             value={formData.username}
                             onChange={handleChange}
                             className={cn(inputBaseClasses, 'pl-3')}
-                            placeholder="Choose a username"
+                            placeholder="superthom"
                             required
                           />
                         </div>
                         <div className="space-y-1.5">
                           <label htmlFor="passwordRegister" className="block text-xs font-medium">
-                            Password <span className="text-red-500">*</span>
+                            รหัสผ่าน <span className="text-red-500">*</span>
                           </label>
                           <div className="relative">
                             <input
@@ -394,7 +391,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                         <label
                           htmlFor="repeatPasswordRegister"
                           className="block text-xs font-medium">
-                          Confirm Password <span className="text-red-500">*</span>
+                          ยืนยันรหัสผ่าน <span className="text-red-500">*</span>
                         </label>
                         <input
                           id="repeatPasswordRegister"
@@ -421,8 +418,8 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                   transition={{ duration: 0.25 }}
                   className="space-y-4">
                   <div className="text-center mb-4">
-                    <h3 className="text-lg font-semibold">Contact Details</h3>
-                    <p className="text-xs text-gray-500">How can sellers reach you?</p>
+                    <h3 className="text-lg font-semibold">ข้อมูลการติดต่อ</h3>
+                    <p className="text-xs text-gray-500">ผู้ขายสามารถติดต่อคุณได้อย่างไร?</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
@@ -522,7 +519,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                   type="button"
                   onClick={handlePrevious}
                   className={cn(buttonBaseClasses, themeUtils.getCardClass(), 'border px-4')}>
-                  <ArrowLeft size={14} /> Previous
+                  <ArrowLeft size={14} /> ก่อนหน้า
                 </button>
               ) : (
                 <div></div>
@@ -537,21 +534,26 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                     themeUtils.getPrimaryColorClass('border'),
                     'px-4'
                   )}>
-                  Next <ArrowRight size={14} />
+                  ถัดไป <ArrowRight size={14} />
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className={cn(buttonBaseClasses, themeUtils.getButtonClass(), 'px-4')}>
+                  className={cn(
+                    buttonBaseClasses,
+                    themeUtils.getButtonClass(),
+                    themeUtils.getPrimaryColorClass('border'),
+                    'px-4'
+                  )}>
                   {isLoading ? (
                     <>
-                      <Loader2 size={14} className="animate-spin" /> Registering...
+                      <Loader2 size={14} className="animate-spin" /> กำลังลงทะเบียน...
                     </>
                   ) : (
                     <>
-                      <Send size={14} /> Create Account
+                      <Send size={14} /> สร้างบัญชี
                     </>
                   )}
                 </button>

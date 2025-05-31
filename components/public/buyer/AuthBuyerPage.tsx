@@ -39,13 +39,14 @@ export const AuthBuyerPage: React.FC<AuthBuyerPageProps> = ({ onNavigate, seller
       <div className=" flex flex-col lg:flex-row lg:gap-5 justify-center items-center">
         <div
           className={cn(
-            'w-14 h-14 mb-4  relative overflow-hidden shadow-md ',
+            'w-14 h-14 mb-4 relative overflow-hidden shadow-md border',
             themeUtils.getButtonRoundednessClass(),
-            themeUtils.getComponentShadowClass()
+            themeUtils.getComponentShadowClass(),
+            themeUtils.getPrimaryColorClass('border')
           )}>
           <Image
             src={seller?.store?.logoUrl || '/placeholder.svg?height=56&width=56&query=store+logo'}
-            alt={seller?.store?.name || 'Store Logo'}
+            alt={seller?.store?.name || 'โลโก้ร้าน'}
             width={56}
             height={56}
             className="object-cover"
@@ -70,7 +71,7 @@ export const AuthBuyerPage: React.FC<AuthBuyerPageProps> = ({ onNavigate, seller
               themeUtils.getPrimaryColorClass('border')
             )}>
             <LogIn size={14} />
-            Sign In
+            เข้าสู่ระบบ
           </button>
           <button
             type="button"
@@ -83,7 +84,7 @@ export const AuthBuyerPage: React.FC<AuthBuyerPageProps> = ({ onNavigate, seller
               themeUtils.getPrimaryColorClass('border')
             )}>
             <UserPlus size={14} />
-            Register
+            ลงทะเบียน
           </button>
         </div>
       </div>

@@ -7,11 +7,12 @@ import ProductCard from './ProductCard';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { ArrowRight } from 'lucide-react';
+import { RiDiscountPercentLine } from 'react-icons/ri';
 
 interface DiscountedProductsProps {
   products: Product[];
   theme: ThemeType;
-  onNavigate?: (page: string) => void;
+  onNavigate: (page: string) => void;
 }
 
 export default function DiscountedProducts({
@@ -58,16 +59,21 @@ export default function DiscountedProducts({
         themeUtils.getTextColors()
       )}>
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Hot Deals</h2>
+        <h2 className="text-xl font-semibold flex gap-1">
+          <RiDiscountPercentLine className="text-2xl" />
+          ดีลส่วนลดสุดพิเศษ
+        </h2>
         {discountedProducts.length > 0 && (
           <button
-            onClick={() => onNavigate && onNavigate('products')}
+            onClick={() => onNavigate('products')}
             className={cn(
-              'flex items-center gap-1 text-sm transition-colors',
-              themeUtils.getPrimaryColorClass('text'),
-              'hover:' + themeUtils.getPrimaryColorClass('text') + '/80'
+              'flex items-center gap-1 py-1 px-2 text-sm transition-colors',
+              themeUtils.getPrimaryColorClass('bg'),
+              themeUtils.getButtonClass(),
+              themeUtils.getButtonRoundednessClass(),
+              themeUtils.getPrimaryColorClass('border')
             )}>
-            See more <ArrowRight size={16} />
+            ดูเพิ่มเติม <ArrowRight size={16} />
           </button>
         )}
       </div>
@@ -84,7 +90,7 @@ export default function DiscountedProducts({
               theme={theme}
               category={product.category}
               onBuyNow={(productId) => {
-                console.log(`Buy now clicked for product: ${productId}`);
+                console.log(`ซื้อเลย clicked for product: ${productId}`);
                 // In a real implementation, this would handle the purchase flow
                 // or redirect to a product detail page
               }}

@@ -47,11 +47,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
     setIsSearchOpen(true);
   };
 
-  const handleLogout = () => {
-    logout();
-    onNavigate('home');
-  };
-
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
 
@@ -153,30 +148,18 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                   <button
                     onClick={() => onNavigate('buyerdashboard')}
                     className={cn(
-                      'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
+                      'flex items-center gap-2 p-2 transition-all duration-300 text-sm',
                       activePage === 'buyerdashboard'
                         ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
                         : isLight
-                        ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                        : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
+                        ? 'hover:bg-light-300 bg-light-100'
+                        : 'hover:bg-dark-500 bg-dark-600',
                       themeUtils.getButtonRoundednessClass()
                     )}>
                     <CircleUserRound size={16} />
                     <span className="hidden lg:inline font-medium truncate max-w-[100px]">
                       {buyer?.name?.split(' ')[0] || 'Dashboard'}
                     </span>
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className={cn(
-                      'flex items-center justify-center p-2 transition-all duration-300',
-                      isLight
-                        ? 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                        : 'bg-dark-700 text-gray-200 hover:bg-dark-600',
-                      themeUtils.getButtonRoundednessClass()
-                    )}
-                    aria-label="Logout">
-                    <LogOut size={16} />
                   </button>
                 </motion.div>
               ) : (

@@ -54,7 +54,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
           themeUtils.getCardClass()
         )}>
         <CardContent className="text-center p-6">
-          <p className={profileStyles.secondaryText}>Store information not available</p>
+          <p className={profileStyles.secondaryText}>ข้อมูลร้านไม่สามารถใช้งานได้</p>
         </CardContent>
       </Card>
     );
@@ -81,7 +81,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             <div className="lg:col-span-2 space-y-5">
               <PublicInfoSection
-                title="Store Information"
+                title="ข้อมูลร้านค้า"
                 theme={theme}
                 icon={<Info className="w-4 h-4" />}>
                 <p
@@ -99,7 +99,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                   <div className="flex items-center gap-2">
                     <CalendarDays className={cn('h-4 w-4', profileStyles.secondaryText)} />
                     <span className={cn('text-sm', profileStyles.secondaryText)}>
-                      Member since:
+                      เป็นสมาชิกตั้งแต่
                     </span>
                     <span className={cn('font-medium text-xs', profileStyles.text)}>
                       {formatDate(seller.createdAt)}
@@ -107,9 +107,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarDays className={cn('h-4 w-4', profileStyles.secondaryText)} />
-                    <span className={cn('text-sm', profileStyles.secondaryText)}>
-                      Last updated:
-                    </span>
+                    <span className={cn('text-sm', profileStyles.secondaryText)}>อัพเดทล่าสุด</span>
                     <span className={cn('font-medium text-xs', profileStyles.text)}>
                       {formatDate(seller.updatedAt)}
                     </span>
@@ -122,7 +120,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
               <PublicStoreStats theme={theme} seller={seller} />
               <PublicInfoSection
                 theme={theme}
-                title="Contact Information"
+                title="ข้อมูลการติดต่อ"
                 icon={<MessageCircle className="w-4 h-4" />}>
                 <SocialLinks contact={seller.contact} />
               </PublicInfoSection>
