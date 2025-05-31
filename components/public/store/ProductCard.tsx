@@ -4,7 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Star, Tag, ShoppingCart } from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
-import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
+import DCSymbolWhite from '@/assets/icons/DCSymbolWhite.svg';
+import DCSymbolBlack from '@/assets/icons/DCSymbolBlack.svg';
+
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 
@@ -111,15 +113,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         isLight ? 'text-dark-800' : 'text-light-200'
       ),
       originalPrice: cn(
-        'text-[12px] line-through whitespace-nowrap flex gap-1 items-center opacity-60',
+        'text-[12px] line-through whitespace-nowrap flex gap-2 items-center opacity-60',
         isLight ? 'text-dark-500' : 'text-light-500'
       ),
       discountedPrice: cn(
-        'text-sm font-semibold whitespace-nowrap flex gap-1 items-center ',
+        'text-md font-semibold whitespace-nowrap flex gap-2 items-center ',
         themeUtils?.getPrimaryColorClass('text')
       ),
       regularPrice: cn(
-        'text-xs font-semibold whitespace-nowrap flex gap-1 items-center',
+        'text-md font-semibold whitespace-nowrap flex gap-2 items-center',
         themeUtils?.getPrimaryColorClass('text')
       ),
       footer: cn(
@@ -137,6 +139,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         isLight ? 'text-dark-500' : 'text-light-600'
       ),
       ratingContainer: cn('flex items-center gap-1', isLight ? 'text-amber-500' : 'text-amber-400'),
+      dokmaiCoin: isLight ? DCSymbolBlack : DCSymbolWhite,
       categoryTag: cn(
         'flex items-center gap-1 text-xs ',
         isLight ? 'text-dark-600' : 'text-light-500'
@@ -240,14 +243,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
             </div>
           </div>
           <div className="flex w-full justify-between items-center">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {hasDiscount ? (
                 <>
                   <span className={styles.discountedPrice}>
                     <Image
-                      src={dokmaicoin}
+                      src={styles.dokmaiCoin}
                       alt="Dokmai Coin"
-                      className="h-4 w-4"
+                      className="h-4 w-auto"
                       width={50}
                       height={50}
                     />
@@ -255,9 +258,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
                   </span>
                   <span className={styles.originalPrice}>
                     <Image
-                      src={dokmaicoin}
+                      src={styles.dokmaiCoin}
                       alt="Dokmai Coin"
-                      className="h-3 w-3"
+                      className="h-3 w-auto"
                       width={50}
                       height={50}
                     />
@@ -267,9 +270,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
               ) : (
                 <span className={styles.regularPrice}>
                   <Image
-                    src={dokmaicoin}
+                    src={styles.dokmaiCoin}
                     alt="Dokmai Coin"
-                    className="h-4 w-4"
+                    className="h-4 w-auto"
                     width={50}
                     height={50}
                   />

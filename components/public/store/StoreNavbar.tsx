@@ -149,7 +149,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.2 }}
-                  className="flex items-center gap-2">
+                  className="hidden md:flex items-center gap-2">
                   <button
                     onClick={() => onNavigate('buyerdashboard')}
                     className={cn(

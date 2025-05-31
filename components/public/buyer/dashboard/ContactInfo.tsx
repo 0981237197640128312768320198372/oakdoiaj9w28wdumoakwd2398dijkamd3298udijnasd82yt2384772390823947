@@ -177,7 +177,7 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
       )}
 
       {contactItems.length === 1 && (
-        <div className="mt-6 text-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+        <div className="mt-6 text-center p-3 bg-gray-50  rounded-lg">
           <p className="text-xs text-gray-600 dark:text-gray-400">
             Add more contact methods to help sellers reach you easily
           </p>

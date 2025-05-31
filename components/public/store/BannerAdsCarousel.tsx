@@ -117,7 +117,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
 
   const getBorderClass = (isCenter: boolean) => {
     if (isCenter) {
-      return `border-2 ${themeUtils.getPrimaryColorClass('border')}/50`;
+      return `border-4 ${themeUtils.getPrimaryColorClass('border')}/30`;
     }
     return 'border border-gray-700/50';
   };
@@ -127,7 +127,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
       const baseShadow = themeUtils.getAdsShadowClass();
       return `${baseShadow} ${themeUtils.getPrimaryColorClass('border')}/50`;
     }
-    return `${themeUtils.getAdsShadowClass()} shadow-black/20`;
+    return `${themeUtils.getAdsShadowClass()} shadow-black/30`;
   };
 
   if (banners.length === 0) {
@@ -177,7 +177,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
                       x: xPos,
                       y: '-50%',
                       zIndex: isCenter ? 30 : 20,
-                      opacity: isCenter ? 1 : 0.35,
+                      opacity: isCenter ? 1 : 0.45,
                       filter: isCenter
                         ? 'grayscale(0%) brightness(1)'
                         : 'grayscale(100%) brightness(0.7)',

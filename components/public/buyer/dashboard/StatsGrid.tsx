@@ -29,7 +29,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
       label: 'Total Activities',
       value: stats.totalActivities.toString(),
       color: 'text-blue-500',
-      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      bgColor: 'bg-blue-500/20',
     },
     {
       id: 'transactions',
@@ -37,7 +37,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
       label: 'Completed Transactions',
       value: stats.completedTransactions.toString(),
       color: 'text-green-500',
-      bgColor: 'bg-green-50 dark:bg-green-900/20',
+      bgColor: 'bg-green-500/20 ',
     },
     {
       id: 'interactions',
@@ -45,7 +45,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
       label: 'Interactions',
       value: stats.interactions.toString(),
       color: 'text-yellow-500',
-      bgColor: 'bg-yellow-50 dark:bg-yellow-900/20',
+      bgColor: 'bg-yellow-500/20 ',
     },
   ];
 
@@ -70,12 +70,8 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
               <item.icon size={16} className={item.color} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-gray-600 dark:text-gray-400 truncate">
-                {item.label}
-              </p>
-              <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
-                {item.value}
-              </p>
+              <p className="text-xs font-medium truncate">{item.label}</p>
+              <p className="text-sm font-bold truncate">{item.value}</p>
             </div>
           </div>
           <div className="mt-3">
@@ -89,10 +85,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
                 themeUtils.getComponentRoundednessClass(),
                 activeTab === item.id
                   ? cn(themeUtils.getButtonClass(), 'shadow-sm')
-                  : cn(
-                      'border hover:shadow-sm hover:opacity-80',
-                      'text-gray-600 dark:text-gray-400'
-                    )
+                  : cn('border hover:shadow-sm hover:opacity-80')
               )}>
               <item.icon size={14} />
               <span>View {item.id.charAt(0).toUpperCase() + item.id.slice(1)}</span>

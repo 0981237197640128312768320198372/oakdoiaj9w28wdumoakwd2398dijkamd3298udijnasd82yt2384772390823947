@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Edit, Trash2, AlertTriangle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import Image from 'next/image';
-import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
+import dokmaicoin from '@/assets/icons/DCSymbolWhite.svg';
 
 interface SellerProductCardProps {
   product: Product;
