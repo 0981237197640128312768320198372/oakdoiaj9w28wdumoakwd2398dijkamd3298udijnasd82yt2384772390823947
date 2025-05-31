@@ -26,7 +26,7 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
-      className="w-full space-y-8 max-w-screen-lg min-h-[75vh]">
+      className="w-full space-y-8 max-w-screen-lg">
       <BannerAdsCarousel theme={theme} />
       <DiscountedProducts products={products} theme={theme} onNavigate={onNavigate} />
       <ProductsCategory

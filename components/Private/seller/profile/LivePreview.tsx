@@ -1,271 +1,419 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { Smartphone, Monitor, Home, Package, Info, Search, User } from 'lucide-react';
 import type { ThemeType } from '@/types';
-import { Search, Home, Package, Power, ChevronLeft, ChevronRight, Star } from 'lucide-react';
-import { TbInfoHexagon } from 'react-icons/tb';
-import { LuArrowUpRight } from 'react-icons/lu';
+import Image from 'next/image';
+import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 
 interface LivePreviewProps {
   theme: ThemeType;
+  seller?: {
+    store?: {
+      name?: string;
+      logoUrl?: string;
+      description?: string;
+    };
+    username?: string;
+  };
 }
 
-export const LivePreview: React.FC<LivePreviewProps> = ({ theme }) => {
+export default function LivePreview({ theme, seller }: LivePreviewProps) {
+  const [viewMode, setViewMode] = useState<'mobile' | 'desktop'>('desktop');
+  const [activePage, setActivePage] = useState<'home' | 'products' | 'profile'>('home');
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
 
-  // Sample seller data for the preview
-  const sampleSeller = {
-    store: {
-      name: 'Your Store',
-      logoUrl: null,
-    },
-    username: 'yourstore',
+  // Mock data for preview
+  const mockProducts = [
+    { id: 1, name: 'Product 1', price: '฿299', image: '' },
+    { id: 2, name: 'Product 2', price: '฿199', image: '' },
+    { id: 3, name: 'Product 3', price: '฿399', image: '' },
+    { id: 4, name: 'Product 4', price: '฿499', image: '' },
+  ];
+
+  const layoutStyles = {
+    background: isLight ? 'bg-light-100' : 'bg-dark-800',
+    text: isLight ? 'text-dark-800' : 'text-light-100',
   };
 
   return (
-    <div className="space-y-6 overflow-hidden">
-      <h3 className="text-sm font-medium text-light-200 mb-2">Live Preview</h3>
-
-      {/* Navbar Preview */}
-      <div className="border border-dark-600 rounded-lg overflow-hidden">
-        <div className="text-xs text-light-500 bg-dark-900 px-3 py-1.5 border-b border-dark-700">
-          Store Navbar Preview
-        </div>
-        <div className="p-4">
-          <div
+    <div className="rounded-lg border border-dark-700 overflow-hidden">
+      {/* Preview Controls */}
+      <div className="bg-dark-800 border-b border-dark-700 p-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setViewMode('mobile')}
             className={cn(
-              'w-full border transition-all duration-300 flex items-center justify-between backdrop-blur-md',
-              'py-3 px-5',
-              'shadow-sm',
-              themeUtils.getCardClass(),
-              themeUtils.getButtonRoundednessClass()
+              'p-1.5 rounded-md transition-all',
+              viewMode === 'mobile'
+                ? 'bg-primary text-dark-800'
+                : 'bg-dark-700 text-light-400 hover:text-light-100'
+            )}
+            aria-label="Mobile view">
+            <Smartphone className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('desktop')}
+            className={cn(
+              'p-1.5 rounded-md transition-all',
+              viewMode === 'desktop'
+                ? 'bg-primary text-dark-800'
+                : 'bg-dark-700 text-light-400 hover:text-light-100'
+            )}
+            aria-label="Desktop view">
+            <Monitor className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setActivePage('home')}
+            className={cn(
+              'px-2 py-1 rounded-md text-xs font-medium transition-all',
+              activePage === 'home'
+                ? 'bg-primary text-dark-800'
+                : 'bg-dark-700 text-light-400 hover:text-light-100'
             )}>
-            <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  'relative overflow-hidden transition-all duration-300',
-                  'w-10 h-10',
-                  themeUtils.getButtonRoundednessClass()
-                )}>
-                <div
-                  className={cn(
-                    'w-full h-full bg-gray-300',
-                    isLight ? 'bg-gray-300' : 'bg-gray-700'
-                  )}></div>
-              </div>
-              <div className="flex flex-col">
-                <h1
-                  className={cn(
-                    'font-aktivGroteskBold text-sm tracking-wide transition-all duration-300 select-none',
-                    isLight ? 'text-gray-800' : 'text-white'
-                  )}>
-                  {sampleSeller.store.name}
-                </h1>
-              </div>
-            </div>
-
-            <div className="items-center gap-1 flex">
-              <button
-                className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 text-sm transition-all duration-300 relative',
-                  themeUtils.getPrimaryColorClass('bg'),
-                  themeUtils.getButtonRoundednessClass(),
-                  themeUtils.getButtonClass()
-                )}>
-                <Home size={16} />
-                <span className="font-medium">บ้าน</span>
-              </button>
-              <button
-                className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 text-sm transition-all duration-300 relative',
-                  isLight ? 'text-gray-700 hover:bg-gray-100' : 'text-gray-300 hover:bg-dark-700',
-                  themeUtils.getButtonRoundednessClass(),
-                  themeUtils.getButtonClass()
-                )}>
-                <TbInfoHexagon size={16} />
-                <span className="font-medium">ร้านค้า</span>
-              </button>
-              <button
-                className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 text-sm transition-all duration-300 relative',
-                  isLight ? 'text-gray-700 hover:bg-gray-100' : 'text-gray-300 hover:bg-dark-700',
-                  themeUtils.getButtonRoundednessClass(),
-                  themeUtils.getButtonClass()
-                )}>
-                <Package size={16} />
-                <span className="font-medium">สินค้า</span>
-              </button>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                className={cn(
-                  'flex items-center justify-center transition-all duration-300 p-2 group',
-                  isLight ? 'hover:bg-light-300 bg-light-100' : 'hover:bg-dark-500 bg-dark-600',
-                  themeUtils.getButtonRoundednessClass()
-                )}
-                aria-label="ค้นหา">
-                <Search
-                  size={18}
-                  className={
-                    isLight
-                      ? 'text-dark-600 group-hover:text-dark-800'
-                      : 'text-light-500 group-hover:text-light-100'
-                  }
-                />
-              </button>
-
-              <button
-                className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
-                  themeUtils.getPrimaryColorClass('bg'),
-                  themeUtils.getButtonClass(),
-                  themeUtils.getButtonRoundednessClass()
-                )}>
-                <Power size={16} />
-                <span className="font-medium">เข้าสู่ระบบ</span>
-              </button>
-            </div>
-          </div>
+            Home
+          </button>
+          <button
+            onClick={() => setActivePage('products')}
+            className={cn(
+              'px-2 py-1 rounded-md text-xs font-medium transition-all',
+              activePage === 'products'
+                ? 'bg-primary text-dark-800'
+                : 'bg-dark-700 text-light-400 hover:text-light-100'
+            )}>
+            Products
+          </button>
+          <button
+            onClick={() => setActivePage('profile')}
+            className={cn(
+              'px-2 py-1 rounded-md text-xs font-medium transition-all',
+              activePage === 'profile'
+                ? 'bg-primary text-dark-800'
+                : 'bg-dark-700 text-light-400 hover:text-light-100'
+            )}>
+            Profile
+          </button>
         </div>
       </div>
 
-      {/* Product Card Preview */}
-      <div className="border border-dark-600 rounded-lg overflow-hidden">
-        <div className="text-xs text-light-500 bg-dark-900 px-3 py-1.5 border-b border-dark-700">
-          Product Card Preview
-        </div>
-        <div className="p-4">
-          <div className="max-w-[300px] mx-auto">
+      {/* Preview Container */}
+      <div
+        className={cn(
+          'transition-all duration-300 overflow-hidden',
+          layoutStyles.background,
+          viewMode === 'mobile' ? 'w-[320px] mx-auto' : 'w-full'
+        )}
+        style={{
+          height: '400px',
+          maxHeight: '400px',
+          overflowY: 'auto',
+        }}>
+        {/* Navbar */}
+        <div
+          className={cn(
+            'sticky top-0 z-10 w-full p-3 flex items-center justify-between',
+            themeUtils.getCardClass(),
+            themeUtils.getComponentShadowClass()
+          )}>
+          <div className="flex items-center gap-2">
             <div
               className={cn(
-                'group relative overflow-hidden border transition-all duration-300 shadow-sm hover:shadow-lg',
-                isLight
-                  ? 'bg-light-100 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
-                  : 'bg-dark-600 border-dark-400 hover:border-dark-400 hover:shadow-dark-800/20',
-                themeUtils.getComponentRoundednessClass()
+                'w-8 h-8 relative overflow-hidden',
+                themeUtils.getButtonRoundednessClass()
               )}>
-              <div
-                className={cn(
-                  'relative aspect-square w-full overflow-hidden',
-                  isLight ? 'bg-light-100/50' : 'bg-dark-700/50'
-                )}>
-                <div className="w-full h-full flex items-center justify-center">
-                  <div
-                    className={cn(
-                      'w-24 h-24 rounded-full',
-                      isLight ? 'bg-gray-200' : 'bg-gray-700'
-                    )}></div>
-                </div>
+              <Image
+                src={seller?.store?.logoUrl || dokmailogosquare}
+                alt="Store logo"
+                width={32}
+                height={32}
+                className="object-cover w-full h-full"
+              />
+            </div>
+            <span className={cn('font-medium text-sm', layoutStyles.text)}>
+              {seller?.store?.name || 'Store Name'}
+            </span>
+          </div>
 
-                <button
-                  className={cn(
-                    'absolute top-1/2 -translate-y-1/2 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 left-1',
-                    isLight
-                      ? 'bg-light-200/90 text-dark-800 hover:bg-light-300'
-                      : 'bg-dark-700/90 text-light-200 hover:bg-dark-800'
-                  )}>
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  className={cn(
-                    'absolute top-1/2 -translate-y-1/2 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 right-1',
-                    isLight
-                      ? 'bg-light-200/90 text-dark-800 hover:bg-light-300'
-                      : 'bg-dark-700/90 text-light-200 hover:bg-dark-800'
-                  )}>
-                  <ChevronRight size={16} />
-                </button>
+          {viewMode === 'desktop' && (
+            <div className="hidden md:flex items-center gap-1.5">
+              <NavButton
+                icon={<Home size={14} />}
+                label="Home"
+                isActive={activePage === 'home'}
+                theme={theme}
+              />
+              <NavButton
+                icon={<Package size={14} />}
+                label="Products"
+                isActive={activePage === 'products'}
+                theme={theme}
+              />
+              <NavButton
+                icon={<Info size={14} />}
+                label="Profile"
+                isActive={activePage === 'profile'}
+                theme={theme}
+              />
+            </div>
+          )}
 
+          <div className="flex items-center gap-2">
+            <button
+              className={cn(
+                'p-1.5 rounded-md',
+                isLight ? 'bg-light-200 text-dark-600' : 'bg-dark-600 text-light-400',
+                themeUtils.getButtonRoundednessClass()
+              )}>
+              <Search className="h-3.5 w-3.5" />
+            </button>
+            <button
+              className={cn(
+                'px-2.5 py-1.5 text-xs font-medium',
+                themeUtils.getButtonClass(),
+                themeUtils.getButtonRoundednessClass()
+              )}>
+              Login
+            </button>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4 pt-16">
+          {activePage === 'home' && (
+            <div className="space-y-6">
+              {/* Banner */}
+              {theme.customizations.ads.images && theme.customizations.ads.images.length > 0 ? (
                 <div
                   className={cn(
-                    'absolute top-3 right-1 px-1 py-0.5 rounded text-sm lg:text-lg font-bold animate-bounce',
-                    themeUtils.getPrimaryColorClass('bg'),
-                    isLight ? 'text-light-100' : 'text-dark-800'
+                    'w-full h-32 bg-gray-200 relative overflow-hidden',
+                    themeUtils.getAdsRoundednessClass(),
+                    themeUtils.getAdsShadowClass()
                   )}>
-                  ลด 10%
-                </div>
-              </div>
-
-              <div className={cn('p-3 space-y-2', isLight ? 'text-dark-800' : 'text-light-200')}>
-                <div className="flex flex-col items-end justify-start gap-1">
-                  <div
-                    className={cn(
-                      'flex items-center',
-                      isLight ? 'text-amber-500' : 'text-amber-400'
-                    )}>
-                    <div className="flex items-center bg-amber-500/10 px-2 py-1 rounded">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={12}
-                          fill={4.5 >= star ? 'currentColor' : 'none'}
-                          stroke="currentColor"
-                          className="mr-0.5"
-                        />
-                      ))}
-                      <span className="text-xs ml-1 font-medium">4.5</span>
-                    </div>
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                    Banner Image
                   </div>
-                  <div className="flex items-center gap-1 text-xs w-full justify-between">
-                    <h3
+                </div>
+              ) : (
+                <div
+                  className={cn(
+                    'w-full h-32 bg-gray-200 flex items-center justify-center',
+                    themeUtils.getAdsRoundednessClass(),
+                    themeUtils.getAdsShadowClass()
+                  )}>
+                  <span className="text-gray-500 text-sm">Banner Image</span>
+                </div>
+              )}
+
+              {/* Featured Products */}
+              <div className="space-y-3">
+                <h2 className={cn('font-medium', layoutStyles.text)}>Featured Products</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {mockProducts.slice(0, 4).map((product) => (
+                    <div
+                      key={product.id}
                       className={cn(
-                        'text-xs lg:text-base font-semibold line-clamp-2 w-full',
-                        isLight ? 'text-dark-800' : 'text-light-200'
+                        'p-3 flex flex-col',
+                        themeUtils.getCardClass(),
+                        themeUtils.getComponentRoundednessClass()
                       )}>
-                      Sample Product
-                    </h3>
-                  </div>
-                  <div className="flex w-full justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <div className="flex flex-col lg:flex-row-reverse lg:gap-2 gap-1">
-                        <span
-                          className={cn(
-                            'text-[12px] line-through whitespace-nowrap flex gap-2 items-center opacity-60',
-                            isLight ? 'text-dark-500' : 'text-light-500'
-                          )}>
-                          <div className="h-3 w-3 bg-yellow-500 rounded-full"></div>
-                          299.00
-                        </span>
-                        <span
-                          className={cn(
-                            'text-md font-semibold whitespace-nowrap flex gap-2 items-center',
-                            themeUtils.getPrimaryColorClass('text')
-                          )}>
-                          <div className="h-4 w-4 bg-yellow-500 rounded-full"></div>
-                          269.10
-                        </span>
-                      </div>
+                      <div
+                        className={cn(
+                          'w-full h-20 bg-gray-300 mb-2',
+                          themeUtils.getComponentRoundednessClass()
+                        )}></div>
+                      <h3 className={cn('text-sm font-medium', layoutStyles.text)}>
+                        {product.name}
+                      </h3>
+                      <p className={cn('text-xs mt-1', themeUtils.getPrimaryColorClass('text'))}>
+                        {product.price}
+                      </p>
                     </div>
-                  </div>
-                </div>
-
-                <div
-                  className={cn(
-                    'flex items-center justify-between pt-2 mt-5 border-t',
-                    isLight ? 'border-light-300' : 'border-dark-300'
-                  )}>
-                  <span className={cn('text-xs', isLight ? 'text-dark-600' : 'text-light-600')}>
-                    พร้อมส่ง: 25
-                  </span>
-                  <button
-                    className={cn(
-                      'md:px-2 md:py-1 px-2 pt-1 rounded text-xs lg:text-lg font-medium flex items-center gap-1 hover:scale-105 transition-all duration-200',
-                      themeUtils.getPrimaryColorClass('bg'),
-                      isLight ? 'text-light-100' : 'text-dark-800'
-                    )}>
-                    ซื้อเลย
-                    <LuArrowUpRight className="text-xl" />
-                  </button>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {activePage === 'products' && (
+            <div className="space-y-4">
+              <h1 className={cn('text-lg font-medium', layoutStyles.text)}>All Products</h1>
+
+              <div className="grid grid-cols-2 gap-3">
+                {mockProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className={cn(
+                      'p-3 flex flex-col',
+                      themeUtils.getCardClass(),
+                      themeUtils.getComponentRoundednessClass()
+                    )}>
+                    <div
+                      className={cn(
+                        'w-full h-20 bg-gray-300 mb-2',
+                        themeUtils.getComponentRoundednessClass()
+                      )}></div>
+                    <h3 className={cn('text-sm font-medium', layoutStyles.text)}>{product.name}</h3>
+                    <p className={cn('text-xs mt-1', themeUtils.getPrimaryColorClass('text'))}>
+                      {product.price}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {activePage === 'profile' && (
+            <div className="space-y-4">
+              <div
+                className={cn(
+                  'p-4 flex flex-col items-center',
+                  themeUtils.getCardClass(),
+                  themeUtils.getComponentRoundednessClass()
+                )}>
+                <div
+                  className={cn(
+                    'w-16 h-16 relative overflow-hidden mb-3',
+                    themeUtils.getButtonRoundednessClass()
+                  )}>
+                  <Image
+                    src={seller?.store?.logoUrl || dokmailogosquare}
+                    alt="Store logo"
+                    width={64}
+                    height={64}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <h1 className={cn('text-lg font-medium', layoutStyles.text)}>
+                  {seller?.store?.name || 'Store Name'}
+                </h1>
+                <p className={cn('text-sm mt-1', isLight ? 'text-dark-600' : 'text-light-400')}>
+                  {seller?.store?.description ||
+                    'Store description goes here. This is a preview of your store profile.'}
+                </p>
+
+                <button
+                  className={cn(
+                    'mt-4 px-3 py-1.5 text-sm font-medium',
+                    themeUtils.getButtonClass(),
+                    themeUtils.getButtonRoundednessClass()
+                  )}>
+                  Contact Store
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Mobile Navigation */}
+        {viewMode === 'mobile' && (
+          <div className="fixed bottom-0 left-0 w-full p-2 flex items-center justify-around">
+            <div
+              className={cn(
+                'w-full flex items-center justify-around p-1.5 rounded-full',
+                isLight
+                  ? 'bg-white/80 backdrop-blur-md shadow-sm'
+                  : 'bg-dark-700/80 backdrop-blur-md shadow-md',
+                'border',
+                isLight ? 'border-light-300' : 'border-dark-500'
+              )}>
+              <MobileNavButton
+                icon={<Home size={18} />}
+                isActive={activePage === 'home'}
+                onClick={() => setActivePage('home')}
+                theme={theme}
+                label="Home"
+              />
+              <MobileNavButton
+                icon={<Package size={18} />}
+                isActive={activePage === 'products'}
+                onClick={() => setActivePage('products')}
+                theme={theme}
+                label="Products"
+              />
+              <MobileNavButton
+                icon={<Info size={18} />}
+                isActive={activePage === 'profile'}
+                onClick={() => setActivePage('profile')}
+                theme={theme}
+                label="Profile"
+              />
+              <MobileNavButton
+                icon={<Search size={18} />}
+                isActive={false}
+                onClick={() => {}}
+                theme={theme}
+                label="Search"
+              />
+              <MobileNavButton
+                icon={<User size={18} />}
+                isActive={false}
+                onClick={() => {}}
+                theme={theme}
+                label="Account"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-};
+}
+
+interface NavButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  isActive: boolean;
+  theme: ThemeType;
+}
+
+function NavButton({ icon, label, isActive, theme }: NavButtonProps) {
+  const themeUtils = useThemeUtils(theme);
+  const isLight = themeUtils.baseTheme === 'light';
+
+  return (
+    <button
+      className={cn(
+        'flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium transition-all',
+        isActive
+          ? themeUtils.getPrimaryColorClass('bg')
+          : isLight
+          ? 'text-dark-600 hover:bg-light-200'
+          : 'text-light-400 hover:bg-dark-600',
+        themeUtils.getButtonRoundednessClass()
+      )}>
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}
+
+interface MobileNavButtonProps {
+  icon: React.ReactNode;
+  isActive: boolean;
+  onClick: () => void;
+  theme: ThemeType;
+  label: string;
+}
+
+function MobileNavButton({ icon, isActive, onClick, theme, label }: MobileNavButtonProps) {
+  const themeUtils = useThemeUtils(theme);
+
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'flex flex-col items-center justify-center p-1.5 rounded-full',
+        isActive ? themeUtils.getPrimaryColorClass('bg') : 'transparent',
+        themeUtils.getTextColors()
+      )}>
+      {icon}
+      <span className="text-[8px] mt-1">{label}</span>
+    </button>
+  );
+}
