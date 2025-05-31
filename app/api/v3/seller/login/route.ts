@@ -21,12 +21,10 @@ export async function POST(req: NextRequest) {
     const seller = await Seller.findOne({
       $or: [{ username: trimmedUsername }, { email: trimmedUsername }],
     });
-    console.log(seller);
     if (!seller) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    console.log('Comparing password. Provided:', trimmedPassword, 'Stored hash:', seller.password);
     const isPasswordValid = await seller.comparePassword(trimmedPassword);
     if (!isPasswordValid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
@@ -34,7 +32,6 @@ export async function POST(req: NextRequest) {
 
     const sellerObj = seller.toObject();
     const { password: _, ...sellerData } = sellerObj;
-    console.log(sellerObj);
     const storeStats = await StoreStatistics.findOne({ sellerId: seller._id });
     if (!storeStats) {
       return NextResponse.json({ error: 'Store statistics not found' }, { status: 404 });

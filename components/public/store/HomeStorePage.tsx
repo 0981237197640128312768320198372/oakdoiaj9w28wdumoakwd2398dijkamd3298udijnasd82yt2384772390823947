@@ -3,7 +3,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import ProductBasedOnCategory from './ProductBasedOnCategory';
+import ProductsCategory from './ProductsCategory';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
 import DiscountedProducts from './DiscountedProducts';
@@ -26,10 +26,15 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.4 }}
-      className="w-full space-y-8 max-w-screen-lg">
+      className="w-full space-y-8 max-w-screen-lg min-h-[75vh]">
       <BannerAdsCarousel theme={theme} />
       <DiscountedProducts products={products} theme={theme} onNavigate={onNavigate} />
-      <ProductBasedOnCategory categories={categories} products={products} theme={theme} />
+      <ProductsCategory
+        categories={categories}
+        products={products}
+        theme={theme}
+        onNavigate={onNavigate}
+      />
     </motion.div>
   );
 };

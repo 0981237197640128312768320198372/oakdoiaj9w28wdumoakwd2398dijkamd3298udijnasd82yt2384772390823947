@@ -42,12 +42,11 @@ export default function ProductForm({
       setKeys(Object.keys(firstDetail));
       setDetails(formData.details);
     } else {
-      setKeys(['Color', 'Size', 'Material']);
+      setKeys(['Email', 'Password']);
 
       const emptyDetail: Record<string, string> = {
-        Color: '',
-        Size: '',
-        Material: '',
+        Email: '',
+        Password: '',
       };
       setDetails([emptyDetail]);
     }

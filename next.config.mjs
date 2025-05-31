@@ -49,7 +49,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'dokmaistore.com',
+        hostname: '**',
         pathname: '**',
       },
     ],

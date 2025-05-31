@@ -5,21 +5,22 @@ import Image from 'next/image';
 import { Category, Product, ThemeType } from '@/types';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { CiMobile3 } from 'react-icons/ci';
 import { AiOutlineProduct } from 'react-icons/ai';
-import { Package } from 'lucide-react';
+import { ArrowRight, Package } from 'lucide-react';
 
-interface ProductBasedOnCategoryProps {
+interface ProductsCategoryProps {
   categories: Category[];
   products: Product[];
   theme: ThemeType;
+  onNavigate: (path: string) => void;
 }
 
-export default function ProductBasedOnCategory({
+export default function ProductsCategory({
   categories,
   products,
   theme,
-}: ProductBasedOnCategoryProps) {
+  onNavigate,
+}: ProductsCategoryProps) {
   const themeUtils = useThemeUtils(theme);
 
   const countFor = (categoryId: string) =>
@@ -33,11 +34,11 @@ export default function ProductBasedOnCategory({
           themeUtils.getPrimaryColorClass('border')
         )}>
         <h2 className="text-xl font-semibold flex gap-1">
-          <CiMobile3 className="text-2xl" />
+          <AiOutlineProduct className="text-2xl" />
           ดีลส่วนลดสุดพิเศษ
         </h2>
         <button
-          // i want this component use this onNavigate here onClick={() => onNavigate('products')}
+          onClick={() => onNavigate('products')}
           className={cn(
             'flex items-center gap-1 py-1 px-2 text-sm transition-colors',
             themeUtils.getPrimaryColorClass('bg'),
@@ -45,7 +46,7 @@ export default function ProductBasedOnCategory({
             themeUtils.getButtonRoundednessClass(),
             themeUtils.getPrimaryColorClass('border')
           )}>
-          ดูเพิ่มเติม <AiOutlineProduct size={16} />
+          ดูเพิ่มเติม <ArrowRight size={16} />
         </button>
       </div>
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
