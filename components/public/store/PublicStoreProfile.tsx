@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { CalendarDays, Info, MessageCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { th } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { PublicInfoSection } from './PublicInfoSection';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -62,7 +63,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
 
   const formatDate = (dateString: string) => {
     try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale: th });
     } catch (error) {
       return dateString;
     }

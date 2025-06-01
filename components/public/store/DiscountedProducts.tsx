@@ -22,15 +22,13 @@ export default function DiscountedProducts({
 }: DiscountedProductsProps) {
   const themeUtils = useThemeUtils(theme || null);
 
-  // Filter products with discounts and sort by discount percentage (highest first)
   const discountedProducts = useMemo(() => {
     return products
       .filter((product) => product.discountPercentage > 0)
       .sort((a, b) => b.discountPercentage - a.discountPercentage)
-      .slice(0, 10); // Take only the top 10 products with highest discounts
+      .slice(0, 10);
   }, [products]);
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -53,14 +51,14 @@ export default function DiscountedProducts({
   return (
     <section
       className={cn(
-        'p-5 w-full xl:px-0 space-y-5',
+        'p-5 w-full space-y-5',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass(),
         themeUtils.getTextColors()
       )}>
       <div
         className={cn(
-          'flex justify-between items-center w-full  border-b pb-5 mb-5',
+          'flex justify-between items-center w-full border-b pb-5 mb-5',
           themeUtils.getPrimaryColorClass('border')
         )}>
         <h2 className="text-xl font-semibold flex gap-1">

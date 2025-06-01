@@ -147,7 +147,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen py-8">
+      <div className="w-full min-h-screen py-8 ">
         <div className="flex justify-between items-center mb-8">
           <div className={cn('h-8 rounded w-32 animate-pulse', componentStyles.skeletonBg)}></div>
           <div className={cn('h-10 rounded w-64 animate-pulse', componentStyles.skeletonBg)}></div>

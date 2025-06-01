@@ -160,7 +160,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
           src={currentImage}
           alt={product.title}
           fill
-          className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+          className={cn(
+            'object-contain group-hover:scale-105 transition-transform duration-500',
+            themeUtils.getComponentRoundednessClass()
+          )}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
 

@@ -5,13 +5,14 @@ import { useEffect, useState } from 'react';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { CalendarDays, Globe, Info, Mail, MessageCircle, User } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
 import { StoreHeader } from './StoreHeader';
 import { cn } from '@/lib/utils';
 import { SocialLinks } from './SocialLinks';
 import { InfoSection } from './InfoSection';
 import { StoreStats } from './StoreStats';
 import Link from 'next/link';
+import { formatDistanceToNow } from 'date-fns';
+import { th } from 'date-fns/locale';
 
 export default function SellerInfo() {
   const { seller } = useSellerAuth();
@@ -37,7 +38,7 @@ export default function SellerInfo() {
 
   const formatDate = (dateString: string) => {
     try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+      return formatDistanceToNow(new Date(dateString), { addSuffix: true, locale: th });
     } catch (error) {
       return dateString;
     }
