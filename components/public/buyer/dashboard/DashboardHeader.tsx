@@ -249,16 +249,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 'flex-1 flex items-center justify-center gap-1.5 p-3 text-sm font-medium transition-all duration-300',
                 themeUtils.getButtonRoundednessClass(),
                 themeUtils.getPrimaryColorClass('border'),
-                themeUtils.getButtonClass(),
-                isLight ? 'text-dark-800' : 'text-light-200'
+                themeUtils.getButtonClass()
               )}>
-              <Image
-                src={dokmaiCoinSymbol(isLight)}
-                alt="Dokmai Coin"
-                className="h-4 w-auto"
-                width={50}
-                height={50}
-              />
               เติมเงิน
             </button>
           </div>

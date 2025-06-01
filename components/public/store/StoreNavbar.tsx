@@ -150,7 +150,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                     className={cn(
                       'flex items-center gap-2 p-2 transition-all duration-300 text-sm',
                       activePage === 'buyerdashboard'
-                        ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
+                        ? themeUtils.getButtonClass()
                         : isLight
                         ? 'hover:bg-light-300 bg-light-100'
                         : 'hover:bg-dark-500 bg-dark-600',
@@ -175,7 +175,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                     className={cn(
                       'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
                       themeUtils.getPrimaryColorClass('bg'),
-
                       themeUtils.getButtonClass(),
                       themeUtils.getButtonRoundednessClass()
                     )}>
