@@ -27,7 +27,7 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
     fetcher
   );
   const totalProducts = productCountData?.count ?? 0;
-  const totalSales = 0; // temporary
+  const totalSales = 0;
   const totalCredits = credits.positive + credits.negative;
   const positivePercentage =
     totalCredits > 0 ? Math.round((credits.positive / totalCredits) * 100) : 0;
