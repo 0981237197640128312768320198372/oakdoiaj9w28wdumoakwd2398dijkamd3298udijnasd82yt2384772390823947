@@ -35,7 +35,7 @@ export default function ProductsCategory({
         )}>
         <h2 className="text-xl font-semibold flex gap-1">
           <AiOutlineProduct className="text-2xl" />
-          ดีลส่วนลดสุดพิเศษ
+          แอพพรีเมียมที่มีขายในร้านเรา
         </h2>
         <button
           onClick={() => onNavigate('products')}
