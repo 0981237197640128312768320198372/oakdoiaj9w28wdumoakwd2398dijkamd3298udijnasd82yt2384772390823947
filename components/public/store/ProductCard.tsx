@@ -81,6 +81,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ),
       imageContainer: cn(
         'relative aspect-square w-full overflow-hidden',
+        themeUtils.getComponentRoundednessClass(),
         isLight ? 'bg-light-100/50' : 'bg-dark-700/50'
       ),
       navButton: cn(
@@ -91,7 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ),
       indicator: cn(
         'w-1.5 h-1.5 rounded-full transition-all duration-300',
-        themeUtils?.getPrimaryColorClass('bg')
+        themeUtils.getPrimaryColorClass('bg')
       ),
       inactiveIndicator: cn(
         'w-1.5 h-1.5 rounded-full transition-all duration-300',
@@ -140,9 +141,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ratingContainer: cn('flex items-center gap-1', isLight ? 'text-amber-500' : 'text-amber-400'),
       dokmaiCoin: dokmaiCoinSymbol(isLight),
       categoryTag: cn(
-        'flex items-center justify-center gap-1 px-2 py-1 text-xs absolute top-1 left-1 border-[1px]',
+        'flex items-center justify-center gap-1 px-2 py-1 rounded text-xs absolute top-1 left-1 border-[1px]',
         isLight
-          ? 'text-dark-600 bg-light-300 border-light-700'
+          ? 'text-dark-600 bg-light-200 border-light-400'
           : 'text-light-500 bg-dark-500 border-dark-400'
       ),
     };
@@ -161,7 +162,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
           alt={product.title}
           fill
           className={cn(
-            'object-contain group-hover:scale-105 transition-transform duration-500',
+            'object-contain group-hover:scale-105 transition-transform duration-500 w-full h-full',
             themeUtils.getComponentRoundednessClass()
           )}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -4,7 +4,6 @@
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
-import { useBuyerAuth } from '@/hooks/useBuyerAuth';
 import { motion } from 'framer-motion';
 import { User, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
@@ -55,10 +54,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     }
   }, [buyer]);
   const themeUtils = useThemeUtils(theme);
-  const [showContactInfo, setShowContactInfo] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
-  const { logout } = useBuyerAuth();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
@@ -74,13 +71,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       onProfileUpdate();
     }
   };
-
-  const hasContactMethods =
-    localBuyer.contact &&
-    (localBuyer.contact.facebook ||
-      localBuyer.contact.line ||
-      localBuyer.contact.instagram ||
-      localBuyer.contact.whatsapp);
 
   const isLight = themeUtils.baseTheme === 'light';
   return (
