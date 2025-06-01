@@ -18,7 +18,7 @@ import { SocialLinks } from '@/components/Private/seller/profile/SocialLinks';
 
 interface PublicStoreProfileProps {
   seller: any;
-  theme?: any;
+  theme: any;
 }
 
 const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }) => {

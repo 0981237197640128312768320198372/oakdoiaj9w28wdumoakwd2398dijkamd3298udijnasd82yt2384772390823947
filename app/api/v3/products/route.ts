@@ -99,10 +99,23 @@ export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
     const { searchParams } = new URL(req.url);
-    const store = searchParams.get('store');
+    const countTotalProducts = searchParams.get('countTotalProducts');
     const categoryId = searchParams.get('categoryId');
-    const productId = searchParams.get('productId');
+    if (countTotalProducts) {
+      const sellerFromCount = await Seller.findOne({ username: countTotalProducts });
+      if (!sellerFromCount) {
+        return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
+      }
+      let query: any = { sellerId: sellerFromCount._id };
+      if (categoryId) {
+        query.categoryId = categoryId;
+      }
+      const count = await Product.countDocuments(query);
+      return NextResponse.json({ count });
+    }
 
+    const store = searchParams.get('store');
+    const productId = searchParams.get('productId');
     let sellerId;
 
     if (store) {

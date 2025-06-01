@@ -5,6 +5,7 @@
 import type React from 'react';
 
 import { useState } from 'react';
+import useSWR from 'swr';
 import { PublicInfoSection } from './PublicInfoSection';
 import { Star, ThumbsDown, ThumbsUp, TrendingUp, Package, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -20,7 +21,12 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
   // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
 
-  const totalProducts = 0; // temporary
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: productCountData, error: productCountError } = useSWR(
+    seller ? `/api/v3/products?countTotalProducts=${seller.username}` : null,
+    fetcher
+  );
+  const totalProducts = productCountData?.count ?? 0;
   const totalSales = 0; // temporary
   const totalCredits = credits.positive + credits.negative;
   const positivePercentage =
