@@ -53,7 +53,7 @@ export default function DiscountedProducts({
   return (
     <section
       className={cn(
-        'p-5 space-y-5',
+        'p-5 w-full xl:px-0 space-y-5',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass(),
         themeUtils.getTextColors()
