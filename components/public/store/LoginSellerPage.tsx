@@ -75,8 +75,8 @@ export default function LoginSellerPage() {
               <input
                 type="text"
                 id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={username.toLowerCase()}
+                onChange={(e) => setUsername(e.target.value.toLowerCase())}
                 className="w-full px-4 py-2 bg-dark-500 border border-dark-400 rounded-xl text-light-100 placeholder-light-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300"
                 placeholder="Enter your username"
                 required
