@@ -225,7 +225,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
                         alt={`Banner ${index + 1}`}
                         fill
                         className={cn(
-                          'object-cover object-center p-1',
+                          'object-cover object-center',
                           themeUtils.getAdsRoundednessClass(),
                           getBorderClass(isCenter),
                           getShadowClass(isCenter)
