@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import { useBuyerAuth } from '@/hooks/useBuyerAuth';
 import { motion } from 'framer-motion';
-import { User, Calendar, Mail, Wallet, Eye, EyeOff, Power, ContactRound } from 'lucide-react';
+import { User, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { ProfileActionPanel } from './ProfileActionPanel';
