@@ -149,6 +149,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                     onClick={() => onNavigate('buyerdashboard')}
                     className={cn(
                       'flex items-center gap-2 p-2 transition-all duration-300 text-sm',
+                      themeUtils.getPrimaryColorClass('border'),
                       activePage === 'buyerdashboard'
                         ? themeUtils.getButtonClass()
                         : isLight
@@ -176,7 +177,8 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                       'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm',
                       themeUtils.getPrimaryColorClass('bg'),
                       themeUtils.getButtonClass(),
-                      themeUtils.getButtonRoundednessClass()
+                      themeUtils.getButtonRoundednessClass(),
+                      themeUtils.getPrimaryColorClass('border')
                     )}>
                     <Power size={16} />
                     <span className="hidden lg:inline font-medium">เข้าสู่ระบบ</span>
@@ -286,12 +288,13 @@ const NavButton: React.FC<NavButtonProps> = ({
       onClick={onClick}
       className={cn(
         'flex items-center gap-2 px-3 py-1.5 text-sm transition-all duration-300 relative',
+        themeUtils.getButtonRoundednessClass(),
+        themeUtils.getPrimaryColorClass('border'),
         isActive
           ? themeUtils.getButtonClass()
           : isLight
           ? 'text-gray-700 hover:bg-gray-100'
           : 'text-gray-300 hover:bg-dark-700',
-        themeUtils.getButtonRoundednessClass(),
 
         className
       )}>

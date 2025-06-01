@@ -37,12 +37,17 @@ interface Buyer {
   updatedAt: string;
 }
 
-interface ContactInfoProps {
+interface ProfileActionPanelProps {
   buyer: Buyer;
   theme: ThemeType | null;
+  onEditProfile?: () => void;
 }
 
-export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, theme }) => {
+export const ProfileActionPanel: React.FC<ProfileActionPanelProps> = ({
+  buyer: initialBuyer,
+  theme,
+  onEditProfile,
+}) => {
   const { buyer } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
   const [showMenu, setShowMenu] = useState(false);
@@ -79,16 +84,12 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
       label: 'อีเมล',
       value: localBuyer.email,
       href: `mailto:${localBuyer.email}`,
-      color: '',
-      description: 'อีเมลหลัก',
     },
     {
       icon: FaFacebook,
       label: 'เฟซบุ๊ก',
       value: localBuyer.contact?.facebook,
       href: localBuyer.contact?.facebook ? `https://${localBuyer.contact.facebook}` : null,
-      color: '',
-      description: 'โปรไฟล์เฟซบุ๊ก',
     },
     {
       icon: FaSquareInstagram,
@@ -97,8 +98,6 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
       href: localBuyer.contact?.instagram
         ? `https://instagram.com/${localBuyer.contact.instagram.replace('@', '')}`
         : null,
-      color: '',
-      description: 'โปรไฟล์อินสตาแกรม',
     },
     {
       icon: IoLogoWhatsapp,
@@ -107,8 +106,6 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
       href: localBuyer.contact?.whatsapp
         ? `https://wa.me/${localBuyer.contact.whatsapp.replace(/\D/g, '')}`
         : null,
-      color: '',
-      description: 'เบอร์วอตส์แอป',
     },
     {
       icon: BsLine,
@@ -117,13 +114,13 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
       href: localBuyer.contact?.line
         ? `https://line.me/ti/p/${localBuyer.contact.line.replace('@', '')}`
         : null,
-      color: '',
-      description: 'ไอดีไลน์',
     },
   ].filter((item) => item.value);
 
   const handleEditProfile = () => {
-    document.querySelector<HTMLButtonElement>('[data-edit-profile]')?.click();
+    if (onEditProfile) {
+      onEditProfile();
+    }
     setShowMenu(false);
   };
 
@@ -150,6 +147,7 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
             className={cn(
               'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-all duration-300',
               themeUtils.getButtonClass(),
+              themeUtils.getPrimaryColorClass('border'),
               themeUtils.getComponentRoundednessClass()
             )}>
             <Menu size={16} />
@@ -212,20 +210,13 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
                 themeUtils.getComponentRoundednessClass()
               )}>
               <div className={cn('p-2.5 rounded-lg transition-colors group-hover:bg-opacity-80')}>
-                <item.icon size={16} className={item.color} />
+                <item.icon size={16} className={cn(themeUtils.getPrimaryColorClass('text'))} />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium ">{item.label}</p>
                 <div className="flex items-center gap-1">
                   {item.href ? (
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        'text-sm font-medium hover:underline truncate block group-hover:opacity-90 transition-opacity',
-                        item.color
-                      )}>
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
                       {item.value}
                       <ExternalLink
                         size={12}
@@ -236,7 +227,6 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
                     <p className="text-sm font-medium truncate">{item.value}</p>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 mt-0.5 truncate">{item.description}</p>
               </div>
             </motion.div>
           ))}
@@ -248,9 +238,7 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ buyer: initialBuyer, t
             เพิ่มข้อมูลการติดต่อเพื่อช่วยให้ผู้ขายติดต่อคุณได้
           </p>
           <button
-            onClick={() =>
-              document.querySelector<HTMLButtonElement>('[data-edit-profile]')?.click()
-            }
+            onClick={handleEditProfile}
             className={cn(
               'mt-4 px-4 py-2 text-xs font-medium transition-all duration-300',
               themeUtils.getButtonClass(),

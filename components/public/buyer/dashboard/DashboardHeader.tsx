@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type React from 'react';
@@ -5,11 +6,10 @@ import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import { useBuyerAuth } from '@/hooks/useBuyerAuth';
 import { motion } from 'framer-motion';
-import { Edit, User, Calendar, Mail, Wallet, Eye, EyeOff, Power } from 'lucide-react';
+import { Edit, User, Calendar, Mail, Wallet, Eye, EyeOff, Power, ContactRound } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import type { ThemeType } from '@/types';
-import { ContactInfo } from './ContactInfo';
+import { ProfileActionPanel } from './ProfileActionPanel';
 import { EditProfileModal } from './EditProfileModal';
 import Image from 'next/image';
 
@@ -36,7 +36,7 @@ interface Buyer {
 
 interface DashboardHeaderProps {
   buyer: Buyer;
-  theme: ThemeType | null;
+  theme: any;
   onProfileUpdate?: () => void;
 }
 
@@ -99,7 +99,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         {/* Header Section */}
         <div className="p-5 ">
           <div className="flex flex-row gap-5">
-            {/* Avatar and Status Section */}
             <div className="flex-shrink-0">
               <div className="relative inline-block overflow-hidden rounded-full">
                 {localBuyer.avatarUrl ? (
@@ -125,7 +124,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 )}
               </div>
             </div>
-
             <div className="flex w-full justify-between">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 ">
                 <div>
@@ -150,53 +148,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   </div>
                 </div>
               </div>
-              <div className="flex items-start gap-2 ">
-                {/* Only show All Contacts button if there are contact methods available */}
-                {hasContactMethods && (
-                  <button
-                    onClick={() => setShowContactInfo(!showContactInfo)}
-                    className={cn(
-                      'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-90',
-                      themeUtils.getCardClass(),
-                      themeUtils.getButtonRoundednessClass(),
-                      'border hover:shadow-sm'
-                    )}>
-                    <span className="hidden sm:inline">
-                      {showContactInfo ? 'ข้อมูลการติดต่อ' : 'ข้อมูลการติดต่อ'}
-                    </span>
-                  </button>
-                )}
-                <button
-                  data-edit-profile
-                  onClick={() => setIsEditModalOpen(true)}
-                  className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 hover:opacity-90',
-                    themeUtils.getButtonClass(),
-                    themeUtils.getButtonRoundednessClass(),
-                    themeUtils.getPrimaryColorClass('border')
-                  )}>
-                  <Edit size={14} />
-                  <span className="hidden sm:inline">แก้ไขโปรไฟล์</span>
-                </button>
-                <button
-                  onClick={async () => {
-                    await logout();
-                    setTimeout(() => {
-                      window.location.reload();
-                    }, 700);
-                  }}
-                  className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium transition-all duration-300 bg-red-500/20 text-red-500 border-red-500 border hover:bg-red-500/40',
-                    themeUtils.getButtonRoundednessClass()
-                  )}>
-                  <Power size={16} /> แก้ไขโปรไฟล์
-                </button>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Balance Card Section */}
         <div className="p-5">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -246,29 +201,29 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <div className="flex gap-2">
             <button
               className={cn(
-                'flex-1 flex items-center justify-center gap-1.5 p-3 text-sm font-medium transition-all duration-300',
+                'flex-1 flex items-center justify-center gap-1.5 p-3 text-lg font-medium transition-all duration-300',
                 themeUtils.getButtonRoundednessClass(),
                 themeUtils.getPrimaryColorClass('border'),
                 themeUtils.getButtonClass()
               )}>
-              เติมเงิน
+              เติมเงินเลย
             </button>
           </div>
         </div>
-
-        {showContactInfo && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="border-t ">
-            <ContactInfo buyer={localBuyer} theme={theme} />
-          </motion.div>
-        )}
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          className={cn('border-t', themeUtils.getPrimaryColorClass('border'))}>
+          <ProfileActionPanel
+            buyer={localBuyer}
+            theme={theme}
+            onEditProfile={() => setIsEditModalOpen(true)}
+          />
+        </motion.div>
       </motion.div>
 
-      {/* Edit Profile Modal */}
       <EditProfileModal
         buyer={localBuyer}
         theme={theme}
