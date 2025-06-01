@@ -86,8 +86,8 @@ export default function RegisterForm() {
     setError(null);
 
     const payload = {
-      username: formData.username,
-      password: formData.password,
+      username: formData.username.toLowerCase(),
+      password: formData.password.toLowerCase(),
       email: formData.email,
       contact: {
         facebook: `fb.com/${formData.contact.facebook}`,
@@ -205,7 +205,7 @@ export default function RegisterForm() {
                 <input
                   id="username"
                   name="username"
-                  value={formData.username}
+                  value={formData.username.toLowerCase()}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-dark-500 border border-dark-400 rounded-xl text-light-100 placeholder-light-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300"
                   placeholder="Choose a username"
@@ -219,7 +219,7 @@ export default function RegisterForm() {
                   id="email"
                   name="email"
                   type="email"
-                  value={formData.email}
+                  value={formData.email.toLowerCase()}
                   onChange={handleChange}
                   className="w-full px-4 py-2 bg-dark-500 border border-dark-400 rounded-xl text-light-100 placeholder-light-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-all duration-300"
                   placeholder="Enter your email"

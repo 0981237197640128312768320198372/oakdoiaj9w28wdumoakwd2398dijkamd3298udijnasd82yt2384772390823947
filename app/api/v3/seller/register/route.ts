@@ -12,7 +12,8 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { username: rawUsername, email: rawEmail, password: rawPassword, contact, store } = body;
-    const username = rawUsername.trim();
+    const username = rawUsername.trim().toLowerCase();
+    console.log(username);
     const email = rawEmail.trim();
     const password = rawPassword.trim();
 

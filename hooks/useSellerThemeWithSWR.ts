@@ -141,7 +141,7 @@ export function useSellerThemeWithSWR(): UseSellerThemeReturn {
   return {
     theme: localTheme,
     loading: isValidating,
-    error: error ? (error as any).info?.message || 'An error occurred' : null,
+    error: localTheme ? null : error ? (error as any).info?.message || 'An error occurred' : null,
     updateTheme,
     refreshTheme,
   };

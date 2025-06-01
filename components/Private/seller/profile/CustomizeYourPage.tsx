@@ -30,11 +30,13 @@ export default function CustomizeYourPage() {
   if (!seller) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-dark-800 border-dark-700">
+        <Card className="w-full max-w-md bg-dark-700 border border-dark-400 rounded-lg shadow-md">
           <div className="flex flex-col items-center justify-center p-8 text-center">
-            <AlertCircle className="h-8 w-8 text-amber-500 mb-3" />
-            <h3 className="text-lg font-medium text-white mb-1">Authentication Required</h3>
-            <p className="text-sm text-light-400">You need to be logged in as a seller</p>
+            <AlertCircle className="h-10 w-10 text-amber-500 mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">Authentication Required</h3>
+            <p className="text-base text-light-400">
+              Please log in to access seller customization.
+            </p>
           </div>
         </Card>
       </div>
@@ -42,22 +44,20 @@ export default function CustomizeYourPage() {
   }
 
   const refreshSellerData = async () => {
-    // This function is now a no-op since the SWR hook handles refreshing
+    // SWR hook handles refreshing automatically.
   };
 
   const handleThemeChange = async (theme: ThemeType) => {
     const success = await updateTheme(theme);
-
     if (success && seller) {
       const updatedSeller = {
         ...seller,
         store: {
           ...seller.store,
-          theme: theme,
+          theme,
         },
       };
       localStorage.setItem('seller', JSON.stringify(updatedSeller));
-
       const token = localStorage.getItem('sellerToken');
       if (token) {
         login(token);
@@ -66,87 +66,74 @@ export default function CustomizeYourPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-6 md:mb-8">
-          <h1 className="text-xl md:text-2xl font-semibold text-white mb-1 md:mb-2">
-            Store Customization
-          </h1>
-          <p className="text-xs md:text-sm text-light-400">
-            Customize your store's appearance and settings
-          </p>
-        </div>
-
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-dark-800 border border-dark-700 p-1 h-9 md:h-10">
-            <TabsTrigger
-              value="theme"
-              className="data-[state=active]:bg-dark-700 data-[state=active]:text-white text-light-400 text-xs md:text-sm font-medium h-7 md:h-8">
-              <Palette className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-              <span className="hidden xs:inline">Theme</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="profile"
-              className="data-[state=active]:bg-dark-700 data-[state=active]:text-white text-light-400 text-xs md:text-sm font-medium h-7 md:h-8">
-              <User className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
-              <span className="hidden xs:inline">Profile</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="theme" className="mt-6">
-            {isLoadingTheme ? (
-              <Card className="bg-dark-800 border-dark-700">
+    <div className="min-h-[75vh] bg-dark-800">
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <header className="mb-8">
+          <h1 className="text-2xl font-bold text-white mb-1">Store Customization</h1>
+          <p className="text-sm text-light-300">Customize your store's appearance and settings.</p>
+        </header>
+        <Card className="bg-dark-700 border border-dark-400 rounded-lg shadow-lg">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-2 bg-dark-600 border-b border-dark-400">
+              <TabsTrigger
+                value="theme"
+                className="flex items-center justify-center py-2 text-sm font-medium text-light-300 hover:text-white transition-colors duration-200 data-[state=active]:bg-dark-700 data-[state=active]:text-white">
+                <Palette className="mr-2 h-4 w-4" />
+                Theme
+              </TabsTrigger>
+              <TabsTrigger
+                value="profile"
+                className="flex items-center justify-center py-2 text-sm font-medium text-light-300 hover:text-white transition-colors duration-200 data-[state=active]:bg-dark-700 data-[state=active]:text-white">
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="theme" className="p-6">
+              {isLoadingTheme ? (
                 <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <Loader2 className="h-6 w-6 animate-spin text-blue-500 mx-auto mb-3" />
-                    <p className="text-sm text-light-400">Loading theme...</p>
-                  </div>
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500 mr-3" />
+                  <span className="text-base text-light-400">Loading theme...</span>
                 </div>
-              </Card>
-            ) : themeError ? (
-              <div className="space-y-4">
-                <Alert className="bg-red-500/10 border-red-500/20">
-                  <AlertCircle className="h-4 w-4 text-red-400" />
-                  <AlertDescription className="text-red-400 text-sm">
-                    {themeError}. Using default settings.
-                  </AlertDescription>
-                </Alert>
-                {currentTheme && (
-                  <ThemeCustomizer
-                    seller={seller}
-                    currentTheme={currentTheme}
-                    onThemeChange={handleThemeChange}
-                  />
-                )}
-              </div>
-            ) : currentTheme ? (
-              <ThemeCustomizer
+              ) : themeError ? (
+                <div className="space-y-4">
+                  <Alert className="bg-red-500/10 border border-red-500/20 rounded-md p-4">
+                    <div className="flex items-center">
+                      <AlertCircle className="h-5 w-5 text-red-400 mr-2" />
+                      <AlertDescription className="text-sm text-red-400">
+                        {themeError}. Using default settings.
+                      </AlertDescription>
+                    </div>
+                  </Alert>
+                  {currentTheme && (
+                    <ThemeCustomizer
+                      seller={seller}
+                      currentTheme={currentTheme}
+                      onThemeChange={handleThemeChange}
+                    />
+                  )}
+                </div>
+              ) : currentTheme ? (
+                <ThemeCustomizer
+                  seller={seller}
+                  currentTheme={currentTheme}
+                  onThemeChange={handleThemeChange}
+                />
+              ) : (
+                <div className="flex items-center justify-center py-12">
+                  <AlertCircle className="h-8 w-8 text-amber-500 mr-3" />
+                  <span className="text-base text-light-400">No theme data available</span>
+                </div>
+              )}
+            </TabsContent>
+            <TabsContent value="profile" className="p-6">
+              <EditProfile
+                theme={currentTheme}
                 seller={seller}
-                currentTheme={currentTheme}
-                onThemeChange={handleThemeChange}
+                onProfileUpdated={refreshSellerData}
               />
-            ) : (
-              <Card className="bg-dark-800 border-dark-700">
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-center">
-                    <AlertCircle className="h-6 w-6 text-amber-500 mx-auto mb-3" />
-                    <p className="text-sm text-light-400">No theme data available</p>
-                  </div>
-                </div>
-              </Card>
-            )}
-          </TabsContent>
-
-          <TabsContent value="profile" className="mt-6">
-            <EditProfile
-              theme={currentTheme}
-              seller={seller}
-              onProfileUpdated={refreshSellerData}
-            />
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        </Card>
       </div>
     </div>
   );

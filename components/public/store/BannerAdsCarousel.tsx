@@ -141,7 +141,7 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
           <div
             className="relative w-full 
             h-[200px] sm:h-[240px] md:h-[280px] lg:h-[320px] xl:h-[420px] 2xl:h-[540px]
-            aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]">
+            aspect-[16/9]">
             <AnimatePresence>
               {/* eslint-disable-next-line @typescript-eslint/no-unused-vars */}
               {banners.map((banner, index) => {
@@ -218,16 +218,18 @@ export default function BannerAdsCarousel({ theme }: BannerAdsCarouselProps) {
                     <div
                       className={cn(
                         'relative h-full w-full overflow-hidden transition-all duration-500 ease-in-out',
-                        'aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]',
-                        themeUtils.getAdsRoundednessClass(),
-                        getBorderClass(isCenter),
-                        getShadowClass(isCenter)
+                        'aspect-[4/3] sm:aspect-[3/2] md:aspect-[16/10] lg:aspect-[16/9]'
                       )}>
                       <Image
                         src={banner.image || defaultBanner}
                         alt={`Banner ${index + 1}`}
                         fill
-                        className="object-cover"
+                        className={cn(
+                          'object-cover object-center p-1',
+                          themeUtils.getAdsRoundednessClass(),
+                          getBorderClass(isCenter),
+                          getShadowClass(isCenter)
+                        )}
                         priority={isCenter}
                         draggable={false}
                         sizes={`${width}px`}
