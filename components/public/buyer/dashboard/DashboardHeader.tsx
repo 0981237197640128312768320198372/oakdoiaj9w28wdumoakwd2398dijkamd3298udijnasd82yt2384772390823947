@@ -205,7 +205,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className={cn('border-t', themeUtils.getPrimaryColorClass('border'))}>
+          className={cn('border-t pt-5 mt-5', themeUtils.getPrimaryColorClass('border'))}>
           <ProfileActionPanel
             buyer={localBuyer}
             theme={theme}

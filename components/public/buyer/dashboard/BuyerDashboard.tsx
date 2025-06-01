@@ -84,12 +84,12 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="w-full max-w-screen-lg space-y-4 min-h-[75vh]">
+      className="w-full max-w-screen-lg space-y-10 min-h-[75vh]">
       <div className="w-full">
         <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-10">
         <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
 
         <AnimatePresence mode="wait">
