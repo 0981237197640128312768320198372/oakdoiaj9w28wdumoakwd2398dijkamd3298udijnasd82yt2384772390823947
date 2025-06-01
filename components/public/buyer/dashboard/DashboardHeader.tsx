@@ -11,7 +11,6 @@ import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
 import { ContactInfo } from './ContactInfo';
 import { EditProfileModal } from './EditProfileModal';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Image from 'next/image';
 
 interface Contact {
@@ -102,29 +101,28 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <div className="flex flex-row gap-5">
             {/* Avatar and Status Section */}
             <div className="flex-shrink-0">
-              <div className="relative inline-block">
-                <Avatar
-                  className={cn(
-                    'w-20 h-20 md:w-24 md:h-24 border-[1px]',
-                    themeUtils.getPrimaryColorClass('border')
-                  )}>
-                  {localBuyer.avatarUrl ? (
-                    <AvatarImage
-                      src={localBuyer.avatarUrl}
-                      alt={localBuyer.name || 'User'}
-                      className="object-cover"
-                    />
-                  ) : (
-                    <AvatarFallback
-                      className={cn(
-                        'w-20 h-20 md:w-24 md:h-24 border-2',
-                        themeUtils.getPrimaryColorClass('border'),
-                        themeUtils.getCardClass()
-                      )}>
-                      {localBuyer.name?.charAt(0)?.toUpperCase() || <User className="w-8 h-8" />}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
+              <div className="relative inline-block overflow-hidden rounded-full">
+                {localBuyer.avatarUrl ? (
+                  <Image
+                    src={localBuyer.avatarUrl}
+                    alt={localBuyer.name || 'User'}
+                    width={96}
+                    height={96}
+                    className={cn(
+                      'w-20 h-20 md:w-24 md:h-24 border-[1px] rounded-full',
+                      themeUtils.getPrimaryColorClass('border')
+                    )}
+                  />
+                ) : (
+                  <div
+                    className={cn(
+                      'w-20 h-20 md:w-24 md:h-24 flex items-center justify-center border-2 rounded-full',
+                      themeUtils.getPrimaryColorClass('border'),
+                      themeUtils.getCardClass()
+                    )}>
+                    <User className="w-8 h-8" />
+                  </div>
+                )}
               </div>
             </div>
 

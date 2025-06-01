@@ -130,11 +130,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   const getActivityIcon = (type: string, category: string) => {
     const iconProps = {
       size: 18,
-      className: cn(
-        category === 'financial' && themeUtils.getPrimaryColorClass('text'),
-        category === 'interaction' && 'text-yellow-500',
-        category === 'system' && 'text-purple-500'
-      ),
+      className: cn(themeUtils.getPrimaryColorClass('text')),
     };
 
     if (category === 'financial') {
