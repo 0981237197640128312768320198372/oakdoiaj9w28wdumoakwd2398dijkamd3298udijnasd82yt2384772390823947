@@ -288,12 +288,12 @@ const NavButton: React.FC<NavButtonProps> = ({
       className={cn(
         'flex items-center gap-2 px-3 py-1.5 text-sm transition-all duration-300 relative',
         isActive
-          ? themeUtils.getPrimaryColorClass('bg')
+          ? themeUtils.getButtonClass()
           : isLight
           ? 'text-gray-700 hover:bg-gray-100'
           : 'text-gray-300 hover:bg-dark-700',
         themeUtils.getButtonRoundednessClass(),
-        themeUtils.getButtonClass(),
+
         className
       )}>
       {icon}
