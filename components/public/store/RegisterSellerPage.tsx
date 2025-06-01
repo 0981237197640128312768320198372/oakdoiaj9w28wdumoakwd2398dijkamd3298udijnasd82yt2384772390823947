@@ -55,7 +55,12 @@ export default function RegisterForm() {
         return;
       }
     } else if (step === 2) {
-      if (!formData.username || !formData.password || !formData.repeatPassword || !formData.email) {
+      if (
+        !formData.username.toLowerCase() ||
+        !formData.password ||
+        !formData.repeatPassword ||
+        !formData.email
+      ) {
         setError('Please fill in all account fields');
         return;
       }
