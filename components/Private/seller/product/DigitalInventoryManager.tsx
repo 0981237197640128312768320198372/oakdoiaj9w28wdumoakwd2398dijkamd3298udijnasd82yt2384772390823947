@@ -58,7 +58,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
   const fetchInventory = async () => {
     try {
       setIsInitialLoading(true);
-      let response = await fetch(`/api/v3/digital-inventory/all`, {
+      const response = await fetch(`/api/v3/digital-inventory/all`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
         },
@@ -92,7 +92,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
 
             if (variant.productId) {
               try {
-                let productResponse = await fetch(
+                const productResponse = await fetch(
                   `/api/v3/digital-inventory?productId=${variant.productId}`,
                   {
                     headers: {
@@ -309,7 +309,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
     setIsLoading(true);
     try {
       // Try the new endpoint first
-      let response = await fetch(`/api/v3/digital-inventory/link`, {
+      const response = await fetch(`/api/v3/digital-inventory/link`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -355,7 +355,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
 
     setIsLoading(true);
     try {
-      let response = await fetch(`/api/v3/digital-inventory/unlink`, {
+      const response = await fetch(`/api/v3/digital-inventory/unlink`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
