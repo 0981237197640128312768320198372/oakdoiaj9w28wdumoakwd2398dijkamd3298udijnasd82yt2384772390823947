@@ -2,22 +2,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect } from 'react';
-import {
-  ArrowLeft,
-  Save,
-  Database,
-  Link,
-  Link2Off,
-  Plus,
-  Search,
-  RefreshCw,
-  Filter,
-} from 'lucide-react';
+import { ArrowLeft, Database, Link, Plus } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
-import ButtonWithLoader from '@/components/ui/ButtonWithLoader';
-import DigitalInventoryEditor from './DigitalInventoryEditor';
+import EnhancedInventoryEditor from './EnhancedInventoryEditor';
+import InventoryCard from './InventoryCard';
+import InventorySearch from './InventorySearch';
+import InventoryStats from './InventoryStats';
 import { Product } from '@/types';
 import useToast from '@/hooks/useToast';
+import Modal from '@/components/ui/Modal';
 
 interface DigitalInventoryManagerProps {
   onClose: () => void;
@@ -38,14 +31,18 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
   >([]);
   const [products, setProducts] = useState<Array<{ _id: string; title: string }>>([]);
   const [assetKeys, setAssetKeys] = useState<string[]>(['Email', 'Password']);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [selectedInventoryIndex, setSelectedInventoryIndex] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLinkingProduct, setIsLinkingProduct] = useState(false);
+  const [isEditingInCard, setIsEditingInCard] = useState(false);
+  const [isSavingInCard, setIsSavingInCard] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [filterOption, setFilterOption] = useState<'all' | 'linked' | 'unlinked'>('all');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [inventoryToDelete, setInventoryToDelete] = useState<number | null>(null);
 
   const { showSuccess, showError } = useToast();
 
@@ -89,7 +86,6 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
         const mappedVariants = await Promise.all(
           data.variants.map(async (variant: any) => {
             let connectedProduct = undefined;
-
             if (variant.productId) {
               try {
                 const productResponse = await fetch(
@@ -210,78 +206,6 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
     );
   };
 
-  // Validate before submission
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    // Check if any inventory item has an empty group name
-    inventoryList.forEach((item, index) => {
-      if (!item.inventoryGroup.trim()) {
-        newErrors[`inventoryGroup_${index}`] = 'Inventory group name is required';
-      }
-    });
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Handle form submission
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Save each inventory item
-      for (const item of inventoryList) {
-        const payload = {
-          inventoryGroup: item.inventoryGroup,
-          digitalAssets: item.digitalAssets,
-          productId: item.productId || null,
-        };
-
-        let response;
-        // Try the new endpoint first
-        if (item._id) {
-          // Update existing item
-          response = await fetch(`/api/v3/digital-inventory`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
-            },
-            body: JSON.stringify({
-              id: item._id,
-              ...payload,
-            }),
-          });
-        } else {
-          response = await fetch(`/api/v3/digital-inventory`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
-            },
-            body: JSON.stringify(payload),
-          });
-        }
-
-        if (!response.ok) {
-          throw new Error(`Failed to save inventory: ${item.inventoryGroup}`);
-        }
-      }
-
-      showSuccess('Digital inventory saved successfully!');
-      fetchInventory(); // Refresh the data
-    } catch (error) {
-      console.error('Error saving digital inventory:', error);
-      showError('Failed to save digital inventory');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleAddNewInventory = () => {
     setInventoryList([
       ...inventoryList,
@@ -308,7 +232,6 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
 
     setIsLoading(true);
     try {
-      // Try the new endpoint first
       const response = await fetch(`/api/v3/digital-inventory/link`, {
         method: 'POST',
         headers: {
@@ -387,6 +310,114 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
     }
   };
 
+  const handleDeleteInventory = (index: number) => {
+    setInventoryToDelete(index);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDeleteInventory = async () => {
+    if (inventoryToDelete === null) return;
+
+    const inventory = inventoryList[inventoryToDelete];
+    setIsDeleteModalOpen(false);
+
+    if (!inventory._id) {
+      // If it's a new inventory item that hasn't been saved yet, just remove it from the state
+      const updatedList = [...inventoryList];
+      updatedList.splice(inventoryToDelete, 1);
+      setInventoryList(updatedList);
+      showSuccess('Inventory removed');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/v3/digital-inventory?id=${inventory._id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete inventory');
+      }
+
+      const updatedList = [...inventoryList];
+      updatedList.splice(inventoryToDelete, 1);
+      setInventoryList(updatedList);
+      showSuccess('Inventory deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting inventory:', error);
+      showError('Failed to delete inventory');
+    } finally {
+      setIsLoading(false);
+      setInventoryToDelete(null);
+    }
+  };
+
+  const handleDuplicateInventory = (index: number) => {
+    const inventoryToDuplicate = { ...inventoryList[index] };
+    // Remove the _id and productId to create a new inventory item
+    delete inventoryToDuplicate._id;
+    delete inventoryToDuplicate.productId;
+    delete inventoryToDuplicate.connectedProduct;
+
+    // Add " (Copy)" to the inventory group name
+    inventoryToDuplicate.inventoryGroup = `${inventoryToDuplicate.inventoryGroup} (Copy)`;
+
+    setInventoryList([...inventoryList, inventoryToDuplicate]);
+    showSuccess('Inventory duplicated');
+  };
+
+  const handleInventoryChange = (index: number, updatedInventory: any) => {
+    const updatedList = [...inventoryList];
+    updatedList[index] = {
+      ...updatedList[index],
+      ...updatedInventory,
+    };
+    setInventoryList(updatedList);
+  };
+
+  // Persist a single inventory item to the server
+  const handleSaveInventory = async (index: number) => {
+    const item = inventoryList[index];
+    setIsSavingInCard(true);
+    try {
+      const payload = {
+        inventoryGroup: item.inventoryGroup,
+        digitalAssets: item.digitalAssets,
+        productId: item.productId || null,
+      };
+      const response = item._id
+        ? await fetch(`/api/v3/digital-inventory`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
+            },
+            body: JSON.stringify({ id: item._id, ...payload }),
+          })
+        : await fetch(`/api/v3/digital-inventory`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
+            },
+            body: JSON.stringify(payload),
+          });
+      if (!response.ok) throw new Error('Failed to save inventory');
+      showSuccess('Inventory saved successfully!');
+      await fetchInventory(); // reload latest list
+    } catch (error) {
+      console.error('Error saving inventory:', error);
+      showError('Failed to save inventory');
+    } finally {
+      setIsSavingInCard(false);
+      setIsEditingInCard(false);
+    }
+  };
+
   const filteredInventoryList = inventoryList
     .filter((item) => {
       if (filterOption === 'linked') return !!item.connectedProduct;
@@ -401,10 +432,16 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
       );
     });
 
+  // Calculate stats
+  const totalInventory = inventoryList.length;
+  const linkedItems = inventoryList.filter((item) => !!item.connectedProduct).length;
+  const unlinkedItems = totalInventory - linkedItems;
+  const totalAssets = inventoryList.reduce((total, item) => total + item.digitalAssets.length, 0);
+
   if (isInitialLoading) {
     return (
       <div className="p-8 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -414,7 +451,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-light-100 flex items-center">
-            <Database className="mr-2 text-blue-400" size={24} />
+            <Database className="mr-2 text-primary" size={24} />
             Digital Inventory Manager
           </h2>
           <p className="text-light-400 mt-1">
@@ -422,93 +459,32 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <div className="relative flex-grow">
-            <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"
-              size={16}
-            />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search inventory..."
-              className="pl-10 pr-4 py-2.5 w-full bg-dark-700 border border-dark-600 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/50"
-            />
-          </div>
-
-          <div className="flex gap-2">
-            <div className="relative">
-              <select
-                value={filterOption}
-                onChange={(e) => setFilterOption(e.target.value as 'all' | 'linked' | 'unlinked')}
-                className="appearance-none pl-10 pr-8 py-2.5 bg-dark-700 border border-dark-600 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/50">
-                <option value="all">All inventory</option>
-                <option value="linked">Linked only</option>
-                <option value="unlinked">Unlinked only</option>
-              </select>
-              <Filter
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"
-                size={16}
-              />
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 8L2 4H10L6 8Z" fill="currentColor" className="text-light-500" />
-                </svg>
-              </div>
-            </div>
-
-            <button
-              onClick={fetchInventory}
-              className="p-2.5 text-light-400 hover:text-blue-400 transition-colors rounded-lg hover:bg-dark-700 border border-dark-600"
-              title="Refresh data">
-              <RefreshCw size={18} />
-            </button>
-          </div>
+        <div className="flex gap-3">
+          <Button2
+            onClick={handleAddNewInventory}
+            className="bg-primary hover:bg-primary text-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+            <Plus size={16} className="mr-1" />
+            New Inventory
+          </Button2>
         </div>
       </div>
 
       {/* Stats summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="text-light-300 text-sm font-medium">Total Inventory</h3>
-            <div className="bg-blue-500/20 p-2 rounded-lg">
-              <Database size={18} className="text-blue-400" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-light-100 mt-2">{inventoryList.length}</p>
-        </div>
+      <InventoryStats
+        totalInventory={totalInventory}
+        linkedItems={linkedItems}
+        unlinkedItems={unlinkedItems}
+        totalAssets={totalAssets}
+      />
 
-        <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="text-light-300 text-sm font-medium">Linked Items</h3>
-            <div className="bg-green-500/20 p-2 rounded-lg">
-              <Link size={18} className="text-green-400" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-light-100 mt-2">
-            {inventoryList.filter((item) => !!item.connectedProduct).length}
-          </p>
-        </div>
-
-        <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h3 className="text-light-300 text-sm font-medium">Unlinked Items</h3>
-            <div className="bg-yellow-500/20 p-2 rounded-lg">
-              <Link2Off size={18} className="text-yellow-400" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-light-100 mt-2">
-            {inventoryList.filter((item) => !item.connectedProduct).length}
-          </p>
-        </div>
-      </div>
+      {/* Search and filters */}
+      <InventorySearch
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        filterOption={filterOption}
+        onFilterChange={setFilterOption}
+        onRefresh={fetchInventory}
+      />
 
       {/* Digital Inventory List */}
       <div className="space-y-4">
@@ -524,7 +500,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
             {!searchTerm && filterOption === 'all' && (
               <Button2
                 onClick={handleAddNewInventory}
-                className="mx-auto bg-blue-500 hover:bg-blue-600 text-white">
+                className="mx-auto bg-primary hover:bg-primary text-white">
                 <Plus size={16} className="mr-2" />
                 Create New Inventory
               </Button2>
@@ -542,190 +518,138 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
                       !inventory._id)
                 );
 
+                const isSelected = selectedInventoryIndex === originalIndex;
+
                 return (
-                  <div
-                    key={inventory._id || index}
-                    className={`bg-dark-800/50 rounded-xl border ${
-                      selectedInventoryIndex === originalIndex
-                        ? 'border-blue-500/50 shadow-lg shadow-blue-500/10'
-                        : 'border-dark-600 hover:border-dark-500'
-                    } transition-all duration-200`}>
-                    <div className="p-4">
-                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <div>
-                          <h3 className="text-light-100 font-medium text-lg">
-                            {inventory.inventoryGroup}
-                          </h3>
-                          <div className="flex flex-wrap items-center gap-2 mt-1">
-                            <span className="text-xs bg-dark-600 text-light-400 px-2 py-0.5 rounded-full">
-                              {inventory.digitalAssets.length}{' '}
-                              {inventory.digitalAssets.length === 1 ? 'item' : 'items'}
-                            </span>
-                            {inventory.connectedProduct ? (
-                              <div className="flex items-center gap-1 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
-                                <Link size={12} />
-                                <span>Linked to: {inventory.connectedProduct.title}</span>
-                              </div>
-                            ) : (
-                              <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded-full">
-                                Not linked to any product
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                  <div key={inventory._id || index} className="animate-fade-in">
+                    <InventoryCard
+                      inventory={inventory}
+                      onEdit={() => {
+                        if (selectedInventoryIndex === originalIndex) {
+                          // If already selected, close it directly
+                          setSelectedInventoryIndex(null);
+                          setIsEditingInCard(false);
+                        } else {
+                          // Select this inventory
+                          setSelectedInventoryIndex(originalIndex);
+                          setIsLinkingProduct(false);
+                          setIsEditingInCard(true);
+                        }
+                      }}
+                      onSave={async () => {
+                        setIsSavingInCard(true);
+                        // Simulate saving with a delay
+                        await new Promise((resolve) => setTimeout(resolve, 500));
+                        setIsSavingInCard(false);
+                        setIsEditingInCard(false);
+                        showSuccess('Inventory saved successfully!');
+                      }}
+                      onLink={() => {
+                        setSelectedInventoryIndex(originalIndex);
+                        setIsLinkingProduct(true);
+                        setIsEditingInCard(false);
+                      }}
+                      onUnlink={() => handleUnlinkProduct(originalIndex)}
+                      onDuplicate={() => handleDuplicateInventory(originalIndex)}
+                      onDelete={() => handleDeleteInventory(originalIndex)}
+                      isSelected={isSelected}
+                      isEditing={isSelected && isEditingInCard}
+                      isSaving={isSavingInCard}
+                    />
 
-                        <div className="flex items-center gap-2">
-                          {inventory.connectedProduct ? (
-                            <Button2
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleUnlinkProduct(originalIndex)}
-                              className="h-9 text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20">
-                              <Link2Off size={14} className="mr-1" />
-                              Unlink Product
-                            </Button2>
-                          ) : (
-                            <Button2
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setSelectedInventoryIndex(originalIndex);
-                                setIsLinkingProduct(true);
-                              }}
-                              className="h-9 text-xs bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20">
-                              <Link size={14} className="mr-1" />
+                    {/* Show editor directly below the selected card */}
+                    {isSelected && (
+                      <div className="mt-2 bg-dark-700/50 p-4 rounded-xl border border-dark-600 animate-fadeIn">
+                        {isLinkingProduct ? (
+                          <div className="bg-dark-700/50 p-4 rounded-xl border border-dark-600">
+                            <h4 className="text-sm font-medium text-light-300 mb-3">
                               Link to Product
-                            </Button2>
-                          )}
-                          <Button2
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedInventoryIndex(
-                                originalIndex === selectedInventoryIndex ? null : originalIndex
-                              );
-                              setIsLinkingProduct(false);
-                            }}
-                            className={`h-9 text-xs ${
-                              selectedInventoryIndex === originalIndex
-                                ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600'
-                                : 'bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20'
-                            }`}>
-                            <Database size={14} className="mr-1" />
-                            {selectedInventoryIndex === originalIndex
-                              ? 'Close Editor'
-                              : 'Edit Data'}
-                          </Button2>
-                        </div>
-                      </div>
-
-                      {selectedInventoryIndex === originalIndex && (
-                        <div className="mt-4 border-t border-dark-600 pt-4 animate-fadeIn">
-                          {isLinkingProduct ? (
-                            <div className="bg-dark-700/50 p-4 rounded-xl border border-dark-600">
-                              <h4 className="text-sm font-medium text-light-300 mb-3">
-                                Link to Product
-                              </h4>
-                              <div className="flex flex-col md:flex-row gap-3">
-                                <select
-                                  value={selectedProductId}
-                                  onChange={(e) => setSelectedProductId(e.target.value)}
-                                  className="flex-1 px-3 py-2 bg-dark-800 border border-dark-600 rounded-lg text-light-200 focus:outline-none focus:ring-1 focus:ring-blue-500/30 focus:border-blue-500/50">
-                                  <option value="">Select a product...</option>
-                                  {products.map((product) => (
-                                    <option key={product._id} value={product._id}>
-                                      {product.title}
-                                    </option>
-                                  ))}
-                                </select>
-                                <div className="flex gap-2">
-                                  <Button2
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                      setIsLinkingProduct(false);
-                                      setSelectedProductId('');
-                                    }}
-                                    className="h-10 text-xs bg-dark-600 text-light-400 border-dark-500 hover:bg-dark-500">
-                                    Cancel
-                                  </Button2>
-                                  <Button2
-                                    size="sm"
-                                    onClick={() => handleLinkProduct(originalIndex)}
-                                    disabled={!selectedProductId || isLoading}
-                                    className="h-10 text-xs bg-blue-500 hover:bg-blue-600 text-white">
-                                    {isLoading ? (
-                                      <span className="flex items-center gap-2">
-                                        <svg
-                                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          fill="none"
-                                          viewBox="0 0 24 24">
-                                          <circle
-                                            className="opacity-25"
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            stroke="currentColor"
-                                            strokeWidth="4"></circle>
-                                          <path
-                                            className="opacity-75"
-                                            fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Linking...
-                                      </span>
-                                    ) : (
-                                      <span className="flex items-center gap-2">
-                                        <Link size={14} />
-                                        Link Product
-                                      </span>
-                                    )}
-                                  </Button2>
-                                </div>
+                            </h4>
+                            <div className="flex flex-col md:flex-row gap-3">
+                              <select
+                                value={selectedProductId}
+                                onChange={(e) => setSelectedProductId(e.target.value)}
+                                className="flex-1 px-3 py-2 bg-dark-800 border border-dark-600 rounded-lg text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50">
+                                <option value="">Select a product...</option>
+                                {products.map((product) => (
+                                  <option key={product._id} value={product._id}>
+                                    {product.title}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="flex gap-2">
+                                <Button2
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setIsLinkingProduct(false);
+                                    setSelectedProductId('');
+                                  }}
+                                  className="h-10 text-xs bg-dark-600 text-light-400 border-dark-500 hover:bg-dark-500">
+                                  Cancel
+                                </Button2>
+                                <Button2
+                                  size="sm"
+                                  onClick={() => handleLinkProduct(selectedInventoryIndex)}
+                                  disabled={!selectedProductId || isLoading}
+                                  className="h-10 text-xs bg-primary hover:bg-primary text-white">
+                                  {isLoading ? (
+                                    <span className="flex items-center gap-2">
+                                      <svg
+                                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24">
+                                        <circle
+                                          className="opacity-25"
+                                          cx="12"
+                                          cy="12"
+                                          r="10"
+                                          stroke="currentColor"
+                                          strokeWidth="4"></circle>
+                                        <path
+                                          className="opacity-75"
+                                          fill="currentColor"
+                                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                      </svg>
+                                      Linking...
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center gap-2">
+                                      <Link size={14} />
+                                      Link Product
+                                    </span>
+                                  )}
+                                </Button2>
                               </div>
                             </div>
-                          ) : (
-                            <div className="bg-dark-700/50 p-4 rounded-xl border border-dark-600">
-                              <DigitalInventoryEditor
-                                inventoryList={[inventory]}
-                                assetKeys={assetKeys}
-                                onInventoryChange={(newList) => {
-                                  const updatedList = [...inventoryList];
-                                  updatedList[originalIndex] = {
-                                    ...newList[0],
-                                    _id: inventory._id,
-                                    productId: inventory.productId,
-                                    connectedProduct: inventory.connectedProduct,
-                                  };
-                                  setInventoryList(updatedList);
-                                }}
-                                onAssetKeysChange={handleAssetKeysChange}
-                                errors={errors}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                          </div>
+                        ) : (
+                          <div className="bg-dark-700/50 p-4 rounded-xl border border-dark-600">
+                            <EnhancedInventoryEditor
+                              inventory={inventoryList[selectedInventoryIndex]}
+                              assetKeys={assetKeys}
+                              onInventoryChange={(updatedInventory) =>
+                                handleInventoryChange(selectedInventoryIndex, updatedInventory)
+                              }
+                              onAssetKeysChange={handleAssetKeysChange}
+                              errors={errors}
+                              onSave={() => handleSaveInventory(selectedInventoryIndex!)}
+                              isSaving={isSavingInCard}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}
-            </div>
-
-            <div className="flex justify-center mt-6">
-              <Button2
-                onClick={handleAddNewInventory}
-                className="bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                <Plus size={16} className="mr-1" />
-                Add New Inventory
-              </Button2>
             </div>
           </>
         )}
       </div>
 
-      <div className="flex justify-between pt-5 border-t border-dark-600 mt-8">
+      <div className="flex justify-start pt-5 border-t border-dark-600 mt-8">
         <Button2
           variant="outline"
           onClick={onClose}
@@ -735,40 +659,29 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
             Back to Products
           </span>
         </Button2>
-
-        <ButtonWithLoader
-          disabled={isLoading}
-          onClick={handleSubmit}
-          className="bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-all duration-300">
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <svg
-                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Saving Changes...
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <Save size={16} />
-              Save All Changes
-            </span>
-          )}
-        </ButtonWithLoader>
       </div>
+
+      {/* Delete confirmation modal */}
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} size="sm">
+        <div className="p-6 bg-dark-700 text-light-100 rounded-lg border-[1px] border-dark-500">
+          <h3 className="text-lg font-bold mb-3">Delete Inventory</h3>
+          <p className="text-light-300 mb-6">
+            Are you sure you want to delete this inventory? This action cannot be undone.
+          </p>
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-4 py-2 text-light-800 bg-dark-600 hover:bg-dark-700 rounded-lg font-medium transition-colors duration-200 ">
+              Cancel
+            </button>
+            <button
+              onClick={confirmDeleteInventory}
+              className="px-4 py-2 text-red-500 bg-red-500/10 hover:bg-red-500/20 rounded-lg font-medium transition-colors duration-200">
+              Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

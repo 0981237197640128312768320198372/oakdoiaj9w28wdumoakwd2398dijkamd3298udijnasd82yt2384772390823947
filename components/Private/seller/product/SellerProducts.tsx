@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { useState } from 'react';
-import { Plus, Database, Package } from 'lucide-react';
+import { Plus, Database, Package, LayoutGrid, ListFilter } from 'lucide-react';
 import ProductList from './ProductList';
 import ProductForm from '../product/ProductForm';
 import DigitalInventoryManager from './DigitalInventoryManager';
@@ -114,13 +114,13 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
             </TabsTrigger>
             <TabsTrigger
               value="digital-inventory"
-              className="flex-1 rounded-full data-[state=active]:bg-blue-500 data-[state=active]:text-dark-800">
+              className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
               <Database size={16} className="mr-2" />
               Digital Inventory
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="products" className="mt-4">
+          <TabsContent value="products" className="mt-4 animate-fadeIn">
             {products.length === 0 ? (
               <EmptyState onAddProduct={openAddProductModal} />
             ) : (
@@ -135,8 +135,8 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
             )}
           </TabsContent>
 
-          <TabsContent value="digital-inventory" className="mt-4">
-            <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg">
+          <TabsContent value="digital-inventory" className="mt-4 animate-fadeIn">
+            <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
               <DigitalInventoryManager onClose={() => setActiveTab('products')} />
             </div>
           </TabsContent>
