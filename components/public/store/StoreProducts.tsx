@@ -8,7 +8,6 @@ import { ShoppingCart, X, RefreshCw, ChevronDown, Filter } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { useSearchParams } from 'next/navigation';
 
 interface StoreProductsProps {
   store: string | undefined;
@@ -16,13 +15,9 @@ interface StoreProductsProps {
 }
 
 export default function StoreProducts({ store, theme }: StoreProductsProps) {
-  const searchParams = useSearchParams();
-  const showDiscountedOnly = searchParams.get('discount') === 'true';
-
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<
     'default' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
@@ -82,10 +77,10 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
 
-      // Load more button styles
       loadMoreButton: cn(
-        'mt-8 px-6 py-2 border text-sm transition-colors rounded-md flex items-center justify-center gap-2 mx-auto hover:scale-110',
-        themeUtils.getButtonClass()
+        'mt-8 px-4 py-2 border text-sm transition-colors rounded-md flex items-center justify-center gap-2 mx-auto hover:scale-110',
+        themeUtils.getButtonClass(),
+        themeUtils.getPrimaryColorClass('border')
       ),
     };
   };
@@ -129,21 +124,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Filter by discount if the discount parameter is true
-    if (showDiscountedOnly) {
-      result = result.filter((product) => product.discountPercentage > 0);
-    }
-
-    // Filter by search term
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      result = result.filter(
-        (product) =>
-          product.title?.toLowerCase().includes(searchLower) ||
-          product.description?.toLowerCase().includes(searchLower)
-      );
-    }
-
     // Filter by selected categories
     if (selectedCategories.length > 0) {
       result = result.filter((product) => selectedCategories.includes(product.categoryId));
@@ -168,14 +148,13 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
     }
 
     return result;
-  }, [products, searchTerm, selectedCategories, sortOption, showDiscountedOnly]);
+  }, [products, selectedCategories, sortOption]);
 
   const visibleFilteredProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleProducts);
   }, [filteredProducts, visibleProducts]);
 
   const handleClearFilters = () => {
-    setSearchTerm('');
     setSelectedCategories([]);
     setSortOption('default');
   };
@@ -284,18 +263,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
               />
             </button>
           </div>
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={cn(
-              'px-4 py-2 border text-xs flex gap-2 items-center focus:outline-none focus:ring-0 transition-colors',
-              themeUtils.getPrimaryColorClass('border') + '/30',
-              themeUtils.getButtonBorderClass(),
-              themeUtils.getButtonClass()
-            )}
-          />
           <div className="flex items-center gap-2">
             <span className={cn('text-sm', themeUtils.getTextColors())}>Sort by:</span>
             <select
@@ -339,7 +306,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
                 ))}
               </div>
 
-              {(selectedCategories.length > 0 || searchTerm || sortOption !== 'default') && (
+              {(selectedCategories.length > 0 || sortOption !== 'default') && (
                 <button
                   onClick={handleClearFilters}
                   className={cn(componentStyles.filterButton, 'mt-4')}>
@@ -350,27 +317,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
           </motion.div>
         )}
       </div>
-
-      {/* Discounted Products Notice */}
-      {showDiscountedOnly && filteredProducts.length > 0 && (
-        <div className={cn('mb-6 flex items-center justify-between', themeUtils.getTextColors())}>
-          <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                'px-3 py-1 rounded-full text-sm',
-                themeUtils.getPrimaryColorClass('bg') + '/10',
-                themeUtils.getPrimaryColorClass('text')
-              )}>
-              Showing discounted products only
-            </span>
-          </div>
-          <a
-            href={`/products?store=${store}`}
-            className={cn('text-sm underline', themeUtils.getPrimaryColorClass('text'))}>
-            View all products
-          </a>
-        </div>
-      )}
 
       {/* Products Display */}
       <AnimatePresence mode="wait">
@@ -392,18 +338,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
             <h3 className={cn('text-xl font-semibold mb-2', componentStyles.emptyTitle)}>
               No products found
             </h3>
-            <p className={cn('max-w-md mb-6', componentStyles.emptyText)}>
-              {showDiscountedOnly
-                ? 'No discounted products available at the moment'
-                : searchTerm || selectedCategories.length > 0
-                ? 'Try adjusting your search or filter criteria'
-                : "This store doesn't have any products yet"}
-            </p>
-            {(searchTerm || selectedCategories.length > 0 || sortOption !== 'default') && (
-              <button onClick={handleClearFilters} className={componentStyles.filterButton}>
-                Clear All Filters
-              </button>
-            )}
           </motion.div>
         ) : (
           <div>
@@ -421,11 +355,9 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
               ))}
             </motion.div>
 
-            {/* Load More Button */}
             {visibleProducts < filteredProducts.length && (
               <button onClick={handleLoadMore} className={componentStyles.loadMoreButton}>
                 Load More
-                <ChevronDown size={16} />
               </button>
             )}
           </div>

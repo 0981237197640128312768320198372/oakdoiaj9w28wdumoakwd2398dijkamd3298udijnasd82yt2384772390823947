@@ -800,7 +800,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             ))}
           </AnimatePresence>
 
-          {/* Load More */}
           {pagination.hasMore && (
             <div className="text-center pt-3">
               <button
