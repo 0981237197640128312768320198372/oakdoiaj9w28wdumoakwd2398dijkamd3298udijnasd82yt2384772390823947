@@ -4,6 +4,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { Product } from '@/models/v3/Product';
+import { DigitalInventory } from '@/models/v3/DigitalInventory';
 import { Seller } from '@/models/v3/Seller';
 import { Category } from '@/models/v3/Category';
 import jwt from 'jsonwebtoken';
@@ -35,16 +36,15 @@ export async function POST(req: NextRequest) {
     const {
       title,
       description,
-      stock,
-      details,
       categoryId,
       price,
       discountPercentage = 0,
       images,
       status,
+      productData,
     } = body;
 
-    if (!title || !description || stock === undefined || !categoryId || price === undefined) {
+    if (!title || !description || !categoryId || price === undefined) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -63,8 +63,6 @@ export async function POST(req: NextRequest) {
     const newProduct = new Product({
       title,
       description,
-      stock,
-      details,
       sellerId,
       categoryId,
       price,
@@ -76,16 +74,40 @@ export async function POST(req: NextRequest) {
 
     const savedProduct = await newProduct.save();
 
+    // Create ProductData entries if provided
+    let productDataEntries = [];
+    if (productData && Array.isArray(productData) && productData.length > 0) {
+      const productDataPromises = productData.map(async (data) => {
+        const newProductData = new DigitalInventory({
+          productId: savedProduct._id,
+          sellerId,
+          variantName: data.variantName,
+          specifications: data.specifications,
+        });
+        return newProductData.save();
+      });
+
+      productDataEntries = await Promise.all(productDataPromises);
+    }
+
     // Get category data
     const category = await Category.findById(savedProduct.categoryId).lean();
+
+    // Calculate stock based on ProductData entries
+    const stock = productDataEntries.length;
+
+    // Add virtual stock to the response
+    const productWithStock = {
+      ...savedProduct.toObject(),
+      stock,
+      category,
+    };
 
     return NextResponse.json(
       {
         message: 'Product created successfully',
-        product: {
-          ...savedProduct.toObject(),
-          category,
-        },
+        product: productWithStock,
+        productData: productDataEntries,
       },
       { status: 201 }
     );
@@ -137,22 +159,37 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
       }
 
-      const product = await Product.findOne({
+      // Use explicit casting to handle the type
+      const productDoc = await Product.findOne({
         _id: productId,
         sellerId,
-      }).lean('-details');
+      });
 
-      if (!product) {
+      if (!productDoc) {
         return NextResponse.json({ error: 'Product not found' }, { status: 404 });
       }
+
+      // Convert to plain object
+      const product = productDoc.toObject();
 
       // Get category data
       const category = await Category.findById(product.categoryId).lean();
 
+      // Get associated ProductData entries
+      const productDataEntries = await DigitalInventory.find({
+        productId,
+        sellerId,
+      }).lean();
+
+      // Calculate stock based on ProductData entries
+      const stock = productDataEntries.length;
+
       return NextResponse.json({
         product: {
           ...product,
+          stock,
           category,
+          productData: productDataEntries,
         },
       });
     }
@@ -163,13 +200,24 @@ export async function GET(req: NextRequest) {
       query.categoryId = categoryId;
     }
 
-    const products = await Product.find(query).lean('-details');
+    // Get products and convert to plain objects
+    const products = await Product.find(query);
+    const plainProducts = products.map((product) => product.toObject());
 
     const productsWithCategories = await Promise.all(
-      products.map(async (product) => {
-        const category = await Category.findById(product.categoryId).lean();
+      plainProducts.map(async (product) => {
+        // Get category data if categoryId exists
+        let category = null;
+        if (product.categoryId) {
+          category = await Category.findById(product.categoryId).lean();
+        }
+
+        // Get stock count for each product
+        const stockCount = await DigitalInventory.countDocuments({ productId: product._id });
+
         return {
           ...product,
+          stock: stockCount,
           category,
         };
       })
@@ -195,13 +243,12 @@ export async function PUT(req: NextRequest) {
       id,
       title,
       description,
-      stock,
       categoryId,
       price,
       discountPercentage = 0,
       images,
       status,
-      details,
+      productData,
     } = body;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
@@ -220,8 +267,6 @@ export async function PUT(req: NextRequest) {
 
     if (title) product.title = title;
     if (description) product.description = description;
-    if (stock !== undefined) product.stock = stock;
-    if (details) product.details = details;
 
     if (categoryId) {
       if (!mongoose.Types.ObjectId.isValid(categoryId)) {
@@ -244,16 +289,44 @@ export async function PUT(req: NextRequest) {
 
     const updatedProduct = await product.save();
 
+    // Handle ProductData updates if provided
+    let productDataEntries = [];
+    if (productData && Array.isArray(productData)) {
+      // Delete existing ProductData entries
+      await DigitalInventory.deleteMany({ productId: id, sellerId });
+
+      // Create new ProductData entries
+      if (productData.length > 0) {
+        const productDataPromises = productData.map(async (data) => {
+          const newProductData = new DigitalInventory({
+            productId: id,
+            sellerId,
+            variantName: data.variantName,
+            specifications: data.specifications,
+          });
+          return newProductData.save();
+        });
+
+        productDataEntries = await Promise.all(productDataPromises);
+      }
+    }
+
     // Get category data
     const category = await Category.findById(updatedProduct.categoryId).lean();
+
+    // Calculate stock based on ProductData entries
+    const stock =
+      productDataEntries.length || (await DigitalInventory.countDocuments({ productId: id }));
 
     return NextResponse.json(
       {
         message: 'Product updated successfully',
         product: {
           ...updatedProduct.toObject(),
+          stock,
           category,
         },
+        productData: productDataEntries.length > 0 ? productDataEntries : undefined,
       },
       { status: 200 }
     );
@@ -284,9 +357,16 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Product not found or not authorized' }, { status: 404 });
     }
 
+    // Delete associated ProductData entries
+    await DigitalInventory.deleteMany({ productId: id, sellerId });
+
+    // Delete the product
     await Product.deleteOne({ _id: id });
 
-    return NextResponse.json({ message: 'Product deleted successfully' }, { status: 200 });
+    return NextResponse.json(
+      { message: 'Product and associated data deleted successfully' },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error deleting product:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

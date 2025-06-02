@@ -170,7 +170,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
     return result;
   }, [products, searchTerm, selectedCategories, sortOption, showDiscountedOnly]);
 
-  // Get visible products based on the visibleProducts state
   const visibleFilteredProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleProducts);
   }, [filteredProducts, visibleProducts]);

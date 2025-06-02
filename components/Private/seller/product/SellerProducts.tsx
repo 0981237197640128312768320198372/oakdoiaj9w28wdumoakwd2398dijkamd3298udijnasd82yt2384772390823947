@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Database, Package } from 'lucide-react';
 import ProductList from './ProductList';
 import ProductForm from '../product/ProductForm';
+import DigitalInventoryManager from './DigitalInventoryManager';
 import EmptyState from './EmptyState';
 import { Product } from '@/types';
 import { useProducts } from '@/hooks/useProducts';
 import useToast from '@/hooks/useToast';
 import Modal from '@/components/ui/Modal';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 interface SellerProductsProps {
   seller: { id: string; name: string } | null;
@@ -18,6 +19,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('products');
 
   const {
     products,
@@ -36,7 +38,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
 
   const { showSuccess, showError } = useToast();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<boolean> => {
     const result = await addProduct();
     if (result) {
       setIsFormModalOpen(false);
@@ -44,6 +46,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     } else {
       showError(error || 'Failed to process product');
     }
+    return result;
   };
 
   const handleEditProduct = (product: Product) => {
@@ -90,26 +93,55 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
             <p className="text-light-400 mt-1">Manage your store inventory and product listings</p>
           </div>
 
-          <button
-            onClick={openAddProductModal}
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
-            <Plus size={18} />
-            <span>Add Product</span>
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={openAddProductModal}
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
+              <Plus size={18} />
+              <span>Add Product</span>
+            </button>
+          </div>
         </div>
 
-        {products.length === 0 ? (
-          <EmptyState onAddProduct={openAddProductModal} />
-        ) : (
-          <ProductList
-            products={products}
-            categories={categories}
-            onEdit={handleEditProduct}
-            onDelete={handleDeleteProduct}
-            isLoading={isLoading}
-          />
-        )}
+        <Tabs defaultValue="products" className="w-full" onValueChange={setActiveTab}>
+          <TabsList className="w-full max-w-md mx-auto mb-6 bg-dark-700 p-1 rounded-full">
+            <TabsTrigger
+              value="products"
+              className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+              <Package size={16} className="mr-2" />
+              Products
+            </TabsTrigger>
+            <TabsTrigger
+              value="digital-inventory"
+              className="flex-1 rounded-full data-[state=active]:bg-blue-500 data-[state=active]:text-dark-800">
+              <Database size={16} className="mr-2" />
+              Digital Inventory
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="products" className="mt-4">
+            {products.length === 0 ? (
+              <EmptyState onAddProduct={openAddProductModal} />
+            ) : (
+              <ProductList
+                products={products}
+                categories={categories}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteProduct}
+                onManageData={() => setActiveTab('digital-inventory')}
+                isLoading={isLoading}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="digital-inventory" className="mt-4">
+            <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg">
+              <DigitalInventoryManager onClose={() => setActiveTab('products')} />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
+
       <Modal isOpen={isFormModalOpen} onClose={handleFormModalClose} size="lg">
         <ProductForm
           formData={formData}

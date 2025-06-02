@@ -17,6 +17,8 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, category }) => {
+  console.log(product);
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -288,7 +290,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         </div>
 
         <div className={styles.footer}>
-          <span className={styles.stockText}>พร้อมส่ง: {product.stock}</span>
+          <span className={styles.stockText}>พร้อมส่ง: {product._stock}</span>
           <button
             onClick={handleBuyNow}
             className={cn(styles.buyButton, 'transition-all duration-200')}>

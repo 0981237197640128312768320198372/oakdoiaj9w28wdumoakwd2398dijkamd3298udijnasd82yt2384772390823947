@@ -13,8 +13,6 @@ export const useProducts = (sellerId?: string) => {
   const initialFormData: ProductFormData = {
     title: '',
     description: '',
-    stock: 0,
-    details: [],
     categoryId: '',
     price: 0,
     discountPercentage: 0,
@@ -101,10 +99,6 @@ export const useProducts = (sellerId?: string) => {
       errors.description = 'Description is required';
     }
 
-    if (formData.stock < 0) {
-      errors.stock = 'Stock cannot be negative';
-    }
-
     if (!formData.categoryId) {
       errors.categoryId = 'Category is required';
     }
@@ -117,9 +111,9 @@ export const useProducts = (sellerId?: string) => {
       errors.discountPercentage = 'Discount must be between 0 and 100';
     }
 
-    if (formData.images.length === 0) {
-      errors.images = 'At least one image is required';
-    }
+    // if (formData.images.length === 0) {
+    //   errors.images = 'At least one image is required';
+    // }
 
     if (formData.images.length > 3) {
       errors.images = 'Maximum 3 images allowed';
@@ -239,16 +233,9 @@ export const useProducts = (sellerId?: string) => {
   );
 
   const editProduct = (product: Product) => {
-    // Convert product details to the format expected by the form
-    const productDetails = Array.isArray(product.details)
-      ? product.details
-      : Object.entries(product.details || {}).map(([key, value]) => ({ [key]: value }));
-
     setFormData({
       title: product.title,
       description: product.description,
-      stock: product.stock,
-      details: productDetails,
       categoryId: product.categoryId,
       price: product.price,
       discountPercentage: product.discountPercentage || 0,

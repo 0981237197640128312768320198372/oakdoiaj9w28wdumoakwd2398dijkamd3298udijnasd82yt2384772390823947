@@ -1,6 +1,14 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import { Edit, Trash2, AlertTriangle, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Edit,
+  Trash2,
+  AlertTriangle,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Database,
+} from 'lucide-react';
 import { Product } from '@/types';
 import Image from 'next/image';
 import dokmaicoin from '@/assets/icons/DCSymbolWhite.svg';
@@ -9,6 +17,7 @@ interface SellerProductCardProps {
   product: Product;
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
+  onManageData: (product: Product) => void;
   categories?: { _id: string; name: string; logoUrl?: string }[];
 }
 
@@ -16,6 +25,7 @@ const SellerProductCard: React.FC<SellerProductCardProps> = ({
   product,
   onEdit,
   onDelete,
+  onManageData,
   categories = [],
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -216,8 +226,13 @@ const SellerProductCard: React.FC<SellerProductCardProps> = ({
         </div>
 
         <div className="flex items-center justify-between pt-2 border-t border-dark-600">
-          <span className="text-xs text-light-600">Stock: {product.stock}</span>
+          <span className="text-xs text-light-600">Stock: {product._stock}</span>
           <div className="flex -space-x-1">
+            <button
+              onClick={() => onManageData(product)}
+              className="relative p-1.5 text-light-500 hover:text-blue-400 rounded-full hover:bg-blue-500/10 transition-all duration-200 z-20">
+              <Database size={14} />
+            </button>
             <button
               onClick={() => onEdit(product)}
               className="relative p-1.5 text-light-500 hover:text-primary rounded-full hover:bg-primary/10 transition-all duration-200 z-10">

@@ -7,6 +7,7 @@ interface ProductListProps {
   categories: Category[];
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => void;
+  onManageData: (product: Product) => void;
   isLoading: boolean;
 }
 
@@ -15,6 +16,7 @@ const ProductList: React.FC<ProductListProps> = ({
   categories,
   onEdit,
   onDelete,
+  onManageData,
   isLoading,
 }) => {
   // Loading skeleton for products
@@ -50,6 +52,7 @@ const ProductList: React.FC<ProductListProps> = ({
                 categories={categories}
                 onEdit={onEdit}
                 onDelete={onDelete}
+                onManageData={onManageData}
               />
             ))}
       </div>

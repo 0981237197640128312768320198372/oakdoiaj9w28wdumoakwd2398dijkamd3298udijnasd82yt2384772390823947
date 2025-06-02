@@ -59,15 +59,28 @@ export interface SuccessData {
   newBalance: number;
 }
 
+export interface DigitalInventory {
+  _id?: string;
+  productId?: string;
+  sellerId: string;
+  inventoryGroup: string;
+  variantName?: string; // For backward compatibility
+  digitalAssets: Array<Record<string, any>>;
+  specifications?: Array<Record<string, any>>; // For backward compatibility
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// For backward compatibility
+export interface ProductData extends DigitalInventory {}
+
 export interface Product {
   createdAt: any;
   rating: string;
   _id: string;
   title: string;
   description: string;
-  stock: number;
   type: string;
-  details: any;
   sellerId: string;
   categoryId: string;
   price: number;
@@ -76,6 +89,9 @@ export interface Product {
   images: string[];
   status: 'active' | 'draft';
   category?: Category;
+  _stock?: number;
+  productDataId?: string;
+  digitalInventoryId?: string;
 }
 
 export interface Category {
@@ -89,8 +105,6 @@ export interface Category {
 export interface ProductFormData {
   title: string;
   description: string;
-  stock: number;
-  details: any;
   categoryId: string;
   price: number;
   discountPercentage: number;
