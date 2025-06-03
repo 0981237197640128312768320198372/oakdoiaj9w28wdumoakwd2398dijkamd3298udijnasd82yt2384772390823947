@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { useState } from 'react';
-import { Plus, Database, Package } from 'lucide-react';
+import { Plus, Package } from 'lucide-react';
+
 import ProductList from './ProductList';
 import ProductForm from '../product/ProductForm';
 import DigitalInventoryManager from './DigitalInventoryManager';
@@ -11,6 +12,7 @@ import { useProducts } from '@/hooks/useProducts';
 import useToast from '@/hooks/useToast';
 import Modal from '@/components/ui/Modal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { HiOutlineInboxStack } from 'react-icons/hi2';
 
 interface SellerProductsProps {
   seller: { id: string; name: string } | null;
@@ -105,7 +107,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
               <TabsTrigger
                 value="digital-inventory"
                 className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
-                <Database size={16} className="mr-2" />
+                <HiOutlineInboxStack size={16} className="mr-2" />
                 Digital Inventory
               </TabsTrigger>
             </TabsList>
@@ -140,8 +142,8 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
             </div>
           </TabsContent>
           <TabsContent value="digital-inventory" className="mt-4 animate-fadeIn">
-            <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
-              <DigitalInventoryManager onClose={() => setActiveTab('products')} />
+            <div className="bg-dark-700 rounded-xl border border-dark-500 shadow-lg overflow-hidden">
+              <DigitalInventoryManager />
             </div>
           </TabsContent>
         </Tabs>

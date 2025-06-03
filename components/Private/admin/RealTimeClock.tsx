@@ -26,7 +26,7 @@ const RealTimeClock = () => {
   });
 
   return (
-    <div className="flex items-center gap-3 bg-primary/20 px-2 py-1 rounded-sm text-primary text-sm">
+    <div className="flex items-center gap-3 bg-primary/10 px-2 py-1 rounded-sm text-primary text-sm">
       <FaRegClock />
       <span>{formattedDate}</span>
       <span>{formattedTime}</span>

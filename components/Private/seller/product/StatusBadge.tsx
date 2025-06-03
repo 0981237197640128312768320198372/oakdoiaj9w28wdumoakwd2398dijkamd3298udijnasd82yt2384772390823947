@@ -17,7 +17,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, text, size = 'md', cl
       case 'linked':
         return {
           icon: Link,
-          bg: 'bg-primary/20',
+          bg: 'bg-primary/10',
           border: 'border-primary/30',
           text: 'text-primary',
           defaultText: 'Linked',

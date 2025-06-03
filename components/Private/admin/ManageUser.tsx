@@ -239,7 +239,7 @@ export const ManageUsers = () => {
   const getRoleBadgeColor = (role: Role) => {
     switch (role) {
       case 'admin':
-        return 'bg-primary/20 hover:bg-primary/40 text-primary select-none';
+        return 'bg-primary/10 hover:bg-primary/40 text-primary select-none';
       case 'staff':
         return 'bg-fuchsia-500/20 hover:bg-fuchsia-500/40 text-fuchsia-500 select-none';
       default:

@@ -104,7 +104,7 @@ export default function ProductForm({
               'text-light-200 focus:outline-none focus:ring-1',
               formErrors.title
                 ? 'border-red-500/50 bg-red-500/5 focus:border-red-500 focus:ring-red-500/20'
-                : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/20'
+                : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/10'
             )}
             placeholder="Enter product title..."
             aria-invalid={!!formErrors.title}
@@ -126,7 +126,7 @@ export default function ProductForm({
               'text-light-200 focus:outline-none focus:ring-1 resize-none',
               formErrors.description
                 ? 'border-red-500/50 bg-red-500/5 focus:border-red-500 focus:ring-red-500/20'
-                : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/20'
+                : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/10'
             )}
             placeholder="Describe your product in detail..."
             aria-invalid={!!formErrors.description}
@@ -167,7 +167,7 @@ export default function ProductForm({
                   'text-light-200 focus:outline-none focus:ring-1',
                   formErrors.price
                     ? 'border-red-500/50 bg-red-500/5 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/20'
+                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/10'
                 )}
                 placeholder="0.00"
                 aria-invalid={!!formErrors.price}
@@ -197,7 +197,7 @@ export default function ProductForm({
                   'text-light-200 focus:outline-none focus:ring-1',
                   formErrors.discountPercentage
                     ? 'border-red-500/50 bg-red-500/5 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/20'
+                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50 focus:ring-primary/10'
                 )}
                 placeholder="0"
                 aria-invalid={!!formErrors.discountPercentage}
@@ -208,7 +208,7 @@ export default function ProductForm({
               </div>
             </div>
             {discountedPrice && formData.price > 0 && (
-              <div className="mt-2 text-xs flex items-center gap-2 p-2 bg-primary/10 rounded-md border border-primary/20">
+              <div className="mt-2 text-xs flex items-center gap-2 p-2 bg-primary/10 rounded-md border border-primary/10">
                 <Info size={14} className="text-primary" />
                 <div>
                   <span className="font-medium text-primary">Discounted price:</span>{' '}
@@ -238,7 +238,7 @@ export default function ProductForm({
                   'transition-colors duration-200',
                   formErrors.categoryId
                     ? 'border-red-500/50 bg-red-500/5 focus:border-red-500 focus:ring-1 focus:ring-red-500/20'
-                    : 'border-dark-500 bg-dark-700/50 hover:border-primary/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20'
+                    : 'border-dark-500 bg-dark-700/50 hover:border-primary/30 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/10'
                 )}
                 aria-haspopup="listbox"
                 aria-expanded={isDropdownOpen}
@@ -363,7 +363,7 @@ export default function ProductForm({
           </Button2>
           <Button2
             onClick={onSubmit}
-            className="group relative overflow-hidden shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/20"
+            className="group relative overflow-hidden shadow-sm shadow-primary/10 hover:shadow-md hover:shadow-primary/10"
             disabled={Object.keys(formErrors).length > 0 || isLoading}
             aria-label={isEditMode ? 'Update Product' : 'Add Product'}>
             <span className="flex items-center gap-2">

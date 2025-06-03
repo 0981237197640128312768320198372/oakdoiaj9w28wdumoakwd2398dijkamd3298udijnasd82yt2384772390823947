@@ -2,7 +2,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Database, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { HiOutlineInboxStack } from 'react-icons/hi2';
 import { Button2 } from '@/components/ui/button2';
 import EnhancedInventoryEditor from './EnhancedInventoryEditor';
 import InventoryCard from './InventoryCard';
@@ -11,11 +12,7 @@ import InventoryStats from './InventoryStats';
 import { Product } from '@/types';
 import useToast from '@/hooks/useToast';
 
-interface DigitalInventoryManagerProps {
-  onClose: () => void;
-}
-
-export default function DigitalInventoryManager({ onClose }: DigitalInventoryManagerProps) {
+export default function DigitalInventoryManager() {
   const [inventoryList, setInventoryList] = useState<
     Array<{
       _id?: string;
@@ -216,14 +213,47 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
     }
   };
 
-  const handleDuplicateInventory = (i: number) => {
-    const inv = { ...inventoryList[i] };
-    delete inv._id;
-    delete inv.productId;
-    delete inv.connectedProduct;
-    inv.inventoryGroup += ' (Copy)';
-    setInventoryList((prev) => [...prev, inv]);
-    showSuccess('Inventory duplicated');
+  // Delete inventory functionality
+  const handleDeleteInventory = async (i: number) => {
+    const inv = inventoryList[i];
+    if (!inv._id) {
+      // If inventory is not saved yet, just remove it from the list
+      setInventoryList((prev) => {
+        const copy = [...prev];
+        copy.splice(i, 1);
+        return copy;
+      });
+      showSuccess('Inventory removed');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/v3/digital-inventory`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
+        },
+        body: JSON.stringify({ id: inv._id }),
+      });
+
+      if (!res.ok) throw new Error();
+
+      setInventoryList((prev) => {
+        const copy = [...prev];
+        copy.splice(i, 1);
+        return copy;
+      });
+
+      setSelectedInventoryIndex(null);
+      showSuccess('Inventory deleted successfully');
+    } catch (error) {
+      console.error(error);
+      showError('Failed to delete inventory');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInventoryChange = (i: number, updated: any) => {
@@ -304,7 +334,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
             <h2 className="text-2xl font-bold text-light-100 flex items-center">
-              <Database className="mr-2 text-primary" size={24} />
+              <HiOutlineInboxStack className="mr-2 text-primary" size={24} />
               Digital Inventory Manager
             </h2>
             <p className="text-light-400 mt-1">
@@ -336,10 +366,10 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
           onRefresh={fetchInventory}
         />
 
-        <div className="space-y-4">
+        <div className="space-y-8 ">
           {filtered.length === 0 ? (
-            <div className="bg-dark-700/30 rounded-xl border border-dark-600 p-8 text-center">
-              <Database className="mx-auto text-light-500 mb-3" size={32} />
+            <div className="bg-red-700 rounded-xl border border-dark-700 p-5 text-center">
+              <HiOutlineInboxStack className="mx-auto text-light-500 mb-3" size={32} />
               <h3 className="text-light-300 text-lg font-medium mb-2">
                 No Digital Inventory Found
               </h3>
@@ -387,14 +417,14 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
                         setIsEditingInCard(false);
                       }}
                       onUnlink={() => handleUnlinkProduct(orig)}
-                      onDuplicate={() => handleDuplicateInventory(orig)}
-                      onDelete={() => {}}
+                      // onDuplicate prop removed as per user request
+                      onDelete={() => handleDeleteInventory(orig)}
                       isSelected={isSelected}
                       isEditing={isSelected && isEditingInCard}
                       isSaving={isSavingInCard}
                     />
                     {isSelected && !isLinkingProduct && (
-                      <div className="mt-2 bg-dark-700/50 p-4 rounded-xl border border-dark-600 animate-fadeIn">
+                      <div className="mt-2 bg-dark-600 p-5 rounded-xl border-dark-300 border animate-fadeIn">
                         <EnhancedInventoryEditor
                           inventory={inventoryList[orig]}
                           assetKeys={assetKeys}
@@ -407,7 +437,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
                       </div>
                     )}
                     {isSelected && isLinkingProduct && (
-                      <div className="bg-dark-700/50 p-4 rounded-xl border border-dark-600">
+                      <div className="bg-dark-600 p-4 rounded-xl border border-dark-400">
                         <h4 className="text-sm font-medium text-light-300 mb-3">Link to Product</h4>
                         <div className="flex flex-col md:flex-row gap-3">
                           <select
@@ -436,7 +466,7 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
                               size="sm"
                               onClick={() => handleLinkProduct(selectedInventoryIndex!)}
                               disabled={!selectedProductId || isLoading}
-                              className="h-10 text-xs bg-primary hover:bg-primary text-white">
+                              className="h-10 text-xs bg-primary hover:bg-primary ">
                               Link Product
                             </Button2>
                           </div>
@@ -448,18 +478,6 @@ export default function DigitalInventoryManager({ onClose }: DigitalInventoryMan
               })}
             </div>
           )}
-        </div>
-
-        <div className="flex justify-start pt-5 border-t border-dark-600 mt-8">
-          <Button2
-            variant="outline"
-            onClick={onClose}
-            className="bg-dark-700 hover:bg-dark-600 text-light-300 border-dark-600">
-            <span className="flex items-center gap-2">
-              <ArrowLeft size={16} />
-              Back to Products
-            </span>
-          </Button2>
         </div>
       </div>
     </>

@@ -51,7 +51,7 @@ const DepositAmount: React.FC<DepositAmountProps> = ({
         </div>
 
         {amount >= 10 && (
-          <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 text-sm animate-fadeIn">
+          <div className="bg-primary/5 border border-primary/10 rounded-lg p-3 text-sm animate-fadeIn">
             <div className="flex justify-between items-center mb-1">
               <span className="text-gray-300">ยอดเติมเงิน:</span>
               <span className="font-medium text-primary">{amount} Dokmai Coins</span>

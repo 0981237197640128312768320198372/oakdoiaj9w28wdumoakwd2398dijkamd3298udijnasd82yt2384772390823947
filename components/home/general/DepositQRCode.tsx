@@ -30,7 +30,7 @@ const DepositQRCode: React.FC<DepositQRCodeProps> = ({
           <PromptPayQR qrCodeData={qrCodeData} amount={amount} />
         </div>
 
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 w-full mb-4">
+        <div className="bg-primary/5 border border-primary/10 rounded-lg p-3 w-full mb-4">
           <div className="flex justify-between items-center mb-1">
             <span className="text-gray-300">จำนวนเงิน:</span>
             <span className="font-medium text-primary">{amount} Coins</span>

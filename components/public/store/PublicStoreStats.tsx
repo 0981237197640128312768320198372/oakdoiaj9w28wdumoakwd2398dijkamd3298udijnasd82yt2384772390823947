@@ -148,7 +148,7 @@ function StatItem({ icon, label, value, color = 'blue', children, theme }: StatI
 
   const colorStyles = {
     blue: 'hover:border-blue-400/50 hover:via-blue-400/20 via-blue-400/5 text-blue-500',
-    purple: 'hover:border-primary/50 hover:via-primary/20 via-primary/5 text-primary',
+    purple: 'hover:border-primary/50 hover:via-primary/10 via-primary/5 text-primary',
     emerald:
       'hover:border-emerald-400/50 hover:via-emerald-400/20 via-emerald-400/5 text-emerald-500',
     yellow: 'hover:border-yellow-400/50 hover:via-yellow-400/20 via-yellow-400/5 text-yellow-400',

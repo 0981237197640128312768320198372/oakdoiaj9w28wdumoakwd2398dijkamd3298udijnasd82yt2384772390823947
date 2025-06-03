@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
-import React, { useState } from 'react';
-import { Plus, Trash2, Edit2, Save, X, Copy, CheckCircle, Database, Key } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2, Edit2, Save, X, CheckCircle, Key } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
 import FormField from '@/components/ui/FormField';
 import StatusBadge from './StatusBadge';
+import { HiOutlineInboxStack } from 'react-icons/hi2';
 
 interface EnhancedInventoryEditorProps {
   inventory: {
@@ -45,6 +47,15 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
   const [savingAsset, setSavingAsset] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState<{ index: number; timestamp: number } | null>(null);
 
+  // Local state for assets to prevent affecting other inventories
+  const [localAssets, setLocalAssets] = useState<Array<Record<string, string>>>([]);
+
+  // Initialize local assets from inventory
+  useEffect(() => {
+    // Deep clone to avoid reference issues
+    setLocalAssets(JSON.parse(JSON.stringify(inventory.digitalAssets)));
+  }, [inventory._id]); // Only update when inventory ID changes to prevent unwanted updates
+
   // Handle inventory group name change
   const handleInventoryGroupChange = (value: string) => {
     onInventoryChange({
@@ -60,39 +71,39 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
       return acc;
     }, {} as Record<string, string>);
 
+    // Update local state first
+    const updatedAssets = [...localAssets, newAsset];
+    setLocalAssets(updatedAssets);
+
+    // Then update parent state
     onInventoryChange({
       ...inventory,
-      digitalAssets: [...inventory.digitalAssets, newAsset],
+      digitalAssets: updatedAssets,
     });
   };
 
   // Handle removing a digital asset
   const handleRemoveDigitalAsset = (assetIndex: number) => {
-    const updatedAssets = [...inventory.digitalAssets];
+    const updatedAssets = [...localAssets];
     updatedAssets.splice(assetIndex, 1);
 
+    // Update local state first
+    setLocalAssets(updatedAssets);
+
+    // Then update parent state
     onInventoryChange({
       ...inventory,
       digitalAssets: updatedAssets,
     });
   };
 
-  // Handle duplicating a digital asset
-  const handleDuplicateDigitalAsset = (assetIndex: number) => {
-    const itemToDuplicate = { ...inventory.digitalAssets[assetIndex] };
-    const updatedAssets = [...inventory.digitalAssets];
-    updatedAssets.splice(assetIndex + 1, 0, itemToDuplicate);
-
-    onInventoryChange({
-      ...inventory,
-      digitalAssets: updatedAssets,
-    });
-  };
+  // Duplicate functionality removed as per user request
 
   // Start editing a digital asset
   const handleStartEditAsset = (assetIndex: number) => {
     setEditingAssetIndex(assetIndex);
-    setEditedAsset({ ...inventory.digitalAssets[assetIndex] });
+    // Deep clone to avoid reference issues
+    setEditedAsset(JSON.parse(JSON.stringify(localAssets[assetIndex])));
   };
 
   // Cancel editing a digital asset
@@ -109,9 +120,13 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
 
     // Simulate API call with a short delay
     setTimeout(() => {
-      const updatedAssets = [...inventory.digitalAssets];
+      const updatedAssets = [...localAssets];
       updatedAssets[editingAssetIndex] = { ...editedAsset };
 
+      // Update local state first
+      setLocalAssets(updatedAssets);
+
+      // Then update parent state
       onInventoryChange({
         ...inventory,
         digitalAssets: updatedAssets,
@@ -142,17 +157,16 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
   };
 
   // Handle digital asset value change (direct mode)
+  // This is the key function that was causing the issue
   const handleDigitalAssetChange = (assetIndex: number, key: string, value: string) => {
-    const updatedAssets = [...inventory.digitalAssets];
-    updatedAssets[assetIndex] = {
-      ...updatedAssets[assetIndex],
-      [key]: value,
-    };
+    // Instead of directly updating the parent state, start editing mode for this asset
+    handleStartEditAsset(assetIndex);
 
-    onInventoryChange({
-      ...inventory,
-      digitalAssets: updatedAssets,
-    });
+    // Update the edited asset with the new value
+    setEditedAsset((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   // Handle adding a new asset key
@@ -182,10 +196,18 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
     setIsEditingKeys(false);
   };
 
+  // Function to commit all local changes to parent state
+  const commitAllChanges = () => {
+    onInventoryChange({
+      ...inventory,
+      digitalAssets: localAssets,
+    });
+  };
+
   return (
     <div className="space-y-5">
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex-1 mr-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
+        <div className="flex-1 w-full sm:w-auto sm:mr-2">
           <FormField
             id="inventoryGroup"
             label="Inventory Group Name"
@@ -199,15 +221,15 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                 ${
                   errors[`inventoryGroup`]
                     ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
-                    : 'border-dark-500 bg-dark-700/50 focus:border-primary/50'
-                } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20`}
+                    : 'border-dark-500 bg-dark-500/50 focus:border-primary/50'
+                } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10`}
               placeholder="Enter inventory group name..."
             />
           </FormField>
         </div>
 
         {inventory.connectedProduct && (
-          <div className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg border border-primary/20">
+          <div className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg border border-primary/10 w-full sm:w-auto">
             <StatusBadge status="linked" size="sm" />
             <span className="text-sm text-light-300 truncate max-w-[200px]">
               {inventory.connectedProduct.title}
@@ -216,15 +238,15 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
         )}
       </div>
 
-      <div className="border-b border-dark-600 mb-4">
-        <div className="flex gap-4">
+      <div className="border-b border-dark-500 mb-5">
+        <div className="flex gap-4 overflow-x-auto pb-1 no-scrollbar">
           <button
             onClick={() => setActiveTab('assets')}
-            className={`pb-2 px-1 text-sm font-medium transition-colors relative ${
+            className={`pb-2 px-1 text-sm font-medium transition-colors relative whitespace-nowrap ${
               activeTab === 'assets' ? 'text-primary' : 'text-light-500 hover:text-light-300'
             }`}>
             <span className="flex items-center gap-1">
-              <Database size={14} />
+              <HiOutlineInboxStack size={14} />
               Digital Assets ({inventory.digitalAssets.length})
             </span>
             {activeTab === 'assets' && (
@@ -233,7 +255,7 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('fields')}
-            className={`pb-2 px-1 text-sm font-medium transition-colors relative ${
+            className={`pb-2 px-1 text-sm font-medium transition-colors relative whitespace-nowrap ${
               activeTab === 'fields' ? 'text-primary' : 'text-light-500 hover:text-light-300'
             }`}>
             <span className="flex items-center gap-1">
@@ -249,24 +271,24 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
 
       {activeTab === 'fields' && (
         <div className="space-y-4 animate-fadeIn">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
             <h4 className="text-xs font-medium text-light-400">Digital Asset Fields</h4>
             {!isEditingKeys ? (
               <Button2
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditingKeys(true)}
-                className="h-7 px-2 text-xs">
+                className="h-7 px-2 text-xs w-full sm:w-auto">
                 <Edit2 size={14} className="mr-1" />
                 Edit Fields
               </Button2>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full sm:w-auto">
                 <Button2
                   variant="outline"
                   size="sm"
                   onClick={handleCancelKeyEdit}
-                  className="h-7 px-2 text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:text-red-300">
+                  className="h-7 px-2 text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 hover:text-red-300 flex-1 sm:flex-none">
                   <X size={14} className="mr-1" />
                   Cancel
                 </Button2>
@@ -274,7 +296,7 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleSaveKeys}
-                  className="h-7 px-2 text-xs bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
+                  className="h-7 px-2 text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex-1 sm:flex-none">
                   <Save size={14} className="mr-1" />
                   Save Fields
                 </Button2>
@@ -283,12 +305,12 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
           </div>
 
           {isEditingKeys ? (
-            <div className="bg-dark-800/50 p-3 rounded-md border border-dark-600">
+            <div className="bg-dark-500 p-3 rounded-md border border-dark-500">
               <div className="flex flex-wrap gap-2 mb-3">
                 {editedKeys.map((key, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-1 bg-dark-700 px-2 py-1 rounded-md text-xs text-light-300">
+                    className="flex items-center gap-1 bg-dark-500 px-2 py-1 rounded-md text-xs text-light-300">
                     <span>{key}</span>
                     <button
                       type="button"
@@ -299,13 +321,13 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   value={newKey}
                   onChange={(e) => setNewKey(e.target.value)}
                   placeholder="Add new field..."
-                  className="flex-1 px-2 py-1 text-sm bg-dark-700 border border-dark-600 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30"
+                  className="flex-1 px-2 py-1.5 text-sm bg-dark-500 border border-dark-500 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10 focus:border-primary/30"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -317,10 +339,10 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleAddKey}
-                  className="h-7 px-2 text-xs"
+                  className="h-8 px-2 text-xs w-full sm:w-auto"
                   disabled={!newKey.trim() || editedKeys.includes(newKey.trim())}>
                   <Plus size={14} className="mr-1" />
-                  Add
+                  Add Field
                 </Button2>
               </div>
             </div>
@@ -329,7 +351,7 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
               {assetKeys.map((key, index) => (
                 <div
                   key={index}
-                  className="bg-dark-700 px-2 py-1 rounded-md text-xs text-light-300">
+                  className="bg-dark-500 px-2 py-1 rounded-md text-xs text-light-300">
                   {key}
                 </div>
               ))}
@@ -339,8 +361,8 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
       )}
 
       {activeTab === 'assets' && (
-        <div className="space-y-4 animate-fadeIn">
-          {inventory.digitalAssets.map((asset, assetIndex) => {
+        <div className="space-y-5 overflow-y-auto __dokmai_scrollbar max-h-[50vh] animate-fadeIn">
+          {localAssets.map((asset, assetIndex) => {
             const isEditing = editingAssetIndex === assetIndex;
             const isShowingSuccess =
               saveSuccess?.index === assetIndex && Date.now() - saveSuccess.timestamp < 2000;
@@ -348,12 +370,12 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
             return (
               <div
                 key={assetIndex}
-                className={`bg-dark-700/50 p-3 rounded-md border transition-all duration-200 ${
+                className={`bg-dark-500/50 p-3 rounded-md border transition-all duration-200 ${
                   isEditing
                     ? 'border-primary/50 shadow-md shadow-primary/10'
                     : isShowingSuccess
                     ? 'border-green-500/50 shadow-md shadow-green-500/10'
-                    : 'border-dark-600'
+                    : 'border-dark-500'
                 } relative`}>
                 {/* Success indicator */}
                 {isShowingSuccess && (
@@ -375,17 +397,10 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                       </button>
                       <button
                         type="button"
-                        onClick={() => handleDuplicateDigitalAsset(assetIndex)}
-                        className="p-1 text-light-500 hover:text-primary transition-colors rounded-md hover:bg-primary/10"
-                        title="Duplicate asset">
-                        <Copy size={14} />
-                      </button>
-                      <button
-                        type="button"
                         onClick={() => handleRemoveDigitalAsset(assetIndex)}
                         className="p-1 text-light-500 hover:text-red-400 transition-colors rounded-md hover:bg-red-500/10"
                         title="Remove asset"
-                        disabled={inventory.digitalAssets.length <= 1}>
+                        disabled={localAssets.length <= 1}>
                         <Trash2 size={14} />
                       </button>
                     </>
@@ -441,7 +456,7 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                           type="text"
                           value={editedAsset[key] || ''}
                           onChange={(e) => handleEditedAssetChange(key, e.target.value)}
-                          className="w-full px-2 py-1.5 text-sm bg-dark-700/80 border border-primary/30 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50"
+                          className="w-full px-2 py-1.5 text-sm bg-dark-500/80 border border-primary/30 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50"
                           placeholder={`Enter ${key.toLowerCase()}...`}
                         />
                       ) : (
@@ -451,9 +466,8 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                           onChange={(e) =>
                             handleDigitalAssetChange(assetIndex, key, e.target.value)
                           }
-                          className="w-full px-2 py-1.5 text-sm bg-dark-700/50 border border-dark-600 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30"
+                          className="w-full px-2 py-1.5 text-sm bg-dark-500/50 border border-dark-500 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10 focus:border-primary/30"
                           placeholder={`Enter ${key.toLowerCase()}...`}
-                          readOnly={isEditing}
                         />
                       )}
                     </div>
@@ -463,52 +477,58 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
             );
           })}
 
-          <div className="flex justify-between items-center mt-2">
+          <div className="flex justify-between items-center mt-4">
             <Button2
               variant="outline"
               size="sm"
               onClick={handleAddDigitalAsset}
-              className="border-dashed border-dark-500 bg-dark-700/30 hover:bg-dark-700/50 text-light-400"
+              className="border-dashed border-dark-500 bg-dark-500/30 hover:bg-dark-500/50 text-light-400 w-full sm:w-auto"
               disabled={editingAssetIndex !== null}>
               <Plus size={14} className="mr-1" />
               Add Digital Asset
             </Button2>
-            {onSave && (
-              <Button2
-                size="sm"
-                onClick={onSave}
-                disabled={isSaving}
-                className="bg-primary hover:bg-primary text-white shadow-md hover:shadow-lg transition-all duration-300 ml-4">
-                {isSaving ? (
-                  <span className="flex items-center gap-1">
-                    <svg
-                      className="animate-spin h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1">
-                    <Save size={14} />
-                    Save
-                  </span>
-                )}
-              </Button2>
-            )}
           </div>
+        </div>
+      )}
+
+      {onSave && (
+        <div className="flex justify-end mt-6">
+          <Button2
+            size="sm"
+            onClick={() => {
+              commitAllChanges(); // Ensure all local changes are committed
+              onSave();
+            }}
+            disabled={isSaving}
+            className="bg-primary hover:bg-primary shadow-md hover:shadow-lg transition-all duration-300 w-full sm:w-auto">
+            {isSaving ? (
+              <span className="flex items-center justify-center gap-1">
+                <svg
+                  className="animate-spin h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Saving...
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-1">
+                <Save size={14} />
+                Save Inventory
+              </span>
+            )}
+          </Button2>
         </div>
       )}
     </div>

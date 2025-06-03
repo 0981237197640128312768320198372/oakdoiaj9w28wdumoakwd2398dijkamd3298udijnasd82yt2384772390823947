@@ -148,7 +148,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   ? 'border-primary bg-primary/10 scale-[1.01]'
                   : error
                   ? 'border-red-500/50 bg-red-500/5 hover:bg-red-500/10'
-                  : 'border-primary/20 hover:border-primary/50 bg-dark-800/50 hover:bg-primary/5'
+                  : 'border-primary/10 hover:border-primary/50 bg-dark-800/50 hover:bg-primary/5'
               }
             `}>
             <div className="space-y-2 text-center">

@@ -317,7 +317,7 @@ const ManageHelps: React.FC = () => {
                 </div>
 
                 <div className="flex justify-between items-end">
-                  <p className="text-xs bg-primary/20 px-2 py-1 text-primary rounded">
+                  <p className="text-xs bg-primary/10 px-2 py-1 text-primary rounded">
                     <strong className="font-aktivGroteskBold">{help.steps.length}</strong> Steps
                   </p>
                   <div className="flex items-center gap-2">

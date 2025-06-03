@@ -24,7 +24,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep, totalSteps, 
                 ${onStepClick ? 'cursor-pointer' : ''}
                 ${
                   isActive
-                    ? 'bg-primary text-dark-800 scale-110 shadow-md shadow-primary/20'
+                    ? 'bg-primary text-dark-800 scale-110 shadow-md shadow-primary/10'
                     : isCompleted
                     ? 'bg-primary/80 text-dark-800'
                     : 'bg-dark-600 text-light-400'

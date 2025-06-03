@@ -174,7 +174,7 @@ const SellerNavbar = () => {
             <Link
               href={'/auth/login'}
               onClick={logout}
-              className="flex gap-1 items-center border-[1px] border-primary/50 bg-primary/10 hover:bg-primary/20 text-primary text-xs rounded-full px-3 py-2 font-aktivGroteskBold">
+              className="flex gap-1 items-center border-[1px] border-primary/50 bg-primary/10 hover:bg-primary/10 text-primary text-xs rounded-full px-3 py-2 font-aktivGroteskBold">
               <FaPowerOff className="text-md" /> Login
             </Link>
           )}

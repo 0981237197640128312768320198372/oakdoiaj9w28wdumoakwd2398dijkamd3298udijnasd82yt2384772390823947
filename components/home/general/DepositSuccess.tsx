@@ -69,7 +69,7 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose }) => {
         </button>
 
         <div className="flex flex-col items-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
             <CheckCircle className="w-10 h-10 text-primary" />
           </div>
           <h2 className="text-2xl font-bold text-primary">เติมเงินสำเร็จ!</h2>

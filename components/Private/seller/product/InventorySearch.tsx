@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Search, Filter, X, SlidersHorizontal, Calendar, Tag } from 'lucide-react';
+import { Search, Filter, X, SlidersHorizontal, Calendar, Tag, RefreshCw } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
 
 interface InventorySearchProps {
@@ -19,10 +19,20 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
   onRefresh,
 }) => {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    onRefresh();
+    // Reset the refreshing state after animation completes
+    setTimeout(() => setIsRefreshing(false), 1000);
+  };
 
   return (
     <div className="w-full space-y-3">
-      <div className="flex flex-col sm:flex-row gap-3 w-full">
+      {/* Search and filter section */}
+      <div className="flex flex-col gap-3 w-full">
+        {/* Search input */}
         <div className="relative flex-grow">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"
@@ -33,7 +43,7 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search inventory..."
-            className="pl-10 pr-4 py-2.5 w-full bg-dark-700 border border-dark-600 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50"
+            className="pl-10 pr-10 py-2.5 w-full bg-dark-600 border border-dark-400 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50"
           />
           {searchTerm && (
             <button
@@ -45,12 +55,14 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
           )}
         </div>
 
-        <div className="flex gap-2">
-          <div className="relative">
+        {/* Filter controls */}
+        <div className="flex flex-wrap gap-2">
+          {/* Filter dropdown */}
+          <div className="relative flex-1 min-w-[180px]">
             <select
               value={filterOption}
               onChange={(e) => onFilterChange(e.target.value as 'all' | 'linked' | 'unlinked')}
-              className="appearance-none pl-10 pr-8 py-2.5 bg-dark-700 border border-dark-600 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50">
+              className="appearance-none pl-10 pr-8 py-2.5 w-full bg-dark-600 border-dark-400 border hover:text-primary rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50">
               <option value="all">All inventory</option>
               <option value="linked">Linked only</option>
               <option value="unlinked">Unlinked only</option>
@@ -71,39 +83,28 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             </div>
           </div>
 
+          {/* Advanced filters button */}
           <Button2
             variant="outline"
-            size="icon"
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className={`h-10 w-10 p-2.5 text-light-400 hover:text-primary transition-colors rounded-lg hover:bg-dark-700 border border-dark-600 ${
-              showAdvancedFilters ? 'bg-primary/10 text-primary border-primary/30' : ''
+            className={`h-10 px-3 text-light-400 hover:text-primary transition-colors rounded-lg bg-dark-600 border border-dark-400 flex items-center gap-1 ${
+              showAdvancedFilters ? 'bg-dark-600 text-primary border-primary/30' : ''
             }`}
             title="Advanced filters">
-            <SlidersHorizontal size={18} />
+            <SlidersHorizontal size={16} />
+            <span className="text-sm hidden sm:inline">Filters</span>
           </Button2>
 
+          {/* Refresh button */}
           <Button2
             variant="outline"
-            size="icon"
-            onClick={onRefresh}
-            className="h-10 w-10 p-2.5 text-light-400 hover:text-primary transition-colors rounded-lg hover:bg-dark-700 border border-dark-600"
+            onClick={handleRefresh}
+            className="h-10 w-10 p-2.5 text-light-400 hover:text-primary transition-colors rounded-lg bg-dark-600 border border-dark-400"
             title="Refresh data">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="hover:animate-spin">
-              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-              <path d="M16 16h5v5" />
-            </svg>
+            <RefreshCw
+              size={18}
+              className={`${isRefreshing ? 'animate-spin' : 'hover:animate-spin'}`}
+            />
           </Button2>
         </div>
       </div>
@@ -123,7 +124,7 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             </Button2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Date filter */}
             <div className="space-y-2">
               <label className="flex items-center gap-1 text-xs font-medium text-light-400">
@@ -171,18 +172,18 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             </div>
           </div>
 
-          <div className="flex justify-end mt-4 pt-3 border-t border-dark-600">
-            <div className="flex gap-2">
-              <Button2
-                variant="outline"
-                size="sm"
-                className="h-8 text-xs bg-dark-700 text-light-400 border-dark-600 hover:bg-dark-600">
-                Reset Filters
-              </Button2>
-              <Button2 size="sm" className="h-8 text-xs bg-primary hover:bg-primary text-white">
-                Apply Filters
-              </Button2>
-            </div>
+          <div className="flex flex-col sm:flex-row justify-end mt-4 pt-3 border-t border-dark-600 gap-2">
+            <Button2
+              variant="outline"
+              size="sm"
+              className="h-9 text-xs bg-dark-700 text-light-400 border-dark-600 hover:bg-dark-600 order-2 sm:order-1">
+              Reset Filters
+            </Button2>
+            <Button2
+              size="sm"
+              className="h-9 text-xs bg-primary hover:bg-primary text-white order-1 sm:order-2">
+              Apply Filters
+            </Button2>
           </div>
         </div>
       )}

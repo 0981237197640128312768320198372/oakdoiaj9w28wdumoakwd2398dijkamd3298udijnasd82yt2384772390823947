@@ -84,7 +84,7 @@ const SellerProductCard: React.FC<SellerProductCardProps> = ({
           src={currentImage}
           alt={product.title}
           fill
-          className="object-contain p-2 group-hover:scale-102 transition-transform duration-500"
+          className="object-contain p-2 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-dark-800/80 via-transparent to-transparent group-hover:opacity-0 opacity-100 transition-opacity duration-300" />
@@ -213,7 +213,7 @@ const SellerProductCard: React.FC<SellerProductCardProps> = ({
                     />
                   </>
                 ) : (
-                  <div className="w-5 h-5 bg-primary/20 rounded flex items-center justify-center">
+                  <div className="w-5 h-5 bg-primary/10 rounded flex items-center justify-center">
                     <span className="text-[8px] text-primary">CAT</span>
                   </div>
                 )}

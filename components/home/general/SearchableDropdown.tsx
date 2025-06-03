@@ -62,7 +62,7 @@ export default function SearchableDropdown({
             <li
               key={index}
               onClick={() => handleSelect(email)}
-              className="px-3 py-2 text-sm hover:bg-primary/20 cursor-pointer">
+              className="px-3 py-2 text-sm hover:bg-primary/10 cursor-pointer">
               {email}
             </li>
           ))}
