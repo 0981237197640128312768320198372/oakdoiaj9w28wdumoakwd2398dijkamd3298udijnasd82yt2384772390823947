@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Database, Edit, Link, Link2Off, Copy, Trash2, Save } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
 import StatusBadge from './StatusBadge';
@@ -55,6 +55,13 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
   };
 
   const assetPreview = getAssetPreview();
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const confirmDeleteInventory = () => {
+    onDelete();
+    setIsDeleteModalOpen(false);
+  };
 
   return (
     <div
@@ -203,11 +210,34 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
               <Copy size={16} />
             </button>
             <button
-              onClick={onDelete}
+              onClick={() => setIsDeleteModalOpen(true)}
               className="p-1.5 text-light-500 hover:text-red-400 transition-colors rounded-md hover:bg-dark-700"
               title="Delete inventory">
               <Trash2 size={16} />
             </button>
+            {isDeleteModalOpen && (
+              <div
+                className={`absolute left-0 top-0 w-fit bg-dark-800 rounded-xl shadow-xl transform transition-all duration-300 animate-scale-in`}>
+                <div className="p-6 bg-dark-700 text-light-100 rounded-lg border-[1px] border-dark-500">
+                  <h3 className="text-lg font-bold mb-3">Delete Inventory</h3>
+                  <p className="text-light-300 mb-6">
+                    Are you sure you want to delete this inventory? This action cannot be undone.
+                  </p>
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={() => setIsDeleteModalOpen(false)}
+                      className="px-4 py-2 text-light-800 bg-dark-600 hover:bg-dark-700 rounded-lg font-medium transition-colors duration-200 ">
+                      Cancel
+                    </button>
+                    <button
+                      onClick={confirmDeleteInventory}
+                      className="px-4 py-2 text-red-500 bg-red-500/10 hover:bg-red-500/20 rounded-lg font-medium transition-colors duration-200">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="ml-auto text-xs text-light-500">
             {assetCount} {assetCount === 1 ? 'asset' : 'assets'} total

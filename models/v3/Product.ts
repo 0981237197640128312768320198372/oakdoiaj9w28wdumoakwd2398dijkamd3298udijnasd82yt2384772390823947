@@ -57,7 +57,7 @@ productSchema.virtual('stock').get(function () {
 });
 
 productSchema.statics.calculateStock = async function (productId) {
-  const DigitalInventory = models.ProductData;
+  const DigitalInventory = models.DigitalInventory;
   if (!DigitalInventory) return 0;
 
   const variants = await DigitalInventory.find({ productId });

@@ -4,8 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
-
-import { cn, dokmaiCoinSymbol } from '@/lib/utils';
+import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { LuArrowUpRight } from 'react-icons/lu';
 
@@ -22,10 +21,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const themeUtils = useThemeUtils(theme || null);
 
+  const isLight = themeUtils.baseTheme === 'light';
+
+  const imagePlaceholder = dokmaiImagePlaceholder(isLight);
   const currentImage =
-    product.images.length > 0
-      ? product.images[currentImageIndex]
-      : '/images/dokmai-placeholder.webp';
+    product.images.length > 0 ? product.images[currentImageIndex] : imagePlaceholder;
 
   const hasDiscount = product.discountPercentage > 0;
   const discountedPrice = hasDiscount
@@ -71,7 +71,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
   };
 
   const getCardStyles = () => {
-    const isLight = themeUtils.baseTheme === 'light';
     return {
       card: cn(
         'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg ',
@@ -118,11 +117,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ),
       discountedPrice: cn(
         'text-md font-semibold whitespace-nowrap flex gap-2 items-center ',
-        themeUtils?.getPrimaryColorClass('text')
+        isLight ? 'text-dark-800' : themeUtils?.getPrimaryColorClass('text')
       ),
       regularPrice: cn(
         'text-md font-semibold whitespace-nowrap flex gap-2 items-center',
-        themeUtils?.getPrimaryColorClass('text')
+        isLight ? 'text-dark-800' : themeUtils?.getPrimaryColorClass('text')
       ),
       footer: cn(
         'flex items-center justify-between pt-2 mt-5 border-t',
@@ -148,7 +147,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
       ),
     };
   };
-
   const styles = getCardStyles();
 
   return (

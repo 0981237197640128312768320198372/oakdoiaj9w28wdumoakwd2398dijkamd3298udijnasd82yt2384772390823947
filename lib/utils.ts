@@ -8,6 +8,8 @@ import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 import DCSymbolWhite from '@/assets/icons/DCSymbolWhite.svg';
 import DCSymbolBlack from '@/assets/icons/DCSymbolBlack.svg';
+import noImageWhite from '@/assets/images/placeholder/no-image-white.webp';
+import noImageBlack from '@/assets/images/placeholder/no-image-black.webp';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -350,4 +352,7 @@ export async function sendLineMessage(
 
 export const dokmaiCoinSymbol = (isLight: boolean) => {
   return isLight ? DCSymbolBlack : DCSymbolWhite;
+};
+export const dokmaiImagePlaceholder = (isLight: boolean) => {
+  return isLight ? noImageWhite : noImageBlack;
 };

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { useState } from 'react';
-import { Plus, Database, Package, LayoutGrid, ListFilter } from 'lucide-react';
+import { Plus, Database, Package } from 'lucide-react';
 import ProductList from './ProductList';
 import ProductForm from '../product/ProductForm';
 import DigitalInventoryManager from './DigitalInventoryManager';
@@ -84,57 +84,61 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     setIsFormModalOpen(false);
     resetForm();
   };
-
   return (
     <>
       <div className="space-y-8 animate-fade-in">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-light-100">Your Products</h1>
-            <p className="text-light-400 mt-1">Manage your store inventory and product listings</p>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={openAddProductModal}
-              className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
-              <Plus size={18} />
-              <span>Add Product</span>
-            </button>
-          </div>
-        </div>
-
         <Tabs defaultValue="products" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="w-full max-w-md mx-auto mb-6 bg-dark-700 p-1 rounded-full">
-            <TabsTrigger
-              value="products"
-              className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
-              <Package size={16} className="mr-2" />
-              Products
-            </TabsTrigger>
-            <TabsTrigger
-              value="digital-inventory"
-              className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
-              <Database size={16} className="mr-2" />
-              Digital Inventory
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex justify-between w-full">
+            <div className="w-full">
+              <h1 className="text-2xl font-bold text-light-100">Your Products</h1>
+              <p className="text-light-400 mt-1">
+                Manage your store inventory and product listings
+              </p>
+            </div>
+            <TabsList className="w-full max-w-md mx-auto mb-6 bg-dark-700 p-1 rounded-full">
+              <TabsTrigger
+                value="products"
+                className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+                <Package size={16} className="mr-2" />
+                Products
+              </TabsTrigger>
+              <TabsTrigger
+                value="digital-inventory"
+                className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+                <Database size={16} className="mr-2" />
+                Digital Inventory
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          <TabsContent value="products" className="mt-4 animate-fadeIn">
-            {products.length === 0 ? (
-              <EmptyState onAddProduct={openAddProductModal} />
-            ) : (
-              <ProductList
-                products={products}
-                categories={categories}
-                onEdit={handleEditProduct}
-                onDelete={handleDeleteProduct}
-                onManageData={() => setActiveTab('digital-inventory')}
-                isLoading={isLoading}
-              />
-            )}
+          <TabsContent value="products" className="my-5 animate-fadeIn">
+            <div className="w-full flex justify-end mb-5">
+              <button
+                onClick={openAddProductModal}
+                className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
+                <Plus size={18} />
+                <span>Add Product</span>
+              </button>
+            </div>
+            <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
+              {isLoading ? (
+                <div className="p-10 mx-auto my-20 flex justify-center items-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                </div>
+              ) : products.length === 0 ? (
+                <EmptyState onAddProduct={openAddProductModal} />
+              ) : (
+                <ProductList
+                  products={products}
+                  categories={categories}
+                  onEdit={handleEditProduct}
+                  onDelete={handleDeleteProduct}
+                  onManageData={() => setActiveTab('digital-inventory')}
+                  isLoading={isLoading}
+                />
+              )}
+            </div>
           </TabsContent>
-
           <TabsContent value="digital-inventory" className="mt-4 animate-fadeIn">
             <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
               <DigitalInventoryManager onClose={() => setActiveTab('products')} />

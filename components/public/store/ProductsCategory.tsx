@@ -27,10 +27,10 @@ export default function ProductsCategory({
     products.filter((p) => p.categoryId === categoryId).length;
 
   return (
-    <div className="space-y-5 px-5 w-full xl:px-0">
+    <div className="space-y-8 px-5 w-full xl:px-0">
       <div
         className={cn(
-          'flex justify-between items-center w-full  border-b pb-5 mb-5',
+          'flex justify-between items-center w-full border-b pb-5 ',
           themeUtils.getPrimaryColorClass('border')
         )}>
         <h2 className="text-xl font-semibold flex gap-1">
@@ -49,12 +49,12 @@ export default function ProductsCategory({
           ดูเพิ่มเติม <ArrowRight size={16} />
         </button>
       </div>
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-5">
         {categories.map((category) => (
           <div
             key={category._id}
             className={cn(
-              'p-5 relative flex justify-center flex-col items-center gap-2',
+              'p-3 relative flex justify-center flex-col items-center gap-2',
               themeUtils.getCardClass(),
               themeUtils.getComponentRoundednessClass(),
               themeUtils.getComponentShadowClass()
@@ -74,12 +74,12 @@ export default function ProductsCategory({
             )}{' '}
             <div
               className={cn(
-                'absolute -top-2 -left-2 p-1 px-1.5 text-sm font-bold flex items-center gap-1',
+                'absolute -top-4 -left-2 p-1 px-1.5 text-sm font-bold flex items-center gap-1',
                 themeUtils.getTextColors(),
                 themeUtils.getCardClass(),
                 themeUtils.getButtonRoundednessClass()
               )}>
-              <Package size={14} /> {countFor(category._id)}
+              <Package size={12} /> {countFor(category._id)}
             </div>
           </div>
         ))}

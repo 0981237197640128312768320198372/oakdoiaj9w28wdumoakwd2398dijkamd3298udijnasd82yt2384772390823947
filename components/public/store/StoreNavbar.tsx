@@ -327,7 +327,7 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
       className={cn(
         'flex flex-col  transition-all duration-500 items-center justify-center relative p-3 ',
         themeUtils.getButtonRoundednessClass(),
-        isActive && themeUtils.getButtonClass()
+        isActive && themeUtils.getButtonClass() + ' ' + themeUtils.getPrimaryColorClass('border')
       )}
       aria-label={label}>
       <div className="flex flex-col justify-center items-center px-3 gap-1">

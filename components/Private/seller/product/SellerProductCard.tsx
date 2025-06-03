@@ -12,7 +12,7 @@ import {
 import { Product } from '@/types';
 import Image from 'next/image';
 import dokmaicoin from '@/assets/icons/DCSymbolWhite.svg';
-
+import placeholder from '@/assets/images/placeholder/no-image-black.webp';
 interface SellerProductCardProps {
   product: Product;
   onEdit: (product: Product) => void;
@@ -32,10 +32,7 @@ const SellerProductCard: React.FC<SellerProductCardProps> = ({
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const currentImage =
-    product.images.length > 0
-      ? product.images[currentImageIndex]
-      : '/images/dokmai-placeholder.webp';
+  const currentImage = product.images.length > 0 ? product.images[currentImageIndex] : placeholder;
 
   const hasDiscount = product.discountPercentage > 0;
   const discountedPrice = hasDiscount

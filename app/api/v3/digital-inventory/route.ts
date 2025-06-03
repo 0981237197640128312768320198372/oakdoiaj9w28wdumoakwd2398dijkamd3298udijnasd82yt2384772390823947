@@ -209,6 +209,7 @@ export async function PUT(req: NextRequest) {
 
       if (oldProduct && oldProduct.digitalInventoryId?.toString() === id) {
         oldProduct.digitalInventoryId = undefined;
+        oldProduct._stock = await (Product as any).calculateStock(oldProductId);
         await oldProduct.save();
       }
     }
@@ -222,6 +223,7 @@ export async function PUT(req: NextRequest) {
 
       if (product) {
         product.digitalInventoryId = inventory._id;
+        product._stock = await (Product as any).calculateStock(productId);
         await product.save();
       }
     }
