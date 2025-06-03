@@ -55,9 +55,10 @@ const CartModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
     } catch (error: any) {
       if (error.message.includes('Insufficient balance')) {
         setStatus('insufficient');
-      } else {
-        setStatus('error');
       }
+      //  else {
+      //   setStatus('error');
+      // }
     } finally {
       setLoading(false);
     }
