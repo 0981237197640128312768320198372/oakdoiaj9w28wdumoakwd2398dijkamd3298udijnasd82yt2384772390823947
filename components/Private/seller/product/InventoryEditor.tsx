@@ -7,11 +7,12 @@ import FormField from '@/components/ui/FormField';
 import StatusBadge from './StatusBadge';
 import { HiOutlineInboxStack } from 'react-icons/hi2';
 
-interface EnhancedInventoryEditorProps {
+interface InventoryEditorProps {
   inventory: {
     _id?: string;
     inventoryGroup: string;
     digitalAssets: Array<Record<string, string>>;
+    assetKeys?: string[]; // Add assetKeys to the inventory type
     productId?: string;
     connectedProduct?: {
       _id: string;
@@ -23,13 +24,14 @@ interface EnhancedInventoryEditorProps {
   onInventoryChange: (inventory: {
     inventoryGroup: string;
     digitalAssets: Array<Record<string, string>>;
+    assetKeys?: string[]; // Add assetKeys to the return type
   }) => void;
-  onAssetKeysChange: (newKeys: string[]) => void;
+  onAssetKeysChange: (newKeys: string[]) => void; // This now updates inventory-specific keys
   onSave?: () => void;
   isSaving?: boolean;
 }
 
-const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
+const InventoryEditor: React.FC<InventoryEditorProps> = ({
   inventory,
   assetKeys,
   errors,
@@ -186,7 +188,15 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
 
   // Handle saving asset key changes
   const handleSaveKeys = () => {
+    // Update the inventory's asset keys
     onAssetKeysChange(editedKeys);
+
+    // Update the inventory with the new asset keys
+    onInventoryChange({
+      ...inventory,
+      assetKeys: editedKeys,
+    });
+
     setIsEditingKeys(false);
   };
 
@@ -327,7 +337,7 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
                   value={newKey}
                   onChange={(e) => setNewKey(e.target.value)}
                   placeholder="Add new field..."
-                  className="flex-1 px-2 py-1.5 text-sm bg-dark-500 border border-dark-500 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10 focus:border-primary/30"
+                  className="flex-1 px-2 py-1.5 text-sm bg-dark-400 border border-dark-300 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10 focus:border-primary/30"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -535,4 +545,4 @@ const EnhancedInventoryEditor: React.FC<EnhancedInventoryEditorProps> = ({
   );
 };
 
-export default EnhancedInventoryEditor;
+export default InventoryEditor;

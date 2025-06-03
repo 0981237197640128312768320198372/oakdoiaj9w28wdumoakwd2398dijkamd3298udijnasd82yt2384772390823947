@@ -6,6 +6,7 @@ interface IDigitalInventory extends Document {
   sellerId: Types.ObjectId;
   inventoryGroup: string;
   digitalAssets: Array<Record<string, any>>;
+  assetKeys?: string[]; // Add assetKeys field
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +30,11 @@ const digitalInventorySchema = new Schema<IDigitalInventory>(
       required: true,
     },
     digitalAssets: [Schema.Types.Mixed],
+    assetKeys: {
+      type: [String],
+      required: false,
+      default: ['Email', 'Password'], // Default asset keys
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },

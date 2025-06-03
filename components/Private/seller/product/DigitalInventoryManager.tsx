@@ -5,28 +5,30 @@ import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { HiOutlineInboxStack } from 'react-icons/hi2';
 import { Button2 } from '@/components/ui/button2';
-import EnhancedInventoryEditor from './EnhancedInventoryEditor';
+import InventoryEditor from './InventoryEditor';
 import InventoryCard from './InventoryCard';
 import InventorySearch from './InventorySearch';
 import InventoryStats from './InventoryStats';
 import { Product } from '@/types';
 import useToast from '@/hooks/useToast';
 
+// Enhanced inventory type with assetKeys
+interface InventoryItem {
+  _id?: string;
+  inventoryGroup: string;
+  digitalAssets: Array<Record<string, string>>;
+  assetKeys?: string[]; // Each inventory now has its own asset keys
+  productId?: string;
+  connectedProduct?: {
+    _id: string;
+    title: string;
+  };
+}
+
 export default function DigitalInventoryManager() {
-  const [inventoryList, setInventoryList] = useState<
-    Array<{
-      _id?: string;
-      inventoryGroup: string;
-      digitalAssets: Array<Record<string, string>>;
-      productId?: string;
-      connectedProduct?: {
-        _id: string;
-        title: string;
-      };
-    }>
-  >([]);
+  const [inventoryList, setInventoryList] = useState<Array<InventoryItem>>([]);
   const [products, setProducts] = useState<Array<{ _id: string; title: string }>>([]);
-  const [assetKeys, setAssetKeys] = useState<string[]>(['Email', 'Password']);
+  const [defaultAssetKeys] = useState<string[]>(['Email', 'Password']); // Default keys for new inventories
   const [errors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -54,13 +56,6 @@ export default function DigitalInventoryManager() {
       if (!response.ok) throw new Error('Failed to fetch digital inventory');
       const data = await response.json();
       if (data.variants?.length) {
-        const first = data.variants.find(
-          (v: any) => v.digitalAssets?.length || v.specifications?.length
-        );
-        if (first) {
-          const assets = first.digitalAssets || first.specifications;
-          setAssetKeys(Object.keys(assets[0] || {}));
-        }
         const mapped = await Promise.all(
           data.variants.map(async (variant: any) => {
             let connectedProduct;
@@ -75,14 +70,23 @@ export default function DigitalInventoryManager() {
                 }
               } catch {}
             }
+
+            // Get digital assets
+            const digitalAssets = Array.isArray(variant.digitalAssets)
+              ? variant.digitalAssets
+              : Array.isArray(variant.specifications)
+              ? variant.specifications
+              : [variant.digitalAssets || variant.specifications || {}];
+
+            // Extract asset keys from the first asset
+            const firstAsset = digitalAssets[0] || {};
+            const assetKeys = Object.keys(firstAsset);
+
             return {
               _id: variant._id,
               inventoryGroup: variant.inventoryGroup || variant.variantName,
-              digitalAssets: Array.isArray(variant.digitalAssets)
-                ? variant.digitalAssets
-                : Array.isArray(variant.specifications)
-                ? variant.specifications
-                : [variant.digitalAssets || variant.specifications || {}],
+              digitalAssets,
+              assetKeys: assetKeys.length ? assetKeys : defaultAssetKeys, // Use extracted keys or default
               productId: variant.productId,
               connectedProduct,
             };
@@ -94,8 +98,12 @@ export default function DigitalInventoryManager() {
           {
             inventoryGroup: '',
             digitalAssets: [
-              assetKeys.reduce((acc, key) => ((acc[key] = ''), acc), {} as Record<string, string>),
+              defaultAssetKeys.reduce(
+                (acc, key) => ((acc[key] = ''), acc),
+                {} as Record<string, string>
+              ),
             ],
+            assetKeys: defaultAssetKeys,
           },
         ]);
       }
@@ -120,23 +128,35 @@ export default function DigitalInventoryManager() {
     }
   };
 
-  const handleAssetKeysChange = (newKeys: string[]) => {
-    setAssetKeys(newKeys);
-    setInventoryList((prev) =>
-      prev.map((item) => ({
-        ...item,
-        digitalAssets: item.digitalAssets.map((asset) => {
-          const updated = { ...asset };
-          newKeys.forEach((key) => {
-            if (!(key in updated)) updated[key] = '';
-          });
-          Object.keys(updated).forEach((k) => {
-            if (!newKeys.includes(k)) delete updated[k];
-          });
-          return updated;
-        }),
-      }))
-    );
+  // Handle asset keys change for a specific inventory
+  const handleAssetKeysChange = (inventoryIndex: number, newKeys: string[]) => {
+    setInventoryList((prev) => {
+      const updatedList = [...prev];
+      const inventory = { ...updatedList[inventoryIndex] };
+
+      // Update the asset keys
+      inventory.assetKeys = newKeys;
+
+      // Update the digital assets with the new keys
+      const updatedAssets = inventory.digitalAssets.map((asset) => {
+        const updated = { ...asset };
+        // Add new keys with empty values
+        newKeys.forEach((key) => {
+          if (!(key in updated)) updated[key] = '';
+        });
+        // Remove keys that are no longer in the list
+        Object.keys(updated).forEach((k) => {
+          if (!newKeys.includes(k)) delete updated[k];
+        });
+        return updated;
+      });
+
+      // Update the inventory with the new assets
+      inventory.digitalAssets = updatedAssets;
+      updatedList[inventoryIndex] = inventory;
+
+      return updatedList;
+    });
   };
 
   const handleAddNewInventory = () => {
@@ -145,8 +165,12 @@ export default function DigitalInventoryManager() {
       {
         inventoryGroup: '',
         digitalAssets: [
-          assetKeys.reduce((acc, key) => ((acc[key] = ''), acc), {} as Record<string, string>),
+          defaultAssetKeys.reduce(
+            (acc, key) => ((acc[key] = ''), acc),
+            {} as Record<string, string>
+          ),
         ],
+        assetKeys: [...defaultAssetKeys], // Each new inventory gets its own copy of default keys
       },
     ]);
   };
@@ -271,6 +295,7 @@ export default function DigitalInventoryManager() {
       const payload = {
         inventoryGroup: inv.inventoryGroup,
         digitalAssets: inv.digitalAssets,
+        assetKeys: inv.assetKeys, // Save the inventory-specific asset keys
         productId: inv.productId || null,
       };
       const res = inv._id
@@ -417,7 +442,6 @@ export default function DigitalInventoryManager() {
                         setIsEditingInCard(false);
                       }}
                       onUnlink={() => handleUnlinkProduct(orig)}
-                      // onDuplicate prop removed as per user request
                       onDelete={() => handleDeleteInventory(orig)}
                       isSelected={isSelected}
                       isEditing={isSelected && isEditingInCard}
@@ -425,11 +449,11 @@ export default function DigitalInventoryManager() {
                     />
                     {isSelected && !isLinkingProduct && (
                       <div className="mt-2 bg-dark-600 p-5 rounded-xl border-dark-300 border animate-fadeIn">
-                        <EnhancedInventoryEditor
+                        <InventoryEditor
                           inventory={inventoryList[orig]}
-                          assetKeys={assetKeys}
+                          assetKeys={inventory.assetKeys || defaultAssetKeys}
                           onInventoryChange={(upd) => handleInventoryChange(orig, upd)}
-                          onAssetKeysChange={handleAssetKeysChange}
+                          onAssetKeysChange={(newKeys) => handleAssetKeysChange(orig, newKeys)}
                           errors={errors}
                           onSave={() => handleSaveInventory(orig)}
                           isSaving={isSavingInCard}

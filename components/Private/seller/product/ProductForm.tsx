@@ -35,6 +35,7 @@ export default function ProductForm({
 }: ProductFormProps) {
   // State for custom dropdown
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
   const categoryButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -114,7 +115,6 @@ export default function ProductForm({
           />
         </FormField>
 
-        {/* Description field */}
         <FormField id="description" label="Description" error={formErrors.description}>
           <textarea
             id="description"
@@ -132,6 +132,7 @@ export default function ProductForm({
             aria-invalid={!!formErrors.description}
             aria-describedby={formErrors.description ? 'description-error' : undefined}
             maxLength={1000}
+            minLength={50}
             required
           />
           <div className="mt-1 text-xs text-light-500 flex justify-end">
@@ -212,9 +213,9 @@ export default function ProductForm({
                 <Info size={14} className="text-primary" />
                 <div>
                   <span className="font-medium text-primary">Discounted price:</span>{' '}
-                  <span className="text-light-200">${discountedPrice}</span>{' '}
+                  <span className="text-light-200">{discountedPrice}</span>{' '}
                   <span className="text-light-500">
-                    (Save ${(formData.price - parseFloat(discountedPrice)).toFixed(2)})
+                    (Save {(formData.price - parseFloat(discountedPrice)).toFixed(2)})
                   </span>
                 </div>
               </div>
@@ -231,7 +232,13 @@ export default function ProductForm({
               <button
                 type="button"
                 ref={categoryButtonRef}
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                onClick={() =>
+                  setIsDropdownOpen((prev) => {
+                    const newState = !prev;
+                    if (newState) setSearchQuery('');
+                    return newState;
+                  })
+                }
                 onKeyDown={handleDropdownKeyDown}
                 className={cn(
                   'w-full flex items-center justify-between px-3 py-2 rounded-lg border text-left text-sm',
@@ -283,49 +290,62 @@ export default function ProductForm({
                   <ul
                     className="max-h-60 overflow-y-auto py-1 __dokmai_scrollbar"
                     role="presentation">
-                    {categories.map((category, index) => (
-                      <li
-                        key={category._id}
-                        role="option"
-                        aria-selected={category._id === formData.categoryId}
-                        tabIndex={0}
-                        onClick={() => handleCategorySelect(category._id)}
-                        onKeyDown={(e) => handleKeyDown(e, category._id)}
-                        className={cn(
-                          'flex items-center gap-3 px-5 py-2 cursor-pointer transition-colors duration-150',
-                          category._id === formData.categoryId
-                            ? 'bg-dark-600'
-                            : 'text-light-200 hover:bg-dark-600'
-                        )}>
-                        {category.logoUrl ? (
-                          <div className="relative w-auto h-12 flex items-center overflow-hidden flex-shrink-0">
-                            <Image
-                              src={category.logoUrl || '/placeholder.svg'}
-                              alt=""
-                              width={50}
-                              height={50}
-                              className="w-16"
+                    <div className="px-3 py-2">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search categories..."
+                        className="w-full px-3 py-2 mb-2 rounded-lg border-dark-500 bg-dark-700/50 text-light-200 focus:outline-none focus:ring-1 focus:border-primary/50 focus:ring-primary/10 text-sm"
+                      />
+                    </div>
+                    {categories
+                      .filter((category) =>
+                        category.name.toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map((category, index) => (
+                        <li
+                          key={category._id}
+                          role="option"
+                          aria-selected={category._id === formData.categoryId}
+                          tabIndex={0}
+                          onClick={() => handleCategorySelect(category._id)}
+                          onKeyDown={(e) => handleKeyDown(e, category._id)}
+                          className={cn(
+                            'flex items-center gap-3 px-5 py-2 cursor-pointer transition-colors duration-150',
+                            category._id === formData.categoryId
+                              ? 'bg-dark-600'
+                              : 'text-light-200 hover:bg-dark-600'
+                          )}>
+                          {category.logoUrl ? (
+                            <div className="relative w-auto h-12 flex items-center overflow-hidden flex-shrink-0">
+                              <Image
+                                src={category.logoUrl || '/placeholder.svg'}
+                                alt=""
+                                width={50}
+                                height={50}
+                                className="w-16"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-8 h-8 bg-dark-600 rounded-md flex items-center justify-center text-light-500 text-xs flex-shrink-0">
+                              <span>C</span>
+                            </div>
+                          )}
+
+                          {/* Category name */}
+                          <span className="flex-grow text-xs">{category.name}</span>
+
+                          {/* Selected indicator */}
+                          {category._id === formData.categoryId && (
+                            <Check
+                              size={16}
+                              className="text-primary flex-shrink-0"
+                              aria-hidden="true"
                             />
-                          </div>
-                        ) : (
-                          <div className="w-8 h-8 bg-dark-600 rounded-md flex items-center justify-center text-light-500 text-xs flex-shrink-0">
-                            <span>C</span>
-                          </div>
-                        )}
-
-                        {/* Category name */}
-                        <span className="flex-grow text-xs">{category.name}</span>
-
-                        {/* Selected indicator */}
-                        {category._id === formData.categoryId && (
-                          <Check
-                            size={16}
-                            className="text-primary flex-shrink-0"
-                            aria-hidden="true"
-                          />
-                        )}
-                      </li>
-                    ))}
+                          )}
+                        </li>
+                      ))}
                   </ul>
                 </div>
               )}
