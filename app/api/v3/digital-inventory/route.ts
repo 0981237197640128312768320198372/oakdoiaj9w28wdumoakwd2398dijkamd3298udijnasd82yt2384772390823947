@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     const sellerId = authResult.sellerId;
 
     const body = await req.json();
-    const { inventoryGroup, digitalAssets, assetKeys, productId } = body;
+    const { inventoryGroup, digitalAssets, productId } = body;
 
     if (!inventoryGroup) {
       return NextResponse.json({ error: 'Inventory group name is required' }, { status: 400 });
@@ -117,12 +117,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Digital assets must be an array' }, { status: 400 });
     }
 
+    // Ensure all digitalAssets are objects with string values
+    const formattedDigitalAssets = digitalAssets.map((asset) => {
+      const formattedAsset: Record<string, string> = {};
+
+      // Convert all values to strings
+      Object.entries(asset).forEach(([key, value]) => {
+        formattedAsset[key] = String(value);
+      });
+
+      return formattedAsset;
+    });
+
     // Create new digital inventory
     const newInventory = new DigitalInventory({
       sellerId,
       inventoryGroup,
-      digitalAssets,
-      assetKeys, // Add assetKeys to the model
+      digitalAssets: formattedDigitalAssets,
       productId: productId || undefined,
     });
 
@@ -166,7 +177,7 @@ export async function PUT(req: NextRequest) {
     const sellerId = authResult.sellerId;
 
     const body = await req.json();
-    const { id, inventoryGroup, digitalAssets, assetKeys, productId } = body;
+    const { id, inventoryGroup, digitalAssets, productId } = body;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Valid ID is required' }, { status: 400 });
@@ -190,10 +201,21 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Digital inventory not found' }, { status: 404 });
     }
 
+    // Ensure all digitalAssets are objects with string values
+    const formattedDigitalAssets = digitalAssets.map((asset) => {
+      const formattedAsset: Record<string, string> = {};
+
+      // Convert all values to strings
+      Object.entries(asset).forEach(([key, value]) => {
+        formattedAsset[key] = String(value);
+      });
+
+      return formattedAsset;
+    });
+
     // Update the digital inventory
     inventory.inventoryGroup = inventoryGroup;
-    inventory.digitalAssets = digitalAssets;
-    inventory.assetKeys = assetKeys; // Add assetKeys to the update
+    inventory.digitalAssets = formattedDigitalAssets;
 
     // Handle product linking/unlinking
     const oldProductId = inventory.productId;

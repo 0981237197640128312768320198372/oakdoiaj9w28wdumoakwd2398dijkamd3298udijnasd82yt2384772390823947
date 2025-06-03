@@ -29,9 +29,10 @@ export async function GET(req: NextRequest) {
     }
     const sellerId = authResult.sellerId;
 
-    // Get all digital inventory items for the seller
-    const variants = await DigitalInventory.find({ sellerId }).sort({ createdAt: -1 });
+    // Get all digital inventory variants for the seller
+    const variants = await DigitalInventory.find({ sellerId }).lean();
 
+    // No need to convert Map objects anymore, just return the variants directly
     return NextResponse.json({ variants });
   } catch (error) {
     console.error('Error fetching all digital inventory:', error);

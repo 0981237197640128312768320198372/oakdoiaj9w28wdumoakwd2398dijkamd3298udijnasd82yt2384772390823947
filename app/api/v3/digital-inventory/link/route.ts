@@ -45,7 +45,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid IDs' }, { status: 400 });
     }
 
-    // Verify the product exists and belongs to the seller
     const product = await Product.findOne({
       _id: productId,
       sellerId,
@@ -55,7 +54,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Product not found or not authorized' }, { status: 404 });
     }
 
-    // Verify the digital inventory exists and belongs to the seller
     const inventory = await DigitalInventory.findOne({
       _id: variantId,
       sellerId,
@@ -68,19 +66,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Link the digital inventory to the product
     inventory.productId = new mongoose.Types.ObjectId(productId);
     await inventory.save();
 
-    // Update the product with the digitalInventoryId
     product.digitalInventoryId = new mongoose.Types.ObjectId(variantId);
     await product.save();
 
-    // Recalculate stock and persist on Product
     const variants = await DigitalInventory.find({ productId }).lean();
     const totalStock = variants.reduce((sum, inv) => {
-      const assets = inv.digitalAssets || inv.specifications;
-      return sum + (Array.isArray(assets) ? assets.length : 1);
+      return sum + (Array.isArray(inv.digitalAssets) ? inv.digitalAssets.length : 0);
     }, 0);
     product._stock = totalStock;
     await product.save();

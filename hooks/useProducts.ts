@@ -135,11 +135,13 @@ export const useProducts = (sellerId?: string) => {
     try {
       const token = localStorage.getItem('sellerToken');
       const method = editMode ? 'PUT' : 'POST';
-      const url = editMode ? `${apiUrl}/api/v3/products` : `${apiUrl}/api/v3/products`;
+      const url = `${apiUrl}/api/v3/products`;
 
       const body = editMode
         ? JSON.stringify({ ...formData, id: currentProductId })
         : JSON.stringify(formData);
+
+      console.log('Sending product data:', body);
 
       const response = await fetch(url, {
         method,

@@ -39,7 +39,7 @@ const ProductList: React.FC<ProductListProps> = ({
   );
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
         {isLoading
           ? Array(6)

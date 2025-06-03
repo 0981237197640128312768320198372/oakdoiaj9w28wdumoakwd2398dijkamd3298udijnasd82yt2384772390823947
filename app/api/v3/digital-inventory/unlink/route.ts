@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -36,56 +35,56 @@ export async function POST(req: NextRequest) {
     const { variantId } = body;
 
     if (!variantId) {
-      return NextResponse.json({ error: 'Missing variant ID' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     if (!mongoose.Types.ObjectId.isValid(variantId)) {
-      return NextResponse.json({ error: 'Invalid variant ID' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
     }
 
-    // Verify the variant exists and belongs to the seller
-    const variant = await DigitalInventory.findOne({
+    // Verify the digital inventory exists and belongs to the seller
+    const inventory = await DigitalInventory.findOne({
       _id: variantId,
       sellerId,
     });
 
-    if (!variant) {
-      return NextResponse.json({ error: 'Variant not found or not authorized' }, { status: 404 });
+    if (!inventory) {
+      return NextResponse.json(
+        { error: 'Digital inventory not found or not authorized' },
+        { status: 404 }
+      );
     }
 
     // Get the product ID before unlinking
-    const productId = variant.productId;
+    const productId = inventory.productId;
 
-    // Unlink the variant from the product
-    variant.productId = undefined;
-    await variant.save();
+    if (!productId) {
+      return NextResponse.json(
+        { error: 'Inventory is not linked to any product' },
+        { status: 400 }
+      );
+    }
 
-    // If there was a linked product, update it to remove the productDataId
-    if (productId) {
-      const product = await Product.findOne({
-        _id: productId,
-        sellerId,
-      });
+    // Unlink the digital inventory from the product
+    inventory.productId = undefined;
+    await inventory.save();
 
-      if (product && product.productDataId?.toString() === variantId) {
-        product.productDataId = undefined;
-        await product.save();
-      }
+    // Update the product to remove the digitalInventoryId
+    const product = await Product.findOne({
+      _id: productId,
+      sellerId,
+    });
 
-      // Recalculate stock and persist on Product
-      const variantsAfter = await DigitalInventory.find({ productId }).lean();
-      const totalStockAfter = variantsAfter.reduce((sum, inv) => {
-        const assets = inv.digitalAssets || inv.specifications;
-        return sum + (Array.isArray(assets) ? assets.length : 1);
-      }, 0);
-      product._stock = totalStockAfter;
+    if (product && product.digitalInventoryId?.toString() === variantId) {
+      product.digitalInventoryId = undefined;
+      product._stock = 0; // Reset stock to 0 since there's no inventory
       await product.save();
     }
 
     return NextResponse.json(
       {
         message: 'Product unlinked successfully',
-        variant,
+        inventory,
       },
       { status: 200 }
     );

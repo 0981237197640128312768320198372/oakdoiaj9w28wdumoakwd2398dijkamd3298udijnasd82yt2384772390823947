@@ -44,6 +44,7 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
   const [isEditingKeys, setIsEditingKeys] = useState(false);
   const [editedKeys, setEditedKeys] = useState<string[]>([...assetKeys]);
   const [newKey, setNewKey] = useState('');
+  const [newAssetKey, setNewAssetKey] = useState('');
   const [editingAssetIndex, setEditingAssetIndex] = useState<number | null>(null);
   const [editedAsset, setEditedAsset] = useState<Record<string, string>>({});
   const [savingAsset, setSavingAsset] = useState(false);
@@ -58,6 +59,11 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     setLocalAssets(JSON.parse(JSON.stringify(inventory.digitalAssets)));
   }, [inventory._id]); // Only update when inventory ID changes to prevent unwanted updates
 
+  // Update editedKeys when assetKeys prop changes
+  useEffect(() => {
+    setEditedKeys([...assetKeys]);
+  }, [assetKeys]);
+
   // Handle inventory group name change
   const handleInventoryGroupChange = (value: string) => {
     onInventoryChange({
@@ -68,7 +74,10 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
 
   // Handle adding a new digital asset
   const handleAddDigitalAsset = () => {
-    const newAsset = assetKeys.reduce((acc, key) => {
+    // Use editedKeys if currently editing keys, otherwise use assetKeys from props
+    const keysToUse = isEditingKeys ? editedKeys : assetKeys;
+
+    const newAsset = keysToUse.reduce((acc, key) => {
       acc[key] = '';
       return acc;
     }, {} as Record<string, string>);
@@ -98,8 +107,6 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
       digitalAssets: updatedAssets,
     });
   };
-
-  // Duplicate functionality removed as per user request
 
   // Start editing a digital asset
   const handleStartEditAsset = (assetIndex: number) => {
@@ -158,17 +165,43 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     });
   };
 
-  // Handle digital asset value change (direct mode)
-  // This is the key function that was causing the issue
-  const handleDigitalAssetChange = (assetIndex: number, key: string, value: string) => {
-    // Instead of directly updating the parent state, start editing mode for this asset
-    handleStartEditAsset(assetIndex);
+  // Ensure editedAsset has all keys when starting to edit
+  useEffect(() => {
+    if (editingAssetIndex !== null) {
+      const updatedEditedAsset = { ...editedAsset };
 
-    // Update the edited asset with the new value
-    setEditedAsset((prev) => ({
-      ...prev,
+      // Get all keys from the current asset
+      const currentAsset = localAssets[editingAssetIndex];
+      const currentKeys = Object.keys(currentAsset);
+
+      // Add any keys that don't exist in the edited asset
+      currentKeys.forEach((key) => {
+        if (updatedEditedAsset[key] === undefined) {
+          updatedEditedAsset[key] = '';
+        }
+      });
+
+      setEditedAsset(updatedEditedAsset);
+    }
+  }, [editingAssetIndex]);
+
+  // Handle digital asset value change (direct mode)
+  const handleDigitalAssetChange = (assetIndex: number, key: string, value: string) => {
+    // Update the local assets array
+    const updatedAssets = [...localAssets];
+    updatedAssets[assetIndex] = {
+      ...updatedAssets[assetIndex],
       [key]: value,
-    }));
+    };
+
+    // Update local state
+    setLocalAssets(updatedAssets);
+
+    // Update parent state immediately
+    onInventoryChange({
+      ...inventory,
+      digitalAssets: updatedAssets,
+    });
   };
 
   // Handle adding a new asset key
@@ -186,18 +219,39 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     setEditedKeys(updatedKeys);
   };
 
-  // Handle saving asset key changes
-  const handleSaveKeys = () => {
-    // Update the inventory's asset keys
-    onAssetKeysChange(editedKeys);
+  // FIX: Update handleSaveKeys to properly save keys and call onAssetKeysChange
+  const handleSaveKeys = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
 
-    // Update the inventory with the new asset keys
-    onInventoryChange({
-      ...inventory,
-      assetKeys: editedKeys,
+    // Update each asset so that only the keys in editedKeys are kept
+    const updatedAssets = localAssets.map((asset) => {
+      const updatedAsset: Record<string, string> = {};
+      editedKeys.forEach((key) => {
+        updatedAsset[key] = asset[key] || '';
+      });
+      return updatedAsset;
     });
 
+    // Update local state
+    setLocalAssets(updatedAssets); // This line was added
+
+    // Notify parent of both the updated digitalAssets and keys
+    onInventoryChange({
+      ...inventory,
+      digitalAssets: updatedAssets, // This was updated to use updatedAssets
+      assetKeys: [...editedKeys], // Ensure we're sending the asset keys too
+    });
+
+    // Explicitly notify parent of key changes
+    onAssetKeysChange([...editedKeys]);
+
+    // Reset editing state
     setIsEditingKeys(false);
+
+    // Call onSave if provided
+    if (onSave) {
+      onSave();
+    }
   };
 
   // Handle canceling asset key edits
@@ -206,12 +260,82 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     setIsEditingKeys(false);
   };
 
+  // Add a new field to a specific asset
+  const handleAddFieldToAsset = (
+    assetIndex: number,
+    fieldName: string,
+    fieldValue: string = ''
+  ) => {
+    if (!fieldName.trim()) return;
+
+    // Update the local assets array
+    const updatedAssets = [...localAssets];
+    updatedAssets[assetIndex] = {
+      ...updatedAssets[assetIndex],
+      [fieldName]: fieldValue,
+    };
+
+    // Update local state
+    setLocalAssets(updatedAssets);
+
+    // Update assetKeys if this is a new field not in the current keys
+    if (!assetKeys.includes(fieldName)) {
+      const updatedKeys = [...assetKeys, fieldName];
+
+      // Update parent state with both new assets and keys
+      onInventoryChange({
+        ...inventory,
+        digitalAssets: updatedAssets,
+        assetKeys: updatedKeys, // This line was added to pass updated assetKeys
+      });
+
+      // Explicitly update asset keys in parent
+      onAssetKeysChange(updatedKeys); // This line was added to notify parent of key changes
+    } else {
+      // Just update the digital assets
+      onInventoryChange({
+        ...inventory,
+        digitalAssets: updatedAssets,
+      });
+    }
+
+    // Clear the input
+    setNewAssetKey('');
+  };
+
+  // Remove a field from a specific asset
+  const handleRemoveFieldFromAsset = (assetIndex: number, fieldName: string) => {
+    // Update the local assets array
+    const updatedAssets = [...localAssets];
+    const updatedAsset = { ...updatedAssets[assetIndex] };
+
+    // Delete the field
+    delete updatedAsset[fieldName];
+
+    updatedAssets[assetIndex] = updatedAsset;
+
+    // Update local state
+    setLocalAssets(updatedAssets);
+
+    // Update parent state
+    onInventoryChange({
+      ...inventory,
+      digitalAssets: updatedAssets,
+    });
+  };
+
   // Function to commit all local changes to parent state
   const commitAllChanges = () => {
     onInventoryChange({
       ...inventory,
       digitalAssets: localAssets,
+      assetKeys: isEditingKeys ? editedKeys : assetKeys, // This line was added/modified
     });
+
+    // Update asset keys separately if needed // This block was added
+    if (isEditingKeys) {
+      onAssetKeysChange(editedKeys);
+    }
   };
 
   return (
@@ -270,7 +394,7 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
             }`}>
             <span className="flex items-center gap-1">
               <Key size={14} />
-              Asset Fields ({assetKeys.length})
+              Asset Fields ({isEditingKeys ? editedKeys.length : assetKeys.length})
             </span>
             {activeTab === 'fields' && (
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-t-full"></span>
@@ -305,7 +429,8 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
                 <Button2
                   variant="outline"
                   size="sm"
-                  onClick={handleSaveKeys}
+                  onClick={(e) => handleSaveKeys(e)}
+                  type="button"
                   className="h-7 px-2 text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex-1 sm:flex-none">
                   <Save size={14} className="mr-1" />
                   Save Fields
@@ -349,6 +474,7 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleAddKey}
+                  type="button"
                   className="h-8 px-2 text-xs w-full sm:w-auto"
                   disabled={!newKey.trim() || editedKeys.includes(newKey.trim())}>
                   <Plus size={14} className="mr-1" />
@@ -458,9 +584,22 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
-                  {assetKeys.map((key, keyIndex) => (
+                  {/* Use editedKeys if currently editing keys, otherwise use assetKeys from props */}
+                  {(isEditingKeys ? editedKeys : assetKeys).map((key, keyIndex) => (
                     <div key={keyIndex} className="mb-2">
-                      <label className="block text-xs font-medium text-light-400 mb-1">{key}</label>
+                      <div className="flex items-center">
+                        <label className="block text-xs font-medium text-light-400 mb-1 flex-1">
+                          {key}
+                        </label>
+                        {!isEditing && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveFieldFromAsset(assetIndex, key)}
+                            className="text-light-500 hover:text-red-400 transition-colors ml-1 mb-1">
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
                       {isEditing ? (
                         <input
                           type="text"
@@ -483,6 +622,52 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
                     </div>
                   ))}
                 </div>
+
+                {/* Add custom fields for this asset */}
+                {!isEditing && (
+                  <div className="mt-4 flex gap-2">
+                    <input
+                      type="text"
+                      value={newAssetKey}
+                      onChange={(e) => setNewAssetKey(e.target.value)}
+                      placeholder="Add custom field for this asset..."
+                      className="flex-1 px-2 py-1.5 text-sm bg-dark-400 border border-dark-300 rounded-md text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10 focus:border-primary/30"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          if (
+                            newAssetKey.trim() &&
+                            !Object.keys(asset).includes(newAssetKey.trim())
+                          ) {
+                            handleAddFieldToAsset(assetIndex, newAssetKey);
+                            setNewAssetKey('');
+                          }
+                        }
+                      }}
+                    />
+                    <Button2
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent form submission
+                        if (
+                          newAssetKey.trim() &&
+                          !Object.keys(asset).includes(newAssetKey.trim())
+                        ) {
+                          handleAddFieldToAsset(assetIndex, newAssetKey);
+                          setNewAssetKey('');
+                        }
+                      }}
+                      type="button"
+                      className="h-8 px-2 text-xs"
+                      disabled={
+                        !newAssetKey.trim() || Object.keys(asset).includes(newAssetKey.trim())
+                      }>
+                      <Plus size={14} className="mr-1" />
+                      Add Field
+                    </Button2>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -492,6 +677,7 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
               variant="outline"
               size="sm"
               onClick={handleAddDigitalAsset}
+              type="button"
               className="border-dashed border-dark-500 bg-dark-500/30 hover:bg-dark-500/50 text-light-400 w-full sm:w-auto"
               disabled={editingAssetIndex !== null}>
               <Plus size={14} className="mr-1" />

@@ -13,6 +13,7 @@ import useToast from '@/hooks/useToast';
 import Modal from '@/components/ui/Modal';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { HiOutlineInboxStack } from 'react-icons/hi2';
+import { Button2 } from '@/components/ui/button2';
 
 interface SellerProductsProps {
   seller: { id: string; name: string } | null;
@@ -113,15 +114,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
             </TabsList>
           </div>
 
-          <TabsContent value="products" className="my-5 animate-fadeIn">
-            <div className="w-full flex justify-end mb-5">
-              <button
-                onClick={openAddProductModal}
-                className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-full px-5 py-2.5 font-medium transition-all duration-300 shadow-sm hover:shadow transform hover:-translate-y-1">
-                <Plus size={18} />
-                <span>Add Product</span>
-              </button>
-            </div>
+          <TabsContent value="products" className="mt-16 animate-fadeIn">
             <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
               {isLoading ? (
                 <div className="p-10 mx-auto my-20 flex justify-center items-center">
@@ -130,14 +123,33 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
               ) : products.length === 0 ? (
                 <EmptyState onAddProduct={openAddProductModal} />
               ) : (
-                <ProductList
-                  products={products}
-                  categories={categories}
-                  onEdit={handleEditProduct}
-                  onDelete={handleDeleteProduct}
-                  onManageData={() => setActiveTab('digital-inventory')}
-                  isLoading={isLoading}
-                />
+                <div className="bg-dark-700 rounded-xl border border-dark-500 shadow-lg overflow-hidden p-5">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                      <h2 className="text-2xl font-bold text-light-100 flex items-center">
+                        <Package className="mr-2 text-primary" size={24} />
+                        Product Manager
+                      </h2>
+                      <p className="text-light-400 mt-1">Upload Your Product Detail here</p>
+                    </div>
+                    <div className="flex gap-3">
+                      <Button2
+                        onClick={openAddProductModal}
+                        className="bg-primary hover:bg-primary text-dark-800 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 !rounded-full">
+                        <Plus size={16} className="mr-1" />
+                        Add Product
+                      </Button2>
+                    </div>
+                  </div>
+                  <ProductList
+                    products={products}
+                    categories={categories}
+                    onEdit={handleEditProduct}
+                    onDelete={handleDeleteProduct}
+                    onManageData={() => setActiveTab('digital-inventory')}
+                    isLoading={isLoading}
+                  />
+                </div>
               )}
             </div>
           </TabsContent>

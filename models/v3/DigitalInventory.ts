@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Schema, model, Document, Types, models } from 'mongoose';
 
 interface IDigitalInventory extends Document {
   productId?: Types.ObjectId;
   sellerId: Types.ObjectId;
   inventoryGroup: string;
-  digitalAssets: Array<Record<string, any>>;
-  assetKeys?: string[]; // Add assetKeys field
+  digitalAssets: Array<Record<string, string>>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,11 +28,6 @@ const digitalInventorySchema = new Schema<IDigitalInventory>(
       required: true,
     },
     digitalAssets: [Schema.Types.Mixed],
-    assetKeys: {
-      type: [String],
-      required: false,
-      default: ['Email', 'Password'], // Default asset keys
-    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
@@ -44,14 +37,6 @@ const digitalInventorySchema = new Schema<IDigitalInventory>(
     toObject: { virtuals: true },
   }
 );
-
-digitalInventorySchema.virtual('specifications').get(function () {
-  return this.digitalAssets;
-});
-
-digitalInventorySchema.virtual('specifications').set(function (specs) {
-  this.digitalAssets = specs;
-});
 
 digitalInventorySchema.virtual('variantName').get(function () {
   return this.inventoryGroup;
