@@ -219,39 +219,41 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     setEditedKeys(updatedKeys);
   };
 
-  // FIX: Update handleSaveKeys to properly save keys and call onAssetKeysChange
-  const handleSaveKeys = (e?: React.MouseEvent) => {
-    if (e) e.preventDefault();
-
-    // Update each asset so that only the keys in editedKeys are kept
+  // Handle saving asset key changes
+  const handleSaveKeys = () => {
+    // Update all existing digital assets to include the new keys and remove deleted keys
     const updatedAssets = localAssets.map((asset) => {
+      // Create a new asset object with only the keys that are in editedKeys
       const updatedAsset: Record<string, string> = {};
+
+      // Add all current keys from editedKeys
       editedKeys.forEach((key) => {
+        // Keep existing values if available, otherwise use empty string
         updatedAsset[key] = asset[key] || '';
       });
+
       return updatedAsset;
     });
 
     // Update local state
-    setLocalAssets(updatedAssets); // This line was added
+    setLocalAssets(updatedAssets);
 
-    // Notify parent of both the updated digitalAssets and keys
+    // Update the inventory's asset keys
+    onAssetKeysChange(editedKeys);
+
+    // Update the inventory with the new asset keys and updated assets
     onInventoryChange({
       ...inventory,
-      digitalAssets: updatedAssets, // This was updated to use updatedAssets
-      assetKeys: [...editedKeys], // Ensure we're sending the asset keys too
+      assetKeys: editedKeys,
+      digitalAssets: updatedAssets,
     });
 
-    // Explicitly notify parent of key changes
-    onAssetKeysChange([...editedKeys]);
-
-    // Reset editing state
-    setIsEditingKeys(false);
-
-    // Call onSave if provided
+    // Trigger save immediately if onSave is provided
     if (onSave) {
       onSave();
     }
+
+    setIsEditingKeys(false);
   };
 
   // Handle canceling asset key edits
@@ -278,29 +280,17 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     // Update local state
     setLocalAssets(updatedAssets);
 
+    // Update parent state
+    onInventoryChange({
+      ...inventory,
+      digitalAssets: updatedAssets,
+    });
+
     // Update assetKeys if this is a new field not in the current keys
     if (!assetKeys.includes(fieldName)) {
       const updatedKeys = [...assetKeys, fieldName];
-
-      // Update parent state with both new assets and keys
-      onInventoryChange({
-        ...inventory,
-        digitalAssets: updatedAssets,
-        assetKeys: updatedKeys, // This line was added to pass updated assetKeys
-      });
-
-      // Explicitly update asset keys in parent
-      onAssetKeysChange(updatedKeys); // This line was added to notify parent of key changes
-    } else {
-      // Just update the digital assets
-      onInventoryChange({
-        ...inventory,
-        digitalAssets: updatedAssets,
-      });
+      onAssetKeysChange(updatedKeys);
     }
-
-    // Clear the input
-    setNewAssetKey('');
   };
 
   // Remove a field from a specific asset
@@ -329,13 +319,7 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
     onInventoryChange({
       ...inventory,
       digitalAssets: localAssets,
-      assetKeys: isEditingKeys ? editedKeys : assetKeys, // This line was added/modified
     });
-
-    // Update asset keys separately if needed // This block was added
-    if (isEditingKeys) {
-      onAssetKeysChange(editedKeys);
-    }
   };
 
   return (
@@ -429,7 +413,10 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
                 <Button2
                   variant="outline"
                   size="sm"
-                  onClick={(e) => handleSaveKeys(e)}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent form submission
+                    handleSaveKeys();
+                  }}
                   type="button"
                   className="h-7 px-2 text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex-1 sm:flex-none">
                   <Save size={14} className="mr-1" />

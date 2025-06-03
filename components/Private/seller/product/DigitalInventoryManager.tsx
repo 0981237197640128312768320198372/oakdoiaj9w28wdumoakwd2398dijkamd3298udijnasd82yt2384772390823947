@@ -143,6 +143,7 @@ export default function DigitalInventoryManager() {
     ]);
   };
 
+  // Handle asset keys change for a specific inventory
   const handleAssetKeysChange = (inventoryIndex: number, newKeys: string[]) => {
     console.log('Updating asset keys:', newKeys);
 
@@ -294,46 +295,55 @@ export default function DigitalInventoryManager() {
   const handleSaveInventory = async (i: number) => {
     const inv = inventoryList[i];
     setIsSavingInCard(true);
-
     try {
       // Make sure assetKeys exists and is not empty
       if (!inv.assetKeys || inv.assetKeys.length === 0) {
-        // This block was added
         inv.assetKeys = defaultAssetKeys;
       }
 
-      // For demonstration purposes, just wait a bit to simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Log the data that would be sent to the server
-      console.log('Saving inventory with data:', {
-        id: inv._id,
+      const payload = {
         inventoryGroup: inv.inventoryGroup,
         digitalAssets: inv.digitalAssets,
-        assetKeys: inv.assetKeys, // assetKeys was added to the log
+        assetKeys: inv.assetKeys, // Save the inventory-specific asset keys
         productId: inv.productId || null,
-      });
+      };
 
-      // If this is a new inventory, assign it an ID
-      if (!inv._id) {
-        // This block was added to simulate ID assignment for new items
-        setInventoryList((prev) => {
-          const copy = [...prev];
-          copy[i] = {
-            ...copy[i],
-            _id: `new-${Date.now()}`, // Mock ID generation
-          };
-          return copy;
-        });
+      console.log('Saving inventory with payload:', JSON.stringify(payload, null, 2));
+
+      let requestBody;
+      const url = '/api/v3/digital-inventory';
+      let method = 'POST';
+
+      if (inv._id) {
+        requestBody = JSON.stringify({ id: inv._id, ...payload });
+        method = 'PUT';
+      } else {
+        requestBody = JSON.stringify(payload);
       }
 
-      showSuccess('Saved successfully');
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
+        },
+        body: requestBody,
+      });
+
+      const responseData = await res.json();
+      console.log('Save response:', responseData);
+
+      if (!res.ok) throw new Error(responseData.error || 'Failed to save');
+
+      showSuccess('Saved');
+      // Refresh inventory data from server
+      await fetchInventory();
     } catch (error: any) {
       console.error('Save error:', error);
       showError('Save failed: ' + (error.message || 'Unknown error'));
     } finally {
       setIsSavingInCard(false);
-      setIsEditingInCard(false); // This line was added
+      setIsEditingInCard(false);
     }
   };
 
