@@ -73,7 +73,7 @@ const CreditsSection = () => {
         const recommendations = await fetchCredits(1, limit);
         setCreditsData(recommendations);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       } finally {
         setLoading(false);
       }

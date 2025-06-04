@@ -205,7 +205,7 @@ export function useBuyerActivitiesWithSWR(
         return null;
       }
     } catch (err) {
-      console.error('Get activity error:', err);
+      // console.error('Get activity error:', err);
       return null;
     }
   };
@@ -248,13 +248,7 @@ export function useBuyerActivitiesWithSWR(
         headers: getAuthHeaders(),
       });
 
-      const responseData = await response.json();
-
       if (response.ok) {
-        // Log the response for debugging
-        console.log('Delete activity response:', responseData);
-
-        // Remove the activity from local state or mark as cancelled
         setLocalActivities((prev) =>
           prev.map((activity) =>
             activity.id === id

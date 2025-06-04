@@ -40,7 +40,7 @@ export async function verifyAuth(request: NextRequest): Promise<AuthResult> {
     } else if (error instanceof jwt.TokenExpiredError) {
       return { success: false, message: 'Token expired' };
     } else {
-      console.error('Auth verification error:', error);
+      // console.error('Auth verification error:', error);
       return { success: false, message: 'Authentication error' };
     }
   }

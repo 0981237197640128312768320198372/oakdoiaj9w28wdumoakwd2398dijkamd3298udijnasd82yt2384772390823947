@@ -77,22 +77,14 @@ export default function DigitalInventoryManager() {
               ? variant.digitalAssets
               : [variant.digitalAssets || {}];
 
-            console.log('DigitalInventoryManager: Variant digitalAssets:', digitalAssets);
-
             let assetKeys = variant.assetKeys || [];
-            console.log('DigitalInventoryManager: Initial assetKeys from variant:', assetKeys);
 
             if (!assetKeys.length) {
-              console.log(
-                'DigitalInventoryManager: No assetKeys found, extracting from first asset'
-              );
               const firstAsset = digitalAssets[0] || {};
               assetKeys = Object.keys(firstAsset);
-              console.log('DigitalInventoryManager: Extracted assetKeys:', assetKeys);
             }
 
             const finalAssetKeys = assetKeys.length ? assetKeys : defaultAssetKeys;
-            console.log('DigitalInventoryManager: Final assetKeys:', finalAssetKeys);
 
             return {
               _id: variant._id,
@@ -104,10 +96,8 @@ export default function DigitalInventoryManager() {
             };
           })
         );
-        console.log('DigitalInventoryManager: Setting inventory list with mapped data:', mapped);
         setInventoryList(mapped);
       } else {
-        console.log('DigitalInventoryManager: No variants found, creating default inventory');
         setInventoryList([
           {
             inventoryGroup: '',
@@ -187,26 +177,11 @@ export default function DigitalInventoryManager() {
 
   // Handle asset keys change for a specific inventory
   const handleAssetKeysChange = (inventoryIndex: number, newKeys: string[]) => {
-    console.log('DigitalInventoryManager: Updating asset keys:', newKeys);
-    console.log(
-      'DigitalInventoryManager: Current inventory at index',
-      inventoryIndex,
-      ':',
-      inventoryList[inventoryIndex]
-    );
-
     // First update the inventory list with the new keys
     setInventoryList((prev) => {
       const updatedList = [...prev];
       const inventory = { ...updatedList[inventoryIndex] };
 
-      // Update the asset keys
-      console.log(
-        'DigitalInventoryManager: Setting assetKeys from',
-        inventory.assetKeys,
-        'to',
-        newKeys
-      );
       inventory.assetKeys = [...newKeys]; // Create a new array to ensure state change is detected
 
       // Update the digital assets with the new keys
@@ -223,21 +198,11 @@ export default function DigitalInventoryManager() {
         return updated;
       });
 
-      console.log('DigitalInventoryManager: Updated assets with new keys:', updatedAssets);
-
-      // Update the inventory with the new assets
       inventory.digitalAssets = updatedAssets;
       updatedList[inventoryIndex] = inventory;
 
-      console.log('DigitalInventoryManager: Updated inventory:', inventory);
       return updatedList;
     });
-
-    // We don't need to call handleSaveInventory here because the InventoryEditor component
-    // will trigger the save via onSave prop when the Save Fields button is clicked
-    console.log(
-      'DigitalInventoryManager: State updated, waiting for save trigger from InventoryEditor'
-    );
   };
 
   const handleLinkProduct = async (i: number) => {
@@ -356,8 +321,6 @@ export default function DigitalInventoryManager() {
     const inv = inventoryList[i];
     setIsSavingInCard(true);
     try {
-      console.log('DigitalInventoryManager: handleSaveInventory for inventory:', inv);
-
       // Validate inventory group name
       if (!inv.inventoryGroup || inv.inventoryGroup.trim() === '') {
         console.error('DigitalInventoryManager: Inventory group name is required');
@@ -366,13 +329,9 @@ export default function DigitalInventoryManager() {
 
       // Make sure assetKeys exists and is not empty
       if (!inv.assetKeys || inv.assetKeys.length === 0) {
-        console.log(
-          'DigitalInventoryManager: No assetKeys found, using default:',
-          defaultAssetKeys
-        );
         inv.assetKeys = defaultAssetKeys;
       } else {
-        console.log('DigitalInventoryManager: Using existing assetKeys:', inv.assetKeys);
+        // console.log('DigitalInventoryManager: Using existing assetKeys:', inv.assetKeys);
       }
 
       const payload = {
@@ -381,11 +340,6 @@ export default function DigitalInventoryManager() {
         assetKeys: inv.assetKeys, // Save the inventory-specific asset keys
         productId: inv.productId || null,
       };
-
-      console.log(
-        'DigitalInventoryManager: Saving inventory with payload:',
-        JSON.stringify(payload, null, 2)
-      );
 
       let requestBody;
       const url = '/api/v3/digital-inventory';
@@ -398,8 +352,6 @@ export default function DigitalInventoryManager() {
         requestBody = JSON.stringify(payload);
       }
 
-      console.log(`DigitalInventoryManager: Sending ${method} request to ${url}`);
-
       const res = await fetch(url, {
         method,
         headers: {
@@ -410,16 +362,11 @@ export default function DigitalInventoryManager() {
       });
 
       const responseData = await res.json();
-      console.log('DigitalInventoryManager: Save response:', responseData);
 
       if (!res.ok) throw new Error(responseData.error || 'Failed to save');
 
       // If this is a new inventory (no _id), update the local state with the new _id
       if (!inv._id && responseData.inventory && responseData.inventory._id) {
-        console.log(
-          'DigitalInventoryManager: Updating inventory with new ID:',
-          responseData.inventory._id
-        );
         setInventoryList((prev) => {
           const updatedList = [...prev];
           updatedList[i] = {
@@ -435,10 +382,9 @@ export default function DigitalInventoryManager() {
       // Only refresh inventory data if skipRefresh is false
       // This allows us to preserve local changes when saving fields
       if (!skipRefresh) {
-        console.log('DigitalInventoryManager: Refreshing inventory data from server');
         await fetchInventory();
       } else {
-        console.log('DigitalInventoryManager: Skipping refresh to preserve local changes');
+        // console.log('DigitalInventoryManager: Skipping refresh to preserve local changes');
       }
     } catch (error: any) {
       console.error('DigitalInventoryManager: Save error:', error);

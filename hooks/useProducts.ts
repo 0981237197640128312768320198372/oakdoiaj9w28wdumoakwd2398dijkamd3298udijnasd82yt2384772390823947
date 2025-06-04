@@ -81,10 +81,10 @@ export const useProducts = (sellerId?: string) => {
         const data = await response.json();
         setCategories(data.categories);
       } else {
-        console.error('Failed to fetch categories');
+        // console.error('Failed to fetch categories');
       }
     } catch (err) {
-      console.error('An unexpected error occurred while fetching categories');
+      // console.error('An unexpected error occurred while fetching categories');
     }
   };
 
@@ -140,8 +140,6 @@ export const useProducts = (sellerId?: string) => {
       const body = editMode
         ? JSON.stringify({ ...formData, id: currentProductId })
         : JSON.stringify(formData);
-
-      console.log('Sending product data:', body);
 
       const response = await fetch(url, {
         method,

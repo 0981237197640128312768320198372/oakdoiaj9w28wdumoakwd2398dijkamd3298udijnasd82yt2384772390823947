@@ -32,7 +32,7 @@ export async function fetchStoreData(subdomain: string): Promise<StoreData> {
       seller: sellerData.seller,
     };
   } catch (error) {
-    console.error('Error fetching store data:', error);
+    // console.error('Error fetching store data:', error);
     throw error;
   }
 }

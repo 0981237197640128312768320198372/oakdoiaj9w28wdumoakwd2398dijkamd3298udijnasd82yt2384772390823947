@@ -49,7 +49,6 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
 
         // Check if token is expired
         if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-          console.log('Token expired');
           localStorage.removeItem('buyerToken');
           setBuyer(null);
         } else {
@@ -71,7 +70,6 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
 
       // Check if token is expired
       if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-        console.log('Token expired');
         localStorage.removeItem('buyerToken');
         setBuyer(null);
         throw new Error('Token expired');

@@ -27,7 +27,6 @@ const ShowProducts = () => {
           })),
         }));
         setProducts(productsWithIds);
-        console.log(productsWithIds);
       } catch (error) {
         console.error('Failed to fetch products:', error);
       } finally {

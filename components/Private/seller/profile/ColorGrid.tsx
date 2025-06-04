@@ -149,25 +149,6 @@ export function ColorGrid({
     }
   };
 
-  // Debug function to log color information
-  const debugColor = () => {
-    console.log('Current value:', value);
-    console.log(
-      'Found in allColors:',
-      allColors.find((c) => c.class === value)
-    );
-    console.log('Background class:', getColorBgClass(value));
-    console.log('All colors count:', allColors.length);
-    console.log('Custom colors:', customColors);
-    console.log('Basic colors:', basicColors);
-    console.log('Tailwind colors sample:', tailwindColors.slice(0, 5));
-  };
-
-  // Call debug function once
-  useEffect(() => {
-    debugColor();
-  }, [value]);
-
   return (
     <div className="relative" ref={containerRef}>
       <div

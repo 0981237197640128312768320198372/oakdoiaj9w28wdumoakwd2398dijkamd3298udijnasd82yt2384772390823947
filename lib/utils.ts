@@ -144,7 +144,7 @@ export async function logActivity(type: string, user: string, details: any) {
   });
 
   if (!response.ok) {
-    console.error('Failed to log activity');
+    // console.error('Failed to log activity');
   }
 }
 
@@ -178,11 +178,11 @@ export const updateStatistic = async (
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error(`Failed to update ${type}:`, errorData);
+      // const errorData = await response.json();
+      // console.error(`Failed to update ${type}:`, errorData);
     }
   } catch (error) {
-    console.error(`Error updating ${type}:`, error);
+    // console.error(`Error updating ${type}:`, error);
   }
 };
 
@@ -212,7 +212,7 @@ export const getAdminToken = () => {
     const authData = JSON.parse(authDataString);
     return authData.token || null;
   } catch (error) {
-    console.error('Error parsing authData:', error);
+    // console.error('Error parsing authData:', error);
     return null;
   }
 };
@@ -287,7 +287,7 @@ export async function verifyBuyerAuth(request: NextRequest): Promise<BuyerAuthRe
     } else if (error instanceof jwt.TokenExpiredError) {
       return { success: false, message: 'Token expired' };
     } else {
-      console.error('Auth verification error:', error);
+      // console.error('Auth verification error:', error);
       return { success: false, message: 'Authentication error' };
     }
   }
@@ -345,7 +345,7 @@ export async function sendLineMessage(
 
     return await response.json();
   } catch (error) {
-    console.error('Error in sendLineMessage:', error);
+    // console.error('Error in sendLineMessage:', error);
     throw error; // Let the caller handle the error
   }
 }

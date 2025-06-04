@@ -114,10 +114,10 @@ export function useSellerThemeWithSWR(): UseSellerThemeReturn {
         }),
       });
 
-      const responseData = await response.json();
+      // const responseData = await response.json();
 
       if (!response.ok) {
-        console.error('Failed to update theme:', responseData);
+        // console.error('Failed to update theme:', responseData);
         return false;
       }
 
@@ -129,7 +129,7 @@ export function useSellerThemeWithSWR(): UseSellerThemeReturn {
 
       return true;
     } catch (err) {
-      console.error('Error updating theme:', err);
+      // console.error('Error updating theme:', err);
       return false;
     }
   };

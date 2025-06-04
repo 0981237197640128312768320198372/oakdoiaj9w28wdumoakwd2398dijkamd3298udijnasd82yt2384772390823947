@@ -142,13 +142,13 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
       let avatarUrl = formData.avatarUrl;
       if (selectedFile) {
-        console.log('Uploading avatar file:', selectedFile.name);
+        // console.log('Uploading avatar file:', selectedFile.name);
         const uploadedUrl = await uploadAvatar();
-        console.log('Received avatar URL:', uploadedUrl);
+        // console.log('Received avatar URL:', uploadedUrl);
 
         if (uploadedUrl) {
           avatarUrl = uploadedUrl;
-          console.log('Setting new avatar URL:', avatarUrl);
+          // console.log('Setting new avatar URL:', avatarUrl);
         } else {
           console.warn('Failed to get avatar URL from upload');
         }
@@ -161,7 +161,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
         avatarUrl: avatarUrl,
       };
 
-      console.log('Sending profile update with data:', requestBody);
+      // console.log('Sending profile update with data:', requestBody);
 
       const success = await updateBuyerDetails(requestBody);
       if (success) {

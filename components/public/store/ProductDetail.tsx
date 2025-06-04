@@ -28,7 +28,6 @@ export default function ProductDetail({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
-  console.log(product);
   const imagePlaceholder = dokmaiImagePlaceholder(isLight);
   const currentImage =
     product.images.length > 0 ? product.images[currentImageIndex] : imagePlaceholder;

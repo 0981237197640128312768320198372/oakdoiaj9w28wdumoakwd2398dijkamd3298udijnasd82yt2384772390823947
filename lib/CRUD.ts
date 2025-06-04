@@ -145,7 +145,7 @@ export async function findAndUpdateRow(
   try {
     const sheets = await getGoogleSheetsInstance();
 
-    console.log('Searching for value:', searchValue, 'in range:', searchRange);
+    // console.log('Searching for value:', searchValue, 'in range:', searchRange);
 
     const getData = await sheets.spreadsheets.values.get({
       spreadsheetId: spreadsheetId,
@@ -153,7 +153,7 @@ export async function findAndUpdateRow(
     });
 
     const rows = getData.data.values || [];
-    console.log('Fetched rows:', rows);
+    // console.log('Fetched rows:', rows);
 
     const rowIndex = rows.findIndex((row) => row.includes(searchValue));
 
@@ -165,7 +165,7 @@ export async function findAndUpdateRow(
     const updateRange = `${searchRange.split('!')[0]}!${searchRange.split('!')[1][0]}${
       rowIndex + 2
     }`;
-    console.log('Updating range:', updateRange);
+    // console.log('Updating range:', updateRange);
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: spreadsheetId,
@@ -292,7 +292,7 @@ export async function updateAvailableProductData(
 
     return { message: 'Product data successfully updated' };
   } catch (error) {
-    console.error('Error updating available product data:', error);
+    // console.error('Error updating available product data:', error);
     throw error;
   }
 }
@@ -336,7 +336,7 @@ export async function manageProductData(
 
     return { message: `Row ${rowIndex} in ${sheetName} updated successfully` };
   } catch (error) {
-    console.error('Error managing product data:', error);
+    // console.error('Error managing product data:', error);
     throw error;
   }
 }

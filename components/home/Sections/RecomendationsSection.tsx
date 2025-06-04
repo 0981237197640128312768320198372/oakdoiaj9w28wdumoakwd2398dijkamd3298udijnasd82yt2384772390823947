@@ -78,7 +78,7 @@ const RecomendationsSection = () => {
         const recommendations = await fetchRecommendations(1, limit);
         setRecommendationsData(recommendations);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       } finally {
         setLoading(false);
       }

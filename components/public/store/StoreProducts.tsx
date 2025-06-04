@@ -67,7 +67,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
   };
 
   const handleBuyNow = (productId: string) => {
-    console.log('Buy now clicked for product:', productId);
+    // console.log('Buy now clicked for product:', productId);
     if (!showProductDetail) {
       handleViewProductDetail(productId);
     } else {

@@ -29,7 +29,7 @@ export function useClientIP() {
         setIpData(data);
       } catch (err) {
         setError('Could not retrieve IP address');
-        console.error(err);
+        // console.error(err);
       }
     };
 

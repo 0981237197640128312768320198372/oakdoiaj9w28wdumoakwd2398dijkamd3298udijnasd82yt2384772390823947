@@ -230,7 +230,7 @@ export const ShowPremiumApps = () => {
         setPremiumData([]);
       }
     } catch (err) {
-      console.log('ERROR', err);
+      // console.log('ERROR', err);
       setError('Failed to fetch premium data. Please try again.');
     } finally {
       setFetchingData(false);
@@ -293,14 +293,14 @@ export const ShowPremiumApps = () => {
     if (!selectedApp) return;
 
     if (!textareaRef.current) {
-      console.log('Textarea is not available. Please try again.');
+      // console.log('Textarea is not available. Please try again.');
       return;
     }
 
     const problemDescription = textareaRef.current.value;
 
     if (!problemDescription) {
-      console.log('Please describe the problem before submitting.');
+      // console.log('Please describe the problem before submitting.');
       return;
     }
 
