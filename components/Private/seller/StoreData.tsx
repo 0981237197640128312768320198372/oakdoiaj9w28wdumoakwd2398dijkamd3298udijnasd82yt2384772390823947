@@ -36,6 +36,16 @@ export const StoreData = ({ children }: StoreDataProps) => {
 
   useEffect(() => {
     if (subdomain) {
+      // Check for cached data in sessionStorage
+      const cachedData = sessionStorage.getItem(`storeData-${subdomain}`);
+      if (cachedData) {
+        const { theme, seller } = JSON.parse(cachedData);
+        setTheme(theme);
+        setSeller(seller);
+        setLoading(false);
+        return;
+      }
+
       const fetchData = async () => {
         setLoading(true);
         setError(null);
@@ -72,6 +82,11 @@ export const StoreData = ({ children }: StoreDataProps) => {
           ) {
             setTheme(themeData);
             setSeller(sellerData.seller);
+            // Cache the fetched data in sessionStorage
+            sessionStorage.setItem(
+              `storeData-${subdomain}`,
+              JSON.stringify({ theme: themeData, seller: sellerData.seller })
+            );
           } else {
             throw new Error('Invalid data received');
           }
