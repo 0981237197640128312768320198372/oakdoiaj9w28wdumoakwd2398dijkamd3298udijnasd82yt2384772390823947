@@ -17,6 +17,7 @@ import {
 import ProductCard from './ProductCard';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { AiOutlineProduct } from 'react-icons/ai';
 
 interface ProductListProps {
   products: Product[];
@@ -301,7 +302,7 @@ const ProductList: React.FC<ProductListProps> = ({
             <div className="flex items-center justify-between">
               <h3 className={styles.statsTitle}>Total Categories</h3>
               <div className={cn('bg-purple-500/10 p-2 rounded-lg')}>
-                <Tag size={18} className="text-purple-500" />
+                <AiOutlineProduct size={18} className="text-purple-500" />
               </div>
             </div>
             <p className={styles.statsValue}>{totalCategories}</p>

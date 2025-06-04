@@ -1,20 +1,12 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Star,
-  Edit,
-  Trash2,
-  AlertTriangle,
-  Check,
-  ArrowUpRight,
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Edit, Trash2, AlertTriangle, Check } from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { MdShoppingCartCheckout } from 'react-icons/md';
 
 interface ProductCardProps {
   product: Product;
@@ -373,7 +365,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               onClick={handleBuyNow}
               className={cn(styles.buyButton, 'transition-all duration-200')}>
               ซื้อเลย
-              <ArrowUpRight className="text-xl" />
+              <MdShoppingCartCheckout className="text-xl" />
             </button>
           )}
         </div>
