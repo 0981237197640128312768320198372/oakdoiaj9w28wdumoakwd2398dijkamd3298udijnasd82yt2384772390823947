@@ -177,11 +177,11 @@ const ProductList: React.FC<ProductListProps> = ({
       searchInput: cn(
         'pl-10 pr-10 py-2.5 w-full border rounded-lg text-sm focus:outline-none focus:ring-1',
         isLight
-          ? 'bg-light-100 border-light-300 text-dark-800 focus:ring-primary/30 focus:border-primary/50'
-          : 'bg-dark-600 border-dark-400 text-light-200 focus:ring-primary/30 focus:border-primary/50'
+          ? 'bg-light-100 border-light-300 text-dark-800 focus:ring-0 focus:bg-light-200'
+          : 'bg-dark-600 border-dark-400 text-light-200 focus:ring-0 focus:bg-dark-500'
       ),
       selectInput: cn(
-        'appearance-none pl-10 pr-8 py-2.5 w-full border hover:text-primary rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50',
+        'appearance-none pl-10 pr-8 py-2.5 w-full border rounded-lg text-sm focus:outline-none focus:ring-0 focus:ring-none',
         isLight
           ? 'bg-light-100 border-light-300 text-dark-800'
           : 'bg-dark-600 border-dark-400 text-light-200'
@@ -255,7 +255,7 @@ const ProductList: React.FC<ProductListProps> = ({
     <div className={styles.container}>
       {/* Stats Cards - Only shown for seller view */}
       {isSeller && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
           {/* Total Products Card */}
           <div className={styles.statsCard}>
             <div className="flex items-center justify-between">
@@ -453,8 +453,8 @@ const ProductList: React.FC<ProductListProps> = ({
                 styles.filterButton,
                 showAdvancedFilters
                   ? isLight
-                    ? 'bg-light-200 text-primary'
-                    : 'bg-dark-600 text-primary'
+                    ? 'bg-light-200 text-dark-800'
+                    : 'bg-dark-600 text-light-200'
                   : ''
               )}
               title="Advanced filters">
@@ -471,8 +471,8 @@ const ProductList: React.FC<ProductListProps> = ({
               className={cn(
                 'h-10 w-10 p-2.5 transition-colors rounded-lg border',
                 isLight
-                  ? 'bg-light-100 border-light-300 text-dark-600 hover:text-primary'
-                  : 'bg-dark-600 border-dark-400 text-light-400 hover:text-primary'
+                  ? 'bg-light-100 border-light-300 text-dark-600'
+                  : 'bg-dark-600 border-dark-400 text-light-400'
               )}
               title="Refresh data">
               <RefreshCw
@@ -530,7 +530,7 @@ const ProductList: React.FC<ProductListProps> = ({
                     )
                   }
                   className={cn(
-                    'w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50',
+                    'w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-0',
                     isLight
                       ? 'bg-light-200 border-light-300 text-dark-800'
                       : 'bg-dark-700 border-dark-600 text-light-200'
@@ -595,7 +595,7 @@ const ProductList: React.FC<ProductListProps> = ({
               className={cn(
                 'px-4 py-2 text-sm border rounded-md',
                 themeUtils.getPrimaryColorClass('border'),
-                isLight ? 'text-primary bg-light-100' : 'text-primary bg-dark-800'
+                isLight ? 'text-dark-800 bg-light-100' : 'text-light-100 bg-dark-800'
               )}>
               Clear all filters
             </button>

@@ -20,7 +20,7 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
   const { rating, credits } = seller.store;
   // Use the centralized theme utility
   const themeUtils = useThemeUtils(theme);
-
+  console.log(seller);
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: productCountData, error: productCountError } = useSWR(
     seller ? `/api/v3/products?countTotalProducts=${seller.username}` : null,
