@@ -269,7 +269,8 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     return icons[key] || <Info {...iconProps} />;
   };
 
-  // Function to format metadata value for display
+  const isLight = themeUtils.baseTheme === 'light';
+
   const formatMetadataValue = (key: MetadataKey, value: any): React.ReactNode => {
     if (value === null || value === undefined) return 'N/A';
 
@@ -594,9 +595,10 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.05 }}
                   className={cn(
-                    'flex items-center justify-between p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
+                    'flex items-center justify-between  p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
                     themeUtils.getCardClass(),
-                    themeUtils.getComponentRoundednessClass()
+                    themeUtils.getComponentRoundednessClass(),
+                    isLight ? '!bg-light-100' : '!bg-dark-600'
                   )}>
                   <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <div className="flex-shrink-0">
@@ -702,6 +704,8 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                       className={cn(
                         'w-full p-3 border',
                         themeUtils.getCardClass(),
+
+                        isLight ? '!bg-light-100' : '!bg-dark-600',
                         themeUtils.getComponentRoundednessClass()
                       )}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">

@@ -29,7 +29,7 @@ export const ActivityTabs: React.FC<ActivityTabsProps> = ({ activeTab, onTabChan
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
           className={cn(
-            'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-all duration-300 whitespace-nowrap',
+            'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-all duration-300  whitespace-nowrap',
             themeUtils.getComponentRoundednessClass(),
             activeTab === tab.id
               ? cn(themeUtils.getButtonClass(), 'shadow-sm')

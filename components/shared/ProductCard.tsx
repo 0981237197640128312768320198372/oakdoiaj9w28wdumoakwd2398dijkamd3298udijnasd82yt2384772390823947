@@ -1,27 +1,47 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Edit,
+  Trash2,
+  AlertTriangle,
+  Check,
+  ArrowUpRight,
+} from 'lucide-react';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { LuArrowUpRight } from 'react-icons/lu';
 
 interface ProductCardProps {
   product: Product;
   theme: ThemeType;
+  role: 'seller' | 'buyer';
   onBuyNow?: (productId: string) => void;
+  onEdit?: (product: Product) => void;
+  onDelete?: (productId: string) => void;
   category?: Category;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, category }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  theme,
+  role,
+  onBuyNow,
+  onEdit,
+  onDelete,
+  category,
+}) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const themeUtils = useThemeUtils(theme || null);
 
   const isLight = themeUtils.baseTheme === 'light';
+  const isSeller = role === 'seller';
 
   const imagePlaceholder = dokmaiImagePlaceholder(isLight);
   const currentImage =
@@ -67,6 +87,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
   const handleBuyNow = () => {
     if (onBuyNow) {
       onBuyNow(product._id);
+    }
+  };
+
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(product);
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(product._id);
     }
   };
 
@@ -133,6 +165,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         themeUtils?.getPrimaryColorClass('bg'),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
+      actionButton: cn(
+        'relative p-1.5 rounded-full transition-all duration-200 z-10',
+        isLight ? 'text-dark-500 hover:bg-primary/10' : 'text-light-500 hover:bg-primary/10'
+      ),
+      editButton: cn('hover:text-primary'),
+      deleteButton: cn('hover:text-red-500 hover:bg-red-500/10'),
       createdDate: cn(
         'text-xs flex items-center gap-1',
         isLight ? 'text-dark-500' : 'text-light-600'
@@ -144,6 +182,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         isLight
           ? 'text-dark-600 bg-light-200 border-light-400'
           : 'text-light-500 bg-dark-500 border-dark-400'
+      ),
+      statusIndicator: cn(
+        'absolute bottom-1 right-1 flex items-center gap-1 px-1 py-0.5 rounded-lg text-xs font-medium backdrop-blur-md transition-all duration-200',
+        product.status === 'active'
+          ? isLight
+            ? 'bg-green-100 border border-green-500/20 text-green-700'
+            : 'bg-green-900 border border-green-500/20 text-green-500'
+          : isLight
+          ? 'bg-amber-100 border border-amber-500/20 text-amber-700'
+          : 'bg-amber-900 border border-amber-500/20 text-amber-500'
       ),
     };
   };
@@ -197,7 +245,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         )}
 
         {hasDiscount && (
-          <div className={styles.discountBadge}>ลด {product.discountPercentage}%</div>
+          <div className={styles.discountBadge}>
+            {isSeller ? `${product.discountPercentage}% OFF` : `ลด ${product.discountPercentage}%`}
+          </div>
+        )}
+
+        {/* Status indicator for seller view */}
+        {isSeller && (
+          <div className={styles.statusIndicator}>
+            {product.status === 'active' ? (
+              <>
+                <Check size={10} strokeWidth={2.5} />
+                <span>Active</span>
+              </>
+            ) : (
+              <>
+                <AlertTriangle size={10} strokeWidth={2.5} />
+                <span>Draft</span>
+              </>
+            )}
+          </div>
         )}
       </div>
 
@@ -286,14 +353,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, theme, onBuyNow, cat
         </div>
 
         <div className={styles.footer}>
-          <span className={styles.stockText}>พร้อมส่ง: {product._stock}</span>
-          <button
-            onClick={handleBuyNow}
-            className={cn(styles.buyButton, 'transition-all duration-200')}>
-            {/* buy now */}
-            ซื้อเลย
-            <LuArrowUpRight className="text-xl" />
-          </button>
+          <span className={styles.stockText}>
+            {isSeller ? `Stock: ${product._stock}` : `พร้อมส่ง: ${product._stock}`}
+          </span>
+
+          {isSeller ? (
+            <div className="flex -space-x-1">
+              <button onClick={handleEdit} className={cn(styles.actionButton, styles.editButton)}>
+                <Edit size={14} />
+              </button>
+              <button
+                onClick={handleDelete}
+                className={cn(styles.actionButton, styles.deleteButton)}>
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleBuyNow}
+              className={cn(styles.buyButton, 'transition-all duration-200')}>
+              ซื้อเลย
+              <ArrowUpRight className="text-xl" />
+            </button>
+          )}
         </div>
       </div>
     </div>

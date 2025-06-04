@@ -16,6 +16,7 @@ import {
   DollarSign,
 } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
+import { AiOutlineProduct } from 'react-icons/ai';
 
 interface ProductListProps {
   products: Product[];
@@ -145,7 +146,7 @@ const ProductList: React.FC<ProductListProps> = ({
           <div className="flex items-center justify-between">
             <h3 className="text-light-300 text-sm font-medium">Total Categories</h3>
             <div className="bg-purple-500/10 p-2 rounded-lg">
-              <Tag size={18} className="text-purple-500" />
+              <AiOutlineProduct size={18} className="text-purple-500" />
             </div>
           </div>
           <p className="text-2xl font-bold text-light-100 mt-2">{totalCategories}</p>

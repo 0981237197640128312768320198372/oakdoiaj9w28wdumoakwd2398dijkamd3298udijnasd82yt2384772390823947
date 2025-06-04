@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Plus, Package } from 'lucide-react';
 
-import ProductList from './ProductList';
+import ProductList from '@/components/shared/ProductList';
 import ProductForm from '../product/ProductForm';
 import DigitalInventoryManager from './DigitalInventoryManager';
 import EmptyState from './EmptyState';
@@ -136,9 +136,19 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
                   <ProductList
                     products={products}
                     categories={categories}
+                    theme={{
+                      sellerId: seller?.id || 'default',
+                      baseTheme: 'dark',
+                      customizations: {
+                        colors: { primary: 'primary' },
+                        button: { roundedness: 'md' },
+                        componentStyles: { cardRoundedness: 'md' },
+                        ads: { images: [] },
+                      },
+                    }}
+                    role="seller"
                     onEdit={handleEditProduct}
                     onDelete={handleDeleteProduct}
-                    onManageData={() => setActiveTab('digital-inventory')}
                     isLoading={isLoading}
                   />
                 </div>
