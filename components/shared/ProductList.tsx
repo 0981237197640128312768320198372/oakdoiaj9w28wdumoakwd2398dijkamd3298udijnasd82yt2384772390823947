@@ -168,10 +168,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
       // Stats card styles
       statsCard: cn(
-        'bg-gradient-to-br rounded-xl p-4 border shadow-sm hover:shadow-md transition-all duration-300',
-        isLight
-          ? 'from-light-100 to-light-200 border-light-300 hover:border-light-400'
-          : 'from-dark-700 to-dark-800 border-dark-600 hover:border-dark-500'
+        'rounded-xl p-4 border shadow-sm hover:shadow-md transition-all duration-300 bg-dark-600 border-dark-400 hover:border-dark-300'
       ),
       statsTitle: cn('text-sm font-medium', isLight ? 'text-dark-700' : 'text-light-300'),
       statsValue: cn('text-2xl font-bold mt-2', isLight ? 'text-dark-800' : 'text-light-100'),
@@ -260,7 +257,6 @@ const ProductList: React.FC<ProductListProps> = ({
       {/* Stats Cards - Only shown for seller view */}
       {isSeller && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-          {/* Total Products Card */}
           <div className={styles.statsCard}>
             <div className="flex items-center justify-between">
               <h3 className={styles.statsTitle}>Total Products</h3>
