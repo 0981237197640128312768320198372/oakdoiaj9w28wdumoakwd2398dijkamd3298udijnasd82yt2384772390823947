@@ -2,7 +2,6 @@
 'use client';
 import React, { useState } from 'react';
 import { Plus, Package } from 'lucide-react';
-
 import ProductList from '@/components/shared/ProductList';
 import ProductForm from '../product/ProductForm';
 import DigitalInventoryManager from './DigitalInventoryManager';

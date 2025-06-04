@@ -333,7 +333,7 @@ const ProductList: React.FC<ProductListProps> = ({
             <div className="flex items-center justify-between">
               <h3 className={styles.statsTitle}>Total Stock</h3>
               <div className={cn('bg-blue-500/10 p-2 rounded-lg')}>
-                <Package size={18} className="text-blue-500" />
+                <Tag size={18} className="text-blue-500" />
               </div>
             </div>
             <p className={styles.statsValue}>{totalStock}</p>
