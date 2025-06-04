@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Product, ThemeType } from '@/types';
-import ProductCard from './ProductCard';
+import ProductCard from '../../shared/ProductCard';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { ArrowRight } from 'lucide-react';
@@ -90,6 +90,7 @@ export default function DiscountedProducts({
             <ProductCard
               product={product}
               theme={theme}
+              role="buyer"
               category={product.category}
               onBuyNow={(productId) => {
                 console.log(`ซื้อเลย clicked for product: ${productId}`);

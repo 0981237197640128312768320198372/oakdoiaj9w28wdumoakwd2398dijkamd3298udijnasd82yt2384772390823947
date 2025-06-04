@@ -5,7 +5,7 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import type { Product, Category } from '@/types';
 import Image from 'next/image';
-import ProductCard from './ProductCard';
+import ProductCard from '../../shared/ProductCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tag } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -102,7 +102,7 @@ const SellerCategories: React.FC<SellerCategoriesProps> = ({ products, categorie
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}>
-                  <ProductCard theme={theme} product={product} />
+                  <ProductCard theme={theme} product={product} role="seller" />
                 </motion.div>
               ))
             ) : (
