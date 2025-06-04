@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     const sellerId = authResult.sellerId;
 
     const body = await req.json();
-    const { inventoryGroup, digitalAssets, productId } = body;
+    const { inventoryGroup, digitalAssets, assetKeys, productId } = body;
 
     if (!inventoryGroup) {
       return NextResponse.json({ error: 'Inventory group name is required' }, { status: 400 });
@@ -134,6 +134,7 @@ export async function POST(req: NextRequest) {
       sellerId,
       inventoryGroup,
       digitalAssets: formattedDigitalAssets,
+      assetKeys: assetKeys || undefined, // Add assetKeys to the new inventory
       productId: productId || undefined,
     });
 
@@ -177,7 +178,7 @@ export async function PUT(req: NextRequest) {
     const sellerId = authResult.sellerId;
 
     const body = await req.json();
-    const { id, inventoryGroup, digitalAssets, productId } = body;
+    const { id, inventoryGroup, digitalAssets, assetKeys, productId } = body;
 
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Valid ID is required' }, { status: 400 });
@@ -216,6 +217,11 @@ export async function PUT(req: NextRequest) {
     // Update the digital inventory
     inventory.inventoryGroup = inventoryGroup;
     inventory.digitalAssets = formattedDigitalAssets;
+
+    // Update assetKeys if provided
+    if (assetKeys) {
+      inventory.assetKeys = assetKeys;
+    }
 
     // Handle product linking/unlinking
     const oldProductId = inventory.productId;

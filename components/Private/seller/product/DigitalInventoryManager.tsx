@@ -9,6 +9,7 @@ import InventoryEditor from './InventoryEditor';
 import InventoryCard from './InventoryCard';
 import InventorySearch from './InventorySearch';
 import InventoryStats from './InventoryStats';
+import InventoryCreationWizard from './InventoryCreationWizard';
 import { Product } from '@/types';
 import useToast from '@/hooks/useToast';
 
@@ -38,6 +39,7 @@ export default function DigitalInventoryManager() {
   const [isSavingInCard, setIsSavingInCard] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [filterOption, setFilterOption] = useState<'all' | 'linked' | 'unlinked'>('all');
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   const { showSuccess, showError } = useToast();
 
@@ -48,15 +50,20 @@ export default function DigitalInventoryManager() {
 
   const fetchInventory = async () => {
     try {
+      console.log('DigitalInventoryManager: Fetching inventory data');
       setIsInitialLoading(true);
       const response = await fetch(`/api/v3/digital-inventory/all`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('sellerToken')}` },
       });
       if (!response.ok) throw new Error('Failed to fetch digital inventory');
       const data = await response.json();
+      console.log('DigitalInventoryManager: Received inventory data:', data);
+
       if (data.variants?.length) {
+        console.log(`DigitalInventoryManager: Processing ${data.variants.length} variants`);
         const mapped = await Promise.all(
           data.variants.map(async (variant: any) => {
+            console.log('DigitalInventoryManager: Processing variant:', variant);
             let connectedProduct;
             if (variant.productId) {
               try {
@@ -74,25 +81,37 @@ export default function DigitalInventoryManager() {
               ? variant.digitalAssets
               : [variant.digitalAssets || {}];
 
+            console.log('DigitalInventoryManager: Variant digitalAssets:', digitalAssets);
+
             let assetKeys = variant.assetKeys || [];
+            console.log('DigitalInventoryManager: Initial assetKeys from variant:', assetKeys);
 
             if (!assetKeys.length) {
+              console.log(
+                'DigitalInventoryManager: No assetKeys found, extracting from first asset'
+              );
               const firstAsset = digitalAssets[0] || {};
               assetKeys = Object.keys(firstAsset);
+              console.log('DigitalInventoryManager: Extracted assetKeys:', assetKeys);
             }
+
+            const finalAssetKeys = assetKeys.length ? assetKeys : defaultAssetKeys;
+            console.log('DigitalInventoryManager: Final assetKeys:', finalAssetKeys);
 
             return {
               _id: variant._id,
               inventoryGroup: variant.inventoryGroup || variant.variantName,
               digitalAssets,
-              assetKeys: assetKeys.length ? assetKeys : defaultAssetKeys,
+              assetKeys: finalAssetKeys,
               productId: variant.productId,
               connectedProduct,
             };
           })
         );
+        console.log('DigitalInventoryManager: Setting inventory list with mapped data:', mapped);
         setInventoryList(mapped);
       } else {
+        console.log('DigitalInventoryManager: No variants found, creating default inventory');
         setInventoryList([
           {
             inventoryGroup: '',
@@ -107,7 +126,7 @@ export default function DigitalInventoryManager() {
         ]);
       }
     } catch (error) {
-      console.error(error);
+      console.error('DigitalInventoryManager: Error fetching inventory:', error);
       showError('Failed to load digital inventory');
     } finally {
       setIsInitialLoading(false);
@@ -128,24 +147,57 @@ export default function DigitalInventoryManager() {
   };
 
   const handleAddNewInventory = () => {
-    setInventoryList((prev) => [
-      ...prev,
-      {
-        inventoryGroup: '',
-        digitalAssets: [
-          defaultAssetKeys.reduce(
-            (acc, key) => ((acc[key] = ''), acc),
-            {} as Record<string, string>
-          ),
-        ],
-        assetKeys: [...defaultAssetKeys],
-      },
-    ]);
+    setIsWizardOpen(true);
+  };
+
+  const handleSaveNewInventory = async (inventory: {
+    inventoryGroup: string;
+    digitalAssets: Array<Record<string, string>>;
+    assetKeys: string[];
+  }) => {
+    setIsLoading(true);
+    try {
+      // Create a new inventory item
+      const payload = {
+        inventoryGroup: inventory.inventoryGroup.trim(),
+        digitalAssets: inventory.digitalAssets,
+        assetKeys: inventory.assetKeys,
+      };
+
+      const res = await fetch('/api/v3/digital-inventory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('sellerToken')}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const responseData = await res.json();
+
+      if (!res.ok) throw new Error(responseData.error || 'Failed to save');
+
+      showSuccess('Inventory created successfully');
+
+      // Refresh inventory data
+      await fetchInventory();
+    } catch (error: any) {
+      console.error('Error creating inventory:', error);
+      showError('Failed to create inventory: ' + (error.message || 'Unknown error'));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle asset keys change for a specific inventory
   const handleAssetKeysChange = (inventoryIndex: number, newKeys: string[]) => {
-    console.log('Updating asset keys:', newKeys);
+    console.log('DigitalInventoryManager: Updating asset keys:', newKeys);
+    console.log(
+      'DigitalInventoryManager: Current inventory at index',
+      inventoryIndex,
+      ':',
+      inventoryList[inventoryIndex]
+    );
 
     // First update the inventory list with the new keys
     setInventoryList((prev) => {
@@ -153,6 +205,12 @@ export default function DigitalInventoryManager() {
       const inventory = { ...updatedList[inventoryIndex] };
 
       // Update the asset keys
+      console.log(
+        'DigitalInventoryManager: Setting assetKeys from',
+        inventory.assetKeys,
+        'to',
+        newKeys
+      );
       inventory.assetKeys = [...newKeys]; // Create a new array to ensure state change is detected
 
       // Update the digital assets with the new keys
@@ -169,15 +227,21 @@ export default function DigitalInventoryManager() {
         return updated;
       });
 
+      console.log('DigitalInventoryManager: Updated assets with new keys:', updatedAssets);
+
       // Update the inventory with the new assets
       inventory.digitalAssets = updatedAssets;
       updatedList[inventoryIndex] = inventory;
 
+      console.log('DigitalInventoryManager: Updated inventory:', inventory);
       return updatedList;
     });
 
-    // Save the inventory after state has been updated
-    handleSaveInventory(inventoryIndex);
+    // We don't need to call handleSaveInventory here because the InventoryEditor component
+    // will trigger the save via onSave prop when the Save Fields button is clicked
+    console.log(
+      'DigitalInventoryManager: State updated, waiting for save trigger from InventoryEditor'
+    );
   };
 
   const handleLinkProduct = async (i: number) => {
@@ -292,23 +356,40 @@ export default function DigitalInventoryManager() {
     });
   };
 
-  const handleSaveInventory = async (i: number) => {
+  const handleSaveInventory = async (i: number, skipRefresh = false) => {
     const inv = inventoryList[i];
     setIsSavingInCard(true);
     try {
+      console.log('DigitalInventoryManager: handleSaveInventory for inventory:', inv);
+
+      // Validate inventory group name
+      if (!inv.inventoryGroup || inv.inventoryGroup.trim() === '') {
+        console.error('DigitalInventoryManager: Inventory group name is required');
+        throw new Error('Inventory group name is required');
+      }
+
       // Make sure assetKeys exists and is not empty
       if (!inv.assetKeys || inv.assetKeys.length === 0) {
+        console.log(
+          'DigitalInventoryManager: No assetKeys found, using default:',
+          defaultAssetKeys
+        );
         inv.assetKeys = defaultAssetKeys;
+      } else {
+        console.log('DigitalInventoryManager: Using existing assetKeys:', inv.assetKeys);
       }
 
       const payload = {
-        inventoryGroup: inv.inventoryGroup,
+        inventoryGroup: inv.inventoryGroup.trim(), // Trim whitespace
         digitalAssets: inv.digitalAssets,
         assetKeys: inv.assetKeys, // Save the inventory-specific asset keys
         productId: inv.productId || null,
       };
 
-      console.log('Saving inventory with payload:', JSON.stringify(payload, null, 2));
+      console.log(
+        'DigitalInventoryManager: Saving inventory with payload:',
+        JSON.stringify(payload, null, 2)
+      );
 
       let requestBody;
       const url = '/api/v3/digital-inventory';
@@ -321,6 +402,8 @@ export default function DigitalInventoryManager() {
         requestBody = JSON.stringify(payload);
       }
 
+      console.log(`DigitalInventoryManager: Sending ${method} request to ${url}`);
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -331,15 +414,38 @@ export default function DigitalInventoryManager() {
       });
 
       const responseData = await res.json();
-      console.log('Save response:', responseData);
+      console.log('DigitalInventoryManager: Save response:', responseData);
 
       if (!res.ok) throw new Error(responseData.error || 'Failed to save');
 
+      // If this is a new inventory (no _id), update the local state with the new _id
+      if (!inv._id && responseData.inventory && responseData.inventory._id) {
+        console.log(
+          'DigitalInventoryManager: Updating inventory with new ID:',
+          responseData.inventory._id
+        );
+        setInventoryList((prev) => {
+          const updatedList = [...prev];
+          updatedList[i] = {
+            ...updatedList[i],
+            _id: responseData.inventory._id,
+          };
+          return updatedList;
+        });
+      }
+
       showSuccess('Saved');
-      // Refresh inventory data from server
-      await fetchInventory();
+
+      // Only refresh inventory data if skipRefresh is false
+      // This allows us to preserve local changes when saving fields
+      if (!skipRefresh) {
+        console.log('DigitalInventoryManager: Refreshing inventory data from server');
+        await fetchInventory();
+      } else {
+        console.log('DigitalInventoryManager: Skipping refresh to preserve local changes');
+      }
     } catch (error: any) {
-      console.error('Save error:', error);
+      console.error('DigitalInventoryManager: Save error:', error);
       showError('Save failed: ' + (error.message || 'Unknown error'));
     } finally {
       setIsSavingInCard(false);
@@ -376,6 +482,13 @@ export default function DigitalInventoryManager() {
 
   return (
     <>
+      <InventoryCreationWizard
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onSave={handleSaveNewInventory}
+        defaultAssetKeys={defaultAssetKeys}
+      />
+
       <div className="p-6 space-y-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
