@@ -13,6 +13,7 @@ interface ProductCardProps {
   theme: ThemeType;
   role: 'seller' | 'buyer';
   onBuyNow?: (productId: string) => void;
+  onViewDetails?: (productId: string) => void;
   onEdit?: (product: Product) => void;
   onDelete?: (productId: string) => void;
   category?: Category;
@@ -23,6 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   theme,
   role,
   onBuyNow,
+  onViewDetails,
   onEdit,
   onDelete,
   category,
@@ -76,19 +78,28 @@ const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
     if (onBuyNow) {
       onBuyNow(product._id);
     }
   };
 
-  const handleEdit = () => {
+  const handleViewDetails = () => {
+    if (onViewDetails) {
+      onViewDetails(product._id);
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
     if (onEdit) {
       onEdit(product);
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
     if (onDelete) {
       onDelete(product._id);
     }
@@ -97,7 +108,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const getCardStyles = () => {
     return {
       card: cn(
-        'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg ',
+        'group relative overflow-hidden rounded-lg border transition-all duration-300 shadow-sm hover:shadow-lg cursor-pointer',
         isLight
           ? 'bg-light-100 border-light-300 hover:border-light-400 hover:shadow-light-300/20'
           : 'bg-dark-600 border-dark-400 hover:border-dark-400 hover:shadow-dark-800/20'
@@ -122,7 +133,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         isLight ? 'bg-dark-500/30 hover:bg-dark-500/50' : 'bg-light-500/50 hover:bg-light-500'
       ),
       discountBadge: cn(
-        'absolute top-3 right-1 px-1 py-0.5 rounded text-sm lg:text-lg font-bold animate-bounce ',
+        'absolute top-3 right-1 px-1 py-0.5 rounded text-sm lg:text-lg font-bold animate-bounce pointer-events-none',
         themeUtils?.getPrimaryColorClass('bg'),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
@@ -192,6 +203,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       className={styles.card}
+      onClick={handleViewDetails}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}>
       <div className={styles.imageContainer}>
@@ -361,12 +373,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </button>
             </div>
           ) : (
-            <button
-              onClick={handleBuyNow}
-              className={cn(styles.buyButton, 'transition-all duration-200')}>
-              ซื้อเลย
-              <MdShoppingCartCheckout className="text-xl" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleBuyNow}
+                className={cn(styles.buyButton, 'transition-all duration-200')}>
+                ซื้อเลย
+                <MdShoppingCartCheckout className="text-xl" />
+              </button>
+            </div>
           )}
         </div>
       </div>

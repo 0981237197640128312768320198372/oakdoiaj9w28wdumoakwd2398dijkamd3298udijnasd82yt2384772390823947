@@ -27,6 +27,7 @@ interface ProductListProps {
   onEdit?: (product: Product) => void;
   onDelete?: (productId: string) => void;
   onBuyNow?: (productId: string) => void;
+  onViewDetails?: (productId: string) => void;
   isLoading?: boolean;
 }
 
@@ -38,6 +39,7 @@ const ProductList: React.FC<ProductListProps> = ({
   onEdit,
   onDelete,
   onBuyNow,
+  onViewDetails,
   isLoading = false,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -236,20 +238,49 @@ const ProductList: React.FC<ProductListProps> = ({
     </div>
   );
 
-  if (isLoading) {
-    return (
-      <div className="w-full min-h-screen py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div className={cn('h-8 rounded w-32 animate-pulse', styles.skeletonBg)}></div>
-          <div className={cn('h-10 rounded w-64 animate-pulse', styles.skeletonBg)}></div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <ProductSkeleton key={index} />
+  const renderSkeleton = () => (
+    <div className={styles.container}>
+      {/* Skeleton for Stats Cards - Only for seller view */}
+      {isSeller && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <div key={idx} className={cn('animate-pulse', styles.statsCard)}>
+              <div className="h-6 rounded w-1/2 mb-2"></div>
+              <div className="h-8 rounded w-full mb-2"></div>
+              <div className="h-4 rounded w-3/4"></div>
+            </div>
           ))}
         </div>
+      )}
+      {/* Skeleton for Search and Filter Section */}
+      <div className="w-full space-y-3 mb-6">
+        <div className="flex flex-col gap-3 w-full">
+          <div className="flex flex-wrap gap-5">
+            <div className="relative flex-grow">
+              <div className={cn('h-10 rounded w-full animate-pulse', styles.skeletonBg)}></div>
+            </div>
+            <div className="relative flex-1 min-w-[180px]">
+              <div className={cn('h-10 rounded w-full animate-pulse', styles.skeletonBg)}></div>
+            </div>
+            {isSeller && (
+              <div className="relative flex-1 min-w-[180px]">
+                <div className={cn('h-10 rounded w-full animate-pulse', styles.skeletonBg)}></div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    );
+      {/* Skeleton for Products Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+        {Array.from({ length: visibleProducts }).map((_, index) => (
+          <ProductSkeleton key={index} />
+        ))}
+      </div>
+    </div>
+  );
+
+  if (isLoading) {
+    return renderSkeleton();
   }
 
   return (
@@ -349,7 +380,7 @@ const ProductList: React.FC<ProductListProps> = ({
       {/* Search and Filters */}
       <div className="w-full space-y-3 mb-6">
         <div className="flex flex-col gap-3 w-full">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-5">
             <div className="relative flex-grow">
               <Search
                 className={cn(
@@ -621,6 +652,7 @@ const ProductList: React.FC<ProductListProps> = ({
                       role={role}
                       category={category}
                       onBuyNow={onBuyNow}
+                      onViewDetails={onViewDetails}
                       onEdit={onEdit}
                       onDelete={onDelete}
                     />
