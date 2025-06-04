@@ -87,6 +87,7 @@ export default async function StorePage(props: StorePageProps) {
       products = [];
       categories = [];
     }
+
     return (
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
         <PublicStoreProfile theme={theme} seller={seller} />

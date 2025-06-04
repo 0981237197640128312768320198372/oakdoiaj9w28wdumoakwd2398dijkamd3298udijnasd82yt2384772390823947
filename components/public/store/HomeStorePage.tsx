@@ -20,6 +20,11 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
   theme,
   onNavigate,
 }) => {
+  console.log(
+    '%c🖕🏻🖕🏼🖕🏽🖕🏾🖕🏿',
+    'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: black; padding: 10px; font-weight: bold; border-radius: 10px;'
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
