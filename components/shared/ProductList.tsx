@@ -160,7 +160,11 @@ const ProductList: React.FC<ProductListProps> = ({
   const getComponentStyles = () => {
     return {
       // Card and container styles
-      container: cn('space-y-5 animate-fade-in w-full'),
+      container: cn(
+        'space-y-5 animate-fade-in w-full p-5',
+        themeUtils.getCardClass(),
+        themeUtils.getComponentRoundednessClass()
+      ),
 
       // Stats card styles
       statsCard: cn(

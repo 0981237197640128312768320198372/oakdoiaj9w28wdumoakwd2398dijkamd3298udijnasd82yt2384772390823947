@@ -55,7 +55,7 @@ export function ColorGrid({
 
   // Define custom colors with user-friendly names
   const customColors = [
-    { name: 'Primary', class: 'primary', bgClass: 'bg-primary' },
+    { name: 'Dokmai', class: 'primary', bgClass: 'bg-primary' },
     { name: 'Dark 800', class: 'dark-800', bgClass: 'bg-gray-800' },
     { name: 'Dark 700', class: 'dark-700', bgClass: 'bg-gray-700' },
     { name: 'Dark 600', class: 'dark-600', bgClass: 'bg-gray-600' },

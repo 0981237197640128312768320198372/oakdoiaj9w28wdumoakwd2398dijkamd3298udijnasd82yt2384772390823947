@@ -48,15 +48,10 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
   }, [inventory._id]);
 
   useEffect(() => {
-    console.log('InventoryEditor: assetKeys prop changed to:', assetKeys);
     setEditedKeys([...assetKeys]);
   }, [assetKeys]);
 
-  useEffect(() => {
-    console.log('InventoryEditor: inventory changed:', inventory);
-    console.log('InventoryEditor: current assetKeys:', assetKeys);
-    console.log('InventoryEditor: current editedKeys:', editedKeys);
-  }, [inventory, assetKeys, editedKeys]);
+  useEffect(() => {}, [inventory, assetKeys, editedKeys]);
 
   const handleInventoryGroupChange = (value: string) => {
     onInventoryChange({
@@ -112,7 +107,6 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
   const commitAllChanges = () => {
     const updatedInventory = { ...inventory };
     if (!updatedInventory.inventoryGroup || updatedInventory.inventoryGroup.trim() === '') {
-      console.log('InventoryEditor: Setting default inventory group name in commitAllChanges');
       updatedInventory.inventoryGroup = 'Inventory ' + new Date().toISOString().slice(0, 10);
     }
 
@@ -168,7 +162,7 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
         </div>
       </div>
 
-      <div className="space-y-5 px-5 overflow-y-auto __dokmai_scrollbar max-h-[50vh] animate-fadeIn">
+      <div className="space-y-5 p-5 overflow-y-auto __dokmai_scrollbar max-h-96 animate-fadeIn bg-dark-700">
         {localAssets.map((asset, assetIndex) => {
           return (
             <div

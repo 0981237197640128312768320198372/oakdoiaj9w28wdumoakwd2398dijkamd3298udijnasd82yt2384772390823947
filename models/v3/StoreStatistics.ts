@@ -25,7 +25,6 @@ interface IStoreStatistics extends Document {
 
 const storeStatisticsSchema = new Schema<IStoreStatistics>({
   sellerId: { type: Schema.Types.ObjectId, ref: 'Seller', required: true },
-  totalProducts: { type: Number, default: 0 },
   totalSales: { type: Number, default: 0 },
   totalRevenue: { type: Number, default: 0 },
   monthlyStats: [

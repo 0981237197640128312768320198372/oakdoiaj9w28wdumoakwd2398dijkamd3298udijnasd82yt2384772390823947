@@ -564,7 +564,7 @@ const ManageHelps: React.FC = () => {
                       onSubmit={(e) => {
                         e.preventDefault();
                         {
-                          console.log(pictureUrl);
+                          // console.log(pictureUrl);
                         }
                         if (!pictureUrl) {
                           alert('Please upload a picture before submitting.');

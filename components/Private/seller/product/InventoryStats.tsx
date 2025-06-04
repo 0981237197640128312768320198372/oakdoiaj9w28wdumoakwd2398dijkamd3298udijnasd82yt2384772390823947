@@ -24,7 +24,7 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-      <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
+      <div className="bg-dark-600 rounded-xl p-4 border border-dark-400 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
         <div className="flex items-center justify-between">
           <h3 className="text-light-300 text-sm font-medium">Total Inventory</h3>
           <div className="bg-primary/10 p-2 rounded-lg">
@@ -38,7 +38,7 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
       </div>
 
       {/* Linked Items Card */}
-      <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
+      <div className="bg-dark-600 rounded-xl p-4 border border-dark-400 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
         <div className="flex items-center justify-between">
           <h3 className="text-light-300 text-sm font-medium">Linked Items</h3>
           <div className="bg-primary/10 p-2 rounded-lg">
@@ -61,7 +61,7 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
       </div>
 
       {/* Unlinked Items Card */}
-      <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
+      <div className="bg-dark-600 rounded-xl p-4 border border-dark-400 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
         <div className="flex items-center justify-between">
           <h3 className="text-light-300 text-sm font-medium">Unlinked Items</h3>
           <div className="bg-yellow-500/10 p-2 rounded-lg">
@@ -84,7 +84,7 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
       </div>
 
       {/* Total Assets Card */}
-      <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
+      <div className="bg-dark-600 rounded-xl p-4 border border-dark-400 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
         <div className="flex items-center justify-between">
           <h3 className="text-light-300 text-sm font-medium">Total Assets</h3>
           <div className="bg-green-500/10 p-2 rounded-lg">

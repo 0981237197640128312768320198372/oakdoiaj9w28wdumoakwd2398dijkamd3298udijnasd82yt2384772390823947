@@ -50,20 +50,16 @@ export default function DigitalInventoryManager() {
 
   const fetchInventory = async () => {
     try {
-      console.log('DigitalInventoryManager: Fetching inventory data');
       setIsInitialLoading(true);
       const response = await fetch(`/api/v3/digital-inventory/all`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('sellerToken')}` },
       });
       if (!response.ok) throw new Error('Failed to fetch digital inventory');
       const data = await response.json();
-      console.log('DigitalInventoryManager: Received inventory data:', data);
 
       if (data.variants?.length) {
-        console.log(`DigitalInventoryManager: Processing ${data.variants.length} variants`);
         const mapped = await Promise.all(
           data.variants.map(async (variant: any) => {
-            console.log('DigitalInventoryManager: Processing variant:', variant);
             let connectedProduct;
             if (variant.productId) {
               try {
@@ -547,7 +543,7 @@ export default function DigitalInventoryManager() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
               {filtered.map((inventory, idx) => {
                 const orig = inventoryList.findIndex(
                   (i) =>
@@ -556,9 +552,7 @@ export default function DigitalInventoryManager() {
                 );
                 const isSelected = selectedInventoryIndex === orig;
                 return (
-                  <div
-                    key={inventory._id || idx}
-                    className="animate-fade-in grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  <div key={inventory._id || idx} className="animate-fade-in ">
                     <InventoryCard
                       inventory={inventory}
                       onEdit={() => {
