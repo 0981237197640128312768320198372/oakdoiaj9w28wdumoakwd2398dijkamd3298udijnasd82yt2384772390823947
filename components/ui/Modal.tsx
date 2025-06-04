@@ -38,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, size = 'md' })
   };
 
   return (
-    <div className="fixed h-screen w-screen inset-0 z-[9999] overflow-y-auto bg-dark-800/30 backdrop-blur flex items-center justify-center animate-fade-in">
+    <div className="absolute top-0 left-0 h-screen w-screen inset-0 z-[9999] overflow-y-auto bg-dark-800/30 backdrop-blur flex items-center justify-center animate-fade-in">
       <div
         className={`${sizeClasses[size]} w-full bg-dark-800 rounded-xl shadow-xl transform transition-all duration-300 animate-scale-in`}>
         {children}

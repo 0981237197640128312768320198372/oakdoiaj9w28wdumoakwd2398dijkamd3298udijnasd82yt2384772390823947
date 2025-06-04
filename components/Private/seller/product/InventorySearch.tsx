@@ -30,34 +30,29 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
 
   return (
     <div className="w-full space-y-3">
-      {/* Search and filter section */}
       <div className="flex flex-col gap-3 w-full">
-        {/* Search input */}
-        <div className="relative flex-grow">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"
-            size={16}
-          />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search inventory..."
-            className="pl-10 pr-10 py-2.5 w-full bg-dark-600 border border-dark-400 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50"
-          />
-          {searchTerm && (
-            <button
-              onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-500 hover:text-light-300"
-              aria-label="Clear search">
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        {/* Filter controls */}
         <div className="flex flex-wrap gap-2">
-          {/* Filter dropdown */}
+          <div className="relative flex-grow">
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"
+              size={16}
+            />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search inventory..."
+              className="pl-10 pr-10 py-2.5 w-full bg-dark-600 border border-dark-400 rounded-lg text-light-200 text-sm focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => onSearchChange('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-light-500 hover:text-light-300"
+                aria-label="Clear search">
+                <X size={14} />
+              </button>
+            )}
+          </div>
           <div className="relative flex-1 min-w-[180px]">
             <select
               value={filterOption}
@@ -83,7 +78,6 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             </div>
           </div>
 
-          {/* Advanced filters button */}
           <Button2
             variant="outline"
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
@@ -95,7 +89,6 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             <span className="text-sm hidden sm:inline">Filters</span>
           </Button2>
 
-          {/* Refresh button */}
           <Button2
             variant="outline"
             onClick={handleRefresh}
@@ -181,7 +174,7 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
             </Button2>
             <Button2
               size="sm"
-              className="h-9 text-xs bg-primary hover:bg-primary text-white order-1 sm:order-2">
+              className="h-9 text-xs bg-primary hover:bg-primary order-1 sm:order-2">
               Apply Filters
             </Button2>
           </div>

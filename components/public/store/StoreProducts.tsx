@@ -78,9 +78,8 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
       ),
 
       loadMoreButton: cn(
-        'mt-8 px-4 py-2 border text-sm transition-colors rounded-md flex items-center justify-center gap-2 mx-auto hover:scale-110',
-        themeUtils.getButtonClass(),
-        themeUtils.getPrimaryColorClass('border')
+        'mt-8 px-4 py-2 border w-full text-sm transition-colors rounded-md flex items-center justify-center gap-2',
+        themeUtils.getCardClass()
       ),
     };
   };

@@ -56,9 +56,6 @@ const CartModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
       if (error.message.includes('Insufficient balance')) {
         setStatus('insufficient');
       }
-      //  else {
-      //   setStatus('error');
-      // }
     } finally {
       setLoading(false);
     }
@@ -74,7 +71,7 @@ const CartModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
           {orderedItems.map((item, i) => (
             <div
               key={i}
-              className="flex justify-between items-center border-b border-dark-600 py-3 gap-14">
+              className="flex justify-between items-center border-b text-light-100 border-dark-600 py-3 gap-14">
               <div className="w-full flex gap-3 items-center">
                 <Image
                   src={item.appName.includes('Netflix') ? netflixpremium : primevideo}

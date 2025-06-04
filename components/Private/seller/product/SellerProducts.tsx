@@ -89,32 +89,24 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
   };
   return (
     <>
-      <div className="space-y-8 animate-fade-in">
+      <div className="space-y-8 animate-fade-in mb-5">
         <Tabs defaultValue="products" className="w-full" onValueChange={setActiveTab}>
-          <div className="flex justify-between w-full">
-            <div className="w-full">
-              <h1 className="text-2xl font-bold text-light-100">Your Products</h1>
-              <p className="text-light-400 mt-1">
-                Manage your store inventory and product listings
-              </p>
-            </div>
-            <TabsList className="w-full max-w-md mx-auto mb-6 bg-dark-700 p-1 rounded-full">
-              <TabsTrigger
-                value="products"
-                className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
-                <Package size={16} className="mr-2" />
-                Products
-              </TabsTrigger>
-              <TabsTrigger
-                value="digital-inventory"
-                className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
-                <HiOutlineInboxStack size={16} className="mr-2" />
-                Digital Inventory
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <TabsList className="w-full max-w-md mx-auto my-5 bg-dark-700 p-1 rounded-full">
+            <TabsTrigger
+              value="products"
+              className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+              <Package size={16} className="mr-2" />
+              Products
+            </TabsTrigger>
+            <TabsTrigger
+              value="digital-inventory"
+              className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+              <HiOutlineInboxStack size={16} className="mr-2" />
+              Digital Inventory
+            </TabsTrigger>
+          </TabsList>
 
-          <TabsContent value="products" className="mt-16 animate-fadeIn">
+          <TabsContent value="products" className="mt-10 animate-fadeIn">
             <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
               {isLoading ? (
                 <div className="p-10 mx-auto my-20 flex justify-center items-center">

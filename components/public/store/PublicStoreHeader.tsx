@@ -42,7 +42,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
       <div className="relative p-5 pt-16 flex items-start gap-5 z-10">
         <div
           className={cn(
-            'relative h-20 w-20 overflow-hidden shadow-md border-2 bg-background transition-all duration-500 hover:scale-105',
+            'relative h-20 w-20 overflow-hidden shadow-md bg-background transition-all duration-500 hover:scale-105',
             themeUtils.getComponentRoundednessClass(),
             `border-${themeUtils.primaryColor}/20`
           )}>

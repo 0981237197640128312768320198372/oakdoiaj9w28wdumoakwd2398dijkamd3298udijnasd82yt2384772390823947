@@ -24,7 +24,6 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-      {/* Total Inventory Card */}
       <div className="bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
         <div className="flex items-center justify-between">
           <h3 className="text-light-300 text-sm font-medium">Total Inventory</h3>

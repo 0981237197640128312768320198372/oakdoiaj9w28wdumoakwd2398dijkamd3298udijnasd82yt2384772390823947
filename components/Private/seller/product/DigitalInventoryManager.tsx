@@ -527,7 +527,7 @@ export default function DigitalInventoryManager() {
 
         <div className="space-y-8 ">
           {filtered.length === 0 ? (
-            <div className="bg-red-700 rounded-xl border border-dark-700 p-5 text-center">
+            <div className="rounded-xl border border-dark-700 p-5 text-center">
               <HiOutlineInboxStack className="mx-auto text-light-500 mb-3" size={32} />
               <h3 className="text-light-300 text-lg font-medium mb-2">
                 No Digital Inventory Found
@@ -556,7 +556,9 @@ export default function DigitalInventoryManager() {
                 );
                 const isSelected = selectedInventoryIndex === orig;
                 return (
-                  <div key={inventory._id || idx} className="animate-fade-in">
+                  <div
+                    key={inventory._id || idx}
+                    className="animate-fade-in grid grid-cols-1 lg:grid-cols-2 gap-5">
                     <InventoryCard
                       inventory={inventory}
                       onEdit={() => {

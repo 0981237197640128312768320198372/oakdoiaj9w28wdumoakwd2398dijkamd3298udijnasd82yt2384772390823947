@@ -49,7 +49,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
 
   return (
     <div
-      className={`bg-dark-600 rounded-xl transition-all duration-200 hover:shadow-lg ${
+      className={`bg-dark-600 rounded-xl transition-all duration-200 ${
         isSelected
           ? 'border-primary/50 border-2'
           : isLinked
@@ -171,20 +171,17 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
         </div>
 
         {/* Bottom action bar */}
-        <div className="mt-3 flex justify-between items-center pt-3 border-t border-dark-500">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              className="p-1.5 text-light-500 hover:text-red-400 transition-colors rounded-md hover:bg-dark-700 flex items-center gap-1"
-              title="Delete inventory">
-              <Trash2 size={16} />
-              <span className="text-xs hidden sm:inline">Delete</span>
-            </button>
-          </div>
+        <div className="mt-3 flex justify-center items-center pt-3 border-t border-dark-500">
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="p-1.5 text-light-500 hover:text-red-400 transition-colors rounded-md hover:bg-dark-700 flex items-center gap-1"
+            title="Delete inventory">
+            <Trash2 size={16} />
+            <span className="text-xs">Delete</span>
+          </button>
         </div>
       </div>
 
-      {/* Delete confirmation modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-dark-700 rounded-xl shadow-xl max-w-md w-full animate-scale-in">
