@@ -12,6 +12,7 @@ import { ProfileActionPanel } from './ProfileActionPanel';
 import { EditProfileModal } from './EditProfileModal';
 import Image from 'next/image';
 import MenuButton from './MenuButton';
+import { useBuyerAuth } from '@/context/BuyerAuthContext';
 
 interface Contact {
   facebook?: string;
@@ -47,7 +48,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
-
+  const { logout } = useBuyerAuth();
   useEffect(() => {
     if (buyer) {
       setLocalBuyer(buyer);
@@ -141,7 +142,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               <MenuButton
                 theme={theme}
                 handleEditProfile={() => setIsEditModalOpen(true)}
-                handleLogout={() => console.log('Logout')}
+                handleLogout={logout}
               />
             </div>
           </div>

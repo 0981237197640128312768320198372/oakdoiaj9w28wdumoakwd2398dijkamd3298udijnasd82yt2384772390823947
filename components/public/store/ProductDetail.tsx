@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Package,
-  // Heart,
   Info,
   MessageSquare,
   Truck,
@@ -31,6 +30,7 @@ interface ProductDetailProps {
   onBuyNow: (productId: string) => void;
   onViewDetails?: (productId: string) => void;
   sellerId?: string;
+  isLoading?: boolean;
 }
 
 export default function ProductDetail({
@@ -42,6 +42,7 @@ export default function ProductDetail({
   onBuyNow,
   onViewDetails,
   sellerId,
+  isLoading = false,
 }: ProductDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>(
@@ -70,8 +71,6 @@ export default function ProductDetail({
       prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
     );
   };
-
-  // onBuyNow is kept for backward compatibility with RelatedProducts
 
   const getStyles = () => {
     return {
@@ -214,13 +213,71 @@ export default function ProductDetail({
         themeUtils.getPrimaryColorClass('border')
       ),
       tabContent: cn('px-4 md:px-6 py-6'),
-
       dokmaiCoin: dokmaiCoinSymbol(isLight),
       divider: cn('w-full h-px my-6', isLight ? 'bg-light-300' : 'bg-dark-600'),
     };
   };
 
   const styles = getStyles();
+
+  if (isLoading) {
+    return (
+      <div className={`${styles.container} animate-pulse`}>
+        {/* Header skeleton */}
+        <div className={styles.header}>
+          <div className={styles.breadcrumb}>
+            <div className="h-4 w-20 bg-gray-300 rounded"></div>
+            <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
+            <div className="h-4 w-24 bg-gray-300 rounded"></div>
+          </div>
+          <div className="h-8 w-40 bg-gray-300 rounded"></div>
+        </div>
+
+        {/* Main content skeleton */}
+        <div className={styles.mainContent}>
+          <div>
+            <div className={styles.imageSection}>
+              <div className="h-full w-full bg-gray-300"></div>
+            </div>
+            {/* Thumbnail skeleton */}
+            {product.images.length > 1 && (
+              <div className={styles.thumbnailContainer}>
+                {[...Array(product.images.length)].map((_, index) => (
+                  <div key={index} className={cn(styles.thumbnail, 'bg-gray-300')} />
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="space-y-4">
+            <div className="h-6 w-2/3 bg-gray-300 rounded"></div>
+            <div className="h-4 w-1/2 bg-gray-300 rounded"></div>
+            <div className="h-8 w-24 bg-gray-300 rounded"></div>
+            <div className="h-10 w-full bg-gray-300 rounded"></div>
+          </div>
+        </div>
+
+        {/* Tabs skeleton */}
+        <div className={styles.tabsContainer}>
+          <div className="h-8 w-24 bg-gray-300 rounded"></div>
+          <div className="h-8 w-24 bg-gray-300 rounded"></div>
+        </div>
+
+        {/* Tab content skeleton */}
+        <div className={styles.tabContent}>
+          <div className="h-40 w-full bg-gray-300 rounded"></div>
+        </div>
+
+        {/* Related products skeleton */}
+        <div className="px-4 md:px-6 mt-8">
+          <div className="h-6 w-40 bg-gray-300 rounded mb-4"></div>
+          <div className="space-y-2">
+            <div className="h-10 w-full bg-gray-300 rounded"></div>
+            <div className="h-10 w-full bg-gray-300 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -242,13 +299,11 @@ export default function ProductDetail({
             )}
             <span className="truncate max-w-[200px]">{product.title}</span>
           </div>
-
           <button onClick={onBack} className={styles.backButton}>
             <ArrowLeft size={18} />
             <span>กลับไปยังสินค้าทั้งหมด</span>
           </button>
         </div>
-
         <div className={styles.mainContent}>
           <div>
             <motion.div
@@ -263,7 +318,6 @@ export default function ProductDetail({
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
-
               {product.images.length > 1 && (
                 <>
                   <button
@@ -280,12 +334,10 @@ export default function ProductDetail({
                   </button>
                 </>
               )}
-
               {hasDiscount && (
                 <div className={styles.discountBadge}>ลด {product.discountPercentage}%</div>
               )}
             </motion.div>
-
             {product.images.length > 1 && (
               <div className={styles.thumbnailContainer}>
                 {product.images.map((image, index) => (
@@ -298,7 +350,7 @@ export default function ProductDetail({
                     onClick={() => setCurrentImageIndex(index)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}>
-                    <div className="relative w-full h-full ">
+                    <div className="relative w-full h-full">
                       <Image
                         src={image}
                         alt={`${product.title} - ภาพที่ ${index + 1}`}
@@ -312,7 +364,6 @@ export default function ProductDetail({
               </div>
             )}
           </div>
-
           <div className={styles.infoSection}>
             <div className="flex items-center justify-between">
               {category && (
@@ -329,9 +380,7 @@ export default function ProductDetail({
                 </div>
               )}
             </div>
-
             <h1 className={styles.title}>{product.title}</h1>
-
             <div className="flex items-center gap-3 flex-wrap">
               {product.rating ? (
                 <div className={styles.ratingContainer}>
@@ -351,7 +400,6 @@ export default function ProductDetail({
                 </div>
               ) : null}
             </div>
-
             <div className={styles.priceContainer}>
               {hasDiscount ? (
                 <>
@@ -389,8 +437,6 @@ export default function ProductDetail({
                 </span>
               )}
             </div>
-
-            {/* Quick info cards */}
             <div className={styles.detailsCard}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className={styles.infoItem}>
@@ -413,9 +459,7 @@ export default function ProductDetail({
                 </div>
               </div>
             </div>
-
             <div className="mt-6 space-y-4">
-              {/* Add to Cart Button */}
               <div className={styles.actionButtons}>
                 <QuantityControls
                   productId={product._id}
@@ -426,18 +470,10 @@ export default function ProductDetail({
                   className="w-full h-12"
                   imageUrl={product.images[0]}
                 />
-                {/* <motion.button
-                  className={styles.secondaryButton}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  aria-label="Add to favorites">
-                  <Heart size={20} />
-                </motion.button> */}
               </div>
             </div>
           </div>
         </div>
-
         <div className={styles.tabsContainer}>
           <button
             className={cn(styles.tab, activeTab === 'description' && styles.activeTab)}
@@ -450,7 +486,6 @@ export default function ProductDetail({
             รีวิวจากลูกค้า
           </button>
         </div>
-
         <div className={styles.tabContent}>
           <AnimatePresence mode="wait">
             {activeTab === 'description' && (
@@ -470,7 +505,6 @@ export default function ProductDetail({
                 </div>
               </motion.div>
             )}
-
             {activeTab === 'specifications' && (
               <motion.div
                 key="specifications"
@@ -486,7 +520,6 @@ export default function ProductDetail({
                   )}></div>
               </motion.div>
             )}
-
             {activeTab === 'reviews' && (
               <motion.div
                 key="reviews"
@@ -510,9 +543,8 @@ export default function ProductDetail({
             )}
           </AnimatePresence>
         </div>
-
         <div className="px-4 md:px-6 mt-8">
-          <h3 className="text-xl font-semibold  mb-4">สินค้าที่เกี่ยวข้อง</h3>
+          <h3 className="text-xl font-semibold mb-4">สินค้าที่เกี่ยวข้อง</h3>
           <RelatedProducts
             product={product}
             categories={categories}

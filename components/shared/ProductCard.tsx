@@ -246,7 +246,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {hasDiscount && (
           <div className={styles.discountBadge}>
-            {isSeller ? `${product.discountPercentage}% OFF` : `ลด ${product.discountPercentage}%`}
+            {isSeller ? `ลด ${product.discountPercentage}%` : `ลด ${product.discountPercentage}%`}
           </div>
         )}
 

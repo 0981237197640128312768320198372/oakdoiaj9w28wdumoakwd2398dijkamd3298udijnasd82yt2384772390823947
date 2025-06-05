@@ -87,6 +87,7 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
   const logout = () => {
     localStorage.removeItem('buyerToken');
     setBuyer(null);
+    window.location.reload();
   };
 
   const isAuthenticated = buyer !== null;

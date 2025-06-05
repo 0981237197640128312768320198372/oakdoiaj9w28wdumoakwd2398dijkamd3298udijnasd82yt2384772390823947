@@ -62,7 +62,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         className="fixed font-aktivGroteskRegular flex flex-col px-5 xl:px-0 items-center justify-center top-0 left-0 w-full z-50">
         <div
           className={cn(
-            'w-full max-w-screen-lg mt-4 border transition-all duration-300 flex items-center justify-between backdrop-blur-md',
+            'w-full max-w-screen-lg mt-5 border transition-all backdrop-blur duration-300 flex items-center justify-between backdrop-blur-md',
             scrolled ? 'py-2 px-4' : 'py-3 px-5',
             scrolled ? 'shadow-md' : 'shadow-sm',
             themeUtils.getCardClass(),
@@ -203,8 +203,8 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
           className={cn(
             'mb-6 border backdrop-blur flex items-center justify-around shadow-lg',
             isLight
-              ? 'bg-light-500/10 border-light-300 shadow-black/20'
-              : 'bg-dark-100/10 border-dark-300 shadow-black',
+              ? 'bg-light-500/20 border-light-300 shadow-black/20'
+              : 'bg-dark-100/20 border-dark-300 shadow-black',
             'rounded-full w-auto',
             themeUtils.getButtonRoundednessClass()
           )}>

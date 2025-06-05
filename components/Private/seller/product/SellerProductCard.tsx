@@ -143,7 +143,7 @@ const SellerProductCard: React.FC<SellerProductCardProps> = ({
         {/* Discount badge */}
         {hasDiscount && (
           <div className="absolute top-1 right-1 bg-primary text-dark-800 px-1.5 py-0.5 rounded text-xs font-bold">
-            {product.discountPercentage}% OFF
+            {product.discountPercentage}% ลด
           </div>
         )}
       </div>

@@ -85,100 +85,98 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
               />
             </div>
           </div>
-
-          {/* Action buttons */}
-          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-            {isEditing ? (
-              <Button2
-                variant="outline"
-                size="sm"
-                onClick={onSave}
-                disabled={isSaving}
-                className="h-9 text-xs bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20 flex-1 sm:flex-none">
-                {isSaving ? (
-                  <>
-                    <svg
-                      className="animate-spin h-3 w-3 mr-1"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save size={14} className="mr-1" />
-                    Save
-                  </>
-                )}
-              </Button2>
-            ) : (
-              <>
-                {isLinked ? (
-                  <Button2
-                    variant="outline"
-                    size="sm"
-                    onClick={onUnlink}
-                    className="h-9 text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 flex-1 sm:flex-none">
-                    <Link2Off size={14} className="mr-1" />
-                    <span className="hidden sm:inline">Unlink</span>
-                  </Button2>
-                ) : (
-                  <Button2
-                    variant="outline"
-                    size="sm"
-                    onClick={onLink}
-                    className="h-9 text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex-1 sm:flex-none">
-                    <Link size={14} className="mr-1" />
-                    <span className="hidden sm:inline">Link</span>
-                  </Button2>
-                )}
-              </>
-            )}
-            <Button2
-              variant="outline"
-              size="sm"
-              onClick={onEdit}
-              className={`h-9 text-xs flex-1 sm:flex-none ${
-                isSelected
-                  ? 'bg-red-500/15 text-red-500 border-red-500 hover:bg-red-500/40'
-                  : 'bg-primary/10 text-primary border-primary/10 hover:bg-primary/10'
-              }`}>
-              {isSelected ? (
-                <>
-                  <HiOutlineInboxStack size={14} className="mr-1" />
-                  Close
-                </>
-              ) : (
-                <>
-                  <Edit size={14} className="mr-1" />
-                  <span className="hidden sm:inline">Edit</span>
-                </>
-              )}
-            </Button2>
-          </div>
         </div>
 
         {/* Bottom action bar */}
-        <div className="mt-3 flex justify-center items-center pt-3 border-t border-dark-500">
-          <button
+        <div className="mt-3 flex justify-between items-center pt-3 border-t border-dark-500">
+          <Button2
+            variant="outline"
+            size="sm"
             onClick={() => setIsDeleteModalOpen(true)}
-            className="p-1.5 text-light-500 hover:text-red-400 transition-colors rounded-md hover:bg-dark-700 flex items-center gap-1"
+            className="p-1.5 bg-red-500/15 text-red-500 border-red-500 hover:bg-red-500/40 transition-colors rounded-md flex items-center gap-1"
             title="Delete inventory">
             <Trash2 size={16} />
             <span className="text-xs">Delete</span>
-          </button>
+          </Button2>{' '}
+          {isEditing ? (
+            <Button2
+              variant="outline"
+              size="sm"
+              onClick={onSave}
+              disabled={isSaving}
+              className="text-xs bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20 flex-1 sm:flex-none">
+              {isSaving ? (
+                <>
+                  <svg
+                    className="animate-spin h-3 w-3 mr-1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save size={14} className="mr-1" />
+                  Save
+                </>
+              )}
+            </Button2>
+          ) : (
+            <>
+              {isLinked ? (
+                <Button2
+                  variant="outline"
+                  size="sm"
+                  onClick={onUnlink}
+                  className="text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 flex-1 sm:flex-none">
+                  <Link2Off size={14} className="mr-1" />
+                  <span className="hidden sm:inline">Unlink</span>
+                </Button2>
+              ) : (
+                <Button2
+                  variant="outline"
+                  size="sm"
+                  onClick={onLink}
+                  className="text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex-1 sm:flex-none">
+                  <Link size={14} className="mr-1" />
+                  <span className="hidden sm:inline">Link</span>
+                </Button2>
+              )}
+            </>
+          )}
+          <Button2
+            variant="outline"
+            size="sm"
+            onClick={onEdit}
+            className={`text-xs flex-1 sm:flex-none ${
+              isSelected
+                ? 'bg-red-500/15 text-red-500 border-red-500 hover:bg-red-500/40'
+                : 'bg-primary/10 text-primary border-primary/10 hover:bg-primary/10'
+            }`}>
+            {isSelected ? (
+              <>
+                <HiOutlineInboxStack size={14} className="mr-1" />
+                Close
+              </>
+            ) : (
+              <>
+                <Edit size={14} className="mr-1" />
+                <span className="hidden sm:inline">Edit</span>
+              </>
+            )}
+          </Button2>
         </div>
       </div>
 
