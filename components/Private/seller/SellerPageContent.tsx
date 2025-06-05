@@ -17,14 +17,13 @@ const SellerPageContent = () => {
   const { activeView } = useSellerDashboard();
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayedView, setDisplayedView] = useState(activeView);
-  // Handle smooth transitions between views
   useEffect(() => {
     if (activeView !== displayedView) {
       setIsTransitioning(true);
       const timer = setTimeout(() => {
         setDisplayedView(activeView);
         setIsTransitioning(false);
-      }, 300); // Match this with the CSS transition duration
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [activeView, displayedView]);

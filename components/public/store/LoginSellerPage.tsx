@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import Link from 'next/link';
@@ -15,7 +15,16 @@ export default function LoginSellerPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login } = useSellerAuth();
+  const { login, seller } = useSellerAuth();
+
+  useEffect(() => {
+    if (seller) {
+      // Redirect based on environment
+      const isDevelopment = process.env.NODE_ENV === 'development';
+      const redirectPath = isDevelopment ? '/seller' : '/';
+      router.push(redirectPath);
+    }
+  }, [seller, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
