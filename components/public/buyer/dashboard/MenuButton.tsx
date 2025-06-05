@@ -48,7 +48,8 @@ const MenuButton: React.FC<MenuButtonProps> = ({ handleEditProfile, handleLogout
         className={cn(
           'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-all duration-300',
           themeUtils.getButtonClass(),
-          themeUtils.getComponentRoundednessClass()
+          themeUtils.getComponentRoundednessClass(),
+          themeUtils.getPrimaryColorClass('border')
         )}>
         <MenuIcon size={16} />
         <span className="hidden sm:inline">เมนู</span>

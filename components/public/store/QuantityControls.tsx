@@ -84,7 +84,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         className={cn(
-          'flex items-center justify-between rounded-lg overflow-hidden',
+          'flex items-center w-full justify-between rounded-lg overflow-hidden',
           themeUtils.getButtonClass(),
           themeUtils.getPrimaryColorClass('bg'),
           className
@@ -118,11 +118,12 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
     <button
       onClick={handleAddToCart}
       className={cn(
-        'flex items-center justify-center p-2 rounded-lg transition-all duration-300',
+        'flex items-center justify-center gap-1 w-full p-2 rounded-lg transition-all duration-300',
         themeUtils.getButtonClass(),
         themeUtils.getPrimaryColorClass('bg'),
         className
       )}>
+      เพิ่มลงตะกร้า
       <ShoppingCart size={18} className={isLight ? 'text-light-100' : 'text-dark-800'} />
     </button>
   );

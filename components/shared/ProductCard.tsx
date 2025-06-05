@@ -368,14 +368,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center w-full justify-end">
+            <div className="flex items-center w-full">
               <QuantityControls
                 productId={product._id}
                 productName={product.title}
                 duration={category?.name || 'Standard'}
                 price={discountedPrice}
                 theme={theme}
-                className="w-24 h-8"
                 imageUrl={product.images[0]}
               />
             </div>
