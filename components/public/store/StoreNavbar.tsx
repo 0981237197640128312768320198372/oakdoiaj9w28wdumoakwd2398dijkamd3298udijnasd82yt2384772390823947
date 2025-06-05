@@ -59,20 +59,17 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="fixed font-aktivGroteskRegular flex flex-col px-5 xl:px-0 items-center justify-center top-0 left-0 w-full z-50">
+        className="fixed flex flex-col px-5 xl:p-0 items-center justify-center top-0 left-0 w-full transition-transform duration-500 z-50 transformed font-aktivGroteskRegular">
         <div
           className={cn(
-            'w-full max-w-screen-lg mt-5 border transition-all backdrop-blur duration-300 flex items-center justify-between backdrop-blur-md',
-            scrolled ? 'py-2 px-4' : 'py-3 px-5',
-            scrolled ? 'shadow-md' : 'shadow-sm',
-            themeUtils.getCardClass(),
+            'border transition-all backdrop-blur w-full mt-5 gap-10 flex py-1 px-2 lg:p-2 max-w-screen-lg justify-between duration-1000 items-center',
+            isLight ? 'bg-light-100/75 border-light-200' : 'bg-dark-600/75 border-dark-400',
             themeUtils.getButtonRoundednessClass()
           )}>
           <button onClick={() => onNavigate('home')} className="flex items-center gap-3">
             <div
               className={cn(
-                'relative overflow-hidden transition-all duration-300',
-                scrolled ? 'w-8 h-8' : 'w-10 h-10',
+                'relative overflow-hidden transition-all duration-300 w-8 h-8',
                 themeUtils.getButtonRoundednessClass()
               )}>
               <Image

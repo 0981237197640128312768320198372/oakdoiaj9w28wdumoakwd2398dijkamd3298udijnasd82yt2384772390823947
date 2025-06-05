@@ -537,13 +537,15 @@ export default function DigitalInventoryManager() {
                       </div>
                     )}
                     {isSelected && isLinkingProduct && (
-                      <div className="bg-dark-600 p-5 mt-2 rounded-xl border border-dark-400">
-                        <h4 className="text-sm font-medium text-light-300 mb-3">Link to Product</h4>
-                        <div className="flex flex-col md:flex-row gap-3">
+                      <div className="bg-dark-600 p-6 mt-3 rounded-lg border border-dark-400 shadow-lg">
+                        <h4 className="text-lg font-semibold text-light-300 mb-4">
+                          Link to Product
+                        </h4>
+                        <div className="mb-4">
                           <select
                             value={selectedProductId}
                             onChange={(e) => setSelectedProductId(e.target.value)}
-                            className="flex-1 px-3 py-2 bg-dark-800 border border-dark-600 rounded-lg text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50">
+                            className="w-full px-4 py-2 bg-dark-800 border border-dark-600 rounded-md text-light-200 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                             <option value="">Select a product...</option>
                             {products.map((p) => (
                               <option key={p._id} value={p._id}>
@@ -552,7 +554,7 @@ export default function DigitalInventoryManager() {
                             ))}
                           </select>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex justify-end space-x-3">
                           <Button2
                             variant="outline"
                             size="sm"
@@ -567,7 +569,7 @@ export default function DigitalInventoryManager() {
                             size="sm"
                             onClick={() => handleLinkProduct(selectedInventoryIndex!)}
                             disabled={!selectedProductId || isLoading}
-                            className="h-10 text-xs bg-primary hover:bg-primary ">
+                            className="h-10 text-xs bg-primary hover:bg-primary">
                             Link Product
                           </Button2>
                         </div>
