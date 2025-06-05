@@ -2,16 +2,18 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Star, Edit, Trash2, AlertTriangle, Check } from 'lucide-react';
+import AddToCartButton from '@/components/public/store/AddToCartButton';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { MdShoppingCartCheckout } from 'react-icons/md';
 
 interface ProductCardProps {
   product: Product;
   theme: ThemeType;
   role: 'seller' | 'buyer';
+  // onBuyNow prop kept for backward compatibility
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onBuyNow?: (productId: string) => void;
   onViewDetails?: (productId: string) => void;
   onEdit?: (product: Product) => void;
@@ -23,6 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product,
   theme,
   role,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   onBuyNow,
   onViewDetails,
   onEdit,
@@ -76,13 +79,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setCurrentImageIndex((prevIndex) =>
       prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
     );
-  };
-
-  const handleBuyNow = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click event
-    if (onBuyNow) {
-      onBuyNow(product._id);
-    }
   };
 
   const handleViewDetails = () => {
@@ -373,13 +369,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleBuyNow}
-                className={cn(styles.buyButton, 'transition-all duration-200')}>
-                ซื้อเลย
-                <MdShoppingCartCheckout className="text-xl" />
-              </button>
+            <div className="flex items-center">
+              <AddToCartButton
+                productId={product._id}
+                productName={product.title}
+                duration={category?.name || 'Standard'}
+                price={discountedPrice}
+                theme={theme}
+                variant="full"
+                className={cn(styles.buyButton, 'transition-all duration-200 w-full')}
+                imageUrl={product.images[0]}
+              />
             </div>
           )}
         </div>

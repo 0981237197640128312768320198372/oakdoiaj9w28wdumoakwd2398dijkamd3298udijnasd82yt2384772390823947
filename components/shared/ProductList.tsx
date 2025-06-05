@@ -183,7 +183,7 @@ const ProductList: React.FC<ProductListProps> = ({
       ),
 
       loadMoreButton: cn(
-        'mt-8 px-4 py-2 border w-full text-sm transition-colors rounded-md flex items-center justify-center gap-2',
+        'mt-5 px-4 py-2 border w-full text-sm transition-colors rounded-md flex items-center justify-center gap-2',
         themeUtils.getCardClass(),
         isLight
           ? 'hover:!bg-light-100/50 hover:!border-white'

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -15,8 +15,10 @@ import {
   MessageSquare,
   Truck,
   ShieldCheck,
+  Minus,
+  Plus,
 } from 'lucide-react';
-import { MdShoppingCartCheckout } from 'react-icons/md';
+import AddToCartButton from './AddToCartButton';
 import { Product, Category, ThemeType } from '@/types';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -29,7 +31,7 @@ interface ProductDetailProps {
   theme: ThemeType;
   onBack: () => void;
   onBuyNow: (productId: string) => void;
-  onViewDetails?: (productId: string) => void; // Add this prop
+  onViewDetails?: (productId: string) => void;
   sellerId?: string;
 }
 
@@ -47,7 +49,7 @@ export default function ProductDetail({
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>(
     'description'
   );
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
@@ -59,15 +61,6 @@ export default function ProductDetail({
   const discountedPrice = hasDiscount
     ? product.price * (1 - product.discountPercentage / 100)
     : product.price;
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 300);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const goToPrevImage = () => {
     setCurrentImageIndex((prevIndex) =>
@@ -81,9 +74,7 @@ export default function ProductDetail({
     );
   };
 
-  const handleBuyNow = () => {
-    onBuyNow(product._id);
-  };
+  // onBuyNow is kept for backward compatibility with RelatedProducts
 
   const getStyles = () => {
     return {
@@ -227,11 +218,6 @@ export default function ProductDetail({
       ),
       tabContent: cn('px-4 md:px-6 py-6'),
 
-      stickyBuyButton: cn(
-        'fixed bottom-0 left-0 right-0 p-4 z-50 transition-transform duration-300 shadow-lg md:hidden',
-        isLight ? 'bg-light-100/95 backdrop-blur-md' : 'bg-dark-800/95 backdrop-blur-md',
-        isScrolled ? 'translate-y-0' : 'translate-y-full'
-      ),
       dokmaiCoin: dokmaiCoinSymbol(isLight),
       divider: cn('w-full h-px my-6', isLight ? 'bg-light-300' : 'bg-dark-600'),
     };
@@ -431,22 +417,64 @@ export default function ProductDetail({
               </div>
             </div>
 
-            <div className={styles.actionButtons}>
-              <motion.button
-                onClick={handleBuyNow}
-                className={styles.buyButton}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}>
-                ซื้อเลย
-                <MdShoppingCartCheckout className="text-xl" />
-              </motion.button>
-              {/* <motion.button
-                className={styles.secondaryButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                aria-label="Add to favorites">
-                <Heart size={20} />
-              </motion.button> */}
+            <div className="mt-6 space-y-4">
+              {/* Quantity Controls */}
+              <div
+                className={cn(
+                  'flex items-center justify-between p-3 rounded-xl border',
+                  isLight ? 'bg-light-50 border-light-200' : 'bg-dark-700 border-dark-500'
+                )}>
+                <span className="font-medium">จำนวน</span>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                    className={cn(
+                      'p-2 rounded-full transition-colors',
+                      isLight
+                        ? 'bg-light-200 hover:bg-light-300 text-dark-700'
+                        : 'bg-dark-600 hover:bg-dark-500 text-light-300',
+                      quantity <= 1 && 'opacity-50 cursor-not-allowed'
+                    )}
+                    disabled={quantity <= 1}>
+                    <Minus size={16} />
+                  </button>
+
+                  <span className="font-bold text-lg w-8 text-center">{quantity}</span>
+
+                  <button
+                    onClick={() => setQuantity((prev) => prev + 1)}
+                    className={cn(
+                      'p-2 rounded-full transition-colors',
+                      isLight
+                        ? 'bg-light-200 hover:bg-light-300 text-dark-700'
+                        : 'bg-dark-600 hover:bg-dark-500 text-light-300'
+                    )}>
+                    <Plus size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Add to Cart Button */}
+              <div className={styles.actionButtons}>
+                <AddToCartButton
+                  productId={product._id}
+                  productName={product.title}
+                  duration={category?.name || 'Standard'}
+                  price={discountedPrice}
+                  theme={theme}
+                  variant="full"
+                  className="w-full"
+                  quantity={quantity}
+                  imageUrl={product.images[0]}
+                />
+                {/* <motion.button
+                  className={styles.secondaryButton}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Add to favorites">
+                  <Heart size={20} />
+                </motion.button> */}
+              </div>
             </div>
           </div>
         </div>
@@ -533,7 +561,6 @@ export default function ProductDetail({
             onBuyNow={onBuyNow}
             onViewDetails={(productId) => {
               if (productId !== product._id && onViewDetails) {
-                // Use the provided onViewDetails function instead of changing window.location
                 onViewDetails(productId);
               }
             }}
@@ -541,42 +568,6 @@ export default function ProductDetail({
           />
         </div>
       </motion.div>
-
-      <AnimatePresence>
-        {isScrolled && (
-          <motion.div
-            className={styles.stickyBuyButton}
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ duration: 0.3 }}>
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-xs font-medium">
-                  {product.title.length > 20
-                    ? `${product.title.substring(0, 20)}...`
-                    : product.title}
-                </span>
-                <span className={cn('font-bold', themeUtils.getPrimaryColorClass('text'))}>
-                  ฿{hasDiscount ? discountedPrice.toFixed(2) : product.price.toFixed(2)}
-                </span>
-              </div>
-              <motion.button
-                onClick={handleBuyNow}
-                className={cn(
-                  'px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2',
-                  themeUtils.getPrimaryColorClass('bg'),
-                  isLight ? 'text-light-100' : 'text-dark-800'
-                )}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}>
-                ซื้อเลย
-                <MdShoppingCartCheckout />
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

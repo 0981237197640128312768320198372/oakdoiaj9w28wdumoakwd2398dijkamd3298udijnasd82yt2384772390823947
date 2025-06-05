@@ -6,6 +6,8 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StoreNavbar } from './StoreNavbar';
+import CartDrawer from './CartDrawer';
+import { CartProvider } from '@/context/CartContext';
 import PublicStoreProfile from './PublicStoreProfile';
 import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
@@ -33,6 +35,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [activePage, setActivePage] = useState('home');
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const themeUtils = useThemeUtils(theme);
   const { isAuthenticated, buyer, logout } = useBuyerAuth();
@@ -78,35 +81,38 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const layoutStyles = getLayoutStyles();
 
   return (
-    <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>
-      <StoreNavbar
-        theme={theme}
-        seller={seller}
-        activePage={activePage}
-        isAuthenticated={isAuthenticated}
-        onNavigate={setActivePage}
-      />
+    <CartProvider>
+      <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>
+        <StoreNavbar
+          theme={theme}
+          seller={seller}
+          activePage={activePage}
+          isAuthenticated={isAuthenticated}
+          onNavigate={setActivePage}
+          onCartOpen={() => setIsCartOpen(true)}
+        />
 
-      <motion.div
-        className="flex flex-col items-center min-h-fit justify-start w-full relative z-10"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            className="w-full px-5 lg:px-0 max-w-screen-lg pt-28 lg:pt-32"
-            key={activePage}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}>
-            {renderContent()}
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-
-      <StoreFooter seller={seller} theme={theme} />
-    </div>
+        <motion.div
+          className="flex flex-col items-center min-h-fit justify-start w-full relative z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}>
+          <AnimatePresence mode="wait">
+            <motion.div
+              className="w-full px-5 lg:px-0 max-w-screen-lg pt-28 lg:pt-32"
+              key={activePage}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}>
+              {renderContent()}
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+        <StoreFooter seller={seller} theme={theme} />
+        <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} theme={theme} />
+      </div>
+    </CartProvider>
   );
 };
 

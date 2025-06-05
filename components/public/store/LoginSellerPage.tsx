@@ -19,7 +19,6 @@ export default function LoginSellerPage() {
 
   useEffect(() => {
     if (seller) {
-      // Redirect based on environment
       const isDevelopment = process.env.NODE_ENV === 'development';
       const redirectPath = isDevelopment ? '/seller' : '/';
       router.push(redirectPath);

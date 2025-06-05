@@ -6,7 +6,8 @@ import type React from 'react';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
-import { Search, Home, Package, LogOut, Power } from 'lucide-react';
+import { Search, Home, Package, LogOut, Power, ShoppingCart } from 'lucide-react';
+import CartButton from './CartButton';
 import SearchModal from './SearchModal';
 import { cn } from '@/lib/utils';
 import type { ThemeType } from '@/types';
@@ -22,6 +23,7 @@ interface StoreNavbarProps {
   activePage: string;
   onNavigate: (page: string) => void;
   isAuthenticated: boolean;
+  onCartOpen: () => void;
 }
 
 export const StoreNavbar: React.FC<StoreNavbarProps> = ({
@@ -30,6 +32,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
   activePage,
   onNavigate,
   isAuthenticated,
+  onCartOpen,
 }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -118,6 +121,8 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            <CartButton onClick={onCartOpen} theme={theme} />
+
             <button
               onClick={handleSearch}
               className={cn(
@@ -230,6 +235,13 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             onClick={handleSearch}
             theme={theme}
             label="ค้นหา"
+          />
+          <MobileNavButton
+            icon={<ShoppingCart size={20} />}
+            isActive={false}
+            onClick={onCartOpen}
+            theme={theme}
+            label="ตะกร้า"
           />
           {isAuthenticated ? (
             <MobileNavButton
