@@ -88,15 +88,14 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
         </div>
 
         {/* Bottom action bar */}
-        <div className="mt-3 flex justify-between items-center pt-3 border-t border-dark-500">
+        <div className="mt-3 flex justify-between items-center pt-3 gap-5 border-t border-dark-500">
           <Button2
             variant="outline"
             size="sm"
             onClick={() => setIsDeleteModalOpen(true)}
-            className="p-1.5 bg-red-500/15 text-red-500 border-red-500 hover:bg-red-500/40 transition-colors rounded-md flex items-center gap-1"
+            className="p-1.5 bg-red-500/15 text-red-500 border-red-500 hover:bg-red-500/40 transition-colors rounded-md flex w-full items-center gap-1"
             title="Delete inventory">
             <Trash2 size={16} />
-            <span className="text-xs">Delete</span>
           </Button2>{' '}
           {isEditing ? (
             <Button2
@@ -104,7 +103,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
               size="sm"
               onClick={onSave}
               disabled={isSaving}
-              className="text-xs bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20 flex-1 sm:flex-none">
+              className="text-xs  bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20 flex w-full">
               {isSaving ? (
                 <>
                   <svg
@@ -140,7 +139,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={onUnlink}
-                  className="text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 flex-1 sm:flex-none">
+                  className="text-xs bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20 flex w-full">
                   <Link2Off size={14} className="mr-1" />
                   <span className="hidden sm:inline">Unlink</span>
                 </Button2>
@@ -149,7 +148,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={onLink}
-                  className="text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex-1 sm:flex-none">
+                  className="text-xs bg-primary/10 text-primary border-primary/10 hover:bg-primary/10 flex w-full">
                   <Link size={14} className="mr-1" />
                   <span className="hidden sm:inline">Link</span>
                 </Button2>
@@ -160,7 +159,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
             variant="outline"
             size="sm"
             onClick={onEdit}
-            className={`text-xs flex-1 sm:flex-none ${
+            className={`text-xs flex w-full ${
               isSelected
                 ? 'bg-red-500/15 text-red-500 border-red-500 hover:bg-red-500/40'
                 : 'bg-primary/10 text-primary border-primary/10 hover:bg-primary/10'

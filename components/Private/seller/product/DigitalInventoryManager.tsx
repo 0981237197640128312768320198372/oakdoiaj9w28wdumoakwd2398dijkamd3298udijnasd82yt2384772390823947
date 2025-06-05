@@ -537,7 +537,7 @@ export default function DigitalInventoryManager() {
                       </div>
                     )}
                     {isSelected && isLinkingProduct && (
-                      <div className="bg-dark-600 p-4 rounded-xl border border-dark-400">
+                      <div className="bg-dark-600 p-5 mt-2 rounded-xl border border-dark-400">
                         <h4 className="text-sm font-medium text-light-300 mb-3">Link to Product</h4>
                         <div className="flex flex-col md:flex-row gap-3">
                           <select
@@ -551,25 +551,25 @@ export default function DigitalInventoryManager() {
                               </option>
                             ))}
                           </select>
-                          <div className="flex gap-2">
-                            <Button2
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setIsLinkingProduct(false);
-                                setSelectedProductId('');
-                              }}
-                              className="h-10 text-xs bg-dark-600 text-light-400 border-dark-500 hover:bg-dark-500">
-                              Cancel
-                            </Button2>
-                            <Button2
-                              size="sm"
-                              onClick={() => handleLinkProduct(selectedInventoryIndex!)}
-                              disabled={!selectedProductId || isLoading}
-                              className="h-10 text-xs bg-primary hover:bg-primary ">
-                              Link Product
-                            </Button2>
-                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button2
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setIsLinkingProduct(false);
+                              setSelectedProductId('');
+                            }}
+                            className="h-10 text-xs bg-dark-600 text-light-400 border-dark-500 hover:bg-dark-500">
+                            Cancel
+                          </Button2>
+                          <Button2
+                            size="sm"
+                            onClick={() => handleLinkProduct(selectedInventoryIndex!)}
+                            disabled={!selectedProductId || isLoading}
+                            className="h-10 text-xs bg-primary hover:bg-primary ">
+                            Link Product
+                          </Button2>
                         </div>
                       </div>
                     )}
