@@ -36,7 +36,10 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className={cn(
+              'fixed inset-0 backdrop-blur z-50',
+              isLight ? 'bg-light-200/50' : 'bg-dark-800/50'
+            )}
             onClick={onClose}
           />
 
@@ -47,7 +50,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme }) => {
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={cn(
-              'fixed top-0 right-0 h-full w-full max-w-md z-50 flex flex-col',
+              'fixed top-0 right-0 h-full w-full max-w-md z-50 flex flex-col shadow-md shadow-black/30',
               isLight ? 'bg-light-100 text-dark-800' : 'bg-dark-800 text-light-100',
               'shadow-xl'
             )}>
@@ -106,7 +109,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme }) => {
                         isLight ? 'bg-light-200' : 'bg-dark-700'
                       )}>
                       {/* Product Image */}
-                      <div className="relative w-16 h-16 overflow-hidden rounded-lg flex-shrink-0 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+                      <div className="relative w-16 h-16 overflow-hidden rounded-lg flex-shrink-0 flex items-center justify-center">
                         <Image
                           src={item.imageUrl || dokmailogosquare}
                           alt={item.appName}

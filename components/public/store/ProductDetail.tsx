@@ -15,10 +15,8 @@ import {
   MessageSquare,
   Truck,
   ShieldCheck,
-  Minus,
-  Plus,
 } from 'lucide-react';
-import AddToCartButton from './AddToCartButton';
+import QuantityControls from './QuantityControls';
 import { Product, Category, ThemeType } from '@/types';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -49,7 +47,6 @@ export default function ProductDetail({
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>(
     'description'
   );
-  const [quantity, setQuantity] = useState(1);
 
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
@@ -418,53 +415,15 @@ export default function ProductDetail({
             </div>
 
             <div className="mt-6 space-y-4">
-              {/* Quantity Controls */}
-              <div
-                className={cn(
-                  'flex items-center justify-between p-3 rounded-xl border',
-                  isLight ? 'bg-light-50 border-light-200' : 'bg-dark-700 border-dark-500'
-                )}>
-                <span className="font-medium">จำนวน</span>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                    className={cn(
-                      'p-2 rounded-full transition-colors',
-                      isLight
-                        ? 'bg-light-200 hover:bg-light-300 text-dark-700'
-                        : 'bg-dark-600 hover:bg-dark-500 text-light-300',
-                      quantity <= 1 && 'opacity-50 cursor-not-allowed'
-                    )}
-                    disabled={quantity <= 1}>
-                    <Minus size={16} />
-                  </button>
-
-                  <span className="font-bold text-lg w-8 text-center">{quantity}</span>
-
-                  <button
-                    onClick={() => setQuantity((prev) => prev + 1)}
-                    className={cn(
-                      'p-2 rounded-full transition-colors',
-                      isLight
-                        ? 'bg-light-200 hover:bg-light-300 text-dark-700'
-                        : 'bg-dark-600 hover:bg-dark-500 text-light-300'
-                    )}>
-                    <Plus size={16} />
-                  </button>
-                </div>
-              </div>
-
               {/* Add to Cart Button */}
               <div className={styles.actionButtons}>
-                <AddToCartButton
+                <QuantityControls
                   productId={product._id}
                   productName={product.title}
                   duration={category?.name || 'Standard'}
                   price={discountedPrice}
                   theme={theme}
-                  variant="full"
-                  className="w-full"
-                  quantity={quantity}
+                  className="w-full h-12"
                   imageUrl={product.images[0]}
                 />
                 {/* <motion.button

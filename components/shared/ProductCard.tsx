@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Star, Edit, Trash2, AlertTriangle, Check } from 'lucide-react';
-import AddToCartButton from '@/components/public/store/AddToCartButton';
+import QuantityControls from '@/components/public/store/QuantityControls';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
@@ -311,7 +311,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               )}
             </div>
           </div>
-          <div className="flex w-full justify-between items-center">
+          <div className="flex flex-col w-full gap-1">
             <div className="flex items-center gap-3">
               {hasDiscount ? (
                 <div className="flex flex-col lg:flex-row-reverse lg:gap-2 gap-1">
@@ -349,14 +349,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </span>
               )}
             </div>
+            <span className={styles.stockText}>
+              {isSeller ? `Stock: ${product._stock}` : `พร้อมส่ง: ${product._stock}`}
+            </span>
           </div>
         </div>
 
         <div className={styles.footer}>
-          <span className={styles.stockText}>
-            {isSeller ? `Stock: ${product._stock}` : `พร้อมส่ง: ${product._stock}`}
-          </span>
-
           {isSeller ? (
             <div className="flex -space-x-1">
               <button onClick={handleEdit} className={cn(styles.actionButton, styles.editButton)}>
@@ -369,15 +368,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center">
-              <AddToCartButton
+            <div className="flex items-center w-full justify-end">
+              <QuantityControls
                 productId={product._id}
                 productName={product.title}
                 duration={category?.name || 'Standard'}
                 price={discountedPrice}
                 theme={theme}
-                variant="full"
-                className={cn(styles.buyButton, 'transition-all duration-200 w-full')}
+                className="w-24 h-8"
                 imageUrl={product.images[0]}
               />
             </div>
