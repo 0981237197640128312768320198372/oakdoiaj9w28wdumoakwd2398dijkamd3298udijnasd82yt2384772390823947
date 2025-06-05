@@ -105,7 +105,7 @@ export default function ProductDetail({
         isLight ? 'text-dark-800' : 'text-light-200'
       ),
       breadcrumb: cn(
-        'flex items-center text-sm gap-2 overflow-x-auto whitespace-nowrap pb-2',
+        'flex items-center text-sm gap-2 overflow-x-auto whitespace-nowrap pb-2 select-none',
         isLight ? 'text-dark-500' : 'text-light-400'
       ),
       breadcrumbSeparator: cn('text-xs opacity-50'),
@@ -151,7 +151,7 @@ export default function ProductDetail({
       // Product info section
       infoSection: cn('space-y-6', isLight ? 'text-dark-800' : 'text-light-200'),
       categoryTag: cn(
-        'inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium',
+        'inline-flex items-center gap-1 px-4 py-2 text-xs font-medium',
         isLight
           ? 'bg-light-200 text-dark-600 border border-light-300'
           : 'bg-dark-600 text-light-400 border border-dark-500'
@@ -276,11 +276,11 @@ export default function ProductDetail({
         {/* Header with breadcrumb and back button */}
         <div className={styles.header}>
           <div className={styles.breadcrumb}>
-            <span className="hover:underline cursor-pointer">หน้าหลัก</span>
+            <span>หน้าหลัก</span>
             <span className={styles.breadcrumbSeparator}>/</span>
             {category && (
               <>
-                <span className="hover:underline cursor-pointer">{category.name}</span>
+                <span>{category.name}</span>
                 <span className={styles.breadcrumbSeparator}>/</span>
               </>
             )}
@@ -369,12 +369,12 @@ export default function ProductDetail({
                     <Image
                       src={category.logoUrl}
                       alt={category.name}
-                      width={16}
-                      height={16}
-                      className="mr-1"
+                      width={75}
+                      height={75}
+                      className="w-auto h-10"
                     />
                   ) : null}
-                  <span>{category.name}</span>
+                  {/* <span>{category.name}</span> */}
                 </div>
               )}
             </div>
