@@ -143,7 +143,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       ),
       contentContainer: cn('p-3 space-y-2', isLight ? 'text-dark-800' : 'text-light-200'),
       title: cn(
-        'text-xs lg:text-sm font-semibold line-clamp-2 w-full',
+        'text-xs lg:text-sm font-semibold line-clamp-1 w-full',
         isLight ? 'text-dark-800' : 'text-light-200'
       ),
       originalPrice: cn(

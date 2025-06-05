@@ -59,7 +59,6 @@ export default function ProductDetail({
     ? product.price * (1 - product.discountPercentage / 100)
     : product.price;
 
-  // Monitor scroll position for sticky buy button
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 300);
@@ -86,20 +85,17 @@ export default function ProductDetail({
   };
 
   const handleShare = () => {
-    // Future implementation for share functionality
     alert('Share functionality will be implemented in the future');
   };
 
   const getStyles = () => {
     return {
-      // Main container
       container: cn(
         'w-full animate-fade-in space-y-8 pb-24 md:pb-12',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass()
       ),
 
-      // Header and navigation
       header: cn(
         'flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 px-4 md:px-6 pt-6',
         isLight ? 'text-dark-800' : 'text-light-200'
@@ -120,10 +116,8 @@ export default function ProductDetail({
           : 'bg-dark-700 hover:bg-dark-600 text-light-300'
       ),
 
-      // Main content layout
       mainContent: cn('grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-6'),
 
-      // Image gallery section
       imageSection: cn(
         'relative aspect-square w-full overflow-hidden rounded-xl border shadow-md',
         isLight ? 'bg-light-100 border-light-300' : 'bg-dark-700 border-dark-500'
@@ -133,14 +127,14 @@ export default function ProductDetail({
         themeUtils.getComponentRoundednessClass()
       ),
       thumbnailContainer: cn(
-        'flex gap-2 mt-4 overflow-x-auto pb-2 px-1',
+        'flex gap-2 overflow-x-auto pb-2 px-1',
         'scrollbar-thin scrollbar-thumb-rounded-full',
         isLight
           ? 'scrollbar-thumb-light-400 scrollbar-track-light-200'
           : 'scrollbar-thumb-dark-400 scrollbar-track-dark-600'
       ),
       thumbnail: cn(
-        'w-16 h-16 rounded-lg border cursor-pointer transition-all duration-200',
+        'w-16 h-16 rounded-lg border cursor-pointer transition-all duration-200 !bg-red-500',
         isLight ? 'border-light-300 hover:border-primary' : 'border-dark-500 hover:border-primary'
       ),
       activeThumbnail: cn(
@@ -148,20 +142,18 @@ export default function ProductDetail({
         themeUtils.getPrimaryColorClass('border')
       ),
 
-      // Product info section
       infoSection: cn('space-y-6', isLight ? 'text-dark-800' : 'text-light-200'),
       categoryTag: cn(
         'inline-flex items-center gap-1 px-4 py-2 text-xs font-medium',
         isLight
           ? 'bg-light-200 text-dark-600 border border-light-300'
-          : 'bg-dark-600 text-light-400 border border-dark-500'
+          : 'bg-dark-500 text-light-400 border border-dark-400'
       ),
       title: cn(
         'text-2xl md:text-3xl font-bold leading-tight',
         isLight ? 'text-dark-800' : 'text-light-100'
       ),
 
-      // Rating styles
       ratingContainer: cn(
         'flex items-center gap-2 mt-2',
         isLight ? 'text-amber-500' : 'text-amber-400'
@@ -172,7 +164,6 @@ export default function ProductDetail({
       ),
       ratingCount: cn('text-sm ml-2', isLight ? 'text-dark-500' : 'text-light-400'),
 
-      // Price styles
       priceContainer: cn('flex flex-col gap-1 mt-4'),
       originalPrice: cn(
         'text-sm line-through whitespace-nowrap font-thin flex gap-2 items-center opacity-60',
@@ -187,7 +178,6 @@ export default function ProductDetail({
         isLight ? 'text-dark-800' : themeUtils.getPrimaryColorClass('text')
       ),
 
-      // Product details
       detailsCard: cn(
         'p-4 rounded-xl border mt-6',
         isLight ? 'bg-light-50 border-light-200' : 'bg-dark-800/50 border-dark-600'
@@ -197,7 +187,6 @@ export default function ProductDetail({
         isLight ? 'text-dark-600' : 'text-light-400'
       ),
 
-      // Action buttons
       actionButtons: cn('flex gap-3 mt-6'),
       buyButton: cn(
         'flex-1 px-6 py-3.5 rounded-xl text-base font-medium flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-md',
@@ -211,7 +200,6 @@ export default function ProductDetail({
           : 'bg-dark-700 border-dark-500 text-light-400 hover:bg-dark-600'
       ),
 
-      // Image navigation
       navButton: cn(
         'absolute top-1/2 -translate-y-1/2 p-2 rounded-full z-10 shadow-md transition-transform duration-200 hover:scale-110',
         isLight
@@ -219,14 +207,12 @@ export default function ProductDetail({
           : 'bg-dark-700/90 text-light-200 hover:bg-dark-800'
       ),
 
-      // Discount badge
       discountBadge: cn(
         'absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold shadow-md',
         themeUtils.getPrimaryColorClass('bg'),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
 
-      // Tab navigation
       tabsContainer: cn(
         'flex border-b mt-8 px-4 md:px-6',
         isLight ? 'border-light-300' : 'border-dark-600'
@@ -242,14 +228,11 @@ export default function ProductDetail({
       ),
       tabContent: cn('px-4 md:px-6 py-6'),
 
-      // Sticky buy button for mobile
       stickyBuyButton: cn(
         'fixed bottom-0 left-0 right-0 p-4 z-50 transition-transform duration-300 shadow-lg md:hidden',
         isLight ? 'bg-light-100/95 backdrop-blur-md' : 'bg-dark-800/95 backdrop-blur-md',
         isScrolled ? 'translate-y-0' : 'translate-y-full'
       ),
-
-      // Utility styles
       dokmaiCoin: dokmaiCoinSymbol(isLight),
       divider: cn('w-full h-px my-6', isLight ? 'bg-light-300' : 'bg-dark-600'),
     };
@@ -257,7 +240,6 @@ export default function ProductDetail({
 
   const styles = getStyles();
 
-  // Mock data for future features
   const specifications = [
     { label: 'ประเภทสินค้า', value: 'สินค้าดิจิทัล' },
     { label: 'ระยะเวลาใช้งาน', value: '30 วัน' },
@@ -273,7 +255,6 @@ export default function ProductDetail({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}>
-        {/* Header with breadcrumb and back button */}
         <div className={styles.header}>
           <div className={styles.breadcrumb}>
             <span>หน้าหลัก</span>
@@ -293,9 +274,7 @@ export default function ProductDetail({
           </button>
         </div>
 
-        {/* Main content */}
         <div className={styles.mainContent}>
-          {/* Image gallery section */}
           <div>
             <motion.div
               className={styles.imageSection}
@@ -305,7 +284,7 @@ export default function ProductDetail({
                 src={currentImage}
                 alt={product.title}
                 fill
-                className="object-contain p-2"
+                className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
@@ -332,7 +311,6 @@ export default function ProductDetail({
               )}
             </motion.div>
 
-            {/* Thumbnails */}
             {product.images.length > 1 && (
               <div className={styles.thumbnailContainer}>
                 {product.images.map((image, index) => (
@@ -345,7 +323,7 @@ export default function ProductDetail({
                     onClick={() => setCurrentImageIndex(index)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}>
-                    <div className="relative w-full h-full">
+                    <div className="relative w-full h-full ">
                       <Image
                         src={image}
                         alt={`${product.title} - ภาพที่ ${index + 1}`}
@@ -360,7 +338,6 @@ export default function ProductDetail({
             )}
           </div>
 
-          {/* Product info section */}
           <div className={styles.infoSection}>
             <div className="flex items-center justify-between">
               {category && (
@@ -371,17 +348,15 @@ export default function ProductDetail({
                       alt={category.name}
                       width={75}
                       height={75}
-                      className="w-auto h-10"
+                      className="w-auto h-6 rounded"
                     />
                   ) : null}
-                  {/* <span>{category.name}</span> */}
                 </div>
               )}
             </div>
 
             <h1 className={styles.title}>{product.title}</h1>
 
-            {/* Rating section */}
             <div className="flex items-center gap-3 flex-wrap">
               {product.rating ? (
                 <div className={styles.ratingContainer}>
@@ -402,7 +377,6 @@ export default function ProductDetail({
               ) : null}
             </div>
 
-            {/* Price section */}
             <div className={styles.priceContainer}>
               {hasDiscount ? (
                 <>
@@ -465,7 +439,6 @@ export default function ProductDetail({
               </div>
             </div>
 
-            {/* Action buttons */}
             <div className={styles.actionButtons}>
               <motion.button
                 onClick={handleBuyNow}
@@ -496,7 +469,6 @@ export default function ProductDetail({
           </div>
         </div>
 
-        {/* Tabs for description, specifications, and reviews */}
         <div className={styles.tabsContainer}>
           <button
             className={cn(styles.tab, activeTab === 'description' && styles.activeTab)}
@@ -515,7 +487,6 @@ export default function ProductDetail({
           </button>
         </div>
 
-        {/* Tab content */}
         <div className={styles.tabContent}>
           <AnimatePresence mode="wait">
             {activeTab === 'description' && (
@@ -602,7 +573,6 @@ export default function ProductDetail({
           </AnimatePresence>
         </div>
 
-        {/* Related products section */}
         <div className="px-4 md:px-6 mt-8">
           <h3 className="text-xl font-semibold  mb-4">สินค้าที่เกี่ยวข้อง</h3>
           <RelatedProducts
@@ -611,8 +581,6 @@ export default function ProductDetail({
             theme={theme}
             onBuyNow={onBuyNow}
             onViewDetails={(productId) => {
-              // This is a simple implementation that just refreshes the page with the new product
-              // In a real implementation, you might want to use a router to navigate
               if (productId !== product._id) {
                 window.location.href = `?productId=${productId}`;
               }
@@ -622,7 +590,6 @@ export default function ProductDetail({
         </div>
       </motion.div>
 
-      {/* Sticky buy button for mobile */}
       <AnimatePresence>
         {isScrolled && (
           <motion.div

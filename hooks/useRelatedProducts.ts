@@ -5,6 +5,7 @@ import { Product } from '@/types';
 export const useRelatedProducts = (
   currentProductId: string,
   categoryId: string,
+  currentPrice: number,
   sellerId?: string
 ) => {
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -13,8 +14,8 @@ export const useRelatedProducts = (
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
-      if (!categoryId || !currentProductId) {
-        console.log('Missing required parameters:', { categoryId, currentProductId });
+      if (!currentProductId) {
+        console.log('Missing required parameter: currentProductId');
         return;
       }
 
@@ -22,28 +23,78 @@ export const useRelatedProducts = (
       setError(null);
 
       try {
-        // Use relative URL to avoid CORS issues
+        // First try to get products by category
         const storeParam = sellerId ? `&store=${sellerId}` : '';
-        console.log(
-          `Fetching related products for category: ${categoryId}, excluding product: ${currentProductId}`
-        );
+        let relatedByCategory: Product[] = [];
 
-        const response = await fetch(`/api/v3/products?categoryId=${categoryId}${storeParam}`);
+        if (categoryId) {
+          console.log(`Fetching related products for category: ${categoryId}`);
+          const categoryResponse = await fetch(
+            `/api/v3/products?categoryId=${categoryId}${storeParam}`
+          );
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('API response:', data);
+          if (categoryResponse.ok) {
+            const categoryData = await categoryResponse.json();
+            console.log('Category API response:', categoryData);
 
-          // Filter out the current product and limit to 4 related products
-          const filtered = data.products
-            .filter((product: Product) => product._id !== currentProductId)
-            .slice(0, 4);
+            // Filter out the current product
+            relatedByCategory = categoryData.products.filter(
+              (product: Product) => product._id !== currentProductId
+            );
 
-          console.log('Filtered related products:', filtered);
-          setRelatedProducts(filtered);
-        } else {
-          console.error('Failed to fetch related products:', response.statusText);
-          setError('Failed to fetch related products');
+            console.log('Related products by category:', relatedByCategory);
+          }
+        }
+
+        // If we have enough category-related products, use those
+        if (relatedByCategory.length >= 2) {
+          setRelatedProducts(relatedByCategory.slice(0, 4));
+        }
+        // Otherwise, fetch products with similar price
+        else {
+          console.log(`Fetching products with similar price to: ${currentPrice}`);
+
+          // Fetch all products
+          const allProductsResponse = await fetch(
+            `/api/v3/products${storeParam ? `?${storeParam.substring(1)}` : ''}`
+          );
+
+          if (allProductsResponse.ok) {
+            const allProductsData = await allProductsResponse.json();
+            console.log('All products API response:', allProductsData);
+
+            // Filter out the current product and sort by price similarity
+            const productsBySimilarPrice = allProductsData.products
+              .filter((product: Product) => product._id !== currentProductId)
+              .sort((a: Product, b: Product) => {
+                const aPriceDiff = Math.abs(a.price - currentPrice);
+                const bPriceDiff = Math.abs(b.price - currentPrice);
+                return aPriceDiff - bPriceDiff;
+              });
+
+            console.log('Products sorted by price similarity:', productsBySimilarPrice);
+
+            // Combine category products with price-similar products
+            const combinedProducts = [...relatedByCategory];
+
+            // Add price-similar products that aren't already in the list
+            for (const product of productsBySimilarPrice) {
+              if (!combinedProducts.some((p) => p._id === product._id)) {
+                combinedProducts.push(product);
+                if (combinedProducts.length >= 4) break;
+              }
+            }
+
+            setRelatedProducts(combinedProducts.slice(0, 4));
+          } else {
+            console.error('Failed to fetch all products:', allProductsResponse.statusText);
+            // If we have some category products, use those even if fewer than 4
+            if (relatedByCategory.length > 0) {
+              setRelatedProducts(relatedByCategory);
+            } else {
+              setError('Failed to fetch related products');
+            }
+          }
         }
       } catch (err) {
         console.error('Error fetching related products:', err);
@@ -54,7 +105,7 @@ export const useRelatedProducts = (
     };
 
     fetchRelatedProducts();
-  }, [currentProductId, categoryId, sellerId]);
+  }, [currentProductId, categoryId, currentPrice, sellerId]);
 
   return { relatedProducts, isLoading, error };
 };

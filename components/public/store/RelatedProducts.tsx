@@ -31,11 +31,13 @@ export default function RelatedProducts({
   const { relatedProducts, isLoading, error } = useRelatedProducts(
     product._id,
     product.categoryId,
+    product.price,
     sellerId
   );
   console.log('RelatedProducts props:', {
     productId: product._id,
     categoryId: product.categoryId,
+    price: product.price,
     sellerId,
   });
   console.log('Related products data:', relatedProducts);

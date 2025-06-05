@@ -216,7 +216,7 @@ const ProductList: React.FC<ProductListProps> = ({
       // Loading skeleton
       skeletonBg: isLight ? 'bg-light-200' : 'bg-dark-700',
       skeletonCard: isLight ? 'bg-light-100 border-light-300' : 'bg-dark-750 border-dark-600',
-      skeletonContent: isLight ? 'bg-light-300' : 'bg-dark-700',
+      skeletonContent: isLight ? 'bg-light-300' : 'bg-dark-600',
     };
   };
 
