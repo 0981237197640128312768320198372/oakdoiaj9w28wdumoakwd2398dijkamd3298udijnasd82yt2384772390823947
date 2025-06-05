@@ -22,7 +22,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(authBuyer);
 
-  // Use the buyer from SWR if available, otherwise use the prop
   useEffect(() => {
     if (buyer) {
       setLocalBuyer(buyer);

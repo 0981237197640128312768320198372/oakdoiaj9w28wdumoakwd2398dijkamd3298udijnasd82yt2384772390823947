@@ -10,8 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Package,
-  Share2,
-  Heart,
+  // Heart,
   Info,
   MessageSquare,
   Truck,
@@ -30,6 +29,7 @@ interface ProductDetailProps {
   theme: ThemeType;
   onBack: () => void;
   onBuyNow: (productId: string) => void;
+  onViewDetails?: (productId: string) => void; // Add this prop
   sellerId?: string;
 }
 
@@ -40,6 +40,7 @@ export default function ProductDetail({
   theme,
   onBack,
   onBuyNow,
+  onViewDetails,
   sellerId,
 }: ProductDetailProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -84,10 +85,6 @@ export default function ProductDetail({
     onBuyNow(product._id);
   };
 
-  const handleShare = () => {
-    alert('Share functionality will be implemented in the future');
-  };
-
   const getStyles = () => {
     return {
       container: cn(
@@ -110,7 +107,7 @@ export default function ProductDetail({
         themeUtils.getPrimaryColorClass('text')
       ),
       backButton: cn(
-        'flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105',
+        'flex items-center w-fit gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105',
         isLight
           ? 'bg-light-200 hover:bg-light-300 text-dark-700'
           : 'bg-dark-700 hover:bg-dark-600 text-light-300'
@@ -134,7 +131,7 @@ export default function ProductDetail({
           : 'scrollbar-thumb-dark-400 scrollbar-track-dark-600'
       ),
       thumbnail: cn(
-        'w-16 h-16 rounded-lg border cursor-pointer transition-all duration-200 !bg-red-500',
+        'w-16 h-16 rounded-lg border cursor-pointer transition-all duration-200',
         isLight ? 'border-light-300 hover:border-primary' : 'border-dark-500 hover:border-primary'
       ),
       activeThumbnail: cn(
@@ -147,7 +144,8 @@ export default function ProductDetail({
         'inline-flex items-center gap-1 px-4 py-2 text-xs font-medium',
         isLight
           ? 'bg-light-200 text-dark-600 border border-light-300'
-          : 'bg-dark-500 text-light-400 border border-dark-400'
+          : 'bg-dark-600 text-light-400 border border-dark-400',
+        themeUtils.getComponentRoundednessClass()
       ),
       title: cn(
         'text-2xl md:text-3xl font-bold leading-tight',
@@ -187,7 +185,7 @@ export default function ProductDetail({
         isLight ? 'text-dark-600' : 'text-light-400'
       ),
 
-      actionButtons: cn('flex gap-3 mt-6'),
+      actionButtons: cn('flex gap-5 mt-6'),
       buyButton: cn(
         'flex-1 px-6 py-3.5 rounded-xl text-base font-medium flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-md',
         themeUtils.getPrimaryColorClass('bg'),
@@ -208,8 +206,9 @@ export default function ProductDetail({
       ),
 
       discountBadge: cn(
-        'absolute top-4 right-4 px-3 py-1 rounded-full text-sm font-bold shadow-md',
+        'absolute top-4 right-4 px-3 py-1 text-sm lg:text-lg font-bold shadow-md',
         themeUtils.getPrimaryColorClass('bg'),
+        themeUtils.getComponentRoundednessClass(),
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
 
@@ -239,13 +238,6 @@ export default function ProductDetail({
   };
 
   const styles = getStyles();
-
-  const specifications = [
-    { label: 'ประเภทสินค้า', value: 'สินค้าดิจิทัล' },
-    { label: 'ระยะเวลาใช้งาน', value: '30 วัน' },
-    { label: 'รองรับอุปกรณ์', value: 'ทุกอุปกรณ์' },
-    { label: 'การจัดส่ง', value: 'ทันที (ดิจิทัล)' },
-  ];
 
   return (
     <>
@@ -284,7 +276,7 @@ export default function ProductDetail({
                 src={currentImage}
                 alt={product.title}
                 fill
-                className="object-contain"
+                className="object-center w-full h-full"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
@@ -448,23 +440,13 @@ export default function ProductDetail({
                 ซื้อเลย
                 <MdShoppingCartCheckout className="text-xl" />
               </motion.button>
-
-              <motion.button
+              {/* <motion.button
                 className={styles.secondaryButton}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="Add to favorites">
                 <Heart size={20} />
-              </motion.button>
-
-              <motion.button
-                onClick={handleShare}
-                className={styles.secondaryButton}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                aria-label="Share product">
-                <Share2 size={20} />
-              </motion.button>
+              </motion.button> */}
             </div>
           </div>
         </div>
@@ -474,11 +456,6 @@ export default function ProductDetail({
             className={cn(styles.tab, activeTab === 'description' && styles.activeTab)}
             onClick={() => setActiveTab('description')}>
             รายละเอียดสินค้า
-          </button>
-          <button
-            className={cn(styles.tab, activeTab === 'specifications' && styles.activeTab)}
-            onClick={() => setActiveTab('specifications')}>
-            ข้อมูลจำเพาะ
           </button>
           <button
             className={cn(styles.tab, activeTab === 'reviews' && styles.activeTab)}
@@ -500,7 +477,7 @@ export default function ProductDetail({
                 <div
                   className={cn(
                     'text-base leading-relaxed whitespace-pre-line p-4 rounded-xl',
-                    isLight ? 'bg-light-50 text-dark-700' : 'bg-dark-800/50 text-light-300'
+                    isLight ? 'bg-light-100 text-dark-700' : 'bg-dark-800/30 text-light-300'
                   )}>
                   {product.description || 'ไม่มีคำอธิบายสินค้า'}
                 </div>
@@ -519,33 +496,7 @@ export default function ProductDetail({
                   className={cn(
                     'rounded-xl overflow-hidden border',
                     isLight ? 'border-light-300' : 'border-dark-600'
-                  )}>
-                  {specifications.map((spec, index) => (
-                    <div
-                      key={index}
-                      className={cn(
-                        'flex flex-col sm:flex-row sm:items-center py-3 px-4',
-                        index % 2 === 0
-                          ? isLight
-                            ? 'bg-light-50'
-                            : 'bg-dark-800/30'
-                          : isLight
-                          ? 'bg-light-100'
-                          : 'bg-dark-800/60',
-                        index !== specifications.length - 1 && 'border-b',
-                        isLight ? 'border-light-200' : 'border-dark-600'
-                      )}>
-                      <div
-                        className={cn(
-                          'sm:w-1/3 font-medium',
-                          isLight ? 'text-dark-600' : 'text-light-400'
-                        )}>
-                        {spec.label}
-                      </div>
-                      <div className="sm:w-2/3 mt-1 sm:mt-0">{spec.value}</div>
-                    </div>
-                  ))}
-                </div>
+                  )}></div>
               </motion.div>
             )}
 
@@ -581,8 +532,9 @@ export default function ProductDetail({
             theme={theme}
             onBuyNow={onBuyNow}
             onViewDetails={(productId) => {
-              if (productId !== product._id) {
-                window.location.href = `?productId=${productId}`;
+              if (productId !== product._id && onViewDetails) {
+                // Use the provided onViewDetails function instead of changing window.location
+                onViewDetails(productId);
               }
             }}
             sellerId={sellerId}

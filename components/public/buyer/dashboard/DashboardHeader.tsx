@@ -47,7 +47,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
 
-  // Use the buyer from SWR if available, otherwise use the prop
   useEffect(() => {
     if (buyer) {
       setLocalBuyer(buyer);

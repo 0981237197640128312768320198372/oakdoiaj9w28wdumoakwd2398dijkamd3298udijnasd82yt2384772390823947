@@ -148,6 +148,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
               theme={theme}
               onBack={handleBackToProducts}
               onBuyNow={handleBuyNow}
+              onViewDetails={handleViewProductDetail}
               sellerId={store}
             />
           </motion.div>

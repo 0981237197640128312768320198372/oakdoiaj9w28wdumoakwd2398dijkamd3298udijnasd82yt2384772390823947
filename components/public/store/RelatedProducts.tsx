@@ -34,14 +34,7 @@ export default function RelatedProducts({
     product.price,
     sellerId
   );
-  console.log('RelatedProducts props:', {
-    productId: product._id,
-    categoryId: product.categoryId,
-    price: product.price,
-    sellerId,
-  });
-  console.log('Related products data:', relatedProducts);
-  // Animation variants
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

@@ -56,11 +56,9 @@ const ProductList: React.FC<ProductListProps> = ({
   const isSeller = role === 'seller';
   const isLight = themeUtils.baseTheme === 'light';
 
-  // Calculate stats for seller view
   const totalProducts = products.length;
   const activeProducts = products.filter((p) => p.status === 'active').length;
 
-  // Get unique categories used by products
   const uniqueCategories = Array.from(
     new Set(products.map((product) => product.categoryId))
   ).filter(Boolean);
@@ -68,11 +66,9 @@ const ProductList: React.FC<ProductListProps> = ({
 
   const totalStock = products.reduce((sum, product) => sum + (product._stock || 0), 0);
 
-  // Filter products based on search and filters
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Search term filter
     if (searchTerm) {
       result = result.filter(
         (product) =>
@@ -82,12 +78,10 @@ const ProductList: React.FC<ProductListProps> = ({
       );
     }
 
-    // Category filter
     if (categoryFilter !== 'all') {
       result = result.filter((product) => product.categoryId === categoryFilter);
     }
 
-    // Status filter (only for seller view)
     if (isSeller && statusFilter !== 'all') {
       result = result.filter(
         (product) =>
@@ -96,7 +90,6 @@ const ProductList: React.FC<ProductListProps> = ({
       );
     }
 
-    // Sort products
     switch (sortOption) {
       case 'price-asc':
         result.sort((a, b) => (a.price || 0) - (b.price || 0));
@@ -117,15 +110,12 @@ const ProductList: React.FC<ProductListProps> = ({
     return result;
   }, [products, searchTerm, categoryFilter, statusFilter, sortOption, isSeller]);
 
-  // Get visible products for pagination
   const visibleFilteredProducts = useMemo(() => {
     return filteredProducts.slice(0, visibleProducts);
   }, [filteredProducts, visibleProducts]);
 
-  // Handle refresh
   const handleRefresh = () => {
     setIsRefreshing(true);
-    // Simulate refresh - in a real app, you would fetch fresh data here
     setTimeout(() => setIsRefreshing(false), 1000);
   };
 
@@ -133,7 +123,6 @@ const ProductList: React.FC<ProductListProps> = ({
     setVisibleProducts((prev) => prev + 8);
   };
 
-  // Handle clear filters
   const handleClearFilters = () => {
     setSearchTerm('');
     setCategoryFilter('all');
@@ -142,7 +131,6 @@ const ProductList: React.FC<ProductListProps> = ({
     setShowAdvancedFilters(false);
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -158,17 +146,14 @@ const ProductList: React.FC<ProductListProps> = ({
     visible: { y: 0, opacity: 1, transition: { duration: 0.4 } },
   };
 
-  // Component styles based on theme
   const getComponentStyles = () => {
     return {
-      // Card and container styles
       container: cn(
         'space-y-5 animate-fade-in w-full p-5',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass()
       ),
 
-      // Stats card styles
       statsCard: cn(
         'rounded-xl p-4 border shadow-sm hover:shadow-md transition-all duration-300 bg-dark-600 border-dark-400 hover:border-dark-300'
       ),
