@@ -149,7 +149,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.2 }}
-                  className="hidden md:flex items-center gap-2">
+                  className="flex items-center gap-2">
                   <button
                     onClick={() => onNavigate('buyerdashboard')}
                     className={cn(
@@ -229,37 +229,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             theme={theme}
             label="สินค้า"
           />
-          <MobileNavButton
-            icon={<Search size={20} />}
-            isActive={false}
-            onClick={handleSearch}
-            theme={theme}
-            label="ค้นหา"
-          />
-          <MobileNavButton
-            icon={<ShoppingCart size={20} />}
-            isActive={false}
-            onClick={onCartOpen}
-            theme={theme}
-            label="ตะกร้า"
-          />
-          {isAuthenticated ? (
-            <MobileNavButton
-              icon={<CircleUserRound size={20} />}
-              isActive={activePage === 'buyerdashboard'}
-              onClick={() => onNavigate('buyerdashboard')}
-              theme={theme}
-              label="บัญชี"
-            />
-          ) : (
-            <MobileNavButton
-              icon={<Power size={20} />}
-              isActive={activePage === 'authbuyer'}
-              onClick={() => onNavigate('authbuyer')}
-              theme={theme}
-              label="เข้าสู่ระบบ"
-            />
-          )}
         </motion.div>
       </div>
 

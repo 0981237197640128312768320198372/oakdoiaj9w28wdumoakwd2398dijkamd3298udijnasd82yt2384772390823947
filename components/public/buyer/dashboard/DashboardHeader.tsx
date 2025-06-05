@@ -11,6 +11,7 @@ import { useThemeUtils } from '@/lib/theme-utils';
 import { ProfileActionPanel } from './ProfileActionPanel';
 import { EditProfileModal } from './EditProfileModal';
 import Image from 'next/image';
+import MenuButton from './MenuButton';
 
 interface Contact {
   facebook?: string;
@@ -72,6 +73,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   };
 
   const isLight = themeUtils.baseTheme === 'light';
+  console.log(buyer);
   return (
     <>
       <motion.div
@@ -86,7 +88,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           themeUtils.getTextColors()
         )}>
         {/* Header Section */}
-        <div className="p-5 ">
+        <div className="p-5">
           <div className="flex flex-row gap-5">
             <div className="flex-shrink-0">
               <div className="relative inline-block overflow-hidden rounded-full">
@@ -114,21 +116,20 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               </div>
             </div>
             <div className="flex w-full justify-between">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 ">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
                 <div>
                   <h1 className={cn('text-lg font-bold truncate', themeUtils.getTextColors())}>
                     {localBuyer.name}
                   </h1>
-
                   {localBuyer.username && (
                     <p className="text-sm opacity-70 mt-0.5">@{localBuyer.username}</p>
                   )}
                   <div className="mt-2 space-y-1">
-                    <p className="text-xs  flex items-center gap-1.5">
+                    <p className="text-xs flex items-center gap-1.5">
                       <Mail size={12} className="text-gray-500" />
                       <span className="opacity-70">{localBuyer.email}</span>
                     </p>
-                    <div className="flex items-center gap-1.5 text-xs ">
+                    <div className="flex items-center gap-1.5 text-xs">
                       <Calendar size={12} className={themeUtils.getTextColors()} />
                       <span className="opacity-70">
                         เป็นสมาชิกตั้งแต่ {formatDate(localBuyer.createdAt)}
@@ -137,6 +138,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   </div>
                 </div>
               </div>
+              <MenuButton
+                theme={theme}
+                handleEditProfile={() => setIsEditModalOpen(true)}
+                handleLogout={() => console.log('Logout')}
+              />
             </div>
           </div>
         </div>
@@ -181,7 +187,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   width={50}
                   height={50}
                 />
-                <span className="ml-2"> {showBalance ? localBuyer.balance : '••••••'}</span>
+                <span className="ml-2">{showBalance ? localBuyer.balance : '••••••'}</span>
               </div>
             </motion.div>
             <p className="text-xs text-gray-500 mt-1">ยอดคงเหลือที่ใช้ได้</p>
@@ -198,19 +204,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               เติมเงินเลย
             </button>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className={cn('border-t pt-5 mt-5', themeUtils.getPrimaryColorClass('border'))}>
+            <ProfileActionPanel buyer={localBuyer} theme={theme} />
+          </motion.div>
         </div>
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3 }}
-          className={cn('border-t pt-5 mt-5', themeUtils.getPrimaryColorClass('border'))}>
-          <ProfileActionPanel
-            buyer={localBuyer}
-            theme={theme}
-            onEditProfile={() => setIsEditModalOpen(true)}
-          />
-        </motion.div>
       </motion.div>
 
       <EditProfileModal
@@ -223,3 +226,5 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     </>
   );
 };
+
+export default DashboardHeader;
