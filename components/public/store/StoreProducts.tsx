@@ -22,18 +22,24 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
   const [showProductDetail, setShowProductDetail] = useState(false);
 
   useEffect(() => {
-    if (!store) return;
+    console.log('StoreProducts - store value:', store);
+    if (!store) {
+      console.log('StoreProducts - No store value provided');
+      return;
+    }
 
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
+        console.log('StoreProducts - Fetching data for store:', store);
         const productsResponse = await fetch(`/api/v3/products?store=${store}`);
         if (!productsResponse.ok) {
           throw new Error(`Failed to fetch products: ${productsResponse.statusText}`);
         }
         const productsData = await productsResponse.json();
+        console.log('StoreProducts - Products data:', productsData);
         setProducts(productsData.products || []);
 
         const categoriesResponse = await fetch(`/api/v3/categories?store=${store}`);
@@ -41,7 +47,21 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
           throw new Error(`Failed to fetch categories: ${categoriesResponse.statusText}`);
         }
         const categoriesData = await categoriesResponse.json();
+        console.log('StoreProducts - Categories data:', categoriesData);
         setCategories(categoriesData.categories || []);
+
+        // Check if there's a selected product ID in localStorage
+        const selectedProductId = localStorage.getItem('selectedProductId');
+        if (selectedProductId) {
+          // Find the product with the matching ID
+          const product = productsData.products?.find((p: Product) => p._id === selectedProductId);
+          if (product) {
+            setSelectedProduct(product);
+            setShowProductDetail(true);
+          }
+          // Clear the localStorage item to prevent showing the product detail on page refresh
+          localStorage.removeItem('selectedProductId');
+        }
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -119,13 +139,16 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
             key="product-detail"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}>
+            exit={{ opacity: 0 }}
+            className="w-full space-y-10 max-w-screen-lg min-h-[75vh]">
             <ProductDetail
               product={selectedProduct}
               category={categories.find((c) => c._id === selectedProduct.categoryId)}
+              categories={categories}
               theme={theme}
               onBack={handleBackToProducts}
               onBuyNow={handleBuyNow}
+              sellerId={store}
             />
           </motion.div>
         ) : (

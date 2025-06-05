@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -7,6 +8,7 @@ import ProductsCategory from './ProductsCategory';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
 import DiscountedProducts from './DiscountedProducts';
+import { useState } from 'react';
 interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
@@ -25,6 +27,15 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
     'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: black; padding: 10px; font-weight: bold; border-radius: 10px;'
   );
 
+  // Modified to navigate to products page instead of showing product detail in homepage
+  const handleViewProductDetail = (productId: string) => {
+    // Navigate to the products page and pass the productId
+    onNavigate('products');
+
+    // Store the productId in localStorage so StoreProducts can access it
+    localStorage.setItem('selectedProductId', productId);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,7 +44,12 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
       transition={{ duration: 0.4 }}
       className="w-full space-y-10 max-w-screen-lg">
       <BannerAdsCarousel theme={theme} />
-      <DiscountedProducts products={products} theme={theme} onNavigate={onNavigate} />
+      <DiscountedProducts
+        onViewDetails={handleViewProductDetail}
+        products={products}
+        theme={theme}
+        onNavigate={onNavigate}
+      />
       <ProductsCategory
         categories={categories}
         products={products}

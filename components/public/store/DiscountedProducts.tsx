@@ -12,12 +12,14 @@ import { RiDiscountPercentLine } from 'react-icons/ri';
 interface DiscountedProductsProps {
   products: Product[];
   theme: ThemeType;
+  onViewDetails?: (productId: string) => void;
   onNavigate: (page: string) => void;
 }
 
 export default function DiscountedProducts({
   products,
   theme,
+  onViewDetails,
   onNavigate,
 }: DiscountedProductsProps) {
   const themeUtils = useThemeUtils(theme || null);
@@ -92,6 +94,7 @@ export default function DiscountedProducts({
               theme={theme}
               role="buyer"
               category={product.category}
+              onViewDetails={onViewDetails}
               onBuyNow={(productId) => {
                 console.log(`ซื้อเลย clicked for product: ${productId}`);
                 // In a real implementation, this would handle the purchase flow

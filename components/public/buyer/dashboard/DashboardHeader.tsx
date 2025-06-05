@@ -130,7 +130,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                       <span className="opacity-70">{localBuyer.email}</span>
                     </p>
                     <div className="flex items-center gap-1.5 text-xs ">
-                      <Calendar size={12} className="text-primary" />
+                      <Calendar size={12} className={themeUtils.getTextColors()} />
                       <span className="opacity-70">
                         เป็นสมาชิกตั้งแต่ {formatDate(localBuyer.createdAt)}
                       </span>
