@@ -21,7 +21,6 @@ import promptpay from '@/assets/icons/promptpay.svg';
 import promptpayblack from '@/assets/icons/promptpayblack.svg';
 
 import { FaStripe, FaLock, FaShieldAlt } from 'react-icons/fa';
-import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
 import Link from 'next/link';
 import { ThemeType } from '@/types';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -88,7 +87,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
             size={250}
             bgColor={isLight ? '#0f0f0f' : '#fff'}
             fgColor={isLight ? '#fff' : '#0f0f0f'}
-            logoImage="/icons/favicon.png"
+            logoImage="/icons/favicon-admin.png"
             logoWidth={45}
             logoHeight={45}
             logoPadding={3}

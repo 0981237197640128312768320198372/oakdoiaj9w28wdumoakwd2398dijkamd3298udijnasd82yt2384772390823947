@@ -19,6 +19,7 @@ interface DepositQRCodeProps {
   onExpire: () => void;
   theme: ThemeType | null;
   paymentIntentId?: string;
+  onSuccess?: () => void;
 }
 
 const DepositQRCode: React.FC<DepositQRCodeProps> = ({
@@ -29,6 +30,7 @@ const DepositQRCode: React.FC<DepositQRCodeProps> = ({
   onExpire,
   theme,
   paymentIntentId,
+  onSuccess,
 }) => {
   const themeUtils = useThemeUtils(theme);
   const { buyer } = useBuyerAuth();
@@ -36,14 +38,18 @@ const DepositQRCode: React.FC<DepositQRCodeProps> = ({
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const [isUpdatingBalance, setIsUpdatingBalance] = useState<boolean>(false);
 
-  // When payment status changes to succeeded, update the balance
   useEffect(() => {
     if (status === 'succeeded' && !isUpdatingBalance && !showSuccess) {
       updateBalance();
     }
   }, [status]);
 
-  // Function to update the balance
+  useEffect(() => {
+    if (showSuccess && successData && onSuccess) {
+      onSuccess();
+    }
+  }, [showSuccess, successData, onSuccess]);
+
   const updateBalance = async () => {
     if (!paymentIntentId || isUpdatingBalance) return;
 

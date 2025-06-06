@@ -71,12 +71,14 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose, theme = 
   return (
     <div
       className={cn(
-        'fixed inset-0 h-screen w-screen backdrop-blur z-40 flex flex-col justify-center items-center',
-        isLight ? 'bg-white/50' : 'bg-black/50'
+        'fixed inset-0 h-screen w-screen z-40 flex flex-col justify-center items-center backdrop-blur-md',
+        isLight
+          ? 'bg-gradient-to-br from-light-100/10 to-light-800/10'
+          : ' bg-gradient-to-br from-dark-200/10 to-dark-800/10'
       )}>
       <div
         className={cn(
-          'relative max-w-md w-full mx-4 rounded-lg p-6 shadow-lg animate-fadeInUp',
+          'relative max-w-md w-full mx-4 rounded-lg p-6 animate-fadeInUp',
           isLight ? 'bg-light-100' : 'bg-dark-700',
           themeUtils.getPrimaryColorClass('border'),
           'border-[1px] border-opacity-70'
@@ -107,24 +109,31 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose, theme = 
             isLight ? 'bg-light-200 border-light-300' : 'bg-dark-600 border-dark-300'
           )}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-light-200">Name:</span>
+            <span className={cn(isLight ? 'text-dark-800' : 'text-light-100')}>Name:</span>
             <span className={cn('font-medium', themeUtils.getPrimaryColorClass('text'))}>
               {data.name}
             </span>
           </div>
 
           <div className="flex items-center justify-between mb-3">
-            <span className="text-light-200">Payment ID:</span>
+            <span className={cn(isLight ? 'text-dark-800' : 'text-light-100')}>Payment ID:</span>
             <span className={cn('font-medium', themeUtils.getPrimaryColorClass('text'))}>
               {data.paymentId}
             </span>
           </div>
 
-          <div className="border-t border-dark-500 my-3" />
+          <div
+            className={cn(
+              'border-t opacity-50 my-3',
+              isLight ? 'border-dark-800' : 'border-light-100'
+            )}
+          />
 
           <div className="space-y-2">
             <div className="flex justify-between">
-              <span className="text-light-200">Deposit Amount:</span>
+              <span className={cn(isLight ? 'text-dark-800' : 'text-light-100')}>
+                Deposit Amount:
+              </span>
               <div className="flex items-center gap-1">
                 <Image
                   src={dokmaiCoinSymbol(isLight)}
@@ -139,7 +148,7 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose, theme = 
 
             {data.bonusAmount > 0 && (
               <div className="flex justify-between">
-                <span className="text-light-200">Bonus:</span>
+                <span className={cn(isLight ? 'text-dark-800' : 'text-light-100')}>Bonus:</span>
                 <div className="flex items-center text-green-500  gap-1">
                   <Image
                     src={dokmaiCoinSymbol(isLight)}
@@ -154,7 +163,7 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose, theme = 
             )}
 
             <div className="flex justify-between font-medium">
-              <span className="text-light-200">Total:</span>
+              <span className={cn(isLight ? 'text-dark-800' : 'text-light-100')}>Total:</span>
               <div
                 className={cn('flex items-center  gap-1', themeUtils.getPrimaryColorClass('text'))}>
                 <Image
@@ -169,10 +178,15 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose, theme = 
             </div>
           </div>
 
-          <div className="border-t border-dark-500 my-3" />
+          <div
+            className={cn(
+              'border-t opacity-50 my-3',
+              isLight ? 'border-dark-800' : 'border-light-100'
+            )}
+          />
 
           <div className="flex justify-between font-bold">
-            <span className="text-light-200">New Balance:</span>
+            <span className={cn(isLight ? 'text-dark-800' : 'text-light-100')}>New Balance:</span>
             <div
               className={cn('flex items-center  gap-1', themeUtils.getPrimaryColorClass('text'))}>
               <Image

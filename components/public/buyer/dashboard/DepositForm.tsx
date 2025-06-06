@@ -116,7 +116,6 @@ export default function DepositForm({
     e.preventDefault();
     setError(null);
     setIsLoading(true);
-
     try {
       const amountValue = parseFloat(amount);
       if (isNaN(amountValue) || amountValue < 10) {
@@ -203,32 +202,24 @@ export default function DepositForm({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+      <div
+        className={cn(
+          'fixed inset-0 z-[9999] flex items-center justify-center',
+          showQRCode && qrCodeData
+            ? 'bg-black/70 backdrop-blur-xl'
+            : 'backdrop-blur-md bg-gradient-to-br from-dark-200/50 to-dark-800/50'
+        )}>
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.2 }}
           className={cn(
-            'w-full max-w-md p-6 rounded-lg shadow-xl',
+            'w-full max-w-lg p-5',
             themeUtils.getCardClass(),
             themeUtils.getComponentRoundednessClass(),
             themeUtils.getComponentShadowClass()
           )}>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className={cn('text-xl font-semibold')}>Deposit Dokmai Coin</h2>
-            <button
-              onClick={onClose}
-              className={cn(
-                'p-1 rounded-full transition-colors',
-                isLight ? 'hover:bg-dark-100' : 'hover:bg-dark-800'
-              )}>
-              <X size={18} className={cn('opacity-60')} />
-            </button>
-          </div>
-
-          <p className={cn('text-center mb-6 opacity-60')}>1 Dokmai Coin = 1 Baht</p>
-
           {error && !showError && (
             <div className="mb-4 p-3 bg-red-900/20 border border-red-500 rounded-md text-red-400 text-sm">
               {error}
@@ -244,9 +235,23 @@ export default function DepositForm({
               onExpire={handleQRCodeExpire}
               theme={theme}
               paymentIntentId={paymentIntentId}
+              onSuccess={onClose}
             />
           ) : (
             <div>
+              <div className="flex justify-between items-center mb-5">
+                <h2 className={cn('text-xl font-semibold')}>Deposit Dokmai Coin</h2>
+                <button
+                  onClick={onClose}
+                  className={cn(
+                    'p-1 rounded-full transition-colors',
+                    isLight ? 'hover:bg-dark-100' : 'hover:bg-dark-800'
+                  )}>
+                  <X size={18} className={cn('opacity-60')} />
+                </button>
+              </div>
+
+              <p className={cn('text-center mb-6 opacity-60')}>1 Dokmai Coin = 1 Baht</p>
               <div className="text-center mb-8">
                 <div className="flex items-center justify-center">
                   <Image
@@ -260,7 +265,7 @@ export default function DepositForm({
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 mb-8">
+              <div className="grid grid-cols-3 gap-3 mb-5">
                 {amountOptions.map((option) => (
                   <button
                     key={option}
@@ -299,7 +304,7 @@ export default function DepositForm({
               </div>
 
               {(!amountOptions.includes(Number(amount)) || amount === '') && (
-                <div className="mb-6">
+                <div className="mb-5">
                   <div className="relative">
                     <input
                       type="number"
@@ -308,10 +313,12 @@ export default function DepositForm({
                       min="10"
                       step="1"
                       className={cn(
-                        'w-full rounded-lg py-3 px-4 focus:outline-none focus:ring-2',
+                        ' px-5 py-2.5 w-full border rounded-lg text-sm focus:outline-none focus:ring-1',
+                        themeUtils.getButtonRoundednessClass(),
+                        themeUtils.getButtonShadowClass(),
                         isLight
-                          ? 'bg-white border border-dark-300 text-dark-800 placeholder-dark-500 focus:ring-dark-400'
-                          : 'bg-dark-800 border border-dark-700 text-white placeholder-dark-500 focus:ring-white'
+                          ? 'bg-light-100 border-light-300 text-dark-800 focus:ring-0 focus:bg-light-200'
+                          : 'bg-dark-600 border-dark-400 text-light-200 focus:ring-0 focus:bg-dark-500'
                       )}
                       placeholder="Enter amount"
                     />
@@ -320,7 +327,7 @@ export default function DepositForm({
                 </div>
               )}
 
-              <div className="flex gap-3 mt-6">
+              <div className="flex gap-3 mt-5">
                 <button
                   type="button"
                   onClick={onClose}

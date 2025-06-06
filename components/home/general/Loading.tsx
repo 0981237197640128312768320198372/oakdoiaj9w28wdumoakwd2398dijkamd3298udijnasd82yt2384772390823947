@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image';
-import dokmaicoin from '@/assets/images/dokmailogosquare.png';
+import dokmaicoin from '@/assets/icons/DCSymbolWhite.svg';
 
 const LoadingAnimation = ({ text }: { text?: string }) => {
   return (
@@ -12,7 +12,7 @@ const LoadingAnimation = ({ text }: { text?: string }) => {
           width={100}
           height={100}
           loading="lazy"
-          className="w-auto h-10"
+          className="w-auto h-16"
         />
       </div>
       <p className="mt-2">{text}</p>
