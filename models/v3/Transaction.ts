@@ -38,7 +38,6 @@ export interface ITransaction extends Document {
 
   // Financial details
   amount: number;
-  currency: string;
   exchangeRate?: number;
   fees: IFees;
   netAmount: number;
@@ -191,11 +190,6 @@ const TransactionSchema = new Schema<ITransaction>(
       type: Number,
       required: true,
       min: [0, 'Amount must be positive'],
-    },
-    currency: {
-      type: String,
-      required: true,
-      default: 'THB',
     },
     exchangeRate: Number,
     fees: {
@@ -352,7 +346,6 @@ TransactionSchema.statics.createDepositTransaction = async function (
     destinationType: 'buyer',
     destinationId: buyerId,
     amount,
-    currency: 'THB',
     fees: {
       platform: platformFee,
       payment: paymentFee,

@@ -109,7 +109,7 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
     if (!token) return;
 
     try {
-      const res = await fetch('/api/v3/balanceInfo', {
+      const res = await fetch('/api/v3/balance/info', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { BalanceService } from '../../../../lib/services/balanceService';
+import { BalanceService } from '@/lib/services/balanceService';
 // Import only what we need
 
 export async function POST(request: Request) {

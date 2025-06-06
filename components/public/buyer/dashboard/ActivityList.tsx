@@ -208,7 +208,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     const displayNames: Record<string, string> = {
       ipAddress: 'IP Address',
       amount: 'จำนวน',
-      currency: 'Currency',
       paymentMethod: 'วิธีการชำระเงิน',
       transactionId: 'ID การชำระเงิน',
       rating: 'คะแนน',
@@ -244,7 +243,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     const icons: Record<string, React.ReactNode> = {
       ipAddress: <Globe {...iconProps} />,
       amount: <DollarSign {...iconProps} />,
-      currency: <DollarSign {...iconProps} />,
       paymentMethod: <CreditCard {...iconProps} />,
       transactionId: <Hash {...iconProps} />,
       rating: <Star {...iconProps} />,

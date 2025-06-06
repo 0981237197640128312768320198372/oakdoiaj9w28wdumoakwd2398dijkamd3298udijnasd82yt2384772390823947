@@ -51,12 +51,14 @@ interface DashboardHeaderProps {
   buyer: Buyer;
   theme: any;
   onProfileUpdate?: () => void;
+  onDepositClick?: () => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   buyer: initialBuyer,
   theme,
   onProfileUpdate,
+  onDepositClick,
 }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
@@ -72,7 +74,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   const { buyer: authBuyer } = useBuyerAuth();
   const buyerToken = typeof window !== 'undefined' ? localStorage.getItem('buyerToken') : null;
-  const balUrl = '/api/v3/balanceInfo';
+  const balUrl = '/api/v3/balance/info';
 
   const fetchBalance = async (url: string, token: string, buyerValue: string) => {
     const res = await fetch(url, {
@@ -251,6 +253,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
           <div className="flex gap-2">
             <button
+              onClick={onDepositClick}
               className={cn(
                 'flex-1 flex items-center justify-center gap-1.5 p-3 text-lg font-medium transition-all duration-300',
                 themeUtils.getButtonRoundednessClass(),

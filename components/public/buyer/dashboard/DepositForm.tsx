@@ -3,27 +3,38 @@
 
 import { useState, useEffect } from 'react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
-import { useThemeUtils } from '@/lib/theme-utils';
-import { cn } from '@/lib/utils';
+import { dokmaiCoinSymbol, cn } from '@/lib/utils';
 import type { ThemeType, SuccessData } from '@/types';
 import DepositQRCode from './DepositQRCode';
 import DepositSuccess from './DepositSuccess';
 import DepositError from './DepositError';
+import { X } from 'lucide-react';
+import Image from 'next/image';
+import { useThemeUtils } from '@/lib/theme-utils';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface DepositFormProps {
   theme: ThemeType | null;
   onBalanceUpdate?: () => Promise<void>;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFormProps) {
+export default function DepositForm({
+  theme = null,
+  onBalanceUpdate,
+  isOpen,
+  onClose,
+}: DepositFormProps) {
   const themeUtils = useThemeUtils(theme);
+  const isLight = themeUtils.baseTheme === 'light';
+
   const [amount, setAmount] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showError, setShowError] = useState<boolean>(false);
   const { buyer } = useBuyerAuth();
 
-  // State variables for QR code flow
   const [qrCodeData, setQrCodeData] = useState<string>('');
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
   const [paymentStatus, setPaymentStatus] = useState<string>('');
@@ -50,7 +61,6 @@ export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFo
           setPaymentStatus(data.status);
 
           if (data.status === 'succeeded') {
-            // Calculate current balance based on buyer.balance type
             const currentBalance =
               typeof buyer?.balance === 'object' && buyer?.balance
                 ? buyer.balance.amount
@@ -59,7 +69,7 @@ export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFo
                 : 0;
 
             const depositAmount = parseFloat(amount);
-            const bonusAmount = 0; // No bonus in this case
+            const bonusAmount = 0;
             const totalDepositAmount = depositAmount + bonusAmount;
 
             setSuccessData({
@@ -169,8 +179,6 @@ export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFo
     setPaymentStatus('');
     setShowQRCode(false);
     setAmount('');
-
-    // No need to call onBalanceUpdate here as it's already called when payment succeeds
   };
 
   const handleCloseError = () => {
@@ -185,85 +193,170 @@ export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFo
     );
   }
 
+  const amountOptions = [30, 60, 100, 250, 500];
+
+  const handleSelectAmount = (value: number) => {
+    setAmount(value.toString());
+  };
+
+  if (!isOpen) return null;
+
   return (
-    <div className={cn('p-6 rounded-lg shadow-md', themeUtils.getCardClass())}>
-      <h2 className="text-2xl font-semibold mb-4">Deposit Dokmai Coins</h2>
-      <p className="mb-4 text-gray-600">
-        Add funds to your wallet to purchase products. 1 Dokmai Coin = 1 THB.
-      </p>
-
-      {error && !showError && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-600">
-          {error}
-        </div>
-      )}
-      {showQRCode && qrCodeData ? (
-        <DepositQRCode
-          qrCodeData={qrCodeData}
-          amount={parseFloat(amount)}
-          timer={timer}
-          status={paymentStatus}
-          onExpire={handleQRCodeExpire}
-          theme={theme}
-          paymentIntentId={paymentIntentId}
-        />
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-              Amount (THB)
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                ฿
-              </span>
-              <input
-                type="number"
-                id="amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                min="10"
-                step="1"
-                className="pl-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder="Enter amount"
-                required
-              />
-            </div>
-            <p className="mt-1 text-sm text-gray-500">Minimum deposit: ฿10</p>
-          </div>
-
-          <div className="flex items-center justify-between mt-6">
-            <div className="text-sm">
-              <span className="text-gray-600">Current balance: </span>
-              <span className="font-semibold">
-                ฿
-                {typeof buyer.balance === 'object' && buyer.balance
-                  ? buyer.balance.amount
-                  : typeof buyer.balance === 'number'
-                  ? buyer.balance
-                  : 0}
-              </span>
-            </div>
+    <AnimatePresence>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.2 }}
+          className={cn(
+            'w-full max-w-md p-6 rounded-lg shadow-xl',
+            themeUtils.getCardClass(),
+            themeUtils.getComponentRoundednessClass(),
+            themeUtils.getComponentShadowClass()
+          )}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className={cn('text-xl font-semibold')}>Deposit Dokmai Coin</h2>
             <button
-              type="submit"
-              disabled={isLoading}
+              onClick={onClose}
               className={cn(
-                'px-4 py-2 rounded-md text-white',
-                isLoading
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : cn(themeUtils.getButtonClass(), 'hover:opacity-90')
+                'p-1 rounded-full transition-colors',
+                isLight ? 'hover:bg-dark-100' : 'hover:bg-dark-800'
               )}>
-              {isLoading ? 'Processing...' : 'Deposit Now'}
+              <X size={18} className={cn('opacity-60')} />
             </button>
           </div>
-        </form>
-      )}
 
-      {showSuccess && successData && (
-        <DepositSuccess data={successData} onClose={handleCloseSuccess} theme={theme} />
-      )}
+          <p className={cn('text-center mb-6 opacity-60')}>1 Dokmai Coin = 1 Baht</p>
 
-      {showError && error && <DepositError message={error} onClose={handleCloseError} />}
-    </div>
+          {error && !showError && (
+            <div className="mb-4 p-3 bg-red-900/20 border border-red-500 rounded-md text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+
+          {showQRCode && qrCodeData ? (
+            <DepositQRCode
+              qrCodeData={qrCodeData}
+              amount={parseFloat(amount)}
+              timer={timer}
+              status={paymentStatus}
+              onExpire={handleQRCodeExpire}
+              theme={theme}
+              paymentIntentId={paymentIntentId}
+            />
+          ) : (
+            <div>
+              <div className="text-center mb-8">
+                <div className="flex items-center justify-center">
+                  <Image
+                    src={dokmaiCoinSymbol(isLight)}
+                    alt="Dokmai Coin"
+                    className="h-8 w-auto mr-2"
+                    width={50}
+                    height={50}
+                  />
+                  <span className="text-5xl font-bold">{amount || '500'}</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 mb-8">
+                {amountOptions.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => handleSelectAmount(option)}
+                    className={cn(
+                      'py-2 px-4 flex justify-center items-center transition-colors',
+                      themeUtils.getButtonRoundednessClass(),
+                      themeUtils.getButtonBorderClass(),
+                      themeUtils.getButtonShadowClass(),
+                      amount === option.toString()
+                        ? themeUtils.getButtonClass()
+                        : isLight
+                        ? 'bg-light-100 border-light-200 hover:border-light-300 hover:bg-light-200'
+                        : 'bg-dark-600 border-dark-400 hover:border-dark-300 hover:bg-dark-500'
+                    )}>
+                    {option}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setAmount('')}
+                  className={cn(
+                    'py-2 px-4 flex justify-center items-center transition-colors',
+                    themeUtils.getButtonRoundednessClass(),
+                    themeUtils.getButtonBorderClass(),
+                    themeUtils.getButtonShadowClass(),
+                    !amountOptions.includes(Number(amount)) && amount !== ''
+                      ? themeUtils.getButtonClass()
+                      : isLight
+                      ? 'bg-light-100 border-light-200 hover:border-light-300 hover:bg-light-200'
+                      : 'bg-dark-600 border-dark-400 hover:border-dark-300 hover:bg-dark-500'
+                  )}>
+                  พิมพ์เอง
+                </button>
+              </div>
+
+              {(!amountOptions.includes(Number(amount)) || amount === '') && (
+                <div className="mb-6">
+                  <div className="relative">
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      min="10"
+                      step="1"
+                      className={cn(
+                        'w-full rounded-lg py-3 px-4 focus:outline-none focus:ring-2',
+                        isLight
+                          ? 'bg-white border border-dark-300 text-dark-800 placeholder-dark-500 focus:ring-dark-400'
+                          : 'bg-dark-800 border border-dark-700 text-white placeholder-dark-500 focus:ring-white'
+                      )}
+                      placeholder="Enter amount"
+                    />
+                  </div>
+                  <p className={cn('mt-1 text-xs opacity-60')}>Minimum deposit: 10 Dokmai Coin</p>
+                </div>
+              )}
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className={cn(
+                    'flex-1 py-3 px-4 rounded-lg border transition-colors opacity-60 hover:',
+                    themeUtils.getButtonRoundednessClass(),
+                    isLight
+                      ? 'bg-light-100 border-light-200 hover:border-light-300 hover:bg-light-200'
+                      : 'bg-dark-600 border-dark-400 hover:border-dark-300 hover:bg-dark-500'
+                  )}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={isLoading || !amount || parseFloat(amount) < 10}
+                  className={cn(
+                    'flex-1 py-3 justify-center px-4 rounded-lg transition-colors',
+                    themeUtils.getButtonClass() + ' ' + themeUtils.getPrimaryColorClass('border'),
+                    isLoading ||
+                      !amount ||
+                      (parseFloat(amount) < 10 && ' opacity-30 cursor-not-allowed')
+                  )}>
+                  {isLoading ? 'กำลังดำเนินการ...' : 'ยืนยัน'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {showSuccess && successData && (
+            <DepositSuccess data={successData} onClose={handleCloseSuccess} theme={theme} />
+          )}
+
+          {showError && error && <DepositError message={error} onClose={handleCloseError} />}
+        </motion.div>
+      </div>
+    </AnimatePresence>
   );
 }

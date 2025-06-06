@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -30,6 +31,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   }, [buyer]);
   const [activeTab, setActiveTab] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [activityFilter, setActivityFilter] = useState<{
     category?: string;
     type?: string;
@@ -57,7 +59,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     } finally {
       setTimeout(() => {
         setIsRefreshing(false);
-      }, 500); // Add a small delay to make the animation visible
+      }, 500);
     }
   }, [refreshBuyerDetails, refetch, activityFilter]);
 
@@ -91,50 +93,65 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="w-full max-w-screen-lg lg:px-5 xl:px-0 space-y-5 min-h-[75vh]">
-      <button
-        onClick={refreshAllData}
-        disabled={isRefreshing}
-        className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
-        title="Refresh data">
-        <RefreshCw
-          size={18}
-          className={`text-gray-600 dark:text-gray-300 ${isRefreshing ? 'animate-spin' : ''}`}
+    <>
+      {' '}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="w-full max-w-screen-lg lg:px-5 xl:px-0 space-y-5 min-h-[75vh]">
+        {/* <button
+          onClick={refreshAllData}
+          disabled={isRefreshing}
+          className=" p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
+          title="Refresh data">
+          <RefreshCw
+            size={18}
+            className={`text-gray-600 dark:text-gray-300 ${isRefreshing ? 'animate-spin' : ''}`}
+          />
+        </button> */}
+        <DashboardHeader
+          buyer={localBuyer}
+          theme={theme}
+          onProfileUpdate={refreshBuyerDetails}
+          onDepositClick={() => setIsDepositModalOpen(true)}
         />
-      </button>
-      <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
 
-      <div className="space-y-5">
-        <DepositForm theme={theme} onBalanceUpdate={refreshBuyerDetails} />
-        <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
+        <div className="space-y-5">
+          <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab || 'latest'}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}>
-            <ActivityList
-              activities={activities}
-              loading={activitiesLoading}
-              error={activitiesError}
-              pagination={pagination}
-              activeTab={activeTab || 'latest'}
-              filter={activityFilter}
-              onFilterChange={handleFilterChange}
-              onLoadMore={loadMore}
-              onRefresh={() => refetch()}
-              theme={theme}
-            />
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab || 'latest'}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}>
+              <ActivityList
+                activities={activities}
+                loading={activitiesLoading}
+                error={activitiesError}
+                pagination={pagination}
+                activeTab={activeTab || 'latest'}
+                filter={activityFilter}
+                onFilterChange={handleFilterChange}
+                onLoadMore={loadMore}
+                onRefresh={() => refetch()}
+                theme={theme}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </motion.div>{' '}
+      {isDepositModalOpen && (
+        <DepositForm
+          theme={theme}
+          onBalanceUpdate={refreshBuyerDetails}
+          isOpen={isDepositModalOpen}
+          onClose={() => setIsDepositModalOpen(false)}
+        />
+      )}
+    </>
   );
 };
 
