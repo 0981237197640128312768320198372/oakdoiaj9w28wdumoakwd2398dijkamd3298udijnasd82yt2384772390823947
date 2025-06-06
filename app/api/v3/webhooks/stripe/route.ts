@@ -1,22 +1,13 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { BalanceService } from '@/lib/services/balanceService';
-import { sendPaymentUpdate } from '../payment-events/route';
 import { connectToDatabase } from '@/lib/db';
 import Payment from '@/models/Payments';
 
 // Initialize Stripe with the secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2024-09-30.acacia',
 });
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
-
-// Helper function to log webhook events
-const logWebhookEvent = (event: Stripe.Event) => {
-  console.log(`Received webhook event: ${event.type}`);
-  console.log(`Event ID: ${event.id}`);
-  console.log(`Event created at: ${new Date(event.created * 1000).toISOString()}`);
-};
 
 export async function POST(request: Request) {
   try {
@@ -33,7 +24,12 @@ export async function POST(request: Request) {
     }
 
     // Log the webhook event
-    logWebhookEvent(event);
+    console.log(`Received webhook event: ${event.type}`);
+    console.log(`Event ID: ${event.id}`);
+    console.log(`Event created at: ${new Date(event.created * 1000).toISOString()}`);
+
+    // Ensure database connection
+    await connectToDatabase();
 
     // Handle the event
     switch (event.type) {
@@ -43,41 +39,53 @@ export async function POST(request: Request) {
         console.log(`PaymentIntent ${paymentIntent.id} succeeded`);
 
         try {
-          // Get metadata from the payment intent
-          const { userId, amount } = paymentIntent.metadata || {};
+          // Update the payment status in the database
+          const payment = await Payment.findOne({ paymentIntentId: paymentIntent.id });
+          if (payment) {
+            payment.status = paymentIntent.status;
+            await payment.save();
+            console.log(`Payment status updated for payment intent ${paymentIntent.id}`);
 
-          console.log(`Processing payment intent with metadata:`, paymentIntent.metadata);
+            // Update the buyer's balance
+            try {
+              // Extract the amount from the payment intent (in cents, convert to whole units)
+              const amount = paymentIntent.amount / 100;
 
-          if (userId && amount) {
-            console.log(`Attempting to complete deposit for user ${userId}, amount: ${amount}`);
+              // Extract the userId from the payment metadata if available
+              const userId = paymentIntent.metadata?.userId;
 
-            // Find the payment in our database
-            await connectToDatabase();
-            const payment = await Payment.findOne({ paymentIntentId: paymentIntent.id });
+              // Call the balance update API
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/balance/update`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    // Note: We can't use auth token here since this is a server-side call
+                    // The API will need to trust this call since it's coming from a webhook
+                  },
+                  body: JSON.stringify({
+                    paymentIntentId: paymentIntent.id,
+                    amount,
+                    userId: userId || payment.userId, // Try to get userId from payment model if not in metadata
+                  }),
+                }
+              );
 
-            if (payment) {
-              console.log(`Found payment record: ${payment._id}`);
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Failed to update balance: ${errorData.error || 'Unknown error'}`);
+              }
 
-              // Update payment status
-              payment.status = 'completed';
-              await payment.save();
-
-              // Complete the deposit transaction
-              const result = await BalanceService.completeDeposit(paymentIntent.id, 'completed');
-              console.log(`Deposit completion result:`, result);
-
-              // Send update to any connected clients
-              sendPaymentUpdate(paymentIntent.id, 'succeeded', {
-                amount,
-                timestamp: new Date().toISOString(),
-              });
-
-              console.log(`Deposit completed for user ${userId}, amount: ${amount}`);
-            } else {
-              console.error(`No payment record found for payment intent ${paymentIntent.id}`);
+              console.log(`Balance updated successfully for payment intent ${paymentIntent.id}`);
+            } catch (balanceError) {
+              console.error(
+                `Error updating balance for payment intent ${paymentIntent.id}:`,
+                balanceError
+              );
             }
           } else {
-            console.warn(`Missing metadata in payment intent ${paymentIntent.id}`);
+            console.log(`Payment not found for payment intent ${paymentIntent.id}`);
           }
         } catch (error) {
           console.error(`Error processing payment intent ${paymentIntent.id}:`, error);
@@ -89,10 +97,12 @@ export async function POST(request: Request) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.log(`PaymentIntent ${paymentIntent.id} is processing`);
 
-        // Send update to any connected clients
-        sendPaymentUpdate(paymentIntent.id, 'processing', {
-          timestamp: new Date().toISOString(),
-        });
+        // Update the payment status in the database
+        const payment = await Payment.findOne({ paymentIntentId: paymentIntent.id });
+        if (payment) {
+          payment.status = paymentIntent.status;
+          await payment.save();
+        }
         break;
       }
 
@@ -104,18 +114,12 @@ export async function POST(request: Request) {
           }`
         );
 
-        // Mark the deposit as failed
-        await BalanceService.completeDeposit(
-          paymentIntent.id,
-          'failed',
-          paymentIntent.last_payment_error?.message || 'Payment failed'
-        );
-
-        // Send update to any connected clients
-        sendPaymentUpdate(paymentIntent.id, 'failed', {
-          error: paymentIntent.last_payment_error?.message || 'Payment failed',
-          timestamp: new Date().toISOString(),
-        });
+        // Update the payment status in the database
+        const payment = await Payment.findOne({ paymentIntentId: paymentIntent.id });
+        if (payment) {
+          payment.status = paymentIntent.status;
+          await payment.save();
+        }
         break;
       }
 
@@ -123,68 +127,12 @@ export async function POST(request: Request) {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         console.log(`PaymentIntent ${paymentIntent.id} was canceled`);
 
-        // Mark the deposit as cancelled
-        await BalanceService.completeDeposit(paymentIntent.id, 'cancelled', 'Payment canceled');
-
-        // Send update to any connected clients
-        sendPaymentUpdate(paymentIntent.id, 'canceled', {
-          timestamp: new Date().toISOString(),
-        });
-        break;
-      }
-
-      // Handle checkout session events (for card payments)
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
-        console.log(`Checkout session ${session.id} completed`);
-
-        // Verify that payment was successful
-        if (session.payment_status === 'paid') {
-          // Get the metadata from the session
-          const { userId, amount } = session.metadata || {};
-
-          if (!userId || !amount) {
-            console.error('Missing metadata in Stripe session:', session.id);
-            return NextResponse.json({ error: 'Missing metadata' }, { status: 400 });
-          }
-
-          // Complete the deposit transaction
-          await BalanceService.completeDeposit(
-            session.id, // Using session ID as the transaction reference
-            'completed'
-          );
-
-          // Send update to any connected clients
-          if (session.payment_intent) {
-            sendPaymentUpdate(session.payment_intent as string, 'succeeded', {
-              sessionId: session.id,
-              amount,
-              timestamp: new Date().toISOString(),
-            });
-          }
-
-          console.log(`Deposit completed for user ${userId}, amount: ${amount}`);
+        // Update the payment status in the database
+        const payment = await Payment.findOne({ paymentIntentId: paymentIntent.id });
+        if (payment) {
+          payment.status = paymentIntent.status;
+          await payment.save();
         }
-        break;
-      }
-
-      case 'checkout.session.expired': {
-        const session = event.data.object as Stripe.Checkout.Session;
-        console.log(`Checkout session ${session.id} expired`);
-
-        // Cancel the deposit transaction
-        await BalanceService.completeDeposit(session.id, 'cancelled', 'Checkout session expired');
-
-        // Send update to any connected clients
-        if (session.payment_intent) {
-          sendPaymentUpdate(session.payment_intent as string, 'canceled', {
-            sessionId: session.id,
-            reason: 'Checkout session expired',
-            timestamp: new Date().toISOString(),
-          });
-        }
-
-        console.log(`Deposit cancelled for session ${session.id} (expired)`);
         break;
       }
 

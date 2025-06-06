@@ -40,7 +40,7 @@ export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFo
 
     try {
       eventSource = new EventSource(
-        `/api/webhooks/payment-events?paymentIntentId=${paymentIntentId}`
+        `/api/v3/webhooks/payment-events?paymentIntentId=${paymentIntentId}`
       );
 
       eventSource.addEventListener('payment_update', (event) => {

@@ -88,7 +88,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     return data.balance;
   };
 
-  // Only fetch balance once on initial load, not polling
   const { data: balanceData } = useSWR(
     buyerToken && authBuyer ? [balUrl, buyerToken, authBuyer.email || authBuyer.username] : null,
     ([url, token, buyerValue]: [string, string, string]) => fetchBalance(url, token, buyerValue),
@@ -97,8 +96,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       revalidateOnReconnect: false,
       refreshWhenHidden: false,
       refreshWhenOffline: false,
-      dedupingInterval: 60000, // 1 minute
-      focusThrottleInterval: 60000, // 1 minute
+      dedupingInterval: 60000,
+      focusThrottleInterval: 60000,
     }
   );
 
@@ -131,7 +130,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   };
 
   const isLight = themeUtils.baseTheme === 'light';
-  console.log(buyer);
+
   return (
     <>
       <motion.div
@@ -145,7 +144,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           themeUtils.getComponentShadowClass(),
           themeUtils.getTextColors()
         )}>
-        {/* Header Section */}
         <div className="p-5">
           <div className="flex flex-row gap-5">
             <div className="flex-shrink-0">
