@@ -5,17 +5,16 @@ import { useRef } from 'react';
 import html2canvas from 'html2canvas';
 import Image from 'next/image';
 import { QRCode } from 'react-qrcode-logo';
-import kbank from '@/assets/images/kbank.svg';
-import ktb from '@/assets/images/ktb.svg';
-import scb from '@/assets/images/scb.svg';
-import gsb from '@/assets/images/gsb.svg';
-import bbl from '@/assets/images/bbl.svg';
-import bay from '@/assets/images/bay.svg';
-import promptpay from '@/assets/images/promptpay.webp';
+import kbank from '@/assets/icons/kbank.svg';
+import ktb from '@/assets/icons/ktb.svg';
+import scb from '@/assets/icons/scb.svg';
+import gsb from '@/assets/icons/gsb.svg';
+import bbl from '@/assets/icons/bbl.svg';
+import bay from '@/assets/icons/bay.svg';
+import promptpay from '@/assets/icons/promptpay.svg';
 import { FaStripe } from 'react-icons/fa';
 import dokmaicoin3d from '@/assets/images/dokmaicoin3d.png';
 import Link from 'next/link';
-import { MdContentCopy, MdDownload } from 'react-icons/md';
 
 // Define the props interface
 interface PromptPayQRProps {
