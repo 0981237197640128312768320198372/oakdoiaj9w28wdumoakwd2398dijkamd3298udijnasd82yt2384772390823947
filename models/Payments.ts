@@ -4,6 +4,7 @@ const paymentSchema = new Schema({
   paymentIntentId: { type: String, required: true, unique: true },
   status: { type: String, required: true },
   amount: { type: Number, required: true },
+  userId: { type: String }, // Add userId field
   createdAt: { type: Date, default: Date.now },
 });
 

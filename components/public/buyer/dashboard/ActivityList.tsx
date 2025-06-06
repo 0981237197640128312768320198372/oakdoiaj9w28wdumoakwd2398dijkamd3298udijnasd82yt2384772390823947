@@ -280,7 +280,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         <span
           className={cn(
             'font-mono px-1.5 py-0.5 rounded',
-            themeUtils.baseTheme === 'light' ? 'bg-light-200' : 'bg-dark-600'
+            themeUtils.baseTheme === 'light' ? 'bg-light-100' : 'bg-dark-600'
           )}>
           {formatIpAddress(value)}
         </span>
@@ -427,13 +427,13 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   return (
     <div
       className={cn(
-        'p-3 sm:p-4 border backdrop-blur-sm transition-all duration-300',
+        'p-5 border backdrop-blur-sm transition-all duration-300',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass(),
         themeUtils.getComponentShadowClass()
       )}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5 mb-3 sm:mb-4">
         <h3 className="text-sm font-semibold flex items-center gap-2">
           <History size={16} className={themeUtils.getPrimaryColorClass('text')} />
           <span className={themeUtils.getTextColors()}>
@@ -445,7 +445,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           </span>
         </h3>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-5">
           {/* Search */}
           <div className="relative">
             <Search
@@ -512,7 +512,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                 ? 'bg-light-100 border-light-300'
                 : 'bg-dark-600 border-dark-400'
             )}>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-5">
               <select
                 value={filter.category || ''}
                 onChange={(e) =>
@@ -554,7 +554,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className={cn(
-            'mb-3 sm:mb-4 px-3 py-2 text-xs border-l-4 flex items-center gap-2',
+            'mb-3 sm:mb-4 p-5 text-xs border-l-4 flex items-center gap-5',
             themeUtils.getComponentRoundednessClass(),
             'bg-red-500/20 border-red-400 text-red-700  '
           )}>
@@ -623,7 +623,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                             className={cn(
                               'flex items-center gap-1 ml-1 sm:ml-2 px-1.5 py-0.5 rounded border',
                               themeUtils.baseTheme === 'light'
-                                ? ' bg-light-200 border-light-400'
+                                ? ' bg-light-100 border-light-400'
                                 : ' bg-dark-600 border-dark-400',
                               themeUtils.getTextColors()
                             )}>

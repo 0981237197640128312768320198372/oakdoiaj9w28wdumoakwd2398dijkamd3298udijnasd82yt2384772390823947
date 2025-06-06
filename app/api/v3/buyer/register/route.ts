@@ -105,7 +105,6 @@ export async function POST(request: NextRequest) {
       password: password || undefined,
       personalKey: finalPersonalKey,
       contact,
-      balance: 0,
       storeId,
       activities: [],
     });
@@ -129,17 +128,17 @@ export async function POST(request: NextRequest) {
       console.error('Failed to create registration activity:', activityError);
     }
 
+    const buyer = await Buyer.findById(newBuyer._id);
     const buyerData = {
-      id: newBuyer._id,
-      name: newBuyer.name,
-      email: newBuyer.email,
-      username: newBuyer.username,
-      avatarUrl: newBuyer.avatarUrl, // Add avatarUrl to the returned data
-      contact: newBuyer.contact,
-      balance: newBuyer.balance,
-      storeId,
-      createdAt: newBuyer.createdAt,
-      updatedAt: newBuyer.updatedAt,
+      id: buyer._id,
+      name: buyer.name,
+      email: buyer.email,
+      username: buyer.username,
+      avatarUrl: buyer.avatarUrl,
+      contact: buyer.contact,
+      storeId: buyer.storeId,
+      createdAt: buyer.createdAt,
+      updatedAt: buyer.updatedAt,
     };
 
     const token = jwt.sign(

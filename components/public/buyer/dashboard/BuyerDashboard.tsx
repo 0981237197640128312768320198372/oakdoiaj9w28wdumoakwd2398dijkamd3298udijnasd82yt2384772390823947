@@ -12,6 +12,7 @@ import type { ThemeType } from '@/types';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { DashboardHeader } from './DashboardHeader';
+import DepositForm from './DepositForm';
 
 interface BuyerDashboardProps {
   theme: ThemeType | null;
@@ -66,7 +67,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     refetch(newFilter);
   };
 
-  // Calculate statistics
   const financialActivities = activities.filter((a) => a.category === 'financial');
   const interactionActivities = activities.filter((a) => a.category === 'interaction');
   const completedTransactions = financialActivities.filter((a) => a.status === 'completed');
@@ -83,12 +83,10 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
-      className="w-full max-w-screen-lg space-y-10 min-h-[75vh]">
-      <div className="w-full">
-        <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
-      </div>
-
-      <div className="space-y-10">
+      className="w-full max-w-screen-lg lg:px-5 xl:px-0 space-y-5 min-h-[75vh]">
+      <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
+      <div className="space-y-5">
+        <DepositForm theme={theme} onBalanceUpdate={refreshBuyerDetails} />
         <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
 
         <AnimatePresence mode="wait">

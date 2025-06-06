@@ -1,22 +1,52 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, Types, Model } from 'mongoose';
 
 interface IBalance extends Document {
-  buyerId?: string;
-  sellerId?: string;
-  balanceType: 'wallet' | 'earnings';
+  buyerId?: Types.ObjectId;
+  sellerId?: Types.ObjectId;
+  balanceType: 'wallet' | 'earnings' | 'escrow' | 'pending' | 'reserved';
   amount: number;
   lastUpdated: Date;
+  status: 'active' | 'frozen' | 'suspended';
+}
+
+interface IBalanceModel extends Model<IBalance> {
+  findOrCreateBalance(
+    userId: Types.ObjectId,
+    userType: 'buyer' | 'seller',
+    balanceType?: 'wallet' | 'earnings' | 'escrow' | 'pending' | 'reserved'
+  ): Promise<IBalance>;
+
+  updateBalance(
+    userId: Types.ObjectId,
+    userType: 'buyer' | 'seller',
+    amount: number,
+    balanceType?: 'wallet' | 'earnings' | 'escrow' | 'pending' | 'reserved',
+    operation?: 'add' | 'subtract'
+  ): Promise<IBalance>;
 }
 
 const balanceSchema = new Schema<IBalance>({
-  buyerId: { type: Schema.Types.ObjectId, ref: 'User' },
+  buyerId: { type: Schema.Types.ObjectId, ref: 'Buyer' },
   sellerId: { type: Schema.Types.ObjectId, ref: 'Seller' },
-  balanceType: { type: String, enum: ['wallet', 'earnings'], required: true },
-  amount: { type: Number, required: true, default: 0 },
+  balanceType: {
+    type: String,
+    enum: ['wallet', 'earnings', 'escrow', 'pending', 'reserved'],
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: [0, 'Balance cannot be negative'],
+  },
   lastUpdated: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ['active', 'frozen', 'suspended'],
+    default: 'active',
+  },
 });
 
-// Validation to ensure correct ID is set based on balanceType
 balanceSchema.pre('save', function (next) {
   if (this.balanceType === 'wallet') {
     if (!this.buyerId) {
@@ -36,4 +66,69 @@ balanceSchema.pre('save', function (next) {
   next();
 });
 
-export const Balance = model<IBalance>('Balance', balanceSchema);
+// Static methods for balance operations
+balanceSchema.statics.findOrCreateBalance = async function (
+  userId: Types.ObjectId,
+  userType: 'buyer' | 'seller',
+  balanceType: 'wallet' | 'earnings' | 'escrow' | 'pending' | 'reserved' = userType === 'buyer'
+    ? 'wallet'
+    : 'earnings'
+) {
+  const query =
+    userType === 'buyer' ? { buyerId: userId, balanceType } : { sellerId: userId, balanceType };
+
+  let balance = await this.findOne(query);
+
+  if (!balance) {
+    balance = await this.create({
+      ...query,
+      amount: 0,
+      currency: 'THB',
+      status: 'active',
+    });
+  }
+
+  return balance;
+};
+
+balanceSchema.statics.updateBalance = async function (
+  userId: Types.ObjectId,
+  userType: 'buyer' | 'seller',
+  amount: number,
+  balanceType: 'wallet' | 'earnings' | 'escrow' | 'pending' | 'reserved' = userType === 'buyer'
+    ? 'wallet'
+    : 'earnings',
+  operation: 'add' | 'subtract' = 'add'
+) {
+  const query =
+    userType === 'buyer' ? { buyerId: userId, balanceType } : { sellerId: userId, balanceType };
+
+  const balance = await this.findOne(query);
+
+  if (!balance) {
+    throw new Error(`Balance not found for ${userType} ${userId}`);
+  }
+
+  if (balance.status !== 'active') {
+    throw new Error(`Balance is ${balance.status} and cannot be modified`);
+  }
+
+  if (operation === 'subtract' && balance.amount < amount) {
+    throw new Error('Insufficient balance');
+  }
+
+  const newAmount = operation === 'add' ? balance.amount + amount : balance.amount - amount;
+
+  return this.findOneAndUpdate(
+    query,
+    {
+      $set: {
+        amount: newAmount,
+        lastUpdated: new Date(),
+      },
+    },
+    { new: true }
+  );
+};
+
+export const Balance = model<IBalance, IBalanceModel>('Balance', balanceSchema);

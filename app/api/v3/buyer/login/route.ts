@@ -59,8 +59,6 @@ export async function POST(request: NextRequest) {
           { status: 401 }
         );
       }
-
-      buyer = await Buyer.findById(buyer._id).select('-password');
     }
 
     try {
@@ -89,7 +87,6 @@ export async function POST(request: NextRequest) {
       username: buyer.username,
       avatarUrl: buyer.avatarUrl,
       contact: buyer.contact,
-      balance: buyer.balance,
       createdAt: buyer.createdAt,
       updatedAt: buyer.updatedAt,
     };

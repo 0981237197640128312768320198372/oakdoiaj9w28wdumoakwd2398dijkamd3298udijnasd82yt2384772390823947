@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     // Find buyer by ID
     const buyer = await Buyer.findById(buyerId)
-      .select('-password -personalKey') // Exclude sensitive data
+      .select('-password -personalKey')
       .populate({
         path: 'sellerInteractions',
         populate: {
@@ -37,7 +37,6 @@ export async function GET(request: NextRequest) {
       email: buyer.email,
       username: buyer.username,
       contact: buyer.contact,
-      balance: buyer.balance,
       history: buyer.history
         ? buyer.history.map(
             (item: {

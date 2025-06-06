@@ -16,7 +16,6 @@ interface IBuyer extends Document {
   personalKey?: string;
   avatarUrl?: string;
   contact: IContact;
-  balance: number;
   storeId: Schema.Types.ObjectId;
   activities: Schema.Types.ObjectId[];
   createdAt: Date;
@@ -70,11 +69,6 @@ const buyerSchema = new Schema<IBuyer>(
       line: { type: String, default: null },
       instagram: { type: String, default: null },
       whatsapp: { type: String, default: null },
-    },
-    balance: {
-      type: Number,
-      default: 0,
-      min: [0, 'Balance cannot be negative'],
     },
     storeId: {
       type: Schema.Types.ObjectId,

@@ -63,7 +63,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         <div
           className={cn(
             'border transition-all backdrop-blur w-full mt-5 gap-10 flex py-1 px-2 lg:p-2 max-w-screen-lg justify-between duration-1000 items-center',
-            isLight ? 'bg-light-100/75 border-light-200' : 'bg-dark-600/75 border-dark-400',
+            isLight ? 'bg-white/65 border-light-200' : 'bg-dark-600/65 border-dark-400',
             themeUtils.getButtonRoundednessClass()
           )}>
           <button onClick={() => onNavigate('home')} className="flex items-center gap-3">

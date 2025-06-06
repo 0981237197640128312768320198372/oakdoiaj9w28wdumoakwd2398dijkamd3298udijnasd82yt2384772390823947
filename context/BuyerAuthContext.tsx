@@ -1,7 +1,7 @@
 'use client';
 
 import type React from 'react';
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 // Updated Buyer type definition to match new structure
@@ -12,14 +12,25 @@ interface BuyerContact {
   whatsapp?: string;
 }
 
+interface Balance {
+  _id: string;
+  buyerId: string;
+  balanceType: string;
+  amount: number;
+  currency: string;
+  status: string;
+  lastUpdated: string;
+}
+
 interface Buyer {
   id: string;
   name: string;
   email: string;
   username?: string;
-  avatarUrl?: string; // Add avatarUrl field
+  avatarUrl?: string;
   contact: BuyerContact;
-  balance: number;
+  balance: Balance | number | null;
+  balanceId?: string;
   createdAt: string;
   updatedAt: string;
   iat?: number;
@@ -33,6 +44,7 @@ interface BuyerAuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  refreshBalance: () => Promise<void>;
 }
 
 const BuyerAuthContext = createContext<BuyerAuthContextType | undefined>(undefined);
@@ -90,6 +102,39 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
     window.location.reload();
   };
 
+  const refreshBalance = useCallback(async () => {
+    if (!buyer || !buyer.id) return;
+
+    const token = localStorage.getItem('buyerToken');
+    if (!token) return;
+
+    try {
+      const res = await fetch('/api/v3/balanceInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ buyer: buyer.email || buyer.username }),
+      });
+
+      if (!res.ok) throw new Error('Failed to fetch balance');
+
+      const data = await res.json();
+
+      // Update buyer state with new balance
+      setBuyer((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          balance: data.balance,
+        };
+      });
+    } catch (error) {
+      console.error('Error refreshing balance:', error);
+    }
+  }, [buyer]);
+
   const isAuthenticated = buyer !== null;
 
   return (
@@ -100,6 +145,7 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
         logout,
         isAuthenticated,
         isLoading,
+        refreshBalance,
       }}>
       {children}
     </BuyerAuthContext.Provider>

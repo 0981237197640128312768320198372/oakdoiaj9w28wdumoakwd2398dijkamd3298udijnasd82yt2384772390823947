@@ -13,12 +13,23 @@ import { EditProfileModal } from './EditProfileModal';
 import Image from 'next/image';
 import MenuButton from './MenuButton';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
+import useSWR from 'swr';
 
 interface Contact {
   facebook?: string;
   line?: string;
   instagram?: string;
   whatsapp?: string;
+}
+
+interface Balance {
+  _id: string;
+  buyerId: string;
+  balanceType: string;
+  amount: number;
+  currency: string;
+  status: string;
+  lastUpdated: string;
 }
 
 interface Buyer {
@@ -28,7 +39,8 @@ interface Buyer {
   email: string;
   avatarUrl?: string;
   contact: Contact;
-  balance: number;
+  balance: Balance | number | null;
+  balanceId?: string;
   storeId?: string;
   activities?: string[];
   createdAt: string;
@@ -57,6 +69,51 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const themeUtils = useThemeUtils(theme);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
+
+  const { buyer: authBuyer } = useBuyerAuth();
+  const buyerToken = typeof window !== 'undefined' ? localStorage.getItem('buyerToken') : null;
+  const balUrl = '/api/v3/balanceInfo';
+
+  const fetchBalance = async (url: string, token: string, buyerValue: string) => {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ buyer: buyerValue }),
+    });
+    if (!res.ok) throw new Error('Failed to fetch balance');
+    const data = await res.json();
+    return data.balance;
+  };
+
+  // Only fetch balance once on initial load, not polling
+  const { data: balanceData } = useSWR(
+    buyerToken && authBuyer ? [balUrl, buyerToken, authBuyer.email || authBuyer.username] : null,
+    ([url, token, buyerValue]: [string, string, string]) => fetchBalance(url, token, buyerValue),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      dedupingInterval: 60000, // 1 minute
+      focusThrottleInterval: 60000, // 1 minute
+    }
+  );
+
+  const displayedBalance =
+    balanceData !== undefined
+      ? typeof balanceData === 'object' && balanceData
+        ? balanceData.amount
+        : typeof balanceData === 'number'
+        ? balanceData
+        : 0
+      : typeof localBuyer.balance === 'object' && localBuyer.balance
+      ? localBuyer.balance.amount
+      : typeof localBuyer.balance === 'number'
+      ? localBuyer.balance
+      : 0;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
@@ -188,7 +245,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   width={50}
                   height={50}
                 />
-                <span className="ml-2">{showBalance ? localBuyer.balance : '••••••'}</span>
+                <span className="ml-2">{showBalance ? displayedBalance : '••••••'}</span>
               </div>
             </motion.div>
             <p className="text-xs text-gray-500 mt-1">ยอดคงเหลือที่ใช้ได้</p>

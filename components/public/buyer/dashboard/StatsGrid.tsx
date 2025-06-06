@@ -48,9 +48,9 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
       bgColor: 'bg-yellow-500/20 ',
     },
   ];
-
+  const isLight = themeUtils.baseTheme === 'light';
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
       {statItems.map((item, index) => (
         <motion.div
           key={item.label}
@@ -58,8 +58,8 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: index * 0.1 }}
           className={cn(
-            'p-4 backdrop-blur-sm transition-all duration-300 hover:shadow-md cursor-pointer',
-            themeUtils.getCardClass(),
+            'p-5 backdrop-blur-sm transition-all duration-300 hover:shadow-md cursor-pointer border',
+            isLight ? 'bg-white border-light-300' : 'bg-dark-700 border-dark-500 ',
             themeUtils.getComponentRoundednessClass(),
             activeTab === item.id && 'border ' + themeUtils.getPrimaryColorClass('border')
           )}
@@ -88,7 +88,10 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
                       'shadow-sm',
                       themeUtils.getPrimaryColorClass('border')
                     )
-                  : cn('hover:shadow-sm hover:opacity-80 border', themeUtils.getCardClass())
+                  : cn(
+                      'hover:shadow-sm hover:opacity-80 border',
+                      isLight ? 'bg-light-100 border-light-400' : 'bg-dark-600 border-dark-400'
+                    )
               )}>
               <item.icon size={14} />
               <span>View {item.id.charAt(0).toUpperCase() + item.id.slice(1)}</span>

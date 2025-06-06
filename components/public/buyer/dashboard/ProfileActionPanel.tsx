@@ -21,6 +21,16 @@ interface Contact {
   whatsapp?: string;
 }
 
+interface Balance {
+  _id: string;
+  buyerId: string;
+  balanceType: string;
+  amount: number;
+  currency: string;
+  status: string;
+  lastUpdated: string;
+}
+
 interface Buyer {
   _id?: string;
   name: string;
@@ -28,7 +38,8 @@ interface Buyer {
   email: string;
   avatarUrl?: string;
   contact: Contact;
-  balance?: number;
+  balance?: number | Balance | null;
+  balanceId?: string;
   storeId?: string;
   activities?: string[];
   createdAt: string;
