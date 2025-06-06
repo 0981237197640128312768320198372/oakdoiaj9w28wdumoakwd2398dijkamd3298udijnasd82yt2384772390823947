@@ -52,8 +52,9 @@ export interface DepositState {
 
 export interface SuccessData {
   message: string;
-  name: string;
-  paymentId: string;
+  personalKey?: string;
+  name?: string;
+  paymentId?: string;
   depositAmount: number;
   bonusAmount: number;
   totalDepositAmount: number;

@@ -2,9 +2,9 @@
 'use client';
 
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User } from 'lucide-react';
+import { User, RefreshCw } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivitiesWithSWR } from '@/hooks/useBuyerActivitiesWithSWR';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
@@ -29,6 +29,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     }
   }, [buyer]);
   const [activeTab, setActiveTab] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [activityFilter, setActivityFilter] = useState<{
     category?: string;
     type?: string;
@@ -43,6 +44,22 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     refetch,
     loadMore,
   } = useBuyerActivitiesWithSWR(activityFilter);
+
+  const handleFilterChange = (newFilter: { category?: string; type?: string; search?: string }) => {
+    setActivityFilter(newFilter);
+    refetch(newFilter);
+  };
+
+  const refreshAllData = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await Promise.all([refreshBuyerDetails(), refetch(activityFilter)]);
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 500); // Add a small delay to make the animation visible
+    }
+  }, [refreshBuyerDetails, refetch, activityFilter]);
 
   if (!localBuyer) {
     return (
@@ -62,11 +79,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     );
   }
 
-  const handleFilterChange = (newFilter: { category?: string; type?: string; search?: string }) => {
-    setActivityFilter(newFilter);
-    refetch(newFilter);
-  };
-
   const financialActivities = activities.filter((a) => a.category === 'financial');
   const interactionActivities = activities.filter((a) => a.category === 'interaction');
   const completedTransactions = financialActivities.filter((a) => a.status === 'completed');
@@ -84,7 +96,18 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="w-full max-w-screen-lg lg:px-5 xl:px-0 space-y-5 min-h-[75vh]">
+      <button
+        onClick={refreshAllData}
+        disabled={isRefreshing}
+        className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
+        title="Refresh data">
+        <RefreshCw
+          size={18}
+          className={`text-gray-600 dark:text-gray-300 ${isRefreshing ? 'animate-spin' : ''}`}
+        />
+      </button>
       <DashboardHeader buyer={localBuyer} theme={theme} onProfileUpdate={refreshBuyerDetails} />
+
       <div className="space-y-5">
         <DepositForm theme={theme} onBalanceUpdate={refreshBuyerDetails} />
         <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
