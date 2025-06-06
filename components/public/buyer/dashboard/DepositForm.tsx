@@ -50,19 +50,26 @@ export default function DepositForm({ theme = null, onBalanceUpdate }: DepositFo
           setPaymentStatus(data.status);
 
           if (data.status === 'succeeded') {
+            // Calculate current balance based on buyer.balance type
+            const currentBalance =
+              typeof buyer?.balance === 'object' && buyer?.balance
+                ? buyer.balance.amount
+                : typeof buyer?.balance === 'number'
+                ? buyer.balance
+                : 0;
+
+            const depositAmount = parseFloat(amount);
+            const bonusAmount = 0; // No bonus in this case
+            const totalDepositAmount = depositAmount + bonusAmount;
+
             setSuccessData({
               message: 'Deposit successful!',
               name: buyer?.name || 'User',
               paymentId: paymentIntentId,
-              depositAmount: parseFloat(amount),
-              bonusAmount: 0,
-              totalDepositAmount: parseFloat(amount),
-              newBalance:
-                (typeof buyer?.balance === 'object' && buyer?.balance
-                  ? buyer.balance.amount
-                  : typeof buyer?.balance === 'number'
-                  ? buyer.balance
-                  : 0) + parseFloat(amount),
+              depositAmount: depositAmount,
+              bonusAmount: bonusAmount,
+              totalDepositAmount: totalDepositAmount,
+              newBalance: currentBalance + totalDepositAmount,
             });
             setShowSuccess(true);
 
