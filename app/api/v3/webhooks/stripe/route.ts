@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
               // Call the balance update API
               const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/balance/update`,
+                `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/v3/balance/update`,
                 {
                   method: 'POST',
                   headers: {

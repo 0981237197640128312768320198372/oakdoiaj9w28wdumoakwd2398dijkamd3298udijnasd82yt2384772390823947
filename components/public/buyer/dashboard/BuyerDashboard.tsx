@@ -115,14 +115,8 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           setIsEditProfileModalOpen={setIsEditProfileModalOpen}
           showContactList={showContactList}
         />
-        {isDepositModalOpen ? (
-          <DepositForm
-            theme={theme}
-            onBalanceUpdate={refreshBuyerDetails}
-            isOpen={isDepositModalOpen}
-            onClose={() => setIsDepositModalOpen(false)}
-          />
-        ) : (
+
+        {!isDepositModalOpen && (
           <div className="space-y-5">
             <StatsGrid
               stats={stats}
@@ -153,7 +147,15 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
             </AnimatePresence>
           </div>
         )}
-      </motion.div>
+      </motion.div>{' '}
+      {isDepositModalOpen && (
+        <DepositForm
+          theme={theme}
+          onBalanceUpdate={refreshBuyerDetails}
+          isOpen={isDepositModalOpen}
+          onClose={() => setIsDepositModalOpen(false)}
+        />
+      )}
     </>
   );
 };

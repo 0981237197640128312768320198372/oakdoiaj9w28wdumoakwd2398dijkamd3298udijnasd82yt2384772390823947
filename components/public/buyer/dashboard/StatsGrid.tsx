@@ -27,7 +27,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
       id: 'activities',
       icon: History,
       label: 'กิจกรรมทั้งหมด',
-      value: stats.totalActivities.toString(),
+      value: (stats.completedTransactions + stats.interactions).toString(),
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/20',
     },

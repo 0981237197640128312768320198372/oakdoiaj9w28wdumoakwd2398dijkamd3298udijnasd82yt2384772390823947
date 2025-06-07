@@ -58,11 +58,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   activities,
   loading,
   error,
-  pagination,
   activeTab,
   filter,
   onFilterChange,
-  onLoadMore,
   onRefresh,
   theme,
 }) => {
@@ -81,7 +79,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   };
 
   const formatIpAddress = (ip: string) => {
-    // Simple validation to check if it looks like an IP address
     const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(ip);
     const isIPv6 = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/.test(ip);
 
@@ -414,6 +411,11 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     if (activeTab === 'interactions') return activity.category === 'interaction';
     return true;
   });
+  const [visibleCount, setVisibleCount] = useState<number>(8);
+  const visibleActivities = filteredActivities.slice(0, visibleCount);
+  const handleLoadMoreLocal = () => {
+    setVisibleCount((prev) => prev + 8);
+  };
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -442,7 +444,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         </h3>
 
         <div className="flex items-center gap-5">
-          {/* Search */}
           <div className="relative">
             <Search
               size={14}
@@ -463,7 +464,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             />
           </div>
 
-          {/* Filter Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={cn(
@@ -476,7 +476,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
             <span className="hidden sm:inline">ตัวกรอง</span>
           </button>
 
-          {/* Refresh */}
           <button
             onClick={onRefresh}
             disabled={loading}
@@ -576,227 +575,239 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           <p className={cn('text-xs', themeUtils.getTextColors())}>ไม่พบกิจกรรม</p>
         </div>
       ) : (
-        <div className="space-y-5">
+        <>
           <AnimatePresence>
-            {filteredActivities.map((activity, index) => (
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleActivityExpand(activity.id);
-                }}
-                key={activity.id}
-                className="gap-1 flex-col flex cursor-pointer">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.05 }}
-                  className={cn(
-                    'flex items-center justify-between p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
-                    themeUtils.getCardClass(),
-                    themeUtils.getComponentRoundednessClass(),
-                    isLight ? '!bg-gray-50' : '!bg-dark-600'
-                  )}>
-                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                    <div className="flex-shrink-0">
-                      {getActivityIcon(activity.type, activity.category)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className={cn('text-xs font-medium truncate', themeUtils.getTextColors())}>
-                        {getActivityDescription(activity)}
-                      </p>
-                      <div
-                        className={cn(
-                          'flex flex-wrap items-center gap-1 sm:gap-2 text-xs mt-0.5',
-                          themeUtils.getTextColors()
-                        )}>
-                        <div className="flex items-center gap-1">
-                          {getStatusIcon(activity.status)}
-                          <span className="capitalize">{activity.status}</span>
-                        </div>
-
-                        {activity.metadata.ipAddress && (
-                          <div
-                            className={cn(
-                              'flex items-center gap-1 ml-1 sm:ml-2 px-1.5 py-0.5 rounded border',
-                              themeUtils.baseTheme === 'light'
-                                ? ' bg-light-100 border-light-400'
-                                : ' bg-dark-600 border-dark-400',
-                              themeUtils.getTextColors()
-                            )}>
-                            <Globe size={12} className={themeUtils.getPrimaryColorClass('text')} />
-                            <span className="font-mono text-xs">
-                              {formatIpAddress(activity.metadata.ipAddress)}
-                            </span>
-                          </div>
-                        )}
+            <div className="space-y-5 __dokmai_scrollbar max-h-[75vh] overflow-y-auto">
+              {visibleActivities.map((activity, index) => (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleActivityExpand(activity.id);
+                  }}
+                  key={activity.id}
+                  className="gap-1 flex-col flex cursor-pointer">
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: index * 0.05 }}
+                    className={cn(
+                      'flex items-center justify-between p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
+                      themeUtils.getCardClass(),
+                      themeUtils.getComponentRoundednessClass(),
+                      isLight ? '!bg-gray-50' : '!bg-dark-600'
+                    )}>
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                      <div className="flex-shrink-0">
+                        {getActivityIcon(activity.type, activity.category)}
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col items-end flex-shrink-0">
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleActivityExpand(activity.id);
-                        }}
-                        className={cn(
-                          'p-1 rounded-full transition-colors',
-                          themeUtils.baseTheme === 'light'
-                            ? 'hover:bg-light-800'
-                            : 'hover:bg-dark-600',
-                          expandedActivities[activity.id] &&
-                            (themeUtils.baseTheme === 'light' ? 'bg-light-300' : 'bg-dark-500')
-                        )}>
-                        {expandedActivities[activity.id] ? (
-                          <ChevronDown
-                            size={16}
-                            className={themeUtils.getPrimaryColorClass('text')}
-                          />
-                        ) : (
-                          <ChevronRight
-                            size={16}
-                            className={themeUtils.getPrimaryColorClass('text')}
-                          />
-                        )}
-                      </button>
-                    </div>
-
-                    {activity.metadata.rating && (
-                      <div className="flex items-center gap-0.5 justify-end">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            size={12}
-                            className={cn(
-                              i < activity.metadata.rating! ? 'text-yellow-400 fill-current' : '',
-                              themeUtils.getTextColors()
-                            )}
-                          />
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-1 text-xs text-light-800  mt-0.5">
-                      <Calendar size={12} className={themeUtils.getPrimaryColorClass('text')} />
-                      <span>{formatDate(activity.createdAt)}</span>
-                    </div>
-                  </div>
-                </motion.div>
-
-                <AnimatePresence>
-                  {expandedActivities[activity.id] && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className={cn(
-                        'w-full p-3 border',
-                        themeUtils.getCardClass(),
-                        isLight ? '!bg-gray-50' : '!bg-dark-600',
-                        themeUtils.getComponentRoundednessClass()
-                      )}>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
-                        {Object.entries(activity.metadata).map(([key, value]) => (
-                          <div key={key} className="flex items-start gap-2 text-xs">
-                            <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
-                              {getMetadataIcon(key)}
-                              <span>{getMetadataDisplayName(key)}:</span>
-                            </div>
-                            <div className={cn('font-medium', themeUtils.getTextColors())}>
-                              {formatMetadataValue(key, value)}
-                            </div>
+                      <div className="min-w-0 flex-1">
+                        <p
+                          className={cn(
+                            'text-xs font-medium truncate',
+                            themeUtils.getTextColors()
+                          )}>
+                          {getActivityDescription(activity)}
+                        </p>
+                        <div
+                          className={cn(
+                            'flex flex-wrap items-center gap-1 sm:gap-2 text-xs mt-0.5',
+                            themeUtils.getTextColors()
+                          )}>
+                          <div className="flex items-center gap-1">
+                            {getStatusIcon(activity.status)}
+                            <span className="capitalize">{activity.status}</span>
                           </div>
-                        ))}
 
-                        {/* Activity Details */}
-                        <div className="flex items-start gap-2 text-xs">
-                          <div className="flex items-center gap-1 min-w-[100px] sm:min-w-[120px]">
-                            <Calendar
-                              size={14}
-                              className={themeUtils.getPrimaryColorClass('text')}
-                            />
-                            <span>วันที่</span>
-                          </div>
-                          <div className={cn('font-medium', themeUtils.getTextColors())}>
-                            {formatDate(activity.createdAt)}
-                          </div>
-                        </div>
-
-                        {activity.completedAt && (
-                          <div className="flex items-start gap-2 text-xs">
+                          {activity.metadata.ipAddress && (
                             <div
                               className={cn(
-                                'flex items-center gap-1 min-w-[100px] sm:min-w-[120px]',
+                                'flex items-center gap-1 ml-1 sm:ml-2 px-1.5 py-0.5 rounded border',
+                                themeUtils.baseTheme === 'light'
+                                  ? ' bg-light-100 border-light-400'
+                                  : ' bg-dark-600 border-dark-400',
                                 themeUtils.getTextColors()
                               )}>
+                              <Globe
+                                size={12}
+                                className={themeUtils.getPrimaryColorClass('text')}
+                              />
+                              <span className="font-mono text-xs">
+                                {formatIpAddress(activity.metadata.ipAddress)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end flex-shrink-0">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleActivityExpand(activity.id);
+                          }}
+                          className={cn(
+                            'p-1 rounded-full transition-colors',
+                            themeUtils.baseTheme === 'light'
+                              ? 'hover:bg-light-800'
+                              : 'hover:bg-dark-600',
+                            expandedActivities[activity.id] &&
+                              (themeUtils.baseTheme === 'light' ? 'bg-light-300' : 'bg-dark-500')
+                          )}>
+                          {expandedActivities[activity.id] ? (
+                            <ChevronDown
+                              size={16}
+                              className={themeUtils.getPrimaryColorClass('text')}
+                            />
+                          ) : (
+                            <ChevronRight
+                              size={16}
+                              className={themeUtils.getPrimaryColorClass('text')}
+                            />
+                          )}
+                        </button>
+                      </div>
+
+                      {activity.metadata.rating && (
+                        <div className="flex items-center gap-0.5 justify-end">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              size={12}
+                              className={cn(
+                                i < activity.metadata.rating! ? 'text-yellow-400 fill-current' : '',
+                                themeUtils.getTextColors()
+                              )}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-1 text-xs text-light-800  mt-0.5">
+                        <Calendar size={12} className={themeUtils.getPrimaryColorClass('text')} />
+                        <span>{formatDate(activity.createdAt)}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <AnimatePresence>
+                    {expandedActivities[activity.id] && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className={cn(
+                          'w-full p-3 border',
+                          themeUtils.getCardClass(),
+                          isLight ? '!bg-gray-50' : '!bg-dark-600',
+                          themeUtils.getComponentRoundednessClass()
+                        )}>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+                          {Object.entries(activity.metadata).map(([key, value]) => (
+                            <div key={key} className="flex items-start gap-2 text-xs">
+                              <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
+                                {getMetadataIcon(key)}
+                                <span>{getMetadataDisplayName(key)}:</span>
+                              </div>
+                              <div className={cn('font-medium', themeUtils.getTextColors())}>
+                                {formatMetadataValue(key, value)}
+                              </div>
+                            </div>
+                          ))}
+
+                          {/* Activity Details */}
+                          <div className="flex items-start gap-2 text-xs">
+                            <div className="flex items-center gap-1 min-w-[100px] sm:min-w-[120px]">
                               <Calendar
                                 size={14}
                                 className={themeUtils.getPrimaryColorClass('text')}
                               />
-                              <span>เสร็จสิ้น</span>
+                              <span>วันที่</span>
                             </div>
                             <div className={cn('font-medium', themeUtils.getTextColors())}>
-                              {formatDate(activity.completedAt)}
+                              {formatDate(activity.createdAt)}
                             </div>
                           </div>
-                        )}
 
-                        {activity.tags && activity.tags.length > 0 && (
-                          <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
-                            <div
-                              className={cn(
-                                'flex items-center gap-1  min-w-[100px] sm:min-w-[120px]',
-                                themeUtils.getTextColors()
-                              )}>
-                              <Tag size={14} className={themeUtils.getPrimaryColorClass('text')} />
-                              <span>แท็ก</span>
+                          {activity.completedAt && (
+                            <div className="flex items-start gap-2 text-xs">
+                              <div
+                                className={cn(
+                                  'flex items-center gap-1 min-w-[100px] sm:min-w-[120px]',
+                                  themeUtils.getTextColors()
+                                )}>
+                                <Calendar
+                                  size={14}
+                                  className={themeUtils.getPrimaryColorClass('text')}
+                                />
+                                <span>เสร็จสิ้น</span>
+                              </div>
+                              <div className={cn('font-medium', themeUtils.getTextColors())}>
+                                {formatDate(activity.completedAt)}
+                              </div>
                             </div>
-                            <div className="flex flex-wrap gap-1">
-                              {activity.tags.map((tag: string) => (
-                                <span
-                                  key={tag}
-                                  className={cn(
-                                    'px-2 py-0.5 rounded-full text-xs',
-                                    themeUtils.baseTheme === 'light'
-                                      ? 'bg-light-300'
-                                      : 'bg-dark-600',
-                                    themeUtils.getTextColors()
-                                  )}>
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
+                          )}
 
-                        {activity.notes && (
-                          <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
-                            <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
-                              <MessageSquare
-                                size={14}
-                                className={themeUtils.getPrimaryColorClass('text')}
-                              />
-                              <span>โน้ต</span>
+                          {activity.tags && activity.tags.length > 0 && (
+                            <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
+                              <div
+                                className={cn(
+                                  'flex items-center gap-1  min-w-[100px] sm:min-w-[120px]',
+                                  themeUtils.getTextColors()
+                                )}>
+                                <Tag
+                                  size={14}
+                                  className={themeUtils.getPrimaryColorClass('text')}
+                                />
+                                <span>แท็ก</span>
+                              </div>
+                              <div className="flex flex-wrap gap-1">
+                                {activity.tags.map((tag: string) => (
+                                  <span
+                                    key={tag}
+                                    className={cn(
+                                      'px-2 py-0.5 rounded-full text-xs',
+                                      themeUtils.baseTheme === 'light'
+                                        ? 'bg-light-300'
+                                        : 'bg-dark-600',
+                                      themeUtils.getTextColors()
+                                    )}>
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
-                            <div className={cn('font-medium', themeUtils.getTextColors())}>
-                              {activity.notes}
+                          )}
+
+                          {activity.notes && (
+                            <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
+                              <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
+                                <MessageSquare
+                                  size={14}
+                                  className={themeUtils.getPrimaryColorClass('text')}
+                                />
+                                <span>โน้ต</span>
+                              </div>
+                              <div className={cn('font-medium', themeUtils.getTextColors())}>
+                                {activity.notes}
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ))}
+            </div>
           </AnimatePresence>
 
-          {pagination.hasMore && (
+          {visibleCount < filteredActivities.length && (
             <div className="text-center pt-3">
               <button
-                onClick={onLoadMore}
+                onClick={handleLoadMoreLocal}
                 disabled={loading}
                 className={cn(
                   'flex items-center gap-1.5 px-4 py-2 text-xs font-medium transition-all duration-300 mx-auto',
@@ -818,7 +829,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
               </button>
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );

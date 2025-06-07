@@ -71,7 +71,7 @@ const DepositSuccess: React.FC<DepositSuccessProps> = ({ data, onClose, theme = 
   return (
     <div
       className={cn(
-        'fixed inset-0 h-screen w-screen z-40 flex flex-col justify-center items-center backdrop-blur-md',
+        'fixed inset-0 h-screen w-screen z-[99999] flex flex-col justify-center items-center backdrop-blur-md',
         isLight
           ? 'bg-gradient-to-br from-light-100/10 to-light-800/10'
           : ' bg-gradient-to-br from-dark-200/10 to-dark-800/10'

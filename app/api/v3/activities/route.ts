@@ -64,8 +64,7 @@ export async function GET(request: NextRequest) {
       const category = searchParams.get('category');
       const type = searchParams.get('type');
       const status = searchParams.get('status');
-      const limit = Number.parseInt(searchParams.get('limit') || '20');
-      const skip = Number.parseInt(searchParams.get('skip') || '0');
+
       const userType = searchParams.get('userType') || 'buyer';
 
       const query: any = {};
@@ -86,11 +85,7 @@ export async function GET(request: NextRequest) {
           select: 'username store.name store.logoUrl',
           model: 'Seller',
         })
-        .sort({ createdAt: -1 })
-        .limit(limit)
-        .skip(skip);
-
-      const totalCount = await Activity.countDocuments(query);
+        .sort({ createdAt: -1 });
 
       const formattedActivities = activities.map((activity) => ({
         id: activity._id,
@@ -112,12 +107,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         success: true,
         activities: formattedActivities,
-        pagination: {
-          total: totalCount,
-          limit,
-          skip,
-          hasMore: skip + limit < totalCount,
-        },
       });
     }
   } catch (error) {

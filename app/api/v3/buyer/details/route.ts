@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type NextRequest, NextResponse } from 'next/server';
 import { Buyer } from '@/models/v3/Buyer';
+import { Balance } from '@/models/v3/Balance';
 import { verifyBuyerAuth } from '@/lib/utils';
 import { connectToDatabase } from '@/lib/db';
 
@@ -31,6 +32,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Buyer not found' }, { status: 404 });
     }
 
+    // Get buyer's balance from Balance model
+    let balance = null;
+    try {
+      const balanceDoc = await Balance.findOne({ buyerId: buyer._id, balanceType: 'wallet' });
+      balance = balanceDoc ? { amount: balanceDoc.amount } : { amount: 0 };
+    } catch (error) {
+      console.error('Error fetching balance:', error);
+      balance = { amount: 0 };
+    }
+
     // Format the response to include only necessary data
     const buyerDetails = {
       id: buyer._id,
@@ -39,6 +50,7 @@ export async function GET(request: NextRequest) {
       username: buyer.username,
       avatarUrl: buyer.avatarUrl,
       contact: buyer.contact,
+      balance: balance,
       history: buyer.history
         ? buyer.history.map(
             (item: {
