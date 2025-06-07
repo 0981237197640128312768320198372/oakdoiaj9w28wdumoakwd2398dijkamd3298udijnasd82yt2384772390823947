@@ -63,7 +63,7 @@ export default function DiscountedProducts({
           'flex justify-between items-center w-full border-b pb-5 mb-5',
           themeUtils.getPrimaryColorClass('border')
         )}>
-        <h2 className="text-xl font-semibold flex gap-1">
+        <h2 className="lg:text-xl text-sm font-semibold flex gap-1">
           <RiDiscountPercentLine className="text-2xl" />
           ดีลส่วนลดสุดพิเศษ
         </h2>
@@ -71,7 +71,7 @@ export default function DiscountedProducts({
           <button
             onClick={() => onNavigate('products')}
             className={cn(
-              'flex items-center gap-1 py-1 px-2 text-sm transition-colors',
+              'flex items-center gap-1 py-1 px-2 lg:text-sm text-xs  transition-colors',
               themeUtils.getPrimaryColorClass('bg'),
               themeUtils.getButtonClass(),
               themeUtils.getButtonRoundednessClass(),
