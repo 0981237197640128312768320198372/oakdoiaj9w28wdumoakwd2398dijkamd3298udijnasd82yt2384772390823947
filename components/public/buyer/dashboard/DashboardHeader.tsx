@@ -11,7 +11,6 @@ import { User, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { ContactList } from './ContactList';
-import { EditProfileModal } from './EditProfileModal';
 import Image from 'next/image';
 import MenuButton from './MenuButton';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';

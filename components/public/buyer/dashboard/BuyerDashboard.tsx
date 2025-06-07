@@ -116,54 +116,55 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           setIsEditProfileModalOpen={setIsEditProfileModalOpen}
           showContactList={showContactList}
         />
-        {isEditProfileModalOpen ? (
-          <EditProfileModal
-            buyer={localBuyer}
-            theme={theme}
-            isOpen={isEditProfileModalOpen}
-            onClose={() => setIsEditProfileModalOpen(false)}
-            onSuccess={refreshBuyerDetails}
-          />
-        ) : (
-          <div className="space-y-5">
-            <StatsGrid
-              stats={stats}
+        {!isDepositModalOpen ? (
+          isEditProfileModalOpen ? (
+            <EditProfileModal
+              buyer={localBuyer}
               theme={theme}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
+              isOpen={isEditProfileModalOpen}
+              onClose={() => setIsEditProfileModalOpen(false)}
+              onSuccess={refreshBuyerDetails}
             />
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab || 'latest'}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}>
-                <ActivityList
-                  activities={activities}
-                  loading={activitiesLoading}
-                  error={activitiesError}
-                  pagination={pagination}
-                  activeTab={activeTab || 'latest'}
-                  filter={activityFilter}
-                  onFilterChange={handleFilterChange}
-                  onLoadMore={loadMore}
-                  onRefresh={() => refetch()}
-                  theme={theme}
-                />
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          ) : (
+            <div className="space-y-5">
+              <StatsGrid
+                stats={stats}
+                theme={theme}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab || 'latest'}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}>
+                  <ActivityList
+                    activities={activities}
+                    loading={activitiesLoading}
+                    error={activitiesError}
+                    pagination={pagination}
+                    activeTab={activeTab || 'latest'}
+                    filter={activityFilter}
+                    onFilterChange={handleFilterChange}
+                    onLoadMore={loadMore}
+                    onRefresh={() => refetch()}
+                    theme={theme}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )
+        ) : (
+          <DepositForm
+            theme={theme}
+            onBalanceUpdate={refreshBuyerDetails}
+            isOpen={isDepositModalOpen}
+            onClose={() => setIsDepositModalOpen(false)}
+          />
         )}
       </motion.div>
-      {isDepositModalOpen && (
-        <DepositForm
-          theme={theme}
-          onBalanceUpdate={refreshBuyerDetails}
-          isOpen={isDepositModalOpen}
-          onClose={() => setIsDepositModalOpen(false)}
-        />
-      )}
     </>
   );
 };

@@ -118,7 +118,7 @@ export default function DepositForm({
                 updatedBalance = currentBalance + totalDepositAmount;
               }
             }
-            const messageNotif = `=|| Deposit successful ||=\n\n${currentTime}\n\n[${buyer?.name}]\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount} Dokmai Coins\nBonus: ${bonusAmount} Dokmai Coins\nTotal: ${totalDepositAmount} Dokmai Coins\n____________\n\nNew Balance: ${updatedBalance} Dokmai Coins`;
+            const messageNotif = `🚨💸 Deposit successful 💸🚨 \n\n⌛ ${currentTime}\n\n🪪 ${buyer?.name}\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount} Dokmai Coins\nBonus: ${bonusAmount} Dokmai Coins\nTotal: ${totalDepositAmount} Dokmai Coins\n____________\n\nNew Balance: ${updatedBalance} Dokmai Coins`;
             console.log('Deposit success notification:', messageNotif);
             await notifyLineMessage(OWNER_ID, messageNotif);
 
@@ -366,7 +366,8 @@ export default function DepositForm({
                     'flex items-center justify-center w-full gap-2 px-4 py-2 border transition-colors text-xs',
                     themeUtils.getPrimaryColorClass('bg'),
                     themeUtils.getButtonClass(),
-                    themeUtils.getButtonRoundednessClass()
+                    themeUtils.getButtonRoundednessClass(),
+                    themeUtils.getPrimaryColorClass('border')
                   )}>
                   <FaDownload className="w-3 h-3" />
                   Download QR
