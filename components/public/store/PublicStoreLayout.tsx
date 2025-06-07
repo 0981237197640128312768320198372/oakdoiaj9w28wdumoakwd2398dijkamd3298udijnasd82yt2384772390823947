@@ -12,7 +12,7 @@ import PublicStoreProfile from './PublicStoreProfile';
 import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
 import StoreFooter from './StoreFooter';
-import { cn } from '@/lib/utils';
+import { cn, consoleFuck } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
@@ -79,7 +79,10 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   };
 
   const layoutStyles = getLayoutStyles();
-
+  console.log(
+    `%c${consoleFuck}`,
+    'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: #0f0f0f; padding: 10px; font-weight: bold; border-radius: 10px;'
+  );
   return (
     <CartProvider>
       <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>

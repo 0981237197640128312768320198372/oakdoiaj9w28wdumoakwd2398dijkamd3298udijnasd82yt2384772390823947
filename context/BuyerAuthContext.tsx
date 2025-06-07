@@ -109,6 +109,8 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
     if (!token) return;
 
     try {
+      console.log('Refreshing balance for buyer:', buyer.email || buyer.username);
+
       const res = await fetch('/api/v3/balance/info', {
         method: 'POST',
         headers: {
@@ -118,9 +120,12 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
         body: JSON.stringify({ buyer: buyer.email || buyer.username }),
       });
 
+      console.log('Balance API response status:', res.status);
+
       if (!res.ok) throw new Error('Failed to fetch balance');
 
       const data = await res.json();
+      console.log('Balance API response data:', data);
 
       // Update buyer state with new balance
       setBuyer((prev) => {
@@ -130,6 +135,8 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
           balance: data.balance,
         };
       });
+
+      console.log('Balance updated successfully');
     } catch (error) {
       console.error('Error refreshing balance:', error);
     }

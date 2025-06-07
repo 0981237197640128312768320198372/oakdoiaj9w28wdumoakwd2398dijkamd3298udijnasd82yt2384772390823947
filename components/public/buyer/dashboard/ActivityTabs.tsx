@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { History, Wallet, Star } from 'lucide-react';
+import { ArrowLeftRight, History, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
@@ -18,7 +18,7 @@ export const ActivityTabs: React.FC<ActivityTabsProps> = ({ activeTab, onTabChan
 
   const tabs = [
     { id: 'activities', label: 'Activities', icon: History },
-    { id: 'transactions', label: 'Transactions', icon: Wallet },
+    { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
     { id: 'interactions', label: 'Interactions', icon: Star },
   ];
 

@@ -8,8 +8,6 @@ import ProductsCategory from './ProductsCategory';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
 import DiscountedProducts from './DiscountedProducts';
-import { useState } from 'react';
-import { consoleFuck } from '@/lib/utils';
 interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
@@ -23,17 +21,9 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
   theme,
   onNavigate,
 }) => {
-  console.log(
-    `%c${consoleFuck}`,
-    'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: #0f0f0f; padding: 10px; font-weight: bold; border-radius: 10px;'
-  );
-
-  // Modified to navigate to products page instead of showing product detail in homepage
   const handleViewProductDetail = (productId: string) => {
-    // Navigate to the products page and pass the productId
     onNavigate('products');
 
-    // Store the productId in localStorage so StoreProducts can access it
     localStorage.setItem('selectedProductId', productId);
   };
 

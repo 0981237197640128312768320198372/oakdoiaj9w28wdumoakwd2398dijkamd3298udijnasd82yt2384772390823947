@@ -107,7 +107,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     return data.balance;
   };
 
-  const { data: balanceData } = useSWR(
+  const { data: balanceData, mutate: mutateBalance } = useSWR(
     buyerToken && authBuyer ? [balUrl, buyerToken, authBuyer.email || authBuyer.username] : null,
     ([url, token, buyerValue]: [string, string, string]) => fetchBalance(url, token, buyerValue),
     {

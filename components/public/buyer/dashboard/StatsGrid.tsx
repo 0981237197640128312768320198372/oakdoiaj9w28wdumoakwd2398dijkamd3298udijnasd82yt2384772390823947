@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { History, Wallet, Star } from 'lucide-react';
+import { History, Star, ArrowLeftRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
@@ -33,7 +33,7 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
     },
     {
       id: 'transactions',
-      icon: Wallet,
+      icon: ArrowLeftRight,
       label: 'การชำระเงินที่สำเร็จเรียบร้อยแล้ว',
       value: stats.completedTransactions.toString(),
       color: 'text-green-500',

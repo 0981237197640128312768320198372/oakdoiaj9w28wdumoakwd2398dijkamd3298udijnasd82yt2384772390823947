@@ -5,7 +5,7 @@
 import type React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, RefreshCw } from 'lucide-react';
+import { User } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivitiesWithSWR } from '@/hooks/useBuyerActivitiesWithSWR';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
@@ -20,7 +20,7 @@ interface BuyerDashboardProps {
 }
 
 const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
-  const { buyer: authBuyer } = useBuyerAuth();
+  const { buyer: authBuyer, refreshBalance } = useBuyerAuth();
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(authBuyer);
 
@@ -57,13 +57,13 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   const refreshAllData = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      await Promise.all([refreshBuyerDetails(), refetch(activityFilter)]);
+      await Promise.all([refreshBuyerDetails(), refetch(activityFilter), refreshBalance()]);
     } finally {
       setTimeout(() => {
         setIsRefreshing(false);
       }, 500);
     }
-  }, [refreshBuyerDetails, refetch, activityFilter]);
+  }, [refreshBuyerDetails, refetch, activityFilter, refreshBalance]);
 
   if (!localBuyer) {
     return (

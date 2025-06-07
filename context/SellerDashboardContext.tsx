@@ -1,5 +1,6 @@
 'use client';
 
+import { consoleFuck } from '@/lib/utils';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define the available views in the seller dashboard
@@ -20,7 +21,10 @@ const SellerDashboardContext = createContext<SellerDashboardContextType>({
 // Create a provider component
 export const SellerDashboardProvider = ({ children }: { children: ReactNode }) => {
   const [activeView, setActiveView] = useState<DashboardView>('profile');
-
+  console.log(
+    `%c${consoleFuck}`,
+    'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: #0f0f0f; padding: 10px; font-weight: bold; border-radius: 10px;'
+  );
   return (
     <SellerDashboardContext.Provider value={{ activeView, setActiveView }}>
       {children}

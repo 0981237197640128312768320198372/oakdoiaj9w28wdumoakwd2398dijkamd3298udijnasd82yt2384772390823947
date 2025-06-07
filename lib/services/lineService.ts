@@ -2,7 +2,7 @@ export const OWNER_ID = 'U29bcda65594a6b00e4215cf03bef3351';
 
 export async function notifyLineMessage(userId: string, message: string) {
   try {
-    const response = await fetch(`http://localhost:3000/api/v3/line/send-message`, {
+    const response = await fetch(`/api/v3/line/send-message`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
