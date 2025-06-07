@@ -3,19 +3,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useThemeUtils } from '@/lib/theme-utils';
-import type { ThemeType } from '@/types';
 
 interface DepositTimerProps {
   seconds: number;
   onExpire: () => void;
-  theme?: ThemeType | null;
 }
 
-const DepositTimer: React.FC<DepositTimerProps> = ({ seconds, onExpire, theme = null }) => {
+const DepositTimer: React.FC<DepositTimerProps> = ({ seconds, onExpire }) => {
   const [timeLeft, setTimeLeft] = useState(seconds);
   const percentage = (timeLeft / seconds) * 100;
-  const themeUtils = useThemeUtils(theme);
 
   useEffect(() => {
     if (timeLeft <= 0) {

@@ -42,7 +42,7 @@ export default function DepositForm({
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
 
-  const [timer] = useState<number>(900);
+  const [timer] = useState<number>(60);
 
   useEffect(() => {
     if (!paymentIntentId) return;

@@ -84,7 +84,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
       )}>
       <div
         className={cn(
-          'flex w-full items-center justify-center mb-1 py-2 px-3',
+          'hidden w-full items-center justify-center mb-1 text-xs md:flex',
           themeUtils.getPrimaryColorClass('text')
         )}>
         <FaShieldAlt className="mr-2" />
@@ -133,7 +133,6 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
           />
         </div>
 
-        {/* Download Button */}
         <button
           onClick={downloadQRCode}
           className={cn(
@@ -166,7 +165,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
         </div>
       </div>
 
-      <div className="w-full mt-5 mb-2">
+      <div className="w-full mt-5 mb-2 hidden md:block">
         <p className="text-xs text-center mb-3">ธนาคารที่รองรับ</p>
         <div className="flex justify-center flex-wrap gap-3">
           {thaibanks.map((bank, i) => (
@@ -184,7 +183,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 font-light text-center mt-4 max-w-sm">
+      <p className="text-xs text-gray-500 font-light text-center mt-4 max-w-sm hidden md:block">
         PromptPay ได้รับการสนับสนุนจากแอปธนาคารและแอปชำระเงินอื่นๆ เช่น TTB, ธนาคารออมสิน (GSB),
         ธนาคารเกียรตินาคิน, UOB
       </p>
