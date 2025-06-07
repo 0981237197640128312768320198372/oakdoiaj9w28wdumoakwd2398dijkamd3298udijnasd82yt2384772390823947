@@ -59,6 +59,9 @@ interface DashboardHeaderProps {
   handleEditProfile: () => void;
   handleLogout: () => void;
   handleToggleContactList: () => void;
+  isEditProfileModalOpen: boolean;
+  setIsEditProfileModalOpen: (open: boolean) => void;
+  showContactList: boolean;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -71,18 +74,20 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   handleToggleContactList,
   onRefresh,
   isRefreshing,
+  isEditProfileModalOpen,
+  setIsEditProfileModalOpen,
+  showContactList,
 }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
+  console.log(buyer);
   useEffect(() => {
     if (buyer) {
       setLocalBuyer(buyer);
     }
   }, [buyer]);
   const themeUtils = useThemeUtils(theme);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
-  const [showContactList, setShowContactList] = useState(false);
 
   const { buyer: authBuyer } = useBuyerAuth();
   const buyerToken = typeof window !== 'undefined' ? localStorage.getItem('buyerToken') : null;
@@ -295,8 +300,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       <EditProfileModal
         buyer={localBuyer}
         theme={theme}
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        isOpen={isEditProfileModalOpen}
+        onClose={() => setIsEditProfileModalOpen(false)}
         onSuccess={handleProfileUpdate}
       />
     </>

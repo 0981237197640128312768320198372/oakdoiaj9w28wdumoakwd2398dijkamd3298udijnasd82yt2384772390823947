@@ -22,9 +22,9 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
   const [showProductDetail, setShowProductDetail] = useState(false);
 
   useEffect(() => {
-    console.log('StoreProducts - store value:', store);
+    // console.log('StoreProducts - store value:', store);
     if (!store) {
-      console.log('StoreProducts - No store value provided');
+      // console.log('StoreProducts - No store value provided');
       return;
     }
 
@@ -33,13 +33,13 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
       setError(null);
 
       try {
-        console.log('StoreProducts - Fetching data for store:', store);
+        // console.log('StoreProducts - Fetching data for store:', store);
         const productsResponse = await fetch(`/api/v3/products?store=${store}`);
         if (!productsResponse.ok) {
           throw new Error(`Failed to fetch products: ${productsResponse.statusText}`);
         }
         const productsData = await productsResponse.json();
-        console.log('StoreProducts - Products data:', productsData);
+        // console.log('StoreProducts - Products data:', productsData);
         setProducts(productsData.products || []);
 
         const categoriesResponse = await fetch(`/api/v3/categories?store=${store}`);
@@ -47,7 +47,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
           throw new Error(`Failed to fetch categories: ${categoriesResponse.statusText}`);
         }
         const categoriesData = await categoriesResponse.json();
-        console.log('StoreProducts - Categories data:', categoriesData);
+        // console.log('StoreProducts - Categories data:', categoriesData);
         setCategories(categoriesData.categories || []);
 
         // Check if there's a selected product ID in localStorage

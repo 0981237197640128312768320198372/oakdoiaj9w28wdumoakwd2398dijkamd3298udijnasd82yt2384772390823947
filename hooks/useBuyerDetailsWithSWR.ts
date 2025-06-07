@@ -2,7 +2,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 
 interface UseBuyerDetailsReturn {
@@ -47,7 +47,7 @@ export function useBuyerDetailsWithSWR(): UseBuyerDetailsReturn {
   const swrKey = isAuthenticated ? '/api/v3/buyer/details' : null;
 
   // Use SWR for data fetching with deduplication and caching
-  const { error, mutate, isValidating } = useSWR(swrKey, fetcher, {
+  const { data, error, mutate, isValidating } = useSWR(swrKey, fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 10000, // Deduplicate requests within 10 seconds
     onSuccess: (data) => {
@@ -56,6 +56,13 @@ export function useBuyerDetailsWithSWR(): UseBuyerDetailsReturn {
       }
     },
   });
+
+  // Update local buyer when SWR data changes
+  useEffect(() => {
+    if (data && data.buyer) {
+      setLocalBuyer(data.buyer);
+    }
+  }, [data]);
 
   const updateBuyerDetails = async (updates: any): Promise<boolean> => {
     if (!isAuthenticated) return false;

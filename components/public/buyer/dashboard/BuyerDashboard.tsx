@@ -32,6 +32,8 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   const [activeTab, setActiveTab] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [showContactList, setShowContactList] = useState(false);
   const [activityFilter, setActivityFilter] = useState<{
     category?: string;
     type?: string;
@@ -106,9 +108,12 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           onDepositClick={() => setIsDepositModalOpen(true)}
           onRefresh={refreshAllData}
           isRefreshing={isRefreshing}
-          handleEditProfile={() => {}}
+          handleEditProfile={() => setIsEditProfileModalOpen(true)}
           handleLogout={() => {}}
-          handleToggleContactList={() => {}}
+          handleToggleContactList={() => setShowContactList(!showContactList)}
+          isEditProfileModalOpen={isEditProfileModalOpen}
+          setIsEditProfileModalOpen={setIsEditProfileModalOpen}
+          showContactList={showContactList}
         />
         {isDepositModalOpen && (
           <DepositForm

@@ -110,7 +110,11 @@ const DepositQRCode: React.FC<DepositQRCodeProps> = ({
   }
 
   return (
-    <div className={cn('w-full p-5 transition-all duration-300 ', themeUtils.getCardClass())}>
+    <div
+      className={cn(
+        'w-full max-w-lg mx-auto p-5 transition-all duration-300 ',
+        themeUtils.getCardClass()
+      )}>
       <div className="flex flex-col items-center">
         <PromptPayQR qrCodeData={qrCodeData} amount={amount} theme={theme} />
 

@@ -358,7 +358,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
                   id="username"
                   name="username"
                   type="text"
-                  value={formData.username.toLowerCase()}
+                  value={formData.username}
                   onChange={handleChange}
                   className={cn(
                     'w-full px-3 py-2 text-sm border focus:outline-none focus:ring-2 transition-all duration-300',

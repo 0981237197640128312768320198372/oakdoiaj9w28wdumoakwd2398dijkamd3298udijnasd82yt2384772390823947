@@ -57,7 +57,6 @@ export default function DepositForm({
       eventSource.addEventListener('payment_update', (event) => {
         try {
           const data = JSON.parse(event.data);
-          console.log('SSE payment update:', data);
           setPaymentStatus(data.status);
 
           if (data.status === 'succeeded') {
@@ -255,7 +254,11 @@ export default function DepositForm({
   return (
     <AnimatePresence>
       {showQRCode && qrCodeData ? (
-        <div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.3 }}>
           <DepositQRCode
             qrCodeData={qrCodeData}
             amount={parseFloat(amount)}
@@ -277,7 +280,7 @@ export default function DepositForm({
               Cancel Transaction
             </button>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <div
           className={cn(

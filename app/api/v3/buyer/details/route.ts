@@ -34,8 +34,10 @@ export async function GET(request: NextRequest) {
     // Format the response to include only necessary data
     const buyerDetails = {
       id: buyer._id,
+      name: buyer.name,
       email: buyer.email,
       username: buyer.username,
+      avatarUrl: buyer.avatarUrl,
       contact: buyer.contact,
       history: buyer.history
         ? buyer.history.map(

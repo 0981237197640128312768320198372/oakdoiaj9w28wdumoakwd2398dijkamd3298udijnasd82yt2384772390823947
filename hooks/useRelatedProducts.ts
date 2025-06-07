@@ -15,7 +15,7 @@ export const useRelatedProducts = (
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       if (!currentProductId) {
-        console.log('Missing required parameter: currentProductId');
+        // console.log('Missing required parameter: currentProductId');
         return;
       }
 
@@ -28,21 +28,21 @@ export const useRelatedProducts = (
         let relatedByCategory: Product[] = [];
 
         if (categoryId) {
-          console.log(`Fetching related products for category: ${categoryId}`);
+          // console.log(`Fetching related products for category: ${categoryId}`);
           const categoryResponse = await fetch(
             `/api/v3/products?categoryId=${categoryId}${storeParam}`
           );
 
           if (categoryResponse.ok) {
             const categoryData = await categoryResponse.json();
-            console.log('Category API response:', categoryData);
+            // console.log('Category API response:', categoryData);
 
             // Filter out the current product
             relatedByCategory = categoryData.products.filter(
               (product: Product) => product._id !== currentProductId
             );
 
-            console.log('Related products by category:', relatedByCategory);
+            // console.log('Related products by category:', relatedByCategory);
           }
         }
 
@@ -52,7 +52,7 @@ export const useRelatedProducts = (
         }
         // Otherwise, fetch products with similar price
         else {
-          console.log(`Fetching products with similar price to: ${currentPrice}`);
+          // console.log(`Fetching products with similar price to: ${currentPrice}`);
 
           // Fetch all products
           const allProductsResponse = await fetch(
@@ -61,7 +61,7 @@ export const useRelatedProducts = (
 
           if (allProductsResponse.ok) {
             const allProductsData = await allProductsResponse.json();
-            console.log('All products API response:', allProductsData);
+            // console.log('All products API response:', allProductsData);
 
             // Filter out the current product and sort by price similarity
             const productsBySimilarPrice = allProductsData.products
@@ -72,7 +72,7 @@ export const useRelatedProducts = (
                 return aPriceDiff - bPriceDiff;
               });
 
-            console.log('Products sorted by price similarity:', productsBySimilarPrice);
+            // console.log('Products sorted by price similarity:', productsBySimilarPrice);
 
             // Combine category products with price-similar products
             const combinedProducts = [...relatedByCategory];
