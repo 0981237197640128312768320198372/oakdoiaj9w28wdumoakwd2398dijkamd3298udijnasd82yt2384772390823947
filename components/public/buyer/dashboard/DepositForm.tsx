@@ -12,6 +12,7 @@ import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { notifyLineMessage, OWNER_ID } from '@/lib/services/lineService';
 
 interface DepositFormProps {
   theme: ThemeType | null;
@@ -42,7 +43,7 @@ export default function DepositForm({
   const [showSuccess, setShowSuccess] = useState<boolean>(false);
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
 
-  const [timer] = useState<number>(60);
+  const [timer] = useState<number>(90);
 
   useEffect(() => {
     if (!paymentIntentId) return;
@@ -54,7 +55,7 @@ export default function DepositForm({
         `/api/v3/webhooks/payment-events?paymentIntentId=${paymentIntentId}`
       );
 
-      eventSource.addEventListener('payment_update', (event) => {
+      eventSource.addEventListener('payment_update', async (event) => {
         try {
           const data = JSON.parse(event.data);
           setPaymentStatus(data.status);
@@ -71,7 +72,7 @@ export default function DepositForm({
             const bonusAmount = 0;
             const totalDepositAmount = depositAmount + bonusAmount;
 
-            setSuccessData({
+            const success: SuccessData = {
               message: 'Deposit successful!',
               name: buyer?.name || 'User',
               paymentId: paymentIntentId.substring(0, 8),
@@ -79,8 +80,13 @@ export default function DepositForm({
               bonusAmount: bonusAmount,
               totalDepositAmount: totalDepositAmount,
               newBalance: currentBalance + totalDepositAmount,
-            });
+            };
+            setSuccessData(success);
             setShowSuccess(true);
+            await notifyLineMessage(
+              OWNER_ID,
+              `Deposit successful! User: ${success.name}\nPayment ID: ${success.paymentId}\nDeposit: ${success.depositAmount}\nBonus: ${success.bonusAmount}\nTotal: ${success.totalDepositAmount}\nNew Balance: ${success.newBalance}`
+            );
 
             if (onBalanceUpdate) {
               onBalanceUpdate();
@@ -154,19 +160,44 @@ export default function DepositForm({
     }
   };
 
-  const handleQRCodeExpire = () => {
-    setError('QR code has expired. Please try again.');
+  const handleQRCodeExpire = async () => {
+    setError('QR code has expired.');
     setShowError(true);
     setShowQRCode(false);
 
     if (paymentIntentId) {
-      fetch('/api/v3/payments/cancel', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ paymentIntentId }),
-      }).catch((err) => console.error('Error canceling payment:', err));
+      try {
+        await fetch('/api/v3/payments/cancel', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('buyerToken')}`,
+          },
+          body: JSON.stringify({ paymentIntentId }),
+        });
+
+        await fetch('/api/v3/activities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('buyerToken')}`,
+          },
+          body: JSON.stringify({
+            type: 'deposit',
+            category: 'financial',
+            status: 'cancelled',
+            metadata: {
+              amount: parseFloat(amount),
+              paymentMethod: 'promptpay',
+              paymentId: paymentIntentId,
+              reason: 'QR code expired',
+              description: `Deposit of ${amount} Dokmai Coin was canceled due to QR code expiration`,
+            },
+          }),
+        });
+      } catch (err) {
+        console.error('Error handling QR code expiration:', err);
+      }
     }
   };
 
@@ -174,7 +205,6 @@ export default function DepositForm({
     if (!paymentIntentId) return;
 
     try {
-      // Cancel the payment via API
       const response = await fetch('/api/v3/payments/cancel', {
         method: 'POST',
         headers: {
@@ -208,7 +238,6 @@ export default function DepositForm({
           }),
         });
 
-        // Reset form state
         setShowQRCode(false);
         setQrCodeData('');
         setPaymentIntentId('');

@@ -37,6 +37,7 @@ export async function POST(request: Request) {
 
     if (transactionId) {
       const result = await BalanceService.completeDeposit(transactionId, 'completed');
+
       return NextResponse.json({
         success: true,
         message: 'Deposit completed successfully',
