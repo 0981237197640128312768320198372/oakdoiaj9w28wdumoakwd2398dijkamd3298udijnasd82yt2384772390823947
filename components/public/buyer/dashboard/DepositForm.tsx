@@ -75,7 +75,7 @@ export default function DepositForm({
               OWNER_ID,
               `=|| Deposit successful ||=\n[ ${
                 buyer?.name
-              }]\nPayment ID: ${paymentIntentId}\nDeposit: ${depositAmount}\nBonus: ${bonusAmount}\nTotal: ${totalDepositAmount}\nNew Balance: ${
+              }]\nPayment ID: ${paymentIntentId}\nDeposit: ${depositAmount}\nBonus: ${bonusAmount}\nTotal: ${totalDepositAmount}\Balance: ${currentBalance}\nNew Balance: ${
                 currentBalance + totalDepositAmount
               }`
             );
