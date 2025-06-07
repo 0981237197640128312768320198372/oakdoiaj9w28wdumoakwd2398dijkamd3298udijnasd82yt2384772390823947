@@ -66,10 +66,10 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             isLight ? 'bg-white/65 border-light-200' : 'bg-dark-600/65 border-dark-400',
             themeUtils.getButtonRoundednessClass()
           )}>
-          <button onClick={() => onNavigate('home')} className="flex items-center gap-3">
+          <button onClick={() => onNavigate('home')} className="flex items-center gap-2 ">
             <div
               className={cn(
-                'relative overflow-hidden transition-all duration-300 w-8 h-8',
+                'relative overflow-hidden transition-all duration-300 w-10 h-10 ',
                 themeUtils.getButtonRoundednessClass()
               )}>
               <Image
