@@ -126,7 +126,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
   const getActivityIcon = (type: string, category: string) => {
     const iconProps = {
-      size: 18,
+      size: 21,
       className: cn(themeUtils.getPrimaryColorClass('text')),
     };
 
