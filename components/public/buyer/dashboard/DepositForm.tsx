@@ -256,7 +256,7 @@ export default function DepositForm({
     <AnimatePresence>
       <div
         className={cn(
-          'fixed inset-0 z-[9999] flex items-center justify-center',
+          'fixed inset-0 z-[9999] flex items-center justify-center w-full px-5 lg:px-5',
           showQRCode && qrCodeData
             ? 'bg-black/70 backdrop-blur-xl'
             : 'backdrop-blur-md bg-gradient-to-br from-dark-200/50 to-dark-800/50'
@@ -267,7 +267,7 @@ export default function DepositForm({
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 0.2 }}
           className={cn(
-            'w-full max-w-lg p-5',
+            'w-full max-w-lg p-5 text-xs md:text-base',
             themeUtils.getCardClass(),
             themeUtils.getComponentRoundednessClass(),
             themeUtils.getComponentShadowClass()
@@ -290,16 +290,13 @@ export default function DepositForm({
                 paymentIntentId={paymentIntentId}
                 onSuccess={onClose}
               />
-              <div className="mt-4 flex justify-center">
+              <div className="mt-5 flex justify-center">
                 <button
                   type="button"
                   onClick={handleCancelTransaction}
                   className={cn(
-                    'px-6 py-2 rounded-lg border transition-colors text-sm',
-                    themeUtils.getButtonRoundednessClass(),
-                    isLight
-                      ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
-                      : 'bg-red-900/20 border-red-500/30 text-red-400 hover:bg-red-900/30 hover:border-red-500/50'
+                    'px-4 py-2 border transition-colors text-xs bg-red-500/15 border-red-500/40 text-red-500 hover:bg-red-500/25 hover:border-red-500/70',
+                    themeUtils.getButtonRoundednessClass()
                   )}>
                   Cancel Transaction
                 </button>
@@ -417,7 +414,8 @@ export default function DepositForm({
                     themeUtils.getButtonClass() + ' ' + themeUtils.getPrimaryColorClass('border'),
                     isLoading ||
                       !amount ||
-                      (parseFloat(amount) < 10 && ' opacity-30 cursor-not-allowed')
+                      (parseFloat(amount) < 10 && ' opacity-30 cursor-not-allowed'),
+                    isLoading && ' opacity-60 cursor-not-allowed'
                   )}>
                   {isLoading ? 'กำลังดำเนินการ...' : 'ยืนยัน'}
                 </button>

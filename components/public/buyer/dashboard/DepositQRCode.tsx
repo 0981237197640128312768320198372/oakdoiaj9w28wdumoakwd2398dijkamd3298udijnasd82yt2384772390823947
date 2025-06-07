@@ -112,7 +112,7 @@ const DepositQRCode: React.FC<DepositQRCodeProps> = ({
   return (
     <div
       className={cn(
-        'w-full max-w-lg mx-auto rounded-lg p-5 transition-all duration-300 shadow-lg',
+        'w-full max-w-md mx-auto rounded-lg p-5 transition-all duration-300 shadow-lg',
         themeUtils.getCardClass()
       )}>
       <div className="flex flex-col items-center">

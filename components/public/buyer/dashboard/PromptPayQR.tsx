@@ -79,7 +79,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
     <div
       id="qr-code-canvas"
       className={cn(
-        'p-5 w-full max-w-lg mx-auto flex flex-col justify-center items-center select-none',
+        'p-5 w-full max-w-md mx-auto flex flex-col justify-center items-center select-none',
         themeUtils.getComponentRoundednessClass()
       )}>
       <div
@@ -120,16 +120,16 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
           )}>
           <QRCode
             value={qrCodeData}
-            size={250}
+            size={200}
             bgColor={isLight ? '#0f0f0f' : '#fff'}
             fgColor={isLight ? '#fff' : '#0f0f0f'}
             logoImage="/icons/favicon-admin.png"
-            logoWidth={45}
-            logoHeight={45}
+            logoWidth={35}
+            logoHeight={35}
             logoPadding={3}
             logoPaddingStyle="square"
             id="Dokmai Store PromptPay"
-            quietZone={10}
+            quietZone={1}
           />
         </div>
 
@@ -137,7 +137,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
         <button
           onClick={downloadQRCode}
           className={cn(
-            'mt-3 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-200 hover:scale-105',
+            'mt-3 flex text-xs items-center justify-center gap-2 px-4 py-2  font-medium transition-all duration-200 hover:scale-105',
             themeUtils.getPrimaryColorClass('bg'),
             themeUtils.getPrimaryColorClass('text') === 'text-white' ? 'text-white' : 'text-black',
             themeUtils.getComponentRoundednessClass()
@@ -146,12 +146,10 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
           ดาวน์โหลด QR Code
         </button>
 
-        {/* Amount Display */}
         <div className="w-full flex flex-col justify-center items-center">
-          <p className="text-sm uppercase tracking-wider my-1">จำนวนเงิน</p>
           <div
             className={cn(
-              'flex items-center justify-center gap-2 px-4 py-2 w-full',
+              'flex items-center justify-center gap-2 px-4 mt-3 py-2 w-full',
               themeUtils.getPrimaryColorClass('bg') + '/15',
               themeUtils.getComponentRoundednessClass()
             )}>
@@ -168,7 +166,6 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
         </div>
       </div>
 
-      {/* Supported Banks */}
       <div className="w-full mt-5 mb-2">
         <p className="text-xs text-center mb-3">ธนาคารที่รองรับ</p>
         <div className="flex justify-center flex-wrap gap-3">
@@ -178,7 +175,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
                 <Image
                   src={bank}
                   alt="Bank"
-                  className="h-auto w-10 lg:w-12 fill-black rounded-full p-2 transition-transform hover:scale-105"
+                  className="h-auto w-6 lg:w-8 xl:w-12 fill-black rounded-full p-1 transition-transform hover:scale-105"
                   draggable={false}
                 />
               </div>
@@ -187,7 +184,6 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
         </div>
       </div>
 
-      {/* Additional Information */}
       <p className="text-xs text-gray-500 font-light text-center mt-4 max-w-sm">
         PromptPay ได้รับการสนับสนุนจากแอปธนาคารและแอปชำระเงินอื่นๆ เช่น TTB, ธนาคารออมสิน (GSB),
         ธนาคารเกียรตินาคิน, UOB

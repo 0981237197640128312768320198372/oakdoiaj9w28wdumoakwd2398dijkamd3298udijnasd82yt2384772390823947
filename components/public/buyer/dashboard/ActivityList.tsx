@@ -15,7 +15,6 @@ import {
   XCircle,
   AlertCircle,
   Star,
-  TrendingUp,
   Wallet,
   MessageSquare,
   History,
@@ -33,6 +32,7 @@ import {
   Hash,
   CreditCard,
   DollarSign,
+  ShoppingBag,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -136,9 +136,9 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     if (category === 'financial') {
       switch (type) {
         case 'deposit':
-          return <TrendingUp {...iconProps} />;
+          return <Wallet {...iconProps} />;
         case 'purchase':
-          return <CreditCard {...iconProps} />;
+          return <ShoppingBag {...iconProps} />;
         default:
           return <Wallet {...iconProps} />;
       }
@@ -593,7 +593,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2, delay: index * 0.05 }}
                   className={cn(
-                    'flex items-center justify-between  p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
+                    'flex items-center justify-between p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
                     themeUtils.getCardClass(),
                     themeUtils.getComponentRoundednessClass(),
                     isLight ? '!bg-gray-50' : '!bg-dark-600'
@@ -637,12 +637,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
                   <div className="flex flex-col items-end flex-shrink-0">
                     <div className="flex items-center gap-2">
-                      {activity.metadata.amount && (
-                        <p className={cn('text-xs font-semibold', themeUtils.getTextColors())}>
-                          {activity.metadata.amount}
-                        </p>
-                      )}
-
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
