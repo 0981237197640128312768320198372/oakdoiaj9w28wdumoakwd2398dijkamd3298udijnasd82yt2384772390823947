@@ -272,7 +272,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
   const formatMetadataValue = (key: MetadataKey, value: any): React.ReactNode => {
     if (value === null || value === undefined) return 'N/A';
 
-    // Format IP Address
     if (key === 'ipAddress') {
       return (
         <span
@@ -285,7 +284,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       );
     }
 
-    // Format currency values
     if ((key === 'amount' || key === 'price') && typeof value === 'number') {
       return <span className="font-medium">{value}</span>;
     }
