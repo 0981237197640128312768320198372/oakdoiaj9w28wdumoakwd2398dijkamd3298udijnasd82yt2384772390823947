@@ -118,7 +118,7 @@ const DepositQRCode: React.FC<DepositQRCodeProps> = ({
       <div className="flex flex-col items-center">
         <PromptPayQR qrCodeData={qrCodeData} amount={amount} theme={theme} />
 
-        <DepositTimer seconds={timer} onExpire={onExpire} theme={theme} />
+        <DepositTimer seconds={timer} onExpire={onExpire} />
 
         {status === 'processing' && (
           <div className="w-full mt-2 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center">

@@ -2,13 +2,15 @@ import { useThemeUtils } from '@/lib/theme-utils';
 import { cn } from '@/lib/utils';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ThemeType } from '@/types';
-import { Menu as MenuIcon, ChevronDown } from 'lucide-react';
+import { Menu as MenuIcon, ChevronDown, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
 interface MenuButtonProps {
   handleEditProfile: () => void;
   handleLogout: () => void;
   handleToggleContactList: () => void;
   theme: ThemeType | null;
+  onRefresh: () => void;
+  isRefreshing: boolean;
 }
 
 const EditIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -36,6 +38,8 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   handleLogout,
   handleToggleContactList,
   theme,
+  onRefresh,
+  isRefreshing,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -55,58 +59,75 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   }, []);
 
   return (
-    <div className="relative inline-block" ref={menuRef}>
+    <div className="flex items-start gap-5">
       <button
-        onClick={() => setMenuOpen(!menuOpen)}
+        onClick={onRefresh}
+        disabled={isRefreshing}
         className={cn(
-          'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-all duration-300',
+          'p-2 transition-all duration-300',
           themeUtils.getButtonClass(),
           themeUtils.getComponentRoundednessClass(),
           themeUtils.getPrimaryColorClass('border')
-        )}>
-        <MenuIcon size={16} />
-        <span className="hidden sm:inline">เมนู</span>
-        <ChevronDown size={14} className={`transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
+        )}
+        title="Refresh data">
+        <RefreshCw size={16} className={isRefreshing ? 'animate-spin' : ''} />
       </button>
-      {menuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: 5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+      <div className="relative inline-block" ref={menuRef}>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
           className={cn(
-            'absolute right-0 mt-1 flex flex-col gap-1 w-40  z-10 border shadow-lg',
-            themeUtils.getCardClass(),
-            themeUtils.getComponentRoundednessClass()
+            'flex items-center gap-1.5 px-3 py-2 text-xs font-medium transition-all duration-300',
+            themeUtils.getButtonClass(),
+            themeUtils.getComponentRoundednessClass(),
+            themeUtils.getPrimaryColorClass('border')
           )}>
-          <button
-            onClick={() => {
-              handleEditProfile();
-              setMenuOpen(false);
-            }}
-            className="flex gap-2 w-full justify-center items-center px-4 py-2 text-sm transition-colors">
-            <EditIcon className="w-4 h-4 mr-2" />
-            Edit Profile
-          </button>
-          <button
-            onClick={() => {
-              handleToggleContactList();
-              setMenuOpen(false);
-            }}
-            className="flex gap-2 w-full justify-center items-center px-4 py-2 text-sm transition-colors">
-            <ContactIcon className="w-4 h-4 mr-2" />
-            Contact Info
-          </button>
-          <button
-            onClick={() => {
-              handleLogout();
-              setMenuOpen(false);
-            }}
-            className="flex justify-center items-center gap-2 w-full px-4 py-2 text-sm text-red-500 transition-colors">
-            <LogoutIcon className="w-4 h-4 mr-2" />
-            Logout
-          </button>
-        </motion.div>
-      )}
+          <MenuIcon size={16} />
+          <span className="hidden sm:inline">เมนู</span>
+          <ChevronDown
+            size={14}
+            className={`transition-transform ${menuOpen ? 'rotate-180' : ''}`}
+          />
+        </button>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className={cn(
+              'absolute right-0 mt-1 flex flex-col gap-1 w-40 z-10 border shadow-lg',
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass()
+            )}>
+            <button
+              onClick={() => {
+                handleEditProfile();
+                setMenuOpen(false);
+              }}
+              className="flex gap-2 w-full justify-center items-center px-4 py-2 text-sm transition-colors">
+              <EditIcon className="w-4 h-4 mr-2" />
+              Edit Profile
+            </button>
+            <button
+              onClick={() => {
+                handleToggleContactList();
+                setMenuOpen(false);
+              }}
+              className="flex gap-2 w-full justify-center items-center px-4 py-2 text-sm transition-colors">
+              <ContactIcon className="w-4 h-4 mr-2" />
+              Contact Info
+            </button>
+            <button
+              onClick={() => {
+                handleLogout();
+                setMenuOpen(false);
+              }}
+              className="flex justify-center items-center gap-2 w-full px-4 py-2 text-sm text-red-500 transition-colors">
+              <LogoutIcon className="w-4 h-4 mr-2" />
+              Logout
+            </button>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };

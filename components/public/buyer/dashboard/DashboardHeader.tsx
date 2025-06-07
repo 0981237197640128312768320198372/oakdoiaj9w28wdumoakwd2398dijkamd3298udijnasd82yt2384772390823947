@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import type React from 'react';
 import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
+import type { ThemeType } from '@/types';
 import { motion } from 'framer-motion';
 import { User, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
@@ -48,10 +50,15 @@ interface Buyer {
 }
 
 interface DashboardHeaderProps {
-  buyer: Buyer;
-  theme: any;
-  onProfileUpdate?: () => void;
-  onDepositClick?: () => void;
+  buyer: any;
+  theme: ThemeType | null;
+  onProfileUpdate: () => void;
+  onDepositClick: () => void;
+  onRefresh: () => void;
+  isRefreshing: boolean;
+  handleEditProfile: () => void;
+  handleLogout: () => void;
+  handleToggleContactList: () => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -59,10 +66,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   theme,
   onProfileUpdate,
   onDepositClick,
+  handleEditProfile,
+  handleLogout,
+  handleToggleContactList,
+  onRefresh,
+  isRefreshing,
 }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
-  const { logout } = useBuyerAuth();
   useEffect(() => {
     if (buyer) {
       setLocalBuyer(buyer);
@@ -198,10 +209,12 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 </div>
               </div>
               <MenuButton
+                handleEditProfile={handleEditProfile}
+                handleLogout={handleLogout}
+                handleToggleContactList={handleToggleContactList}
                 theme={theme}
-                handleEditProfile={() => setIsEditModalOpen(true)}
-                handleLogout={logout}
-                handleToggleContactList={() => setShowContactList(!showContactList)}
+                onRefresh={onRefresh}
+                isRefreshing={isRefreshing}
               />
             </div>
           </div>

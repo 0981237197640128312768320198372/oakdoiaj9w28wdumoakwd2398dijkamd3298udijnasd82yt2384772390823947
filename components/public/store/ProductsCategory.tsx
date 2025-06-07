@@ -27,7 +27,7 @@ export default function ProductsCategory({
     products.filter((p) => p.categoryId === categoryId).length;
 
   return (
-    <div className="space-y-8 px-5 w-full xl:px-0">
+    <div className="space-y-8 w-full">
       <div
         className={cn(
           'flex justify-between items-center w-full border-b pb-5 ',
