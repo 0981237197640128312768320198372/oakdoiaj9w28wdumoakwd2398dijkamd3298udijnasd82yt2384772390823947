@@ -577,7 +577,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       ) : (
         <>
           <AnimatePresence>
-            <div className="space-y-5 __dokmai_scrollbar max-h-[75vh] overflow-y-auto">
+            <div className="space-y-5 max-h-[75vh] overflow-y-auto px-5">
               {visibleActivities.map((activity, index) => (
                 <div
                   onClick={(e) => {
@@ -780,7 +780,6 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                               </div>
                             </div>
                           )}
-
                           {activity.notes && (
                             <div className="flex items-start gap-2 text-xs col-span-1 sm:col-span-2">
                               <div className="flex items-center gap-1  min-w-[100px] sm:min-w-[120px]">
@@ -805,15 +804,16 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           </AnimatePresence>
 
           {visibleCount < filteredActivities.length && (
-            <div className="text-center pt-3">
+            <div className="w-full px-5">
               <button
                 onClick={handleLoadMoreLocal}
                 disabled={loading}
                 className={cn(
-                  'flex items-center gap-1.5 px-4 py-2 text-xs font-medium transition-all duration-300 mx-auto',
-                  themeUtils.getButtonClass(),
-                  themeUtils.getComponentRoundednessClass(),
-                  'disabled:opacity-50'
+                  'mt-5 px-4 py-2 border w-full text-sm transition-colors rounded-md flex items-center justify-center gap-2',
+                  themeUtils.getCardClass(),
+                  isLight
+                    ? 'hover:!bg-light-100/50 hover:!border-white'
+                    : 'hover:!bg-dark-600 hover:!border-dark-400'
                 )}>
                 {loading ? (
                   <>

@@ -80,7 +80,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
-  console.log(buyer);
+
   useEffect(() => {
     if (buyer) {
       setLocalBuyer(buyer);
@@ -296,14 +296,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           )}
         </div>
       </motion.div>
-
-      <EditProfileModal
-        buyer={localBuyer}
-        theme={theme}
-        isOpen={isEditProfileModalOpen}
-        onClose={() => setIsEditProfileModalOpen(false)}
-        onSuccess={handleProfileUpdate}
-      />
     </>
   );
 };

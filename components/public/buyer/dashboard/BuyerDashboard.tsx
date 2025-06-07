@@ -14,6 +14,7 @@ import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { DashboardHeader } from './DashboardHeader';
 import DepositForm from './DepositForm';
+import { EditProfileModal } from './EditProfileModal';
 
 interface BuyerDashboardProps {
   theme: ThemeType | null;
@@ -115,8 +116,15 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           setIsEditProfileModalOpen={setIsEditProfileModalOpen}
           showContactList={showContactList}
         />
-
-        {!isDepositModalOpen && (
+        {isEditProfileModalOpen ? (
+          <EditProfileModal
+            buyer={localBuyer}
+            theme={theme}
+            isOpen={isEditProfileModalOpen}
+            onClose={() => setIsEditProfileModalOpen(false)}
+            onSuccess={refreshBuyerDetails}
+          />
+        ) : (
           <div className="space-y-5">
             <StatsGrid
               stats={stats}
@@ -147,7 +155,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
             </AnimatePresence>
           </div>
         )}
-      </motion.div>{' '}
+      </motion.div>
       {isDepositModalOpen && (
         <DepositForm
           theme={theme}

@@ -43,7 +43,7 @@ const DepositTimer: React.FC<DepositTimerProps> = ({ seconds, onExpire }) => {
   };
 
   return (
-    <div className="w-full mt-4 mb-2">
+    <div className="w-full">
       <div className="flex justify-between mb-1 text-sm">
         <span className="text-gray-500">Time remaining</span>
         <span

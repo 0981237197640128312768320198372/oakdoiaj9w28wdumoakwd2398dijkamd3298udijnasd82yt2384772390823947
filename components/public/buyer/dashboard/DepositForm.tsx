@@ -8,6 +8,8 @@ import type { ThemeType, SuccessData } from '@/types';
 import DepositQRCode from './DepositQRCode';
 import DepositSuccess from './DepositSuccess';
 import DepositError from './DepositError';
+import { downloadQRCode } from './PromptPayQR';
+import { FaDownload } from 'react-icons/fa';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -116,11 +118,9 @@ export default function DepositForm({
                 updatedBalance = currentBalance + totalDepositAmount;
               }
             }
-
-            await notifyLineMessage(
-              OWNER_ID,
-              `=|| Deposit successful ||=\n\n${currentTime}\n\n[${buyer?.name}]\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount} Dokmai Coins\n\nBonus: ${bonusAmount} Dokmai Coins\n\nTotal: ${totalDepositAmount} Dokmai Coins\n\nNew Balance: ${updatedBalance} Dokmai Coins`
-            );
+            const messageNotif = `=|| Deposit successful ||=\n\n${currentTime}\n\n[${buyer?.name}]\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount} Dokmai Coins\nBonus: ${bonusAmount} Dokmai Coins\nTotal: ${totalDepositAmount} Dokmai Coins\n____________\n\nNew Balance: ${updatedBalance} Dokmai Coins`;
+            console.log('Deposit success notification:', messageNotif);
+            await notifyLineMessage(OWNER_ID, messageNotif);
 
             const success: SuccessData = {
               message: 'Deposit successful!',
@@ -156,9 +156,7 @@ export default function DepositForm({
         }
       });
 
-      eventSource.onopen = () => {
-        console.log('SSE connection opened');
-      };
+      eventSource.onopen = () => {};
     } catch (error) {
       console.error('Error setting up payment status monitoring:', error);
     }
@@ -351,25 +349,39 @@ export default function DepositForm({
                 paymentIntentId={paymentIntentId}
                 onSuccess={onClose}
               />
-              <div className="mt-5 flex justify-center">
+              <div className="mt-5 flex justify-center mx-auto gap-5 max-w-md items-center ">
                 <button
                   type="button"
                   onClick={handleCancelTransaction}
                   className={cn(
-                    'px-4 py-2 border transition-colors text-xs bg-red-500/15 border-red-500/40 text-red-500 hover:bg-red-500/25 hover:border-red-500/70',
+                    'px-4 py-2 border w-full transition-colors text-xs bg-red-500/15 border-red-500/40 text-red-500 hover:bg-red-500/25 hover:border-red-500/70',
                     themeUtils.getButtonRoundednessClass()
                   )}>
                   Cancel Transaction
+                </button>{' '}
+                <button
+                  type="button"
+                  onClick={() => downloadQRCode(parseFloat(amount))}
+                  className={cn(
+                    'flex items-center justify-center w-full gap-2 px-4 py-2 border transition-colors text-xs',
+                    themeUtils.getPrimaryColorClass('bg'),
+                    themeUtils.getButtonClass(),
+                    themeUtils.getButtonRoundednessClass()
+                  )}>
+                  <FaDownload className="w-3 h-3" />
+                  Download QR
                 </button>
               </div>
             </motion.div>
           ) : (
             <div
               className={cn(
-                'fixed inset-0 z-[9999] flex items-center justify-center w-full px-5 lg:px-5',
+                'fixed inset-0 z-[9999] flex items-center justify-center w-full px-5 lg:px-5 backdrop-blur-xl',
                 showQRCode && qrCodeData
-                  ? 'bg-black/70 backdrop-blur-xl'
-                  : 'backdrop-blur-md bg-gradient-to-br from-dark-200/50 to-dark-800/50'
+                  ? 'bg-black/70'
+                  : isLight
+                  ? 'bg-light-200/50'
+                  : 'bg-dark-700/50'
               )}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
