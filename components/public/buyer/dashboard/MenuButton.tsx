@@ -59,7 +59,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   }, []);
 
   return (
-    <div className="flex items-start gap-5">
+    <div className="flex flex-col-reverse justify-end lg:flex-row items-end lg:items-start gap-5">
       <button
         onClick={onRefresh}
         disabled={isRefreshing}
@@ -88,6 +88,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
             className={`transition-transform ${menuOpen ? 'rotate-180' : ''}`}
           />
         </button>
+
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0, y: 5 }}
