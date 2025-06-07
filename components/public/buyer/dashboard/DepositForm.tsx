@@ -71,14 +71,11 @@ export default function DepositForm({
             const depositAmount = parseFloat(amount);
             const bonusAmount = 0;
             const totalDepositAmount = depositAmount + bonusAmount;
-            await notifyLineMessage(
-              OWNER_ID,
-              `=|| Deposit successful ||=\n[ ${
-                buyer?.name
-              }]\nPayment ID: ${paymentIntentId}\nDeposit: ${depositAmount}\nBonus: ${bonusAmount}\nTotal: ${totalDepositAmount}\Balance: ${currentBalance}\nNew Balance: ${
-                currentBalance + totalDepositAmount
-              }`
+            const newBalance = currentBalance + totalDepositAmount;
+            console.log(
+              `=|| Deposit successful ||=\n\n[${buyer?.name}]\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount}\n\nBonus: ${bonusAmount}\n\nTotal: ${totalDepositAmount}\n\nBalance: ${currentBalance}\n\nNew Balance: ${newBalance}`
             );
+
             const success: SuccessData = {
               message: 'Deposit successful!',
               name: buyer?.name || 'User',
@@ -86,7 +83,7 @@ export default function DepositForm({
               depositAmount: depositAmount,
               bonusAmount: bonusAmount,
               totalDepositAmount: totalDepositAmount,
-              newBalance: currentBalance + totalDepositAmount,
+              newBalance: newBalance,
             };
             setSuccessData(success);
             setShowSuccess(true);
@@ -94,7 +91,10 @@ export default function DepositForm({
             if (onBalanceUpdate) {
               onBalanceUpdate();
             }
-
+            await notifyLineMessage(
+              OWNER_ID,
+              `=|| Deposit successful ||=\n\n[${buyer?.name}]\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount}\n\nBonus: ${bonusAmount}\n\nTotal: ${totalDepositAmount}\n\nBalance: ${currentBalance}\n\nNew Balance: ${newBalance}`
+            );
             if (eventSource) {
               eventSource.close();
             }
