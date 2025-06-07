@@ -27,10 +27,10 @@ interface Buyer {
   name: string;
   email: string;
   username?: string;
+  personalKey?: string;
   avatarUrl?: string;
   contact: BuyerContact;
   balance: Balance | number | null;
-  balanceId?: string;
   createdAt: string;
   updatedAt: string;
   iat?: number;

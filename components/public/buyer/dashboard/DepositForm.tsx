@@ -118,7 +118,11 @@ export default function DepositForm({
                 updatedBalance = currentBalance + totalDepositAmount;
               }
             }
-            const messageNotif = `🚨💸 Deposit successful 💸🚨 \n\n⌛ ${currentTime}\n\n🪪 ${buyer?.name}\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount} Dokmai Coins\nBonus: ${bonusAmount} Dokmai Coins\nTotal: ${totalDepositAmount} Dokmai Coins\n____________\n\nNew Balance: ${updatedBalance} Dokmai Coins`;
+            const messageNotif = `🚨💸 Deposit successful 💸🚨 \n\n⌛ ${currentTime}\n\n🪪 ${
+              buyer?.name
+            }\n(${
+              buyer?.username || buyer?.personalKey
+            })\n\nPayment ID: ${paymentIntentId}\n\nDeposit: ${depositAmount} Dokmai Coins\nBonus: ${bonusAmount} Dokmai Coins\nTotal: ${totalDepositAmount} Dokmai Coins\n____________\n\nNew Balance: ${updatedBalance} Dokmai Coins`;
             console.log('Deposit success notification:', messageNotif);
             await notifyLineMessage(OWNER_ID, messageNotif);
 
