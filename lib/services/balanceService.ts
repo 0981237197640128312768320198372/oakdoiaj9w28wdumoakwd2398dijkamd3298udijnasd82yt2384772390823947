@@ -62,7 +62,6 @@ export class BalanceService {
       destinationType: userType,
       destinationId: userIdObj,
       amount,
-      currency: 'THB',
       fees: {
         platform: 0,
         payment: 0,
@@ -98,7 +97,6 @@ export class BalanceService {
       },
       metadata: {
         amount,
-        currency: 'THB',
         balanceType,
         transactionId: transaction.transactionId,
       },
@@ -146,7 +144,6 @@ export class BalanceService {
       throw new Error(`Failed to update ${userType} balance`);
     }
 
-    // Create transaction record
     const transaction = await Transaction.create({
       transactionId: `${transactionType.toUpperCase()}-${Date.now()}-${Math.floor(
         Math.random() * 1000
@@ -155,7 +152,6 @@ export class BalanceService {
       sourceId: userIdObj,
       destinationType: 'external',
       amount,
-      currency: 'THB',
       fees: {
         platform: 0,
         payment: 0,
@@ -167,7 +163,7 @@ export class BalanceService {
       status: 'completed',
       metadata: {
         ...metadata,
-        dokmaiCoins: amount, // 1 THB = 1 Dokmai Coin
+        dokmaiCoins: amount,
       },
       statusHistory: [
         {
@@ -191,7 +187,6 @@ export class BalanceService {
       },
       metadata: {
         amount,
-        currency: 'THB',
         balanceType,
         transactionId: transaction.transactionId,
       },
@@ -283,7 +278,6 @@ export class BalanceService {
       destinationType: destinationUserType,
       destinationId: destinationUserIdObj,
       amount,
-      currency: 'THB',
       fees: {
         platform: 0,
         payment: 0,
@@ -325,7 +319,6 @@ export class BalanceService {
       },
       metadata: {
         amount,
-        currency: 'THB',
         sourceBalanceType,
         destinationBalanceType,
         transactionId: transaction.transactionId,
@@ -448,7 +441,6 @@ export class BalanceService {
       metadata
     );
 
-    // Create activity record
     const activity = await Activity.create({
       type: 'deposit',
       category: 'financial',
@@ -461,7 +453,6 @@ export class BalanceService {
       },
       metadata: {
         amount,
-        currency: 'THB',
         paymentMethod,
         paymentReference,
         transactionId: transaction.transactionId,

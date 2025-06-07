@@ -20,7 +20,7 @@ import ktbblack from '@/assets/icons/ktbblack.svg';
 import promptpay from '@/assets/icons/promptpay.svg';
 import promptpayblack from '@/assets/icons/promptpayblack.svg';
 
-import { FaStripe, FaLock, FaShieldAlt } from 'react-icons/fa';
+import { FaStripe, FaLock, FaShieldAlt, FaDownload } from 'react-icons/fa';
 import Link from 'next/link';
 import { ThemeType } from '@/types';
 import { useThemeUtils } from '@/lib/theme-utils';
@@ -40,8 +40,44 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
   const thaibanks = isLight ? thaibanksBlack : thaibanksWhite;
   const promptpaylogo = isLight ? promptpayblack : promptpay;
 
+  const downloadQRCode = () => {
+    const canvas = document.querySelector('#qr-code-canvas canvas') as HTMLCanvasElement;
+    if (canvas) {
+      // Create a new canvas with white background for better visibility
+      const newCanvas = document.createElement('canvas');
+      const ctx = newCanvas.getContext('2d');
+
+      if (ctx) {
+        newCanvas.width = canvas.width;
+        newCanvas.height = canvas.height;
+
+        // Fill with white background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
+
+        // Draw the QR code on top
+        ctx.drawImage(canvas, 0, 0);
+
+        // Convert to blob and download
+        newCanvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `promptpay-qr-${amount}-baht.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }, 'image/png');
+      }
+    }
+  };
+
   return (
     <div
+      id="qr-code-canvas"
       className={cn(
         'p-5 w-full max-w-lg mx-auto flex flex-col justify-center items-center select-none',
         themeUtils.getComponentRoundednessClass()
@@ -96,6 +132,19 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
             quietZone={10}
           />
         </div>
+
+        {/* Download Button */}
+        <button
+          onClick={downloadQRCode}
+          className={cn(
+            'mt-3 flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-200 hover:scale-105',
+            themeUtils.getPrimaryColorClass('bg'),
+            themeUtils.getPrimaryColorClass('text') === 'text-white' ? 'text-white' : 'text-black',
+            themeUtils.getComponentRoundednessClass()
+          )}>
+          <FaDownload className="w-4 h-4" />
+          ดาวน์โหลด QR Code
+        </button>
 
         {/* Amount Display */}
         <div className="w-full flex flex-col justify-center items-center">

@@ -100,7 +100,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
         className="w-full max-w-screen-lg lg:px-5 xl:px-0 space-y-5 min-h-[75vh]">
-        {/* <button
+        <button
           onClick={refreshAllData}
           disabled={isRefreshing}
           className=" p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
@@ -109,7 +109,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
             size={18}
             className={`text-gray-600 dark:text-gray-300 ${isRefreshing ? 'animate-spin' : ''}`}
           />
-        </button> */}
+        </button>
         <DashboardHeader
           buyer={localBuyer}
           theme={theme}

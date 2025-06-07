@@ -596,7 +596,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                     'flex items-center justify-between  p-2 sm:p-3 border transition-all duration-300 hover:shadow-sm',
                     themeUtils.getCardClass(),
                     themeUtils.getComponentRoundednessClass(),
-                    isLight ? '!bg-light-100' : '!bg-dark-600'
+                    isLight ? '!bg-gray-50' : '!bg-dark-600'
                   )}>
                   <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <div className="flex-shrink-0">
@@ -654,7 +654,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                             ? 'hover:bg-light-800'
                             : 'hover:bg-dark-600',
                           expandedActivities[activity.id] &&
-                            (themeUtils.baseTheme === 'light' ? 'bg-light-700' : 'bg-dark-500')
+                            (themeUtils.baseTheme === 'light' ? 'bg-light-300' : 'bg-dark-500')
                         )}>
                         {expandedActivities[activity.id] ? (
                           <ChevronDown
@@ -702,8 +702,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                       className={cn(
                         'w-full p-3 border',
                         themeUtils.getCardClass(),
-
-                        isLight ? '!bg-light-100' : '!bg-dark-600',
+                        isLight ? '!bg-gray-50' : '!bg-dark-600',
                         themeUtils.getComponentRoundednessClass()
                       )}>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">

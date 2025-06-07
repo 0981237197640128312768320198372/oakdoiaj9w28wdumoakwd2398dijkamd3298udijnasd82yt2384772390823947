@@ -75,7 +75,7 @@ export default function DepositForm({
             setSuccessData({
               message: 'Deposit successful!',
               name: buyer?.name || 'User',
-              paymentId: paymentIntentId,
+              paymentId: paymentIntentId.substring(0, 8),
               depositAmount: depositAmount,
               bonusAmount: bonusAmount,
               totalDepositAmount: totalDepositAmount,
@@ -161,13 +161,65 @@ export default function DepositForm({
     setShowQRCode(false);
 
     if (paymentIntentId) {
-      fetch('/api/payments/cancel', {
+      fetch('/api/v3/payments/cancel', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ paymentIntentId }),
       }).catch((err) => console.error('Error canceling payment:', err));
+    }
+  };
+
+  const handleCancelTransaction = async () => {
+    if (!paymentIntentId) return;
+
+    try {
+      // Cancel the payment via API
+      const response = await fetch('/api/v3/payments/cancel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('buyerToken')}`,
+        },
+        body: JSON.stringify({
+          paymentIntentId,
+          reason: 'user_canceled',
+        }),
+      });
+
+      if (response.ok) {
+        await fetch('/api/v3/activities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('buyerToken')}`,
+          },
+          body: JSON.stringify({
+            type: 'deposit',
+            category: 'financial',
+            status: 'cancelled',
+            metadata: {
+              amount: parseFloat(amount),
+              paymentMethod: 'promptpay',
+              paymentId: paymentIntentId,
+              reason: 'user_canceled',
+              description: `Deposit of ${amount} Dokmai Coin was canceled by user`,
+            },
+          }),
+        });
+
+        // Reset form state
+        setShowQRCode(false);
+        setQrCodeData('');
+        setPaymentIntentId('');
+        setPaymentStatus('');
+        setAmount('');
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error canceling transaction:', error);
+      setError('Failed to cancel transaction. Please try again.');
     }
   };
 
@@ -227,16 +279,32 @@ export default function DepositForm({
           )}
 
           {showQRCode && qrCodeData ? (
-            <DepositQRCode
-              qrCodeData={qrCodeData}
-              amount={parseFloat(amount)}
-              timer={timer}
-              status={paymentStatus}
-              onExpire={handleQRCodeExpire}
-              theme={theme}
-              paymentIntentId={paymentIntentId}
-              onSuccess={onClose}
-            />
+            <div>
+              <DepositQRCode
+                qrCodeData={qrCodeData}
+                amount={parseFloat(amount)}
+                timer={timer}
+                status={paymentStatus}
+                onExpire={handleQRCodeExpire}
+                theme={theme}
+                paymentIntentId={paymentIntentId}
+                onSuccess={onClose}
+              />
+              <div className="mt-4 flex justify-center">
+                <button
+                  type="button"
+                  onClick={handleCancelTransaction}
+                  className={cn(
+                    'px-6 py-2 rounded-lg border transition-colors text-sm',
+                    themeUtils.getButtonRoundednessClass(),
+                    isLight
+                      ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300'
+                      : 'bg-red-900/20 border-red-500/30 text-red-400 hover:bg-red-900/30 hover:border-red-500/50'
+                  )}>
+                  Cancel Transaction
+                </button>
+              </div>
+            </div>
           ) : (
             <div>
               <div className="flex justify-between items-center mb-5">
