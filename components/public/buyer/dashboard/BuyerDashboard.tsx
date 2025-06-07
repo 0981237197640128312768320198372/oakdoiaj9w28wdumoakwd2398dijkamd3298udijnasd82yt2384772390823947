@@ -94,7 +94,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
 
   return (
     <>
-      {' '}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -111,7 +110,14 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           handleLogout={() => {}}
           handleToggleContactList={() => {}}
         />
-
+        {isDepositModalOpen && (
+          <DepositForm
+            theme={theme}
+            onBalanceUpdate={refreshBuyerDetails}
+            isOpen={isDepositModalOpen}
+            onClose={() => setIsDepositModalOpen(false)}
+          />
+        )}
         <div className="space-y-5">
           <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
           <AnimatePresence mode="wait">
@@ -136,15 +142,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
             </motion.div>
           </AnimatePresence>
         </div>
-      </motion.div>{' '}
-      {isDepositModalOpen && (
-        <DepositForm
-          theme={theme}
-          onBalanceUpdate={refreshBuyerDetails}
-          isOpen={isDepositModalOpen}
-          onClose={() => setIsDepositModalOpen(false)}
-        />
-      )}
+      </motion.div>
     </>
   );
 };

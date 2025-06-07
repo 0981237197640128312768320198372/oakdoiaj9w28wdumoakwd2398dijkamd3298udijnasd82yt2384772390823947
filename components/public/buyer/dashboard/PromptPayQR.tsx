@@ -79,7 +79,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
     <div
       id="qr-code-canvas"
       className={cn(
-        'p-5 w-full max-w-md mx-auto flex flex-col justify-center items-center select-none',
+        'p-5 w-full flex flex-col justify-center items-center select-none',
         themeUtils.getComponentRoundednessClass()
       )}>
       <div
@@ -183,7 +183,7 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 font-light text-center mt-4 max-w-sm hidden md:block">
+      <p className="text-xs text-gray-500 font-light text-center mt-4 max-w-lg hidden md:block">
         PromptPay ได้รับการสนับสนุนจากแอปธนาคารและแอปชำระเงินอื่นๆ เช่น TTB, ธนาคารออมสิน (GSB),
         ธนาคารเกียรตินาคิน, UOB
       </p>

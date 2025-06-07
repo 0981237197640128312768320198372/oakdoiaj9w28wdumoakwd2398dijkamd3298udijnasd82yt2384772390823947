@@ -254,55 +254,54 @@ export default function DepositForm({
 
   return (
     <AnimatePresence>
-      <div
-        className={cn(
-          'fixed inset-0 z-[9999] flex items-center justify-center w-full px-5 lg:px-5',
-          showQRCode && qrCodeData
-            ? 'bg-black/70 backdrop-blur-xl'
-            : 'backdrop-blur-md bg-gradient-to-br from-dark-200/50 to-dark-800/50'
-        )}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.2 }}
+      {showQRCode && qrCodeData ? (
+        <div>
+          <DepositQRCode
+            qrCodeData={qrCodeData}
+            amount={parseFloat(amount)}
+            timer={timer}
+            status={paymentStatus}
+            onExpire={handleQRCodeExpire}
+            theme={theme}
+            paymentIntentId={paymentIntentId}
+            onSuccess={onClose}
+          />
+          <div className="mt-5 flex justify-center">
+            <button
+              type="button"
+              onClick={handleCancelTransaction}
+              className={cn(
+                'px-4 py-2 border transition-colors text-xs bg-red-500/15 border-red-500/40 text-red-500 hover:bg-red-500/25 hover:border-red-500/70',
+                themeUtils.getButtonRoundednessClass()
+              )}>
+              Cancel Transaction
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
           className={cn(
-            'w-full max-w-lg p-5 text-xs md:text-base',
-            themeUtils.getCardClass(),
-            themeUtils.getComponentRoundednessClass(),
-            themeUtils.getComponentShadowClass()
+            'fixed inset-0 z-[9999] flex items-center justify-center w-full px-5 lg:px-5',
+            showQRCode && qrCodeData
+              ? 'bg-black/70 backdrop-blur-xl'
+              : 'backdrop-blur-md bg-gradient-to-br from-dark-200/50 to-dark-800/50'
           )}>
-          {error && !showError && (
-            <div className="mb-4 p-3 bg-red-900/20 border border-red-500 rounded-md text-red-400 text-sm">
-              {error}
-            </div>
-          )}
-
-          {showQRCode && qrCodeData ? (
-            <div>
-              <DepositQRCode
-                qrCodeData={qrCodeData}
-                amount={parseFloat(amount)}
-                timer={timer}
-                status={paymentStatus}
-                onExpire={handleQRCodeExpire}
-                theme={theme}
-                paymentIntentId={paymentIntentId}
-                onSuccess={onClose}
-              />
-              <div className="mt-5 flex justify-center">
-                <button
-                  type="button"
-                  onClick={handleCancelTransaction}
-                  className={cn(
-                    'px-4 py-2 border transition-colors text-xs bg-red-500/15 border-red-500/40 text-red-500 hover:bg-red-500/25 hover:border-red-500/70',
-                    themeUtils.getButtonRoundednessClass()
-                  )}>
-                  Cancel Transaction
-                </button>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className={cn(
+              'w-full max-w-lg p-5 text-xs md:text-base',
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass(),
+              themeUtils.getComponentShadowClass()
+            )}>
+            {error && !showError && (
+              <div className="mb-4 p-3 bg-red-900/20 border border-red-500 rounded-md text-red-400 text-sm">
+                {error}
               </div>
-            </div>
-          ) : (
+            )}
             <div>
               <div className="flex justify-between items-center mb-5">
                 <h2 className={cn('text-xl font-semibold')}>Deposit Dokmai Coin</h2>
@@ -421,15 +420,14 @@ export default function DepositForm({
                 </button>
               </div>
             </div>
-          )}
+            {showSuccess && successData && (
+              <DepositSuccess data={successData} onClose={handleCloseSuccess} theme={theme} />
+            )}
 
-          {showSuccess && successData && (
-            <DepositSuccess data={successData} onClose={handleCloseSuccess} theme={theme} />
-          )}
-
-          {showError && error && <DepositError message={error} onClose={handleCloseError} />}
-        </motion.div>
-      </div>
+            {showError && error && <DepositError message={error} onClose={handleCloseError} />}
+          </motion.div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }
