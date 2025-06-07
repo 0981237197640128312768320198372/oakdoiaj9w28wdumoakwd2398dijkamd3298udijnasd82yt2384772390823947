@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { User, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { ProfileActionPanel } from './ProfileActionPanel';
+import { ContactList } from './ContactList';
 import { EditProfileModal } from './EditProfileModal';
 import Image from 'next/image';
 import MenuButton from './MenuButton';
@@ -71,6 +71,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const themeUtils = useThemeUtils(theme);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showBalance, setShowBalance] = useState(true);
+  const [showContactList, setShowContactList] = useState(false);
 
   const { buyer: authBuyer } = useBuyerAuth();
   const buyerToken = typeof window !== 'undefined' ? localStorage.getItem('buyerToken') : null;
@@ -200,6 +201,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                 theme={theme}
                 handleEditProfile={() => setIsEditModalOpen(true)}
                 handleLogout={logout}
+                handleToggleContactList={() => setShowContactList(!showContactList)}
               />
             </div>
           </div>
@@ -264,14 +266,16 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </button>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className={cn('border-t pt-5 mt-5', themeUtils.getPrimaryColorClass('border'))}>
-            <ProfileActionPanel buyer={localBuyer} theme={theme} />
-          </motion.div>
+          {showContactList && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className={cn('border-t pt-5 mt-5', themeUtils.getPrimaryColorClass('border'))}>
+              <ContactList buyer={localBuyer} theme={theme} />
+            </motion.div>
+          )}
         </div>
       </motion.div>
 

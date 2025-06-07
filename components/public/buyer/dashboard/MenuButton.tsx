@@ -3,10 +3,11 @@ import { cn } from '@/lib/utils';
 import React, { useState, useRef, useEffect } from 'react';
 import type { ThemeType } from '@/types';
 import { Menu as MenuIcon, ChevronDown } from 'lucide-react';
-
+import { motion } from 'framer-motion';
 interface MenuButtonProps {
   handleEditProfile: () => void;
   handleLogout: () => void;
+  handleToggleContactList: () => void;
   theme: ThemeType | null;
 }
 
@@ -23,7 +24,19 @@ const LogoutIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-const MenuButton: React.FC<MenuButtonProps> = ({ handleEditProfile, handleLogout, theme }) => {
+const ContactIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 20 20">
+    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+  </svg>
+);
+
+const MenuButton: React.FC<MenuButtonProps> = ({
+  handleEditProfile,
+  handleLogout,
+  handleToggleContactList,
+  theme,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const themeUtils = useThemeUtils(theme ?? null);
@@ -56,9 +69,12 @@ const MenuButton: React.FC<MenuButtonProps> = ({ handleEditProfile, handleLogout
         <ChevronDown size={14} className={`transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
       </button>
       {menuOpen && (
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
           className={cn(
-            'absolute right-0 mt-1 w-48 z-10 border shadow-lg',
+            'absolute right-0 mt-1 flex flex-col gap-1 w-40  z-10 border shadow-lg',
             themeUtils.getCardClass(),
             themeUtils.getComponentRoundednessClass()
           )}>
@@ -67,20 +83,29 @@ const MenuButton: React.FC<MenuButtonProps> = ({ handleEditProfile, handleLogout
               handleEditProfile();
               setMenuOpen(false);
             }}
-            className="flex items-center gap-2 w-full px-4 py-2 text-sm transition-colors">
+            className="flex gap-2 w-full justify-center items-center px-4 py-2 text-sm transition-colors">
             <EditIcon className="w-4 h-4 mr-2" />
             Edit Profile
+          </button>
+          <button
+            onClick={() => {
+              handleToggleContactList();
+              setMenuOpen(false);
+            }}
+            className="flex gap-2 w-full justify-center items-center px-4 py-2 text-sm transition-colors">
+            <ContactIcon className="w-4 h-4 mr-2" />
+            Contact Info
           </button>
           <button
             onClick={() => {
               handleLogout();
               setMenuOpen(false);
             }}
-            className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 transition-colors">
+            className="flex justify-center items-center gap-2 w-full px-4 py-2 text-sm text-red-500 transition-colors">
             <LogoutIcon className="w-4 h-4 mr-2" />
             Logout
           </button>
-        </div>
+        </motion.div>
       )}
     </div>
   );

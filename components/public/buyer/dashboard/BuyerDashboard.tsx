@@ -119,7 +119,6 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
 
         <div className="space-y-5">
           <StatsGrid stats={stats} theme={theme} activeTab={activeTab} onTabChange={setActiveTab} />
-
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab || 'latest'}

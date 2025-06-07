@@ -46,15 +46,12 @@ interface Buyer {
   updatedAt: string;
 }
 
-interface ProfileActionPanelProps {
+interface ContactListProps {
   buyer: Buyer;
   theme: ThemeType | null;
 }
 
-export const ProfileActionPanel: React.FC<ProfileActionPanelProps> = ({
-  buyer: initialBuyer,
-  theme,
-}) => {
+export const ContactList: React.FC<ContactListProps> = ({ buyer: initialBuyer, theme }) => {
   const { buyer } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
 
