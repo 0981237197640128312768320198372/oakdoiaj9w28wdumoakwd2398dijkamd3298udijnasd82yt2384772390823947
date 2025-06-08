@@ -64,7 +64,13 @@ const sellerSchema = new Schema<ISeller>(
     password: { type: String, required: true },
     contact: {
       facebook: { type: String, default: null },
-      line: { type: String, default: null },
+      line: {
+        type: String,
+        default: null,
+        sparse: true,
+        unique: true,
+        index: true,
+      },
       instagram: { type: String, default: null },
       whatsapp: { type: String, default: null },
     },
@@ -104,6 +110,8 @@ const sellerSchema = new Schema<ISeller>(
     lineUserId: {
       type: String,
       default: null,
+      sparse: true,
+      unique: true,
       index: true,
     },
     verification: {

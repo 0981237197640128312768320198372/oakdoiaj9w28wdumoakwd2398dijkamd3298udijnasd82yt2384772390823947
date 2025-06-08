@@ -61,7 +61,13 @@ const pendingRegistrationSchema = new Schema<IPendingRegistration>(
     },
     contact: {
       facebook: { type: String, default: null },
-      line: { type: String, default: null },
+      line: {
+        type: String,
+        default: null,
+        sparse: true,
+        unique: true,
+        index: true,
+      },
       instagram: { type: String, default: null },
       whatsapp: { type: String, default: null },
     },
@@ -111,6 +117,8 @@ const pendingRegistrationSchema = new Schema<IPendingRegistration>(
     lineUserId: {
       type: String,
       default: null,
+      sparse: true,
+      unique: true,
       index: true,
     },
     expiresAt: {

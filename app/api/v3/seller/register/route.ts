@@ -35,14 +35,40 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Check for existing pending registration with same email or username
+    // Check for duplicate LINE ID in existing sellers
+    if (contact?.line) {
+      const existingSellerWithLineId = await Seller.findOne({
+        'contact.line': contact.line,
+      });
+
+      if (existingSellerWithLineId) {
+        return NextResponse.json(
+          {
+            error: `This LINE ID (${contact.line}) is already registered with another account`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Check for existing pending registration with same email, username, or LINE ID
     const existingPending = await PendingRegistration.findOne({
-      $or: [{ email }, { username }],
+      $or: [{ email }, { username }, ...(contact?.line ? [{ 'contact.line': contact.line }] : [])],
     });
 
     if (existingPending) {
-      // Remove the existing pending registration to allow retry
-      await PendingRegistration.deleteOne({ _id: existingPending._id });
+      // If it's the same email/username, allow retry by removing old pending
+      if (existingPending.email === email || existingPending.username === username) {
+        await PendingRegistration.deleteOne({ _id: existingPending._id });
+      } else if (contact?.line && existingPending.contact?.line === contact.line) {
+        // If it's a different user trying to use the same LINE ID
+        return NextResponse.json(
+          {
+            error: `This LINE ID (${contact.line}) is already being used in another pending registration`,
+          },
+          { status: 400 }
+        );
+      }
     }
 
     // Hash password

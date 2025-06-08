@@ -67,6 +67,34 @@ async function handleEvent(event: any) {
         }
         rateLimitMap.set(userId, now);
 
+        // Check if this LINE User ID has already been used for verification
+        const existingVerifiedSeller = await Seller.findOne({ lineUserId: userId });
+        if (existingVerifiedSeller) {
+          console.log(
+            `LINE User ID ${userId} already used for verification by seller: ${existingVerifiedSeller.username}`
+          );
+          await LineService.sendReplyMessage(
+            replyToken,
+            `This LINE account has already been used to verify the store "${existingVerifiedSeller.store.name}". Each LINE account can only be used once for verification.`
+          );
+          return;
+        }
+
+        // Check if this LINE User ID is already being used in another pending registration
+        const existingPendingWithLineUser = await PendingRegistration.findOne({
+          lineUserId: userId,
+        });
+        if (existingPendingWithLineUser) {
+          console.log(
+            `LINE User ID ${userId} already being used in pending registration: ${existingPendingWithLineUser.username}`
+          );
+          await LineService.sendReplyMessage(
+            replyToken,
+            'This LINE account is already being used for another registration process. Please complete that registration first or contact support.'
+          );
+          return;
+        }
+
         // Find pending registration with this verification code
         const pendingRegistration = await PendingRegistration.findOne({
           'verification.code': verificationCode,
@@ -80,7 +108,12 @@ async function handleEvent(event: any) {
             return;
           }
 
-          // Create the actual seller account now that verification is successful
+          // Update pending registration with LINE User ID to claim it
+          await PendingRegistration.updateOne(
+            { _id: pendingRegistration._id },
+            { lineUserId: userId }
+          );
+
           const newSeller = new Seller({
             username: pendingRegistration.username,
             email: pendingRegistration.email,
