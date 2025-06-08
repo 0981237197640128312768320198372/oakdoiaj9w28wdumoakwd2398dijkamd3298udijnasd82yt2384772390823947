@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectToDatabase } from '@/lib/db';
 import { Schema, model, Document, models } from 'mongoose';
 
