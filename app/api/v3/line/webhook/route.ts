@@ -15,26 +15,32 @@ async function handleEvent(event: any) {
     const messageText = event.message.text;
     const replyToken = event.replyToken;
 
+    console.log(`User ID received: ${userId}`);
+    console.log(`Message received: ${messageText}`);
+
     try {
-      const codeVerif = messageText.includes('DS-') || messageText;
       await connectToDatabase();
 
-      const verificationCode = LineService.extractVerificationCode(codeVerif);
+      // Extract verification code from message
+      const verificationCode = LineService.extractVerificationCode(messageText);
 
       if (verificationCode) {
         console.log(`Verification code found: ${verificationCode}`);
 
+        // Find pending registration with this verification code
         const pendingRegistration = await PendingRegistration.findOne({
           'verification.code': verificationCode,
         });
 
         if (pendingRegistration) {
+          // Check if code is expired
           if (LineService.isCodeExpired(pendingRegistration.verification.expiresAt)) {
             await PendingRegistration.deleteOne({ _id: pendingRegistration._id });
             await LineService.sendReplyMessage(replyToken, LineService.getInvalidCodeMessage());
             return;
           }
 
+          // Create the actual seller account now that verification is successful
           const newSeller = new Seller({
             username: pendingRegistration.username,
             email: pendingRegistration.email,
@@ -42,7 +48,7 @@ async function handleEvent(event: any) {
             contact: pendingRegistration.contact,
             store: {
               ...pendingRegistration.store,
-              theme: null,
+              theme: null, // Ensure theme is null to avoid BSON error
             },
             lineUserId: userId,
             verification: {
@@ -56,12 +62,15 @@ async function handleEvent(event: any) {
 
           await newSeller.save();
 
+          // Store pendingId before deletion
           const pendingId = pendingRegistration._id.toString();
 
+          // Clean up pending registration
           await PendingRegistration.deleteOne({ _id: pendingRegistration._id });
 
           console.log(`Seller account created for ${newSeller.username} after LINE verification`);
 
+          // Broadcast verification completion to waiting SSE clients
           console.log(`Broadcasting verification complete for pendingId: ${pendingId}`);
           broadcastVerificationComplete(pendingId, {
             _id: newSeller._id.toString(),
@@ -69,11 +78,13 @@ async function handleEvent(event: any) {
             username: newSeller.username,
           });
 
+          // Send success message
           await LineService.sendReplyMessage(
             replyToken,
             LineService.getVerificationSuccessMessage(newSeller.store.name)
           );
         } else {
+          // Check if this code belongs to an already verified seller
           const existingSeller = await Seller.findOne({
             'verification.code': verificationCode,
             'verification.status': 'verified',
@@ -90,11 +101,13 @@ async function handleEvent(event: any) {
           }
         }
       } else {
+        // No verification code found - don't reply (ignore the message)
         return;
       }
     } catch (error) {
       console.error('Error handling LINE message:', error);
 
+      // Send generic error message
       await LineService.sendReplyMessage(
         replyToken,
         'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้งหรือติดต่อทีมสนับสนุน'
@@ -102,6 +115,7 @@ async function handleEvent(event: any) {
     }
   }
 
+  // Handle follow event (when user adds bot as friend)
   if (event.type === 'follow') {
     const userId = event.source.userId;
     const replyToken = event.replyToken;

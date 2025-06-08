@@ -841,7 +841,7 @@ export default function RegisterSellerPage() {
 
   return (
     <div className="min-h-[75vh] flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-500 rounded-2xl p-8 shadow-2xl">
           <FormHeader />
 
