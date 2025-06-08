@@ -286,44 +286,90 @@ const LineVerificationStep = ({
   const [copied, setCopied] = useState(false);
   const [sseStatus, setSseStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
 
-  // SSE connection for real-time verification updates
+  // SSE connection for real-time verification updates with auto-reconnection
   useEffect(() => {
     if (verificationStatus !== 'pending') return;
 
-    const eventSource = new EventSource(
-      `/api/v3/seller/verification-events/${verificationData.pendingId}`
-    );
+    let eventSource: EventSource | null = null;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
 
-    eventSource.onopen = () => {
-      setSseStatus('connected');
-    };
+    const connectSSE = () => {
+      console.log(`Frontend: Attempting SSE connection for ${verificationData.pendingId}`);
 
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
+      eventSource = new EventSource(
+        `/api/v3/seller/verification-events/${verificationData.pendingId}`
+      );
 
-        if (data.status === 'verified') {
-          onStatusChange('verified');
-          eventSource.close();
-        } else if (data.status === 'failed') {
-          onStatusChange('expired');
-          eventSource.close();
-        } else if (data.status === 'timeout') {
-          onStatusChange('expired');
-          eventSource.close();
+      eventSource.onopen = () => {
+        console.log(`Frontend: SSE connection opened for ${verificationData.pendingId}`);
+        setSseStatus('connected');
+        reconnectAttempts = 0; // Reset on successful connection
+      };
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log(`Frontend: SSE message received:`, data);
+
+          if (data.status === 'verified') {
+            console.log(`Frontend: Verification complete for ${verificationData.pendingId}`);
+            onStatusChange('verified');
+            eventSource?.close();
+          } else if (data.status === 'failed') {
+            onStatusChange('expired');
+            eventSource?.close();
+          } else if (data.status === 'timeout') {
+            onStatusChange('expired');
+            eventSource?.close();
+          } else if (data.status === 'connected') {
+            console.log(`Frontend: Initial connection confirmed for ${verificationData.pendingId}`);
+            setSseStatus('connected');
+          } else if (data.status === 'heartbeat') {
+            console.log(`Frontend: Heartbeat received for ${verificationData.pendingId}`);
+            // Heartbeat keeps connection alive, no action needed
+          }
+        } catch (error) {
+          console.error('Error parsing SSE data:', error);
         }
-      } catch (error) {
-        console.error('Error parsing SSE data:', error);
-      }
+      };
+
+      eventSource.onerror = (error) => {
+        console.error(`Frontend: SSE error for ${verificationData.pendingId}:`, error);
+        setSseStatus('error');
+        eventSource?.close();
+
+        // Attempt to reconnect if we haven't exceeded max attempts
+        if (reconnectAttempts < maxReconnectAttempts && verificationStatus === 'pending') {
+          reconnectAttempts++;
+          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts - 1), 10000); // Exponential backoff, max 10s
+          console.log(
+            `Frontend: Attempting reconnection ${reconnectAttempts}/${maxReconnectAttempts} in ${delay}ms`
+          );
+
+          setSseStatus('connecting');
+          reconnectTimeout = setTimeout(() => {
+            connectSSE();
+          }, delay);
+        } else {
+          console.log(
+            `Frontend: Max reconnection attempts reached for ${verificationData.pendingId}`
+          );
+          setSseStatus('error');
+        }
+      };
     };
 
-    eventSource.onerror = () => {
-      setSseStatus('error');
-      eventSource.close();
-    };
+    // Initial connection
+    connectSSE();
 
     return () => {
-      eventSource.close();
+      console.log(`Frontend: Cleaning up SSE connection for ${verificationData.pendingId}`);
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+      eventSource?.close();
     };
   }, [verificationData.pendingId, verificationStatus, onStatusChange]);
 
@@ -581,6 +627,7 @@ export default function RegisterSellerPage() {
   const [verificationStatus, setVerificationStatus] = useState<'pending' | 'verified' | 'expired'>(
     'pending'
   );
+  console.log(verificationStatus);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(5);
 

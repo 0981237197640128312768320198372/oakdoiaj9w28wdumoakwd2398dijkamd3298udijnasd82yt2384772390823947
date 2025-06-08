@@ -54,31 +54,27 @@ export async function GET(
     // Create SSE stream for pending verification
     const stream = new ReadableStream({
       start(controller) {
-        // Store the controller for this pending ID
-        console.log(`SSE Endpoint: Registering connection for pendingId: ${pendingId}`);
-        registerSSEConnection(pendingId, controller);
-
-        // Send initial connection confirmation
-        const initialData = JSON.stringify({
-          status: 'connected',
-          pendingId,
-          timestamp: new Date().toISOString(),
-        });
-        controller.enqueue(`data: ${initialData}\n\n`);
-        console.log(`SSE Endpoint: Sent initial connection confirmation for ${pendingId}`);
-
-        // Set up cleanup on connection close
-        req.signal.addEventListener('abort', () => {
-          unregisterSSEConnection(pendingId);
+        // Set up heartbeat to keep connection alive
+        const heartbeatInterval = setInterval(() => {
           try {
-            controller.close();
+            const heartbeatData = JSON.stringify({
+              status: 'heartbeat',
+              pendingId,
+              timestamp: new Date().toISOString(),
+            });
+            controller.enqueue(`data: ${heartbeatData}\n\n`);
+            console.log(`SSE Endpoint: Sent heartbeat for ${pendingId}`);
           } catch (error) {
-            // Connection already closed
+            console.log(`SSE Endpoint: Heartbeat failed for ${pendingId}, cleaning up`);
+            clearInterval(heartbeatInterval);
+            unregisterSSEConnection(pendingId);
           }
-        });
+        }, 30000); // Send heartbeat every 30 seconds
 
         // Auto-cleanup after 10 minutes
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
+          console.log(`SSE Endpoint: Timeout reached for ${pendingId}`);
+          clearInterval(heartbeatInterval);
           unregisterSSEConnection(pendingId);
           try {
             const timeoutData = JSON.stringify({
@@ -92,6 +88,37 @@ export async function GET(
             // Connection already closed
           }
         }, 10 * 60 * 1000); // 10 minutes
+
+        // Store cleanup function for this connection
+        const cleanup = () => {
+          clearInterval(heartbeatInterval);
+          clearTimeout(timeoutId);
+        };
+
+        // Set up cleanup on connection close
+        req.signal.addEventListener('abort', () => {
+          console.log(`SSE Endpoint: Connection aborted for ${pendingId}`);
+          cleanup();
+          unregisterSSEConnection(pendingId);
+          try {
+            controller.close();
+          } catch (error) {
+            // Connection already closed
+          }
+        });
+
+        // Register the connection with cleanup function
+        console.log(`SSE Endpoint: Registering connection for pendingId: ${pendingId}`);
+        registerSSEConnection(pendingId, controller, cleanup);
+
+        // Send initial connection confirmation
+        const initialData = JSON.stringify({
+          status: 'connected',
+          pendingId,
+          timestamp: new Date().toISOString(),
+        });
+        controller.enqueue(`data: ${initialData}\n\n`);
+        console.log(`SSE Endpoint: Sent initial connection confirmation for ${pendingId}`);
       },
     });
 
