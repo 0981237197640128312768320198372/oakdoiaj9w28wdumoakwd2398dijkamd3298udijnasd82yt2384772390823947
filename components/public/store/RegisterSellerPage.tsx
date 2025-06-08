@@ -647,7 +647,7 @@ export default function RegisterSellerPage() {
           });
           setStep(FORM_STEPS.LINE_VERIFICATION);
         } else if (result.success) {
-          router.push('/seller/auth/login?registered=true');
+          router.push('/auth/login?registered=true');
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Registration failed');
@@ -670,7 +670,7 @@ export default function RegisterSellerPage() {
       setVerificationStatus(status);
       if (status === 'verified') {
         setTimeout(() => {
-          router.push('/seller/auth/login?verified=true');
+          router.push('/auth/login?verified=true');
         }, 2000);
       }
     },
@@ -894,7 +894,7 @@ export default function RegisterSellerPage() {
             <p className="text-light-400 text-sm">
               Already have an account?{' '}
               <Link
-                href="/seller/auth/login"
+                href="/auth/login"
                 className="text-primary hover:text-primary/80 transition-colors">
                 <LogIn size={16} className="inline mr-1" />
                 Sign In
