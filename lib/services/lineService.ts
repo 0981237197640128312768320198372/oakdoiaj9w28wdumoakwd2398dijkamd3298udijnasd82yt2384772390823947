@@ -182,6 +182,6 @@ export class LineService {
 /**
  * Send notification message to LINE user (alias for backward compatibility)
  */
-export async function notifyLineMessage(userId: string, message: string): Promise<boolean> {
-  return LineService.sendPushMessage(userId, message);
-}
+// export async function notifyLineMessage(userId: string, message: string): Promise<boolean> {
+//   return LineService.sendPushMessage(userId, message);
+// }
