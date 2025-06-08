@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
-import { StoreStatistics } from '@/models/v3/StoreStatistics';
-import { Theme } from '@/models/v3/Theme';
+import { PendingRegistration } from '@/models/v3/PendingRegistration';
+import { LineService } from '@/lib/services/lineService';
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { username: rawUsername, email: rawEmail, password: rawPassword, contact, store } = body;
     const username = rawUsername.trim().toLowerCase();
-    console.log(username);
     const email = rawEmail.trim();
     const password = rawPassword.trim();
 
@@ -22,17 +21,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Check for duplicate seller
-    const existingSeller = await Seller.findOne({ email });
+    // Check for existing seller with same email or username
+    const existingSeller = await Seller.findOne({
+      $or: [{ email }, { username }],
+    });
+
     if (existingSeller) {
-      return NextResponse.json({ error: 'Seller already exists' }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'An account with this email or username already exists',
+        },
+        { status: 400 }
+      );
+    }
+
+    // Check for existing pending registration with same email or username
+    const existingPending = await PendingRegistration.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (existingPending) {
+      // Remove the existing pending registration to allow retry
+      await PendingRegistration.deleteOne({ _id: existingPending._id });
     }
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create seller without theme initially
-    const newSeller = new Seller({
+    // Generate verification code for LINE verification
+    const { code, expiresAt } = LineService.generateVerificationCode();
+
+    // Create pending registration (NOT actual seller account)
+    const pendingRegistration = new PendingRegistration({
       username,
       email,
       password: hashedPassword,
@@ -43,41 +63,32 @@ export async function POST(req: NextRequest) {
         logoUrl: store.logoUrl,
         rating: store.rating || 0,
         credits: store.credits || { positive: 0, negative: 0 },
+        theme: store.theme || {},
       },
+      verification: {
+        code,
+        expiresAt,
+        attempts: 0,
+      },
+      expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes for entire registration process
     });
 
-    await newSeller.save();
+    await pendingRegistration.save();
 
-    // Create and link theme
-    try {
-      const themeData = store.theme || {};
-      const newTheme = new Theme({
-        sellerId: newSeller._id,
-        ...themeData,
-      });
-      await newTheme.save();
+    console.log(`Pending registration created for ${username} with verification code ${code}`);
 
-      newSeller.store.theme = newTheme._id;
-      await newSeller.save();
-    } catch (themeError) {
-      console.error('Error creating theme:', themeError);
-      // Clean up by deleting the seller if theme creation fails
-      await Seller.deleteOne({ _id: newSeller._id });
-      return NextResponse.json({ error: 'Failed to create theme' }, { status: 500 });
-    }
-
-    try {
-      const newStoreStatistics = new StoreStatistics({
-        sellerId: newSeller._id,
-      });
-      await newStoreStatistics.save();
-    } catch (statsError) {
-      console.error('Error creating store statistics:', statsError);
-      // Clean up could be added here too, but for now, just return an error
-      return NextResponse.json({ error: 'Failed to create store statistics' }, { status: 500 });
-    }
-
-    return NextResponse.json({ message: 'Seller registered successfully' }, { status: 201 });
+    return NextResponse.json(
+      {
+        message:
+          'Registration initiated. Please verify your LINE account to complete registration.',
+        verificationCode: code,
+        expiresAt: expiresAt.toISOString(),
+        requiresLineVerification: true,
+        pendingId: pendingRegistration._id,
+        warning: 'Account will only be created after successful LINE verification.',
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Unexpected error during registration:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

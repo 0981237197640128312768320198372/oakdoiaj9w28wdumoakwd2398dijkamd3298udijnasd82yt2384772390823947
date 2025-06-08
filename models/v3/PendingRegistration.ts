@@ -1,18 +1,10 @@
 import { Schema, model, type Document, models } from 'mongoose';
-import bcrypt from 'bcrypt';
 
 interface IContact {
   facebook?: string;
   line?: string;
   instagram?: string;
   whatsapp?: string;
-}
-
-interface IVerification {
-  code: string;
-  status: 'pending' | 'verified' | 'expired';
-  expiresAt: Date;
-  verifiedAt?: Date;
 }
 
 interface IStoreCredits {
@@ -26,29 +18,32 @@ interface IStore {
   logoUrl?: string;
   rating: number;
   credits: IStoreCredits;
-  theme: Schema.Types.ObjectId;
+  theme?: Record<string, unknown>; // Will be processed when creating actual seller
 }
 
-interface ISeller extends Document {
+interface IVerification {
+  code: string;
+  expiresAt: Date;
+  attempts: number;
+}
+
+interface IPendingRegistration extends Document {
   username: string;
   email: string;
-  password: string;
+  password: string; // Hashed
   contact: IContact;
   store: IStore;
-  activities: Schema.Types.ObjectId[];
+  verification: IVerification;
   lineUserId?: string;
-  verification?: IVerification;
   createdAt: Date;
-  updatedAt: Date;
-  comparePassword(candidatePassword: string): Promise<boolean>;
+  expiresAt: Date;
 }
 
-const sellerSchema = new Schema<ISeller>(
+const pendingRegistrationSchema = new Schema<IPendingRegistration>(
   {
     username: {
       type: String,
       required: true,
-      unique: true,
       index: true,
       minlength: [3, 'Username must be at least 3 characters long'],
       maxlength: [30, 'Username cannot exceed 30 characters'],
@@ -57,11 +52,13 @@ const sellerSchema = new Schema<ISeller>(
     email: {
       type: String,
       required: true,
-      unique: true,
       index: true,
       match: [/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please provide a valid email address'],
     },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: true,
+    },
     contact: {
       facebook: { type: String, default: null },
       line: { type: String, default: null },
@@ -72,7 +69,6 @@ const sellerSchema = new Schema<ISeller>(
       name: {
         type: String,
         required: true,
-        index: true,
         minlength: [3, 'Store name must be at least 3 characters long'],
         maxlength: [50, 'Store name cannot exceed 50 characters'],
       },
@@ -93,53 +89,46 @@ const sellerSchema = new Schema<ISeller>(
         positive: { type: Number, default: 0 },
         negative: { type: Number, default: 0 },
       },
-      theme: { type: Schema.Types.ObjectId, ref: 'Theme' },
+      theme: { type: Schema.Types.Mixed, default: {} },
     },
-    activities: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Activity',
+    verification: {
+      code: {
+        type: String,
+        required: true,
+        index: true,
       },
-    ],
+      expiresAt: {
+        type: Date,
+        required: true,
+        index: true,
+      },
+      attempts: {
+        type: Number,
+        default: 0,
+        max: [3, 'Maximum verification attempts exceeded'],
+      },
+    },
     lineUserId: {
       type: String,
       default: null,
       index: true,
     },
-    verification: {
-      code: {
-        type: String,
-        default: null,
-      },
-      status: {
-        type: String,
-        enum: ['pending', 'verified', 'expired'],
-        default: 'pending',
-      },
-      expiresAt: {
-        type: Date,
-        default: null,
-      },
-      verifiedAt: {
-        type: Date,
-        default: null,
-      },
+    expiresAt: {
+      type: Date,
+      required: true,
+      index: { expireAfterSeconds: 0 }, // TTL index for automatic cleanup
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: 'pending_registrations',
+  }
 );
 
-sellerSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+// Compound indexes for efficient queries
+pendingRegistrationSchema.index({ 'verification.code': 1, 'verification.expiresAt': 1 });
+pendingRegistrationSchema.index({ email: 1, username: 1 });
 
-sellerSchema.virtual('recentActivities', {
-  ref: 'Activity',
-  localField: '_id',
-  foreignField: 'actors.secondary.id',
-  options: { sort: { createdAt: -1 }, limit: 10 },
-});
-
-export const Seller = models.Seller || model<ISeller>('Seller', sellerSchema);
+export const PendingRegistration =
+  models.PendingRegistration ||
+  model<IPendingRegistration>('PendingRegistration', pendingRegistrationSchema);

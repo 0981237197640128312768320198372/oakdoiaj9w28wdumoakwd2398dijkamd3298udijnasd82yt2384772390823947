@@ -97,9 +97,16 @@ export const BuyerAuthProvider = ({ children }: { children: React.ReactNode }) =
   };
 
   const logout = () => {
-    localStorage.removeItem('buyerToken');
-    setBuyer(null);
-    window.location.reload();
+    try {
+      localStorage.removeItem('buyerToken');
+      setBuyer(null);
+      // Use window.location.href for a more reliable redirect
+      window.location.href = window.location.pathname;
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Fallback: force reload
+      window.location.reload();
+    }
   };
 
   const refreshBalance = useCallback(async () => {

@@ -3,26 +3,22 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useRouter } from 'next/navigation';
-import { Store, ArrowLeft, ArrowRight, Send, Loader2, LogIn } from 'lucide-react';
+import {
+  Store,
+  ArrowLeft,
+  ArrowRight,
+  Send,
+  Loader2,
+  LogIn,
+  MessageCircle,
+  Clock,
+  CheckCircle,
+  Copy,
+  RefreshCw,
+} from 'lucide-react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import Link from 'next/link';
-
-// Custom hooks
-const useSellerRedirect = () => {
-  const router = useRouter();
-  const { seller } = useSellerAuth();
-
-  const redirectPath = useMemo(() => {
-    return process.env.NODE_ENV === 'development' ? '/seller' : '/';
-  }, []);
-
-  useEffect(() => {
-    if (seller) {
-      router.push(redirectPath);
-    }
-  }, [seller, router, redirectPath]);
-};
 
 // Types
 interface StoreData {
@@ -49,6 +45,18 @@ interface RegisterFormData {
 interface RegisterResponse {
   success?: boolean;
   error?: string;
+  message?: string;
+  verificationCode?: string;
+  expiresAt?: string;
+  requiresLineVerification?: boolean;
+  pendingId?: string;
+  warning?: string;
+}
+
+interface VerificationData {
+  code: string;
+  expiresAt: string;
+  pendingId: string;
 }
 
 // Constants
@@ -56,32 +64,32 @@ const FORM_STEPS = {
   STORE_INFO: 1,
   ACCOUNT_INFO: 2,
   CONTACT_INFO: 3,
+  LINE_VERIFICATION: 4,
 } as const;
 
 const VALIDATION_RULES = {
   STORE_NAME_MIN: 5,
   STORE_NAME_MAX: 25,
   STORE_DESC_MIN: 75,
-  USERNAME_MIN: 10,
+  USERNAME_MIN: 7,
   PASSWORD_MIN: 6,
 } as const;
 
-const ERROR_MESSAGES = {
-  STORE_REQUIRED: 'กรุณากรอกชื่อร้านและคำอธิบายร้านหน่อยครับ',
-  STORE_NAME_LENGTH: `ชื่อร้านต้องมีความยาวระหว่าง ${VALIDATION_RULES.STORE_NAME_MIN}-${VALIDATION_RULES.STORE_NAME_MAX} ตัวอักษรครับ`,
-  STORE_DESC_LENGTH: `คำอธิบายร้านต้องมีอย่างน้อย ${VALIDATION_RULES.STORE_DESC_MIN} ตัวอักษรครับ`,
-  ACCOUNT_REQUIRED: 'กรุณากรอกข้อมูลบัญชีผู้ใช้ให้ครบทุกช่องครับ',
-  USERNAME_LENGTH: `ชื่อผู้ใช้ต้องมีอย่างน้อย ${VALIDATION_RULES.USERNAME_MIN} ตัวอักษรครับ`,
-  PASSWORD_LENGTH: `รหัสผ่านต้องมีอย่างน้อย ${VALIDATION_RULES.PASSWORD_MIN} ตัวอักษรครับ`,
-  PASSWORD_MISMATCH: 'รหัสผ่านไม่ตรงกันครับ',
-  EMAIL_INVALID: 'กรุณากรอกที่อยู่อีเมลที่ถูกต้องครับ',
-  CONTACT_REQUIRED: 'กรุณาระบุข้อมูลติดต่อ Facebook และ Line หน่อยครับ',
-  NETWORK_ERROR: 'เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองอีกครั้งครับ',
-} as const;
+// Custom hooks
+const useSellerRedirect = () => {
+  const router = useRouter();
+  const { seller } = useSellerAuth();
 
-const SUCCESS_MESSAGES = {
-  REGISTRATION_SUCCESS: 'ลงทะเบียนสำเร็จแล้ว! กำลังพาคุณไปยังหน้าเข้าสู่ระบบ...',
-} as const;
+  const redirectPath = useMemo(() => {
+    return process.env.NODE_ENV === 'development' ? '/seller' : '/';
+  }, []);
+
+  useEffect(() => {
+    if (seller) {
+      router.push(redirectPath);
+    }
+  }, [seller, router, redirectPath]);
+};
 
 // Utility functions
 const validateEmail = (email: string): boolean => {
@@ -107,109 +115,6 @@ const formatContactForSubmission = (contact: ContactData) => ({
   instagram: contact.instagram ? `@${contact.instagram}` : '',
   whatsapp: contact.whatsapp,
 });
-
-// Custom hooks
-const useRegisterForm = () => {
-  const [step, setStep] = useState<number>(FORM_STEPS.STORE_INFO);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<RegisterFormData>({
-    store: { name: '', description: '' },
-    username: '',
-    password: '',
-    email: '',
-    repeatPassword: '',
-    contact: { facebook: '', line: '', instagram: '', whatsapp: '' },
-  });
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-
-  const updateField = useCallback(
-    (name: string, value: string) => {
-      setFormData((prev) => {
-        if (name.startsWith('store.')) {
-          const field = name.split('.')[1] as keyof StoreData;
-          return { ...prev, store: { ...prev.store, [field]: value } };
-        } else if (name.startsWith('contact.')) {
-          const field = name.split('.')[1] as keyof ContactData;
-          const processedValue = processContactValue(field, value);
-          return { ...prev, contact: { ...prev.contact, [field]: processedValue } };
-        } else {
-          const processedValue =
-            name === 'username' || name === 'email' ? value.toLowerCase().trim() : value;
-          return { ...prev, [name]: processedValue };
-        }
-      });
-      if (error) setError(null);
-    },
-    [error]
-  );
-
-  const validateStep = useCallback(
-    (currentStep: number): string | null => {
-      switch (currentStep) {
-        case FORM_STEPS.STORE_INFO:
-          if (!formData.store.name.trim() || !formData.store.description.trim()) {
-            return ERROR_MESSAGES.STORE_REQUIRED;
-          }
-          if (
-            formData.store.name.length < VALIDATION_RULES.STORE_NAME_MIN ||
-            formData.store.name.length > VALIDATION_RULES.STORE_NAME_MAX
-          ) {
-            return ERROR_MESSAGES.STORE_NAME_LENGTH;
-          }
-          if (formData.store.description.length < VALIDATION_RULES.STORE_DESC_MIN) {
-            return ERROR_MESSAGES.STORE_DESC_LENGTH;
-          }
-          break;
-
-        case FORM_STEPS.ACCOUNT_INFO:
-          if (
-            !formData.username.trim() ||
-            !formData.password ||
-            !formData.repeatPassword ||
-            !formData.email.trim()
-          ) {
-            return ERROR_MESSAGES.ACCOUNT_REQUIRED;
-          }
-          if (formData.username.length < VALIDATION_RULES.USERNAME_MIN) {
-            return ERROR_MESSAGES.USERNAME_LENGTH;
-          }
-          if (formData.password.length < VALIDATION_RULES.PASSWORD_MIN) {
-            return ERROR_MESSAGES.PASSWORD_LENGTH;
-          }
-          if (formData.password !== formData.repeatPassword) {
-            return ERROR_MESSAGES.PASSWORD_MISMATCH;
-          }
-          if (!validateEmail(formData.email)) {
-            return ERROR_MESSAGES.EMAIL_INVALID;
-          }
-          break;
-
-        case FORM_STEPS.CONTACT_INFO:
-          if (!formData.contact.facebook.trim() || !formData.contact.line.trim()) {
-            return ERROR_MESSAGES.CONTACT_REQUIRED;
-          }
-          break;
-      }
-      return null;
-    },
-    [formData]
-  );
-
-  return {
-    step,
-    setStep,
-    isLoading,
-    setIsLoading,
-    formData,
-    error,
-    setError,
-    success,
-    setSuccess,
-    updateField,
-    validateStep,
-  };
-};
 
 // API functions
 const registerSeller = async (data: RegisterFormData): Promise<RegisterResponse> => {
@@ -257,7 +162,7 @@ const FormHeader = () => (
 
 const ProgressSteps = ({ currentStep }: { currentStep: number }) => (
   <div className="flex justify-center items-center gap-4 mb-8">
-    {[1, 2, 3].map((s) => (
+    {[1, 2, 3, 4].map((s) => (
       <div key={s} className="flex items-center">
         <div
           className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
@@ -267,7 +172,7 @@ const ProgressSteps = ({ currentStep }: { currentStep: number }) => (
           }`}>
           {s}
         </div>
-        {s < 3 && (
+        {s < 4 && (
           <div
             className={`w-16 h-0.5 mx-2 transition-all duration-300 ${
               currentStep > s ? 'bg-primary' : 'bg-dark-400'
@@ -367,331 +272,565 @@ const PrefixInput = ({
   </div>
 );
 
-const StoreInfoStep = ({
-  formData,
-  updateField,
+const LineVerificationStep = ({
+  verificationData,
+  verificationStatus,
+  onStatusChange,
 }: {
-  formData: RegisterFormData;
-  updateField: (name: string, value: string) => void;
-}) => (
-  <div className="space-y-4 animate-in fade-in duration-300">
-    <h3 className="text-xl font-semibold text-light-100 mb-4">ข้อมูลร้านค้า</h3>
-    <FormInput
-      id="store.name"
-      name="store.name"
-      label="ชื่อร้าน"
-      value={formData.store.name}
-      onChange={updateField}
-      placeholder="กรุณากรอกชื่อร้านของคุณ"
-      minLength={VALIDATION_RULES.STORE_NAME_MIN}
-      maxLength={VALIDATION_RULES.STORE_NAME_MAX}
-      required
-    />
-    <FormInput
-      id="store.description"
-      name="store.description"
-      label="Store Description"
-      value={formData.store.description}
-      onChange={updateField}
-      placeholder="โปรดอธิบายร้านของคุณ"
-      minLength={VALIDATION_RULES.STORE_DESC_MIN}
-      rows={4}
-      required
-    />
-  </div>
-);
+  verificationData: VerificationData;
+  verificationStatus: 'pending' | 'verified' | 'expired';
+  onStatusChange: (status: 'pending' | 'verified' | 'expired') => void;
+}) => {
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [copied, setCopied] = useState(false);
 
-const AccountInfoStep = ({
-  formData,
-  updateField,
-}: {
-  formData: RegisterFormData;
-  updateField: (name: string, value: string) => void;
-}) => (
-  <div className="space-y-4 animate-in fade-in duration-300">
-    <h3 className="text-xl font-semibold text-light-100 mb-4">Account Information</h3>
+  useEffect(() => {
+    const expiresAt = new Date(verificationData.expiresAt);
+    const updateTimer = () => {
+      const now = new Date();
+      const diff = Math.max(0, Math.floor((expiresAt.getTime() - now.getTime()) / 1000));
+      setTimeLeft(diff);
 
-    <div>
-      <FormInput
-        id="username"
-        name="username"
-        label="Username"
-        value={formData.username}
-        onChange={updateField}
-        placeholder="กรุณากรอกชื่อผู้ใช้ที่คุณต้องการ"
-        minLength={VALIDATION_RULES.USERNAME_MIN}
-        required
-      />
-      <p className="text-xs text-light-400 mt-1 mb-2">
-        Your username will be used to create your unique store URL
-      </p>
+      if (diff === 0 && verificationStatus === 'pending') {
+        onStatusChange('expired');
+      }
+    };
 
-      <div className="mt-3 p-3 bg-dark-700 border border-dark-500 rounded-xl">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-xs text-light-400">Your store URL will be:</span>
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [verificationData.expiresAt, verificationStatus, onStatusChange]);
+
+  // Manual refresh function - just refreshes the page to check if verification completed
+  const handleManualRefresh = () => {
+    window.location.reload();
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(verificationData.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy:', error);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="text-center">
+        <h3 className="text-xl font-semibold text-light-100 mb-2">LINE Verification Required</h3>
+        <p className="text-light-400 text-sm mb-3">
+          Please verify your LINE account to complete registration
+        </p>
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+          <p className="text-yellow-400 text-sm font-medium">
+            ⚠️ Verification is mandatory - Your account will only be created after successful
+            verification
+          </p>
         </div>
-        <div className="font-mono text-sm bg-dark-800 px-3 py-2 rounded-lg border border-dark-600">
-          <span className="text-primary font-semibold">{formData.username || 'username'}</span>
-          <span className="text-light-300">.dokmai.store</span>
+      </div>
+
+      <div className="bg-dark-700 border border-dark-500 rounded-xl p-6 space-y-4">
+        <div className="flex items-center justify-center gap-3">
+          {verificationStatus === 'pending' && <Clock className="text-yellow-500" size={24} />}
+          {verificationStatus === 'verified' && (
+            <CheckCircle className="text-green-500" size={24} />
+          )}
+          {verificationStatus === 'expired' && <Clock className="text-red-500" size={24} />}
+
+          <span
+            className={`font-semibold ${
+              verificationStatus === 'pending'
+                ? 'text-yellow-500'
+                : verificationStatus === 'verified'
+                ? 'text-green-500'
+                : 'text-red-500'
+            }`}>
+            {verificationStatus === 'pending' && 'Waiting for verification...'}
+            {verificationStatus === 'verified' && 'Verified successfully!'}
+            {verificationStatus === 'expired' && 'Verification expired'}
+          </span>
         </div>
-        {formData.username && (
-          <div className="mt-2 text-xs text-light-500">
-            ✓ Customers can visit your store at this URL
+
+        {verificationStatus === 'pending' && (
+          <>
+            <div className="text-center">
+              <div className="bg-dark-800 border border-dark-600 rounded-lg p-4 mb-4">
+                <p className="text-light-300 text-lg font-mono tracking-wider">
+                  {verificationData.code}
+                </p>
+                <button
+                  onClick={copyToClipboard}
+                  className="mt-2 flex items-center gap-2 mx-auto px-3 py-1 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
+                  <Copy size={16} />
+                  {copied ? 'Copied!' : 'Copy Code'}
+                </button>
+              </div>
+
+              <div className="text-light-400 text-sm space-y-2">
+                <p>
+                  Time remaining:{' '}
+                  <span className="text-yellow-500 font-mono">{formatTime(timeLeft)}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="border-t border-dark-600 pt-4">
+              <h4 className="font-semibold text-light-100 mb-3 flex items-center gap-2">
+                <MessageCircle size={18} className="text-green-500" />
+                Instructions:
+              </h4>
+              <ol className="text-light-300 text-sm space-y-2 list-decimal list-inside">
+                <li>Add our LINE Bot as a friend</li>
+                <li>Send the verification code above to our bot</li>
+                <li>Wait for the bot's confirmation message</li>
+                <li>Refresh this page if verification doesn't update automatically</li>
+              </ol>
+
+              <div className="mt-4 text-center">
+                <button
+                  onClick={handleManualRefresh}
+                  className="flex items-center gap-2 mx-auto px-4 py-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
+                  <RefreshCw size={16} />
+                  Refresh Page
+                </button>
+                <p className="text-light-500 text-xs mt-2">
+                  Click to refresh after receiving LINE confirmation
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+
+        {verificationStatus === 'verified' && (
+          <div className="text-center text-green-400">
+            <p>Your LINE account has been successfully verified!</p>
+            <p className="text-sm text-light-400 mt-2">You can now access all seller features.</p>
+          </div>
+        )}
+
+        {verificationStatus === 'expired' && (
+          <div className="text-center text-red-400">
+            <p>Verification code has expired.</p>
+            <p className="text-sm text-light-400 mt-2">
+              Please refresh the page to get a new code.
+            </p>
           </div>
         )}
       </div>
     </div>
-
-    <FormInput
-      id="email"
-      name="email"
-      label="อีเมล"
-      type="email"
-      value={formData.email}
-      onChange={updateField}
-      placeholder="กรุณากรอกอีเมลของคุณ"
-      required
-    />
-
-    <FormInput
-      id="password"
-      name="password"
-      label="รหัสผ่าน"
-      type="password"
-      value={formData.password}
-      onChange={updateField}
-      placeholder="สร้างรหัสผ่านของคุณ"
-      minLength={VALIDATION_RULES.PASSWORD_MIN}
-      required
-    />
-
-    <FormInput
-      id="repeatPassword"
-      name="repeatPassword"
-      label="ยืนยันรหัสผ่าน"
-      type="password"
-      value={formData.repeatPassword}
-      onChange={updateField}
-      placeholder="ยืนยันรหัสผ่านของคุณ"
-      required
-    />
-  </div>
-);
-
-const ContactInfoStep = ({
-  formData,
-  updateField,
-}: {
-  formData: RegisterFormData;
-  updateField: (name: string, value: string) => void;
-}) => (
-  <div className="space-y-4 animate-in fade-in duration-300">
-    <h3 className="text-xl font-semibold text-light-100 mb-4">Contact Information</h3>
-
-    <PrefixInput
-      id="contact.facebook"
-      name="contact.facebook"
-      label="เฟซบุ๊ก"
-      prefix="fb.com/"
-      value={formData.contact.facebook}
-      onChange={updateField}
-      placeholder="โปรไฟล์เฟซบุ๊กของคุณ"
-      required
-    />
-
-    <PrefixInput
-      id="contact.line"
-      name="contact.line"
-      label="ไอดีไลน์"
-      prefix="@"
-      value={formData.contact.line}
-      onChange={updateField}
-      placeholder="your.line.id"
-      required
-    />
-
-    <PrefixInput
-      id="contact.instagram"
-      name="contact.instagram"
-      label="Instagram (Optional)"
-      prefix="@"
-      value={formData.contact.instagram}
-      onChange={updateField}
-      placeholder="your.instagram"
-    />
-
-    <FormInput
-      id="contact.whatsapp"
-      name="contact.whatsapp"
-      label="WhatsApp (Optional)"
-      value={formData.contact.whatsapp}
-      onChange={updateField}
-      placeholder="+1234567890"
-    />
-  </div>
-);
-
-const MessageDisplay = ({ message, type }: { message: string; type: 'error' | 'success' }) => (
-  <div
-    className={`mt-4 px-4 py-2 rounded-xl text-sm ${
-      type === 'error'
-        ? 'bg-rose-500/10 border border-rose-500/50 text-rose-500'
-        : 'bg-green-500/10 border border-green-500/50 text-green-500'
-    }`}>
-    {message}
-  </div>
-);
-
-const NavigationButtons = ({
-  step,
-  isLoading,
-  onPrevious,
-  onNext,
-  onSubmit,
-}: {
-  step: number;
-  isLoading: boolean;
-  onPrevious: () => void;
-  onNext: () => void;
-  onSubmit: () => void;
-}) => (
-  <div className="flex justify-between mt-8">
-    {step > 1 && (
-      <button
-        onClick={onPrevious}
-        className="flex items-center gap-2 px-6 py-2 bg-dark-500 text-light-100 rounded-xl hover:bg-dark-400 transition-all duration-300">
-        <ArrowLeft size={18} />
-        Previous
-      </button>
-    )}
-    {step < 3 ? (
-      <button
-        onClick={onNext}
-        className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-xl transition-all duration-300 ml-auto">
-        Next
-        <ArrowRight size={18} />
-      </button>
-    ) : (
-      <button
-        onClick={onSubmit}
-        disabled={isLoading}
-        className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-dark-800 rounded-xl transition-all duration-300 ml-auto disabled:opacity-50 disabled:cursor-not-allowed">
-        {isLoading ? (
-          <>
-            <Loader2 size={18} className="animate-spin" />
-            Registering...
-          </>
-        ) : (
-          <>
-            <Send size={18} />
-            Register
-          </>
-        )}
-      </button>
-    )}
-  </div>
-);
-
-const LoginLink = () => (
-  <div className="mt-6 text-center">
-    <Link
-      href="/seller/auth/login"
-      className="inline-flex items-center gap-2 text-light-500 hover:text-light-100 text-sm transition-colors duration-300">
-      <LogIn size={16} />
-      Already have an account? Login here
-    </Link>
-  </div>
-);
+  );
+};
 
 // Main component
 export default function RegisterSellerPage() {
   useSellerRedirect();
   const router = useRouter();
-  const {
-    step,
-    setStep,
-    isLoading,
-    setIsLoading,
-    formData,
-    error,
-    setError,
-    success,
-    setSuccess,
-    updateField,
-    validateStep,
-  } = useRegisterForm();
 
-  const handleNext = useCallback(() => {
-    const validationError = validateStep(step);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-    setError(null);
-    setStep(step + 1);
-  }, [step, validateStep, setError, setStep]);
+  const [step, setStep] = useState<number>(FORM_STEPS.STORE_INFO);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [verificationData, setVerificationData] = useState<VerificationData | null>(null);
+  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'verified' | 'expired'>(
+    'pending'
+  );
 
-  const handlePrevious = useCallback(() => {
-    setError(null);
-    setStep(step - 1);
-  }, [setError, setStep, step]);
+  const [formData, setFormData] = useState<RegisterFormData>({
+    store: { name: '', description: '' },
+    username: '',
+    password: '',
+    email: '',
+    repeatPassword: '',
+    contact: { facebook: '', line: '', instagram: '', whatsapp: '' },
+  });
 
-  const handleSubmit = useCallback(async () => {
-    const validationError = validateStep(step);
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-    setIsLoading(true);
-    setError(null);
+  // Form validation
+  const validateCurrentStep = useCallback((): boolean => {
+    const newErrors: Record<string, string> = {};
 
-    try {
-      await registerSeller(formData);
-      setSuccess(SUCCESS_MESSAGES.REGISTRATION_SUCCESS);
-      setTimeout(() => router.push('/seller/auth/login'), 2000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : ERROR_MESSAGES.NETWORK_ERROR);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [step, validateStep, setError, setIsLoading, formData, setSuccess, router]);
-
-  const renderCurrentStep = () => {
     switch (step) {
       case FORM_STEPS.STORE_INFO:
-        return <StoreInfoStep formData={formData} updateField={updateField} />;
+        if (!formData.store.name.trim()) {
+          newErrors.storeName = 'Store name is required';
+        } else if (formData.store.name.length < VALIDATION_RULES.STORE_NAME_MIN) {
+          newErrors.storeName = `Store name must be at least ${VALIDATION_RULES.STORE_NAME_MIN} characters`;
+        } else if (formData.store.name.length > VALIDATION_RULES.STORE_NAME_MAX) {
+          newErrors.storeName = `Store name must not exceed ${VALIDATION_RULES.STORE_NAME_MAX} characters`;
+        }
+
+        if (!formData.store.description.trim()) {
+          newErrors.storeDescription = 'Store description is required';
+        } else if (formData.store.description.length < VALIDATION_RULES.STORE_DESC_MIN) {
+          newErrors.storeDescription = `Description must be at least ${VALIDATION_RULES.STORE_DESC_MIN} characters`;
+        }
+        break;
+
       case FORM_STEPS.ACCOUNT_INFO:
-        return <AccountInfoStep formData={formData} updateField={updateField} />;
+        if (!formData.username.trim()) {
+          newErrors.username = 'Username is required';
+        } else if (formData.username.length < VALIDATION_RULES.USERNAME_MIN) {
+          newErrors.username = `Username must be at least ${VALIDATION_RULES.USERNAME_MIN} characters`;
+        }
+
+        if (!formData.email.trim()) {
+          newErrors.email = 'Email is required';
+        } else if (!validateEmail(formData.email)) {
+          newErrors.email = 'Please enter a valid email address';
+        }
+
+        if (!formData.password.trim()) {
+          newErrors.password = 'Password is required';
+        } else if (formData.password.length < VALIDATION_RULES.PASSWORD_MIN) {
+          newErrors.password = `Password must be at least ${VALIDATION_RULES.PASSWORD_MIN} characters`;
+        }
+
+        if (!formData.repeatPassword.trim()) {
+          newErrors.repeatPassword = 'Please confirm your password';
+        } else if (formData.password !== formData.repeatPassword) {
+          newErrors.repeatPassword = 'Passwords do not match';
+        }
+        break;
+
       case FORM_STEPS.CONTACT_INFO:
-        return <ContactInfoStep formData={formData} updateField={updateField} />;
+        if (!formData.contact.line.trim()) {
+          newErrors.line = 'LINE ID is required';
+        }
+        break;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }, [step, formData]);
+
+  // Handle input changes
+  const handleInputChange = useCallback(
+    (name: string, value: string) => {
+      const keys = name.split('.');
+
+      setFormData((prev) => {
+        if (keys.length === 1) {
+          return { ...prev, [name]: value };
+        } else if (keys.length === 2) {
+          const [parent, child] = keys;
+          if (parent === 'store') {
+            return {
+              ...prev,
+              store: { ...prev.store, [child]: value },
+            };
+          } else if (parent === 'contact') {
+            return {
+              ...prev,
+              contact: { ...prev.contact, [child]: value },
+            };
+          }
+        }
+        return prev;
+      });
+
+      // Clear error when user starts typing
+      if (errors[name]) {
+        setErrors((prev) => ({ ...prev, [name]: '' }));
+      }
+    },
+    [errors]
+  );
+
+  // Handle contact input changes with processing
+  const handleContactChange = useCallback(
+    (field: string, value: string) => {
+      const processedValue = processContactValue(field, value);
+      handleInputChange(`contact.${field}`, processedValue);
+    },
+    [handleInputChange]
+  );
+
+  // Navigation handlers
+  const handleNext = useCallback(async () => {
+    if (!validateCurrentStep()) return;
+
+    if (step === FORM_STEPS.CONTACT_INFO) {
+      setIsLoading(true);
+      setError('');
+
+      try {
+        const result = await registerSeller(formData);
+
+        if (
+          result.requiresLineVerification &&
+          result.verificationCode &&
+          result.expiresAt &&
+          result.pendingId
+        ) {
+          setVerificationData({
+            code: result.verificationCode,
+            expiresAt: result.expiresAt,
+            pendingId: result.pendingId,
+          });
+          setStep(FORM_STEPS.LINE_VERIFICATION);
+        } else if (result.success) {
+          router.push('/seller/auth/login?registered=true');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Registration failed');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setStep((prev) => prev + 1);
+    }
+  }, [step, validateCurrentStep, formData, router]);
+
+  const handlePrevious = useCallback(() => {
+    setStep((prev) => Math.max(1, prev - 1));
+    setError('');
+  }, []);
+
+  // Handle verification status change
+  const handleVerificationStatusChange = useCallback(
+    (status: 'pending' | 'verified' | 'expired') => {
+      setVerificationStatus(status);
+      if (status === 'verified') {
+        setTimeout(() => {
+          router.push('/seller/auth/login?verified=true');
+        }, 2000);
+      }
+    },
+    [router]
+  );
+
+  // Render form steps
+  const renderStepContent = () => {
+    switch (step) {
+      case FORM_STEPS.STORE_INFO:
+        return (
+          <div className="space-y-4">
+            <FormInput
+              id="storeName"
+              name="store.name"
+              label="Store Name"
+              value={formData.store.name}
+              onChange={handleInputChange}
+              placeholder="Enter your store name"
+              required
+              minLength={VALIDATION_RULES.STORE_NAME_MIN}
+              maxLength={VALIDATION_RULES.STORE_NAME_MAX}
+            />
+            {errors.storeName && <p className="text-rose-500 text-sm">{errors.storeName}</p>}
+
+            <FormInput
+              id="storeDescription"
+              name="store.description"
+              label="Store Description"
+              value={formData.store.description}
+              onChange={handleInputChange}
+              placeholder="Describe your store and what you sell"
+              required
+              minLength={VALIDATION_RULES.STORE_DESC_MIN}
+              rows={4}
+            />
+            {errors.storeDescription && (
+              <p className="text-rose-500 text-sm">{errors.storeDescription}</p>
+            )}
+          </div>
+        );
+
+      case FORM_STEPS.ACCOUNT_INFO:
+        return (
+          <div className="space-y-4">
+            <div>
+              <FormInput
+                id="username"
+                name="username"
+                label="Username"
+                value={formData.username}
+                onChange={handleInputChange}
+                placeholder="Choose a unique username"
+                required
+                minLength={VALIDATION_RULES.USERNAME_MIN}
+              />
+              <div className="mt-2 p-3 bg-primary/10 border border-primary/20 rounded-lg max-w-full overflow-x-hidden">
+                <p className="text-primary text-sm flex gap-2 items-center justify-center">
+                  <Store size={14} />
+                  <span className="font-mono font-semibold">
+                    {formData.username || 'username'}.dokmai.store
+                  </span>
+                </p>
+              </div>
+              {errors.username && <p className="text-rose-500 text-sm mt-1">{errors.username}</p>}
+            </div>
+
+            <FormInput
+              id="email"
+              name="email"
+              label="Email Address"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="Enter your email address"
+              required
+            />
+            {errors.email && <p className="text-rose-500 text-sm">{errors.email}</p>}
+
+            <FormInput
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              placeholder="Create a secure password"
+              required
+              minLength={VALIDATION_RULES.PASSWORD_MIN}
+            />
+            {errors.password && <p className="text-rose-500 text-sm">{errors.password}</p>}
+
+            <FormInput
+              id="repeatPassword"
+              name="repeatPassword"
+              label="Confirm Password"
+              type="password"
+              value={formData.repeatPassword}
+              onChange={handleInputChange}
+              placeholder="Repeat your password"
+              required
+            />
+            {errors.repeatPassword && (
+              <p className="text-rose-500 text-sm">{errors.repeatPassword}</p>
+            )}
+          </div>
+        );
+
+      case FORM_STEPS.CONTACT_INFO:
+        return (
+          <div className="space-y-4">
+            <PrefixInput
+              id="line"
+              name="line"
+              label="LINE ID"
+              prefix="@"
+              value={formData.contact.line}
+              onChange={handleContactChange}
+              placeholder="your-line-id"
+              required
+            />
+            {errors.line && <p className="text-rose-500 text-sm">{errors.line}</p>}
+
+            <PrefixInput
+              id="facebook"
+              name="facebook"
+              label="Facebook (Optional)"
+              prefix="fb.com/"
+              value={formData.contact.facebook}
+              onChange={handleContactChange}
+              placeholder="your-facebook-username"
+            />
+
+            <PrefixInput
+              id="instagram"
+              name="instagram"
+              label="Instagram (Optional)"
+              prefix="@"
+              value={formData.contact.instagram}
+              onChange={handleContactChange}
+              placeholder="your-instagram-handle"
+            />
+
+            <FormInput
+              id="whatsapp"
+              name="contact.whatsapp"
+              label="WhatsApp (Optional)"
+              value={formData.contact.whatsapp}
+              onChange={handleInputChange}
+              placeholder="Enter your WhatsApp number"
+            />
+          </div>
+        );
+
+      case FORM_STEPS.LINE_VERIFICATION:
+        return verificationData ? (
+          <LineVerificationStep
+            verificationData={verificationData}
+            verificationStatus={verificationStatus}
+            onStatusChange={handleVerificationStatusChange}
+          />
+        ) : null;
+
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center px-4 py-8 animate-in fade-in duration-500 ">
-      <div className="w-full max-w-2xl space-y-8 bg-dark-600 p-8 rounded-2xl border border-dark-400">
-        <FormHeader />
-        <ProgressSteps currentStep={step} />
+    <div className="min-h-[75vh] flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-500 rounded-2xl p-8 shadow-2xl">
+          <FormHeader />
 
-        <div className="transition-all duration-300">
-          {renderCurrentStep()}
+          <ProgressSteps currentStep={step} />
 
-          {error && <MessageDisplay message={error} type="error" />}
-          {success && <MessageDisplay message={success} type="success" />}
+          {error && (
+            <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl">
+              <p className="text-rose-400 text-sm">{error}</p>
+            </div>
+          )}
 
-          <NavigationButtons
-            step={step}
-            isLoading={isLoading}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            onSubmit={handleSubmit}
-          />
+          <div className="space-y-6">
+            {renderStepContent()}
 
-          <LoginLink />
+            {step < FORM_STEPS.LINE_VERIFICATION && (
+              <div className="flex gap-3">
+                {step > 1 && (
+                  <button
+                    onClick={handlePrevious}
+                    disabled={isLoading}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-dark-600 hover:bg-dark-500 text-light-100 rounded-xl transition-all duration-300 disabled:opacity-50">
+                    <ArrowLeft size={18} />
+                    Previous
+                  </button>
+                )}
+
+                <button
+                  onClick={handleNext}
+                  disabled={isLoading}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50">
+                  {isLoading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : step === FORM_STEPS.CONTACT_INFO ? (
+                    <>
+                      <Send size={18} />
+                      Register
+                    </>
+                  ) : (
+                    <>
+                      Next
+                      <ArrowRight size={18} />
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-light-400 text-sm">
+              Already have an account?{' '}
+              <Link
+                href="/seller/auth/login"
+                className="text-primary hover:text-primary/80 transition-colors">
+                <LogIn size={16} className="inline mr-1" />
+                Sign In
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

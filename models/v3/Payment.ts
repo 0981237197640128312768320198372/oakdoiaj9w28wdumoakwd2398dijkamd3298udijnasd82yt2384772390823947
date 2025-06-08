@@ -65,4 +65,4 @@ const paymentSchema = new Schema<IPayment>(
 paymentSchema.index({ createdAt: -1 });
 paymentSchema.index({ status: 1, createdAt: -1 });
 
-export const Payment = models.PaymentV3 || model<IPayment>('PaymentV3', paymentSchema);
+export const Payment = models.Payment || model<IPayment>('Payment', paymentSchema);

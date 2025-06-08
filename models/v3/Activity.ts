@@ -105,6 +105,22 @@ interface IActivityModel extends Model<IActivity> {
     value: number;
     reason?: string;
   }): Promise<IActivity>;
+
+  createDepositActivity(data: {
+    buyerId: Schema.Types.ObjectId;
+    amount: number;
+    paymentIntentId: string;
+    qrCodeData: string;
+    expiresAt: Date;
+    status?: 'pending' | 'expired' | 'completed' | 'cancelled';
+  }): Promise<IActivity>;
+
+  findPendingDeposits(buyerId: Schema.Types.ObjectId): Promise<IActivity[]>;
+
+  updateDepositStatus(
+    paymentIntentId: string,
+    status: 'pending' | 'expired' | 'completed' | 'cancelled'
+  ): Promise<IActivity | null>;
 }
 
 const activitySchema = new Schema<IActivity>(
@@ -298,6 +314,77 @@ activitySchema.statics.createCredit = function (data: {
     status: 'completed',
     visibility: 'public',
   });
+};
+
+activitySchema.statics.createDepositActivity = function (data: {
+  buyerId: Schema.Types.ObjectId;
+  amount: number;
+  paymentIntentId: string;
+  qrCodeData: string;
+  expiresAt: Date;
+  status?: 'pending' | 'expired' | 'completed' | 'cancelled';
+}) {
+  return this.create({
+    type: 'deposit',
+    category: 'financial',
+    actors: {
+      primary: {
+        id: data.buyerId,
+        type: 'buyer',
+      },
+    },
+    metadata: {
+      amount: data.amount,
+      currency: 'THB',
+      paymentMethod: 'promptpay',
+      paymentIntentId: data.paymentIntentId,
+      qrCodeData: data.qrCodeData,
+      expiresAt: data.expiresAt,
+      canResume: true,
+      description: `Deposit of ${data.amount} Dokmai Coins via PromptPay`,
+    },
+    status: data.status || 'pending',
+    visibility: 'private',
+    tags: ['deposit', 'promptpay', 'qr-code'],
+  });
+};
+
+activitySchema.statics.findPendingDeposits = function (buyerId: Schema.Types.ObjectId) {
+  return this.find({
+    type: 'deposit',
+    'actors.primary.id': buyerId,
+    status: { $in: ['pending', 'processing'] },
+    'metadata.canResume': true,
+    'metadata.expiresAt': { $gt: new Date() },
+  })
+    .sort({ createdAt: -1 })
+    .limit(10);
+};
+
+activitySchema.statics.updateDepositStatus = function (
+  paymentIntentId: string,
+  status: 'pending' | 'expired' | 'completed' | 'cancelled'
+) {
+  const updateData: any = {
+    status,
+    updatedAt: new Date(),
+  };
+
+  if (status === 'completed') {
+    updateData.completedAt = new Date();
+    updateData['metadata.canResume'] = false;
+  } else if (status === 'expired' || status === 'cancelled') {
+    updateData['metadata.canResume'] = false;
+  }
+
+  return this.findOneAndUpdate(
+    {
+      type: 'deposit',
+      'metadata.paymentIntentId': paymentIntentId,
+    },
+    updateData,
+    { new: true }
+  );
 };
 
 export const Activity =

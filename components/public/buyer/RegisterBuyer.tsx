@@ -156,7 +156,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),
-      username: authMethod === 'personalKey' ? undefined : formData.username.trim(),
+      username: authMethod === 'personalKey' ? undefined : formData.username.trim().toLowerCase(),
       password: authMethod === 'personalKey' ? undefined : formData.password,
       contact: {
         facebook: `fb.com/${formData.contact.facebook.trim()}`,
@@ -169,7 +169,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
       country,
       city,
       postal,
-      coordinate, // Include all IP details
+      coordinate,
     };
 
     try {
@@ -234,7 +234,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                     className={cn(
                       'w-7 h-7 text-xs rounded-full flex items-center justify-center transition-all duration-300 font-semibold',
                       step >= s
-                        ? themeUtils.getPrimaryColorClass('bg') + ' text-white'
+                        ? themeUtils.getPrimaryColorClass('bg')
                         : themeUtils.getCardClass() + ' border'
                     )}>
                     {step > s ? <CheckCircle size={14} /> : s}
@@ -265,6 +265,33 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                   <div className="text-center mb-4">
                     <h3 className="text-lg font-semibold">ตั้งค่าบัญชี</h3>
                     <p className="text-xs text-gray-500">ป้อนข้อมูลพื้นฐานบัญชีของคุณ</p>
+                  </div>
+
+                  {/* Platform Information */}
+                  <div
+                    className={cn(
+                      'mb-6 p-4 border-l-4',
+                      themeUtils.getComponentRoundednessClass(),
+                      'bg-blue-50 border-blue-400 text-blue-700 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-300'
+                    )}>
+                    <div className="flex items-start gap-2">
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium mb-1">บัญชีเดียว ใช้ได้ทุกร้าน</p>
+                        <p className="text-xs">
+                          บัญชีของคุณสามารถใช้ซื้อสินค้าได้จากทุกร้านค้าบนแพลตฟอร์มของ Dokmai Store
+                          (ร้านค้าที่มีโดเมน dokmai.store)
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="space-y-1.5">
@@ -356,7 +383,7 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
                           <input
                             id="usernameRegister"
                             name="username"
-                            value={formData.username}
+                            value={formData.username.toLowerCase()}
                             onChange={handleChange}
                             className={cn(inputBaseClasses, 'pl-3')}
                             placeholder="superthom"
@@ -570,8 +597,21 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
               <CheckCircle size={32} className="text-green-500 dark:text-green-400" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Registration Complete!</h3> f
+              <h3 className="text-lg font-semibold">Registration Complete!</h3>
               <p className="text-xs text-gray-500">Your account is ready.</p>
+            </div>
+
+            {/* Platform Information on Success */}
+            <div
+              className={cn(
+                'p-3 border-l-4',
+                themeUtils.getComponentRoundednessClass(),
+                'bg-blue-50 border-blue-400 text-blue-700 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-300'
+              )}>
+              <p className="text-xs font-medium mb-1">🎉 บัญชีเดียว ใช้ได้ทุกร้าน</p>
+              <p className="text-xs">
+                คุณสามารถใช้บัญชีนี้ซื้อสินค้าได้จากทุกร้านค้าในแพลตฟอร์มของ Dokmai Store!
+              </p>
             </div>
             <div
               className={cn(

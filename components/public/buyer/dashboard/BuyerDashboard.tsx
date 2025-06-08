@@ -21,7 +21,7 @@ interface BuyerDashboardProps {
 }
 
 const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
-  const { buyer: authBuyer, refreshBalance } = useBuyerAuth();
+  const { buyer: authBuyer, refreshBalance, logout } = useBuyerAuth();
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(authBuyer);
 
@@ -110,7 +110,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           onRefresh={refreshAllData}
           isRefreshing={isRefreshing}
           handleEditProfile={() => setIsEditProfileModalOpen(true)}
-          handleLogout={() => {}}
+          handleLogout={logout}
           handleToggleContactList={() => setShowContactList(!showContactList)}
           isEditProfileModalOpen={isEditProfileModalOpen}
           setIsEditProfileModalOpen={setIsEditProfileModalOpen}
