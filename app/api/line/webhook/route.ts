@@ -134,10 +134,3 @@ async function processLineEvent(event: LineWebhookEvent) {
     }
   }
 }
-
-// Handle follow events (when user adds bot as friend)
-export async function handleFollowEvent(event: LineWebhookEvent) {
-  if (event.type === 'follow') {
-    await LineService.sendReplyMessage(event.replyToken, LineService.getWelcomeMessage());
-  }
-}
