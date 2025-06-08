@@ -21,7 +21,7 @@ spamming and improve user experience.
 
 ### 1. Enhanced LINE Webhook (`/app/api/v3/line/webhook/route.ts`)
 
-- **Verification Code Processing**: Automatically extracts and processes DOK codes from LINE
+- **Verification Code Processing**: Automatically extracts and processes DS- codes from LINE
   messages
 - **Real-time Verification**: Instantly verifies sellers when they send the code via LINE
 - **Smart Responses**: Different messages for new users, verified users, and invalid codes
