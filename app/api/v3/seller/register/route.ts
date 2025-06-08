@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         logoUrl: store.logoUrl,
         rating: store.rating || 0,
         credits: store.credits || { positive: 0, negative: 0 },
-        theme: store.theme || {},
+        theme: null, // Set to null instead of empty object to avoid BSON error
       },
       verification: {
         code,

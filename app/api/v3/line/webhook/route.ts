@@ -5,6 +5,7 @@ import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 import { PendingRegistration } from '@/models/v3/PendingRegistration';
 import { LineService } from '@/lib/services/lineService';
+import { broadcastVerificationComplete } from '@/lib/services/sseService';
 
 const channelSecret = process.env.LINE_CHANNEL_SECRET || 'asd';
 
@@ -45,7 +46,10 @@ async function handleEvent(event: any) {
             email: pendingRegistration.email,
             password: pendingRegistration.password,
             contact: pendingRegistration.contact,
-            store: pendingRegistration.store,
+            store: {
+              ...pendingRegistration.store,
+              theme: null, // Ensure theme is null to avoid BSON error
+            },
             lineUserId: userId,
             verification: {
               code: pendingRegistration.verification.code,
@@ -57,6 +61,13 @@ async function handleEvent(event: any) {
           });
 
           await newSeller.save();
+
+          // Broadcast verification completion to waiting SSE clients
+          broadcastVerificationComplete(pendingRegistration._id.toString(), {
+            _id: newSeller._id.toString(),
+            store: { name: newSeller.store.name },
+            username: newSeller.username,
+          });
 
           // Clean up pending registration
           await PendingRegistration.deleteOne({ _id: pendingRegistration._id });

@@ -37,7 +37,7 @@ seller account creation until successful verification is completed.
 
 ## New Flow
 
-### Before (Problem):
+### Before (Problem)
 
 1. User submits registration form
 2. ✅ Seller account created in database
@@ -45,7 +45,7 @@ seller account creation until successful verification is completed.
 4. User may or may not verify
 5. ❌ Unverified accounts exist in database
 
-### After (Solution):
+### After (Solution)
 
 1. User submits registration form
 2. ⏳ Pending registration created (NOT seller account)

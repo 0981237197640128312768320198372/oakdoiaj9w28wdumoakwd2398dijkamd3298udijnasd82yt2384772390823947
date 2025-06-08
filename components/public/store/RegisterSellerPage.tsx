@@ -283,7 +283,50 @@ const LineVerificationStep = ({
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [copied, setCopied] = useState(false);
+  const [sseStatus, setSseStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
 
+  // SSE connection for real-time verification updates
+  useEffect(() => {
+    if (verificationStatus !== 'pending') return;
+
+    const eventSource = new EventSource(
+      `/api/v3/seller/verification-events/${verificationData.pendingId}`
+    );
+
+    eventSource.onopen = () => {
+      setSseStatus('connected');
+    };
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.status === 'verified') {
+          onStatusChange('verified');
+          eventSource.close();
+        } else if (data.status === 'failed') {
+          onStatusChange('expired');
+          eventSource.close();
+        } else if (data.status === 'timeout') {
+          onStatusChange('expired');
+          eventSource.close();
+        }
+      } catch (error) {
+        console.error('Error parsing SSE data:', error);
+      }
+    };
+
+    eventSource.onerror = () => {
+      setSseStatus('error');
+      eventSource.close();
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, [verificationData.pendingId, verificationStatus, onStatusChange]);
+
+  // Timer for countdown
   useEffect(() => {
     const expiresAt = new Date(verificationData.expiresAt);
     const updateTimer = () => {
@@ -301,9 +344,19 @@ const LineVerificationStep = ({
     return () => clearInterval(interval);
   }, [verificationData.expiresAt, verificationStatus, onStatusChange]);
 
-  // Manual refresh function - just refreshes the page to check if verification completed
-  const handleManualRefresh = () => {
-    window.location.reload();
+  // Manual status check function - doesn't refresh the page
+  const handleCheckStatus = async () => {
+    try {
+      const response = await fetch(
+        `/api/v3/seller/verification-events/${verificationData.pendingId}`
+      );
+      if (response.ok) {
+        // The SSE connection will handle the status update
+        setSseStatus('connecting');
+      }
+    } catch (error) {
+      console.error('Error checking verification status:', error);
+    }
   };
 
   const copyToClipboard = async () => {
@@ -391,19 +444,36 @@ const LineVerificationStep = ({
                 <li>Add our LINE Bot as a friend</li>
                 <li>Send the verification code above to our bot</li>
                 <li>Wait for the bot's confirmation message</li>
-                <li>Refresh this page if verification doesn't update automatically</li>
+                <li>Verification status will update automatically</li>
               </ol>
 
               <div className="mt-4 text-center">
-                <button
-                  onClick={handleManualRefresh}
-                  className="flex items-center gap-2 mx-auto px-4 py-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
-                  <RefreshCw size={16} />
-                  Refresh Page
-                </button>
-                <p className="text-light-500 text-xs mt-2">
-                  Click to refresh after receiving LINE confirmation
-                </p>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      sseStatus === 'connected'
+                        ? 'bg-green-500'
+                        : sseStatus === 'connecting'
+                        ? 'bg-yellow-500'
+                        : 'bg-red-500'
+                    }`}
+                  />
+                  <span className="text-light-400">
+                    {sseStatus === 'connected'
+                      ? 'Connected - Waiting for verification'
+                      : sseStatus === 'connecting'
+                      ? 'Connecting...'
+                      : 'Connection error'}
+                  </span>
+                </div>
+                {sseStatus === 'error' && (
+                  <button
+                    onClick={handleCheckStatus}
+                    className="mt-2 flex items-center gap-2 mx-auto px-3 py-1 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors text-sm">
+                    <RefreshCw size={14} />
+                    Retry Connection
+                  </button>
+                )}
               </div>
             </div>
           </>
