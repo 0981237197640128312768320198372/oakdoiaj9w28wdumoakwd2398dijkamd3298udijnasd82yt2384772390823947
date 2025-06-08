@@ -62,17 +62,21 @@ async function handleEvent(event: any) {
 
           await newSeller.save();
 
-          // Broadcast verification completion to waiting SSE clients
-          broadcastVerificationComplete(pendingRegistration._id.toString(), {
-            _id: newSeller._id.toString(),
-            store: { name: newSeller.store.name },
-            username: newSeller.username,
-          });
+          // Store pendingId before deletion
+          const pendingId = pendingRegistration._id.toString();
 
           // Clean up pending registration
           await PendingRegistration.deleteOne({ _id: pendingRegistration._id });
 
           console.log(`Seller account created for ${newSeller.username} after LINE verification`);
+
+          // Broadcast verification completion to waiting SSE clients
+          console.log(`Broadcasting verification complete for pendingId: ${pendingId}`);
+          broadcastVerificationComplete(pendingId, {
+            _id: newSeller._id.toString(),
+            store: { name: newSeller.store.name },
+            username: newSeller.username,
+          });
 
           // Send success message
           await LineService.sendReplyMessage(

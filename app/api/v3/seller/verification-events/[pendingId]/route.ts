@@ -55,6 +55,7 @@ export async function GET(
     const stream = new ReadableStream({
       start(controller) {
         // Store the controller for this pending ID
+        console.log(`SSE Endpoint: Registering connection for pendingId: ${pendingId}`);
         registerSSEConnection(pendingId, controller);
 
         // Send initial connection confirmation
@@ -64,6 +65,7 @@ export async function GET(
           timestamp: new Date().toISOString(),
         });
         controller.enqueue(`data: ${initialData}\n\n`);
+        console.log(`SSE Endpoint: Sent initial connection confirmation for ${pendingId}`);
 
         // Set up cleanup on connection close
         req.signal.addEventListener('abort', () => {

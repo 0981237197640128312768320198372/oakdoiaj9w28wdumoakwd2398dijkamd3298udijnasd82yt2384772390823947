@@ -6,8 +6,13 @@ export function broadcastVerificationComplete(
   pendingId: string,
   sellerData: { _id: string; store: { name: string }; username: string }
 ) {
+  console.log(`SSE Service: Looking for connection with pendingId: ${pendingId}`);
+  console.log(`SSE Service: Active connections count: ${activeConnections.size}`);
+  console.log(`SSE Service: Active connection keys:`, Array.from(activeConnections.keys()));
+
   const controller = activeConnections.get(pendingId);
   if (controller) {
+    console.log(`SSE Service: Found controller for pendingId: ${pendingId}, broadcasting...`);
     try {
       const data = JSON.stringify({
         status: 'verified',
@@ -19,10 +24,13 @@ export function broadcastVerificationComplete(
       controller.enqueue(`data: ${data}\n\n`);
       controller.close();
       activeConnections.delete(pendingId);
+      console.log(`SSE Service: Successfully broadcasted verification complete for ${pendingId}`);
     } catch (error) {
       console.error('Error broadcasting verification complete:', error);
       activeConnections.delete(pendingId);
     }
+  } else {
+    console.log(`SSE Service: No active connection found for pendingId: ${pendingId}`);
   }
 }
 
