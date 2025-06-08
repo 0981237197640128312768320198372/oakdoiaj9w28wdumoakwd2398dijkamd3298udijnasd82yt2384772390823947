@@ -464,7 +464,7 @@ export default function DepositForm({
                           ? 'bg-light-100 border-light-200 hover:border-light-300 hover:bg-light-200'
                           : 'bg-dark-600 border-dark-400 hover:border-dark-300 hover:bg-dark-500'
                       )}>
-                      พิมพ์เอง
+                      พิมพ์จำนวน
                     </button>
                   </div>
 

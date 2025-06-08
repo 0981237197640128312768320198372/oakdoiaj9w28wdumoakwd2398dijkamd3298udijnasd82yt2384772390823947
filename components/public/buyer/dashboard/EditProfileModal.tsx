@@ -250,7 +250,7 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        'w-full max-w-md mx-auto p-4 border backdrop-blur-sm transition-all duration-300 max-h-[90vh] overflow-y-auto',
+        'w-full max-w-md mx-auto p-4 border backdrop-blur-sm transition-all duration-300',
         themeUtils.getCardClass(),
         themeUtils.getComponentRoundednessClass(),
         themeUtils.getComponentShadowClass()

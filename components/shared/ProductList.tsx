@@ -399,11 +399,13 @@ const ProductList: React.FC<ProductListProps> = ({
                 onChange={(e) => setCategoryFilter(e.target.value)}
                 className={styles.selectInput}>
                 <option value="all">All categories</option>
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
-                  </option>
-                ))}
+                {categories
+                  .filter((category) => uniqueCategories.includes(category._id))
+                  .map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
               </select>
               <Filter
                 className={cn(
@@ -648,7 +650,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
             {visibleProducts < filteredProducts.length && (
               <button onClick={handleLoadMore} className={styles.loadMoreButton}>
-                Load More
+                โหลดเพิ่มเติม
               </button>
             )}
           </div>
