@@ -66,11 +66,7 @@ async function processLineEvent(event: LineWebhookEvent) {
     const verificationCode = LineService.extractVerificationCode(messageText);
 
     if (!verificationCode) {
-      // If no verification code found, send help message
-      await LineService.sendReplyMessage(
-        replyToken,
-        'กรุณาส่งรหัสยืนยันในรูปแบบ DOK123456 ที่คุณได้รับจากหน้าลงทะเบียนครับ'
-      );
+      // If no verification code found, don't reply (ignore the message)
       return;
     }
 

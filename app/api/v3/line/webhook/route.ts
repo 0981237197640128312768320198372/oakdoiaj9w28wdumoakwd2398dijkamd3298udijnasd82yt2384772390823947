@@ -86,19 +86,8 @@ async function handleEvent(event: any) {
           }
         }
       } else {
-        // Check if this is a new user (no verification code in message)
-        const existingSeller = await Seller.findOne({ lineUserId: userId });
-
-        if (!existingSeller) {
-          // Send welcome message for new users
-          await LineService.sendReplyMessage(replyToken, LineService.getWelcomeMessage());
-        } else {
-          // Existing user - provide help message
-          await LineService.sendReplyMessage(
-            replyToken,
-            LineService.getHelpMessage(existingSeller.store.name)
-          );
-        }
+        // No verification code found - don't reply (ignore the message)
+        return;
       }
     } catch (error) {
       console.error('Error handling LINE message:', error);
