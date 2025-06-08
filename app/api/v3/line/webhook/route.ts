@@ -9,6 +9,14 @@ import { broadcastVerificationComplete } from '@/lib/services/sseService';
 
 const channelSecret = process.env.LINE_CHANNEL_SECRET || 'asd';
 
+// Rate limiting map to prevent spam (userId -> last attempt timestamp)
+const rateLimitMap = new Map<string, number>();
+const RATE_LIMIT_WINDOW = 30 * 1000; // 30 seconds
+const MAX_ATTEMPTS_PER_WINDOW = 3;
+
+// Attempt tracking map (userId -> attempt count)
+const attemptTracker = new Map<string, number>();
+
 async function handleEvent(event: any) {
   if (event.type === 'message' && event.message.type === 'text') {
     const userId = event.source.userId;
@@ -21,11 +29,43 @@ async function handleEvent(event: any) {
     try {
       await connectToDatabase();
 
+      // Quick exit: Check if any pending registrations exist before processing
+      const hasPendingRegistrations = await PendingRegistration.countDocuments({
+        'verification.expiresAt': { $gt: new Date() },
+      });
+
+      if (hasPendingRegistrations === 0) {
+        console.log('No active pending registrations found. Ignoring message.');
+        return;
+      }
+
       // Extract verification code from message
       const verificationCode = LineService.extractVerificationCode(messageText);
 
       if (verificationCode) {
         console.log(`Verification code found: ${verificationCode}`);
+
+        // Rate limiting check
+        const now = Date.now();
+        const lastAttempt = rateLimitMap.get(userId) || 0;
+        const attempts = attemptTracker.get(userId) || 0;
+
+        if (now - lastAttempt < RATE_LIMIT_WINDOW && attempts >= MAX_ATTEMPTS_PER_WINDOW) {
+          console.log(`Rate limit exceeded for user ${userId}`);
+          await LineService.sendReplyMessage(
+            replyToken,
+            'คุณส่งรหัสยืนยันบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่อีกครั้ง'
+          );
+          return;
+        }
+
+        // Update rate limiting counters
+        if (now - lastAttempt >= RATE_LIMIT_WINDOW) {
+          attemptTracker.set(userId, 1);
+        } else {
+          attemptTracker.set(userId, attempts + 1);
+        }
+        rateLimitMap.set(userId, now);
 
         // Find pending registration with this verification code
         const pendingRegistration = await PendingRegistration.findOne({
@@ -77,6 +117,10 @@ async function handleEvent(event: any) {
             store: { name: newSeller.store.name },
             username: newSeller.username,
           });
+
+          // Clear rate limiting data for successful verification
+          rateLimitMap.delete(userId);
+          attemptTracker.delete(userId);
 
           // Send success message
           await LineService.sendReplyMessage(
