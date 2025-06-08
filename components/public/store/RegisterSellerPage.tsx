@@ -15,6 +15,7 @@ import {
   CheckCircle,
   Copy,
   RefreshCw,
+  PartyPopper,
 } from 'lucide-react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
@@ -499,6 +500,75 @@ const LineVerificationStep = ({
   );
 };
 
+const SuccessModal = ({
+  isOpen,
+  storeName,
+  countdown,
+  onContinue,
+}: {
+  isOpen: boolean;
+  storeName: string;
+  countdown: number;
+  onContinue: () => void;
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+      <div className="bg-dark-800 border border-dark-500 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300">
+        <div className="text-center space-y-6">
+          {/* Success Animation */}
+          <div className="relative">
+            <div className="w-20 h-20 mx-auto bg-green-500/20 rounded-full flex items-center justify-center animate-pulse">
+              <CheckCircle className="text-green-500 w-12 h-12" />
+            </div>
+            <div className="absolute -top-2 -right-2">
+              <PartyPopper className="text-primary w-8 h-8 animate-bounce" />
+            </div>
+          </div>
+
+          {/* Success Message */}
+          <div className="space-y-3">
+            <h2 className="text-2xl font-bold text-green-400">Verification Successful! 🎉</h2>
+            <p className="text-light-300">
+              Congratulations! Your store{' '}
+              <span className="font-semibold text-primary">{storeName}</span> has been successfully
+              verified.
+            </p>
+            <p className="text-light-400 text-sm">
+              Your seller account is now active and ready to use.
+            </p>
+          </div>
+
+          {/* Countdown */}
+          <div className="bg-dark-700 border border-dark-600 rounded-xl p-4">
+            <p className="text-light-300 text-sm mb-2">Redirecting to login page in:</p>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                <span className="text-primary font-bold text-xl">{countdown}</span>
+              </div>
+              <span className="text-light-400">seconds</span>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          <button
+            onClick={onContinue}
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300">
+            <LogIn size={18} />
+            Continue to Login
+          </button>
+
+          {/* Additional Info */}
+          <p className="text-light-500 text-xs">
+            You can now start selling and managing your products through your seller dashboard.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Main component
 export default function RegisterSellerPage() {
   useSellerRedirect();
@@ -511,6 +581,8 @@ export default function RegisterSellerPage() {
   const [verificationStatus, setVerificationStatus] = useState<'pending' | 'verified' | 'expired'>(
     'pending'
   );
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(5);
 
   const [formData, setFormData] = useState<RegisterFormData>({
     store: { name: '', description: '' },
@@ -664,18 +736,34 @@ export default function RegisterSellerPage() {
     setError('');
   }, []);
 
+  // Countdown effect for success modal
+  useEffect(() => {
+    if (showSuccessModal && redirectCountdown > 0) {
+      const timer = setTimeout(() => {
+        setRedirectCountdown((prev) => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (showSuccessModal && redirectCountdown === 0) {
+      router.push('/seller/auth/login?verified=true');
+    }
+  }, [showSuccessModal, redirectCountdown, router]);
+
   // Handle verification status change
   const handleVerificationStatusChange = useCallback(
     (status: 'pending' | 'verified' | 'expired') => {
       setVerificationStatus(status);
       if (status === 'verified') {
-        setTimeout(() => {
-          router.push('/auth/login?verified=true');
-        }, 2000);
+        setShowSuccessModal(true);
+        setRedirectCountdown(5); // Reset countdown to 5 seconds
       }
     },
-    [router]
+    []
   );
+
+  // Handle manual continue from success modal
+  const handleContinueToLogin = useCallback(() => {
+    router.push('/seller/auth/login?verified=true');
+  }, [router]);
 
   // Render form steps
   const renderStepContent = () => {
@@ -840,69 +928,78 @@ export default function RegisterSellerPage() {
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
-        <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-500 rounded-2xl p-8 shadow-2xl">
-          <FormHeader />
+    <>
+      <SuccessModal
+        isOpen={showSuccessModal}
+        storeName={formData.store.name}
+        countdown={redirectCountdown}
+        onContinue={handleContinueToLogin}
+      />
 
-          <ProgressSteps currentStep={step} />
+      <div className="min-h-[75vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl">
+          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-500 rounded-2xl p-8 shadow-2xl">
+            <FormHeader />
 
-          {error && (
-            <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl">
-              <p className="text-rose-400 text-sm">{error}</p>
-            </div>
-          )}
+            <ProgressSteps currentStep={step} />
 
-          <div className="space-y-6">
-            {renderStepContent()}
-
-            {step < FORM_STEPS.LINE_VERIFICATION && (
-              <div className="flex gap-3">
-                {step > 1 && (
-                  <button
-                    onClick={handlePrevious}
-                    disabled={isLoading}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-dark-600 hover:bg-dark-500 text-light-100 rounded-xl transition-all duration-300 disabled:opacity-50">
-                    <ArrowLeft size={18} />
-                    Previous
-                  </button>
-                )}
-
-                <button
-                  onClick={handleNext}
-                  disabled={isLoading}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50">
-                  {isLoading ? (
-                    <Loader2 size={18} className="animate-spin" />
-                  ) : step === FORM_STEPS.CONTACT_INFO ? (
-                    <>
-                      <Send size={18} />
-                      Register
-                    </>
-                  ) : (
-                    <>
-                      Next
-                      <ArrowRight size={18} />
-                    </>
-                  )}
-                </button>
+            {error && (
+              <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl">
+                <p className="text-rose-400 text-sm">{error}</p>
               </div>
             )}
-          </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-light-400 text-sm">
-              Already have an account?{' '}
-              <Link
-                href="/auth/login"
-                className="text-primary hover:text-primary/80 transition-colors">
-                <LogIn size={16} className="inline mr-1" />
-                Sign In
-              </Link>
-            </p>
+            <div className="space-y-6">
+              {renderStepContent()}
+
+              {step < FORM_STEPS.LINE_VERIFICATION && (
+                <div className="flex gap-3">
+                  {step > 1 && (
+                    <button
+                      onClick={handlePrevious}
+                      disabled={isLoading}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-dark-600 hover:bg-dark-500 text-light-100 rounded-xl transition-all duration-300 disabled:opacity-50">
+                      <ArrowLeft size={18} />
+                      Previous
+                    </button>
+                  )}
+
+                  <button
+                    onClick={handleNext}
+                    disabled={isLoading}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50">
+                    {isLoading ? (
+                      <Loader2 size={18} className="animate-spin" />
+                    ) : step === FORM_STEPS.CONTACT_INFO ? (
+                      <>
+                        <Send size={18} />
+                        Register
+                      </>
+                    ) : (
+                      <>
+                        Next
+                        <ArrowRight size={18} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 text-center">
+              <p className="text-light-400 text-sm">
+                Already have an account?{' '}
+                <Link
+                  href="/auth/login"
+                  className="text-primary hover:text-primary/80 transition-colors">
+                  <LogIn size={16} className="inline mr-1" />
+                  Sign In
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
