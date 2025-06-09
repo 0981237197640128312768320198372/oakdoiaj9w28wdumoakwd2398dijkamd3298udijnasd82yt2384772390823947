@@ -493,33 +493,30 @@ const SuccessModal = ({
             </div>
           </div>
           <div className="space-y-3">
-            <h2 className="text-2xl font-bold text-green-400">Verification Successful! 🎉</h2>
+            <h2 className="text-2xl font-bold text-green-400">ยืนยันตัวตนสำเร็จ!! 🎉</h2>
             <p className="text-light-300">
-              Congratulations! Your store{' '}
-              <span className="font-semibold text-primary">{storeName}</span> has been successfully
-              verified.
+              ยินดีด้วยค่ะ! ร้านของคุณ
+              <span className="font-semibold text-primary">{storeName}</span> ได้รับการยืนยันแล้ว
             </p>
-            <p className="text-light-400 text-sm">
-              Your seller account is now active and ready to use.
-            </p>
+            <p className="text-light-400 text-sm">บัญชีผู้ขายของคุณแอคทีฟ และพร้อมใช้งาน</p>
           </div>
           <div className="bg-dark-700 border border-dark-600 rounded-xl p-4">
-            <p className="text-light-300 text-sm mb-2">Redirecting to login page in:</p>
+            <p className="text-light-300 text-sm mb-2">กำลังพาคุณไปยังหน้าเข้าสู่ระบบใน:</p>
             <div className="flex items-center justify-center gap-2">
               <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
                 <span className="text-primary font-bold text-xl">{countdown}</span>
               </div>
-              <span className="text-light-400">seconds</span>
+              <span className="text-light-400">วินาที</span>
             </div>
           </div>
           <button
             onClick={onContinue}
             className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300">
             <LogIn size={18} />
-            Continue to Login
+            กดเพื่อเช้าสู่ระบบ
           </button>
           <p className="text-light-500 text-xs">
-            You can now start selling and managing your products through your seller dashboard.
+            คุณสามารถเริ่มการขาย และจัดการสินค้าของคุณได้ที่หน้าแดชบอร์ดของผู้ขาย
           </p>
         </div>
       </div>
@@ -536,8 +533,8 @@ export default function RegisterSellerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [verificationData, setVerificationData] = useState<VerificationData | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [redirectCountdown, setRedirectCountdown] = useState(5);
+  const [showSuccessModal, setShowSuccessModal] = useState(true);
+  const [redirectCountdown, setRedirectCountdown] = useState(500);
 
   const [formData, setFormData] = useState<RegisterFormData>({
     store: { name: '', description: '' },
@@ -686,13 +683,13 @@ export default function RegisterSellerPage() {
       }, 1000);
       return () => clearTimeout(timer);
     } else if (showSuccessModal && redirectCountdown === 0) {
-      router.push('/seller/auth/login?verified=true');
+      router.push('/auth/login?verified=true');
     }
   }, [showSuccessModal, redirectCountdown, router]);
 
   // Handle manual continue from success modal
   const handleContinueToLogin = useCallback(() => {
-    router.push('/seller/auth/login?verified=true');
+    router.push('/auth/login?verified=true');
   }, [router]);
 
   // Render form steps
