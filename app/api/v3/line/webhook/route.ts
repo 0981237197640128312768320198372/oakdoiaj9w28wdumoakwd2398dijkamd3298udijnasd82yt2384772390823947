@@ -5,7 +5,6 @@ import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 import { PendingRegistration } from '@/models/v3/PendingRegistration';
 import { LineService } from '@/lib/services/lineService';
-import { broadcastVerificationComplete } from '@/lib/services/sseService';
 
 const channelSecret = process.env.LINE_CHANNEL_SECRET || 'asd';
 
@@ -135,27 +134,15 @@ async function handleEvent(event: any) {
 
           await newSeller.save();
 
-          // Store pendingId before deletion
-          const pendingId = pendingRegistration._id.toString();
-
           // Clean up pending registration
           await PendingRegistration.deleteOne({ _id: pendingRegistration._id });
 
           console.log(`Seller account created for ${newSeller.username} after LINE verification`);
 
-          // Broadcast verification completion to waiting SSE clients
-          console.log(`Broadcasting verification complete for pendingId: ${pendingId}`);
-          broadcastVerificationComplete(pendingId, {
-            _id: newSeller._id.toString(),
-            store: { name: newSeller.store.name },
-            username: newSeller.username,
-          });
-
           // Clear rate limiting data for successful verification
           rateLimitMap.delete(userId);
           attemptTracker.delete(userId);
 
-          // Send success message
           await LineService.sendReplyMessage(
             replyToken,
             LineService.getVerificationSuccessMessage(newSeller.store.name)

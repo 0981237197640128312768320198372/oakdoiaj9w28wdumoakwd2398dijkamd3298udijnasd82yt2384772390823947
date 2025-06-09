@@ -60,6 +60,13 @@ interface VerificationData {
   pendingId: string;
 }
 
+interface VerificationStatus {
+  status: 'pending' | 'verified' | 'expired';
+  storeName?: string;
+  message?: string;
+  expiresAt?: string;
+}
+
 // Constants
 const FORM_STEPS = {
   STORE_INFO: 1,
@@ -137,6 +144,17 @@ const registerSeller = async (data: RegisterFormData): Promise<RegisterResponse>
 
   if (!response.ok) {
     throw new Error(result.error || 'Registration failed. Please try again.');
+  }
+
+  return result;
+};
+
+const checkVerificationStatus = async (pendingId: string): Promise<VerificationStatus> => {
+  const response = await fetch(`/api/v3/seller/check-verification/${pendingId}`);
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Failed to check verification status');
   }
 
   return result;
@@ -275,102 +293,18 @@ const PrefixInput = ({
 
 const LineVerificationStep = ({
   verificationData,
-  verificationStatus,
-  onStatusChange,
+  onVerificationComplete,
 }: {
   verificationData: VerificationData;
-  verificationStatus: 'pending' | 'verified' | 'expired';
-  onStatusChange: (status: 'pending' | 'verified' | 'expired') => void;
+  onVerificationComplete: (storeName: string) => void;
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [copied, setCopied] = useState(false);
-  const [sseStatus, setSseStatus] = useState<'connecting' | 'connected' | 'error'>('connecting');
-
-  // SSE connection for real-time verification updates with auto-reconnection
-  useEffect(() => {
-    if (verificationStatus !== 'pending') return;
-
-    let eventSource: EventSource | null = null;
-    let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
-    let reconnectTimeout: NodeJS.Timeout | null = null;
-
-    const connectSSE = () => {
-      console.log(`Frontend: Attempting SSE connection for ${verificationData.pendingId}`);
-
-      eventSource = new EventSource(
-        `/api/v3/seller/verification-events/${verificationData.pendingId}`
-      );
-
-      eventSource.onopen = () => {
-        console.log(`Frontend: SSE connection opened for ${verificationData.pendingId}`);
-        setSseStatus('connected');
-        reconnectAttempts = 0; // Reset on successful connection
-      };
-
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log(`Frontend: SSE message received:`, data);
-
-          if (data.status === 'verified') {
-            console.log(`Frontend: Verification complete for ${verificationData.pendingId}`);
-            onStatusChange('verified');
-            eventSource?.close();
-          } else if (data.status === 'failed') {
-            onStatusChange('expired');
-            eventSource?.close();
-          } else if (data.status === 'timeout') {
-            onStatusChange('expired');
-            eventSource?.close();
-          } else if (data.status === 'connected') {
-            console.log(`Frontend: Initial connection confirmed for ${verificationData.pendingId}`);
-            setSseStatus('connected');
-          } else if (data.status === 'heartbeat') {
-            console.log(`Frontend: Heartbeat received for ${verificationData.pendingId}`);
-          }
-        } catch (error) {
-          console.error('Error parsing SSE data:', error);
-        }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error(`Frontend: SSE error for ${verificationData.pendingId}:`, error);
-        setSseStatus('error');
-        eventSource?.close();
-
-        // Attempt to reconnect if we haven't exceeded max attempts
-        if (reconnectAttempts < maxReconnectAttempts && verificationStatus === 'pending') {
-          reconnectAttempts++;
-          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts - 1), 10000); // Exponential backoff, max 10s
-          console.log(
-            `Frontend: Attempting reconnection ${reconnectAttempts}/${maxReconnectAttempts} in ${delay}ms`
-          );
-
-          setSseStatus('connecting');
-          reconnectTimeout = setTimeout(() => {
-            connectSSE();
-          }, delay);
-        } else {
-          console.log(
-            `Frontend: Max reconnection attempts reached for ${verificationData.pendingId}`
-          );
-          setSseStatus('error');
-        }
-      };
-    };
-
-    // Initial connection
-    connectSSE();
-
-    return () => {
-      console.log(`Frontend: Cleaning up SSE connection for ${verificationData.pendingId}`);
-      if (reconnectTimeout) {
-        clearTimeout(reconnectTimeout);
-      }
-      eventSource?.close();
-    };
-  }, [verificationData.pendingId, verificationStatus, onStatusChange]);
+  const [isChecking, setIsChecking] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'verified' | 'expired'>(
+    'pending'
+  );
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
   // Timer for countdown
   useEffect(() => {
@@ -381,27 +315,32 @@ const LineVerificationStep = ({
       setTimeLeft(diff);
 
       if (diff === 0 && verificationStatus === 'pending') {
-        onStatusChange('expired');
+        setVerificationStatus('expired');
+        setStatusMessage('Verification code has expired');
       }
     };
 
     updateTimer();
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [verificationData.expiresAt, verificationStatus, onStatusChange]);
+  }, [verificationData.expiresAt, verificationStatus]);
 
-  // Manual status check function - doesn't refresh the page
   const handleCheckStatus = async () => {
+    setIsChecking(true);
     try {
-      const response = await fetch(
-        `/api/v3/seller/verification-events/${verificationData.pendingId}`
-      );
-      if (response.ok) {
-        // The SSE connection will handle the status update
-        setSseStatus('connecting');
+      const status = await checkVerificationStatus(verificationData.pendingId);
+
+      setVerificationStatus(status.status);
+      setStatusMessage(status.message || '');
+
+      if (status.status === 'verified' && status.storeName) {
+        onVerificationComplete(status.storeName);
       }
     } catch (error) {
       console.error('Error checking verification status:', error);
+      setStatusMessage('Failed to check status. Please try again.');
+    } finally {
+      setIsChecking(false);
     }
   };
 
@@ -443,7 +382,6 @@ const LineVerificationStep = ({
             <CheckCircle className="text-green-500" size={24} />
           )}
           {verificationStatus === 'expired' && <Clock className="text-red-500" size={24} />}
-
           <span
             className={`font-semibold ${
               verificationStatus === 'pending'
@@ -472,7 +410,6 @@ const LineVerificationStep = ({
                   {copied ? 'Copied!' : 'Copy Code'}
                 </button>
               </div>
-
               <div className="text-light-400 text-sm space-y-2">
                 <p>
                   Time remaining:{' '}
@@ -480,7 +417,6 @@ const LineVerificationStep = ({
                 </p>
               </div>
             </div>
-
             <div className="border-t border-dark-600 pt-4">
               <h4 className="font-semibold text-light-100 mb-3 flex items-center gap-2">
                 <MessageCircle size={18} className="text-green-500" />
@@ -490,37 +426,21 @@ const LineVerificationStep = ({
                 <li>Add our LINE Bot as a friend</li>
                 <li>Send the verification code above to our bot</li>
                 <li>Wait for the bot's confirmation message</li>
-                <li>Verification status will update automatically</li>
+                <li>Click "Check Verification Status" below</li>
               </ol>
-
               <div className="mt-4 text-center">
-                <div className="flex items-center justify-center gap-2 text-sm">
-                  <div
-                    className={`w-2 h-2 rounded-full ${
-                      sseStatus === 'connected'
-                        ? 'bg-green-500'
-                        : sseStatus === 'connecting'
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                    }`}
-                  />
-                  <span className="text-light-400">
-                    {sseStatus === 'connected'
-                      ? 'Connected - Waiting for verification'
-                      : sseStatus === 'connecting'
-                      ? 'Connecting...'
-                      : 'Connection error'}
-                  </span>
-                </div>
-
-                {sseStatus === 'error' && (
-                  <button
-                    onClick={handleCheckStatus}
-                    className="mt-2 flex items-center gap-2 mx-auto px-3 py-1 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors text-sm">
-                    <RefreshCw size={14} />
-                    Retry Connection
-                  </button>
-                )}
+                <button
+                  onClick={handleCheckStatus}
+                  disabled={isChecking}
+                  className="flex items-center gap-2 mx-auto px-4 py-2 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50">
+                  {isChecking ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <RefreshCw size={16} />
+                  )}
+                  {isChecking ? 'Checking...' : 'Check Verification Status'}
+                </button>
+                {statusMessage && <p className="mt-2 text-sm text-light-400">{statusMessage}</p>}
               </div>
             </div>
           </>
@@ -546,6 +466,7 @@ const LineVerificationStep = ({
   );
 };
 
+/* eslint-disable no-unused-vars */
 const SuccessModal = ({
   isOpen,
   storeName,
@@ -563,7 +484,6 @@ const SuccessModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <div className="bg-dark-800 border border-dark-500 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300">
         <div className="text-center space-y-6">
-          {/* Success Animation */}
           <div className="relative">
             <div className="w-20 h-20 mx-auto bg-green-500/20 rounded-full flex items-center justify-center animate-pulse">
               <CheckCircle className="text-green-500 w-12 h-12" />
@@ -572,8 +492,6 @@ const SuccessModal = ({
               <PartyPopper className="text-primary w-8 h-8 animate-bounce" />
             </div>
           </div>
-
-          {/* Success Message */}
           <div className="space-y-3">
             <h2 className="text-2xl font-bold text-green-400">Verification Successful! 🎉</h2>
             <p className="text-light-300">
@@ -585,8 +503,6 @@ const SuccessModal = ({
               Your seller account is now active and ready to use.
             </p>
           </div>
-
-          {/* Countdown */}
           <div className="bg-dark-700 border border-dark-600 rounded-xl p-4">
             <p className="text-light-300 text-sm mb-2">Redirecting to login page in:</p>
             <div className="flex items-center justify-center gap-2">
@@ -596,16 +512,12 @@ const SuccessModal = ({
               <span className="text-light-400">seconds</span>
             </div>
           </div>
-
-          {/* Action Button */}
           <button
             onClick={onContinue}
             className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300">
             <LogIn size={18} />
             Continue to Login
           </button>
-
-          {/* Additional Info */}
           <p className="text-light-500 text-xs">
             You can now start selling and managing your products through your seller dashboard.
           </p>
@@ -624,9 +536,6 @@ export default function RegisterSellerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [verificationData, setVerificationData] = useState<VerificationData | null>(null);
-  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'verified' | 'expired'>(
-    'pending'
-  );
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(5);
 
@@ -654,47 +563,40 @@ export default function RegisterSellerPage() {
         } else if (formData.store.name.length > VALIDATION_RULES.STORE_NAME_MAX) {
           newErrors.storeName = `Store name must not exceed ${VALIDATION_RULES.STORE_NAME_MAX} characters`;
         }
-
         if (!formData.store.description.trim()) {
           newErrors.storeDescription = 'Store description is required';
         } else if (formData.store.description.length < VALIDATION_RULES.STORE_DESC_MIN) {
           newErrors.storeDescription = `Description must be at least ${VALIDATION_RULES.STORE_DESC_MIN} characters`;
         }
         break;
-
       case FORM_STEPS.ACCOUNT_INFO:
         if (!formData.username.trim()) {
           newErrors.username = 'Username is required';
         } else if (formData.username.length < VALIDATION_RULES.USERNAME_MIN) {
           newErrors.username = `Username must be at least ${VALIDATION_RULES.USERNAME_MIN} characters`;
         }
-
         if (!formData.email.trim()) {
           newErrors.email = 'Email is required';
         } else if (!validateEmail(formData.email)) {
           newErrors.email = 'Please enter a valid email address';
         }
-
         if (!formData.password.trim()) {
           newErrors.password = 'Password is required';
         } else if (formData.password.length < VALIDATION_RULES.PASSWORD_MIN) {
           newErrors.password = `Password must be at least ${VALIDATION_RULES.PASSWORD_MIN} characters`;
         }
-
         if (!formData.repeatPassword.trim()) {
           newErrors.repeatPassword = 'Please confirm your password';
         } else if (formData.password !== formData.repeatPassword) {
           newErrors.repeatPassword = 'Passwords do not match';
         }
         break;
-
       case FORM_STEPS.CONTACT_INFO:
         if (!formData.contact.line.trim()) {
           newErrors.line = 'LINE ID is required';
         }
         break;
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [step, formData]);
@@ -703,28 +605,19 @@ export default function RegisterSellerPage() {
   const handleInputChange = useCallback(
     (name: string, value: string) => {
       const keys = name.split('.');
-
       setFormData((prev) => {
         if (keys.length === 1) {
           return { ...prev, [name]: value };
         } else if (keys.length === 2) {
           const [parent, child] = keys;
           if (parent === 'store') {
-            return {
-              ...prev,
-              store: { ...prev.store, [child]: value },
-            };
+            return { ...prev, store: { ...prev.store, [child]: value } };
           } else if (parent === 'contact') {
-            return {
-              ...prev,
-              contact: { ...prev.contact, [child]: value },
-            };
+            return { ...prev, contact: { ...prev.contact, [child]: value } };
           }
         }
         return prev;
       });
-
-      // Clear error when user starts typing
       if (errors[name]) {
         setErrors((prev) => ({ ...prev, [name]: '' }));
       }
@@ -744,14 +637,11 @@ export default function RegisterSellerPage() {
   // Navigation handlers
   const handleNext = useCallback(async () => {
     if (!validateCurrentStep()) return;
-
     if (step === FORM_STEPS.CONTACT_INFO) {
       setIsLoading(true);
       setError('');
-
       try {
         const result = await registerSeller(formData);
-
         if (
           result.requiresLineVerification &&
           result.verificationCode &&
@@ -782,6 +672,12 @@ export default function RegisterSellerPage() {
     setError('');
   }, []);
 
+  // Handle verification completion
+  const handleVerificationComplete = useCallback(() => {
+    setShowSuccessModal(true);
+    setRedirectCountdown(5);
+  }, []);
+
   // Countdown effect for success modal
   useEffect(() => {
     if (showSuccessModal && redirectCountdown > 0) {
@@ -793,38 +689,6 @@ export default function RegisterSellerPage() {
       router.push('/seller/auth/login?verified=true');
     }
   }, [showSuccessModal, redirectCountdown, router]);
-
-  // Handle verification status change with immediate state updates
-  const handleVerificationStatusChange = useCallback(
-    (status: 'pending' | 'verified' | 'expired') => {
-      console.log(`Main component: Verification status changing to: ${status}`);
-
-      // Use flushSync to ensure immediate state updates
-      setVerificationStatus(status);
-
-      if (status === 'verified') {
-        console.log(`Main component: Setting success modal to true`);
-        // Force immediate state update for success modal
-        setTimeout(() => {
-          setShowSuccessModal(true);
-          setRedirectCountdown(5);
-        }, 0);
-      }
-    },
-    []
-  );
-
-  // Debug effect to monitor verification status changes
-  useEffect(() => {
-    console.log(`Main component: Verification status updated to: ${verificationStatus}`);
-    if (verificationStatus === 'verified' && !showSuccessModal) {
-      console.log(
-        `Main component: Verification complete but modal not shown, forcing modal display`
-      );
-      setShowSuccessModal(true);
-      setRedirectCountdown(5);
-    }
-  }, [verificationStatus, showSuccessModal]);
 
   // Handle manual continue from success modal
   const handleContinueToLogin = useCallback(() => {
@@ -849,7 +713,6 @@ export default function RegisterSellerPage() {
               maxLength={VALIDATION_RULES.STORE_NAME_MAX}
             />
             {errors.storeName && <p className="text-rose-500 text-sm">{errors.storeName}</p>}
-
             <FormInput
               id="storeDescription"
               name="store.description"
@@ -866,7 +729,6 @@ export default function RegisterSellerPage() {
             )}
           </div>
         );
-
       case FORM_STEPS.ACCOUNT_INFO:
         return (
           <div className="space-y-4">
@@ -891,7 +753,6 @@ export default function RegisterSellerPage() {
               </div>
               {errors.username && <p className="text-rose-500 text-sm mt-1">{errors.username}</p>}
             </div>
-
             <FormInput
               id="email"
               name="email"
@@ -903,7 +764,6 @@ export default function RegisterSellerPage() {
               required
             />
             {errors.email && <p className="text-rose-500 text-sm">{errors.email}</p>}
-
             <FormInput
               id="password"
               name="password"
@@ -916,7 +776,6 @@ export default function RegisterSellerPage() {
               minLength={VALIDATION_RULES.PASSWORD_MIN}
             />
             {errors.password && <p className="text-rose-500 text-sm">{errors.password}</p>}
-
             <FormInput
               id="repeatPassword"
               name="repeatPassword"
@@ -924,7 +783,7 @@ export default function RegisterSellerPage() {
               type="password"
               value={formData.repeatPassword}
               onChange={handleInputChange}
-              placeholder="Repeat your password"
+              placeholder="Confirm your password"
               required
             />
             {errors.repeatPassword && (
@@ -932,7 +791,6 @@ export default function RegisterSellerPage() {
             )}
           </div>
         );
-
       case FORM_STEPS.CONTACT_INFO:
         return (
           <div className="space-y-4">
@@ -947,7 +805,6 @@ export default function RegisterSellerPage() {
               required
             />
             {errors.line && <p className="text-rose-500 text-sm">{errors.line}</p>}
-
             <PrefixInput
               id="facebook"
               name="facebook"
@@ -957,7 +814,6 @@ export default function RegisterSellerPage() {
               onChange={handleContactChange}
               placeholder="your-facebook-username"
             />
-
             <PrefixInput
               id="instagram"
               name="instagram"
@@ -967,7 +823,6 @@ export default function RegisterSellerPage() {
               onChange={handleContactChange}
               placeholder="your-instagram-handle"
             />
-
             <FormInput
               id="whatsapp"
               name="contact.whatsapp"
@@ -978,16 +833,13 @@ export default function RegisterSellerPage() {
             />
           </div>
         );
-
       case FORM_STEPS.LINE_VERIFICATION:
         return verificationData ? (
           <LineVerificationStep
             verificationData={verificationData}
-            verificationStatus={verificationStatus}
-            onStatusChange={handleVerificationStatusChange}
+            onVerificationComplete={handleVerificationComplete}
           />
         ) : null;
-
       default:
         return null;
     }
@@ -1001,57 +853,48 @@ export default function RegisterSellerPage() {
         countdown={redirectCountdown}
         onContinue={handleContinueToLogin}
       />
-
       <div className="min-h-[75vh] flex items-center justify-center p-4">
         <div className="w-full max-w-2xl">
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-500 rounded-2xl p-8 shadow-2xl">
             <FormHeader />
-
             <ProgressSteps currentStep={step} />
-
             {error && (
               <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-xl">
                 <p className="text-rose-400 text-sm">{error}</p>
               </div>
             )}
-
-            <div className="space-y-6">
-              {renderStepContent()}
-
-              {step < FORM_STEPS.LINE_VERIFICATION && (
-                <div className="flex gap-3">
-                  {step > 1 && (
-                    <button
-                      onClick={handlePrevious}
-                      disabled={isLoading}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-dark-600 hover:bg-dark-500 text-light-100 rounded-xl transition-all duration-300 disabled:opacity-50">
-                      <ArrowLeft size={18} />
-                      Previous
-                    </button>
-                  )}
-
+            <div className="space-y-6">{renderStepContent()}</div>
+            {step < FORM_STEPS.LINE_VERIFICATION && (
+              <div className="flex gap-3 mt-6">
+                {step > 1 && (
                   <button
-                    onClick={handleNext}
+                    onClick={handlePrevious}
                     disabled={isLoading}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50">
-                    {isLoading ? (
-                      <Loader2 size={18} className="animate-spin" />
-                    ) : step === FORM_STEPS.CONTACT_INFO ? (
-                      <>
-                        <Send size={18} />
-                        Register
-                      </>
-                    ) : (
-                      <>
-                        Next
-                        <ArrowRight size={18} />
-                      </>
-                    )}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-dark-600 hover:bg-dark-500 text-light-100 rounded-xl transition-all duration-300 disabled:opacity-50">
+                    <ArrowLeft size={18} />
+                    Previous
                   </button>
-                </div>
-              )}
-            </div>
-
+                )}
+                <button
+                  onClick={handleNext}
+                  disabled={isLoading}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-primary hover:bg-primary/90 text-dark-800 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50">
+                  {isLoading ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : step === FORM_STEPS.CONTACT_INFO ? (
+                    <>
+                      <Send size={18} />
+                      Register
+                    </>
+                  ) : (
+                    <>
+                      Next
+                      <ArrowRight size={18} />
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
             <div className="mt-8 text-center">
               <p className="text-light-400 text-sm">
                 Already have an account?{' '}
