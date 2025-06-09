@@ -39,7 +39,16 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Pencil, Trash2, Check, AlertCircle, Loader2, MoreHorizontal, Eye } from 'lucide-react';
+import {
+  Pencil,
+  Trash2,
+  Check,
+  AlertCircle,
+  Loader2,
+  MoreHorizontal,
+  Eye,
+  Download,
+} from 'lucide-react';
 import { formatTime, getAdminToken } from '@/lib/utils';
 import { TbRefresh } from 'react-icons/tb';
 
@@ -93,6 +102,7 @@ const DATAManagement = () => {
   const [totalEntries, setTotalEntries] = useState(0);
   const [counts, setCounts] = useState({ Used: 0, Unused: 0, Bad: 0 });
   const [countsLoading, setCountsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
 
   const fetchCounts = async () => {
     try {
@@ -353,6 +363,76 @@ const DATAManagement = () => {
     setIsViewDialogOpen(true);
   };
 
+  const handleExportAll = async () => {
+    setIsExporting(true);
+    try {
+      const token = getAdminToken();
+      if (!token) throw new Error('No authentication token found');
+
+      const response = await fetch('/api/v2/DATAManagement?exportAll=true', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to export entries');
+
+      // Sort entries by date (newest first) on client side to avoid MongoDB memory limit
+      const sortedEntries = data.entries.sort(
+        (a: IBANEntry, b: IBANEntry) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+
+      // Create tab-separated content
+      const headers = [
+        'First Name',
+        'Last Name',
+        'IBAN',
+        'Street',
+        'Zip Code',
+        'City',
+        'Bot ID',
+        'Type',
+        'Date',
+      ];
+
+      const csvContent = [
+        headers.join('\t'),
+        ...sortedEntries.map((entry: IBANEntry) =>
+          [
+            entry.firstName,
+            entry.lastName,
+            entry.iban,
+            entry.street,
+            entry.zipCode,
+            entry.city,
+            entry.botId,
+            entry.type,
+            formatTime(entry.date),
+          ].join('\t')
+        ),
+      ].join('\n');
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/plain;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `iban-entries-export-${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      setSuccess(`Successfully exported ${data.entries.length} entries`);
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (err) {
+      setError((err as Error).message || 'Failed to export entries');
+      setTimeout(() => setError(null), 3000);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const getTypeBadgeColor = (type: 'Used' | 'Bad' | 'Unused') => {
     switch (type) {
       case 'Used':
@@ -430,12 +510,32 @@ const DATAManagement = () => {
                 <SelectItem value="Unused">Unused</SelectItem>
               </SelectContent>
             </Select>
+            <div className="flex gap-2 flex-wrap">
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-fit">
+                    Add Entry
+                  </button>
+                </DialogTrigger>
+              </Dialog>
+              <button
+                onClick={handleExportAll}
+                disabled={isExporting}
+                className="bg-blue-600 hover:bg-blue-700 text-light-100 transition-colors duration-200 w-fit px-4 py-2 rounded flex items-center gap-2">
+                {isExporting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Exporting...
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4" />
+                    Save All
+                  </>
+                )}
+              </button>
+            </div>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <button className="bg-primary hover:bg-primary/90 text-dark-800 transition-colors duration-200 w-fit">
-                  Add Entry
-                </button>
-              </DialogTrigger>
               <DialogContent className="bg-dark-600 border-dark-500 text-light-100 w-[calc(100%-2rem)] sm:w-auto sm:max-w-md mx-auto transition-all duration-200">
                 <DialogHeader>
                   <DialogTitle className="text-light-100">Add New IBAN Entries</DialogTitle>

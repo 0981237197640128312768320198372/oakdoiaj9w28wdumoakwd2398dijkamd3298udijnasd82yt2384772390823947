@@ -328,7 +328,6 @@ const LineVerificationStep = ({
             setSseStatus('connected');
           } else if (data.status === 'heartbeat') {
             console.log(`Frontend: Heartbeat received for ${verificationData.pendingId}`);
-            // Heartbeat keeps connection alive, no action needed
           }
         } catch (error) {
           console.error('Error parsing SSE data:', error);
@@ -513,6 +512,7 @@ const LineVerificationStep = ({
                       : 'Connection error'}
                   </span>
                 </div>
+
                 {sseStatus === 'error' && (
                   <button
                     onClick={handleCheckStatus}
@@ -627,7 +627,6 @@ export default function RegisterSellerPage() {
   const [verificationStatus, setVerificationStatus] = useState<'pending' | 'verified' | 'expired'>(
     'pending'
   );
-  console.log(verificationStatus);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState(5);
 
@@ -795,17 +794,37 @@ export default function RegisterSellerPage() {
     }
   }, [showSuccessModal, redirectCountdown, router]);
 
-  // Handle verification status change
+  // Handle verification status change with immediate state updates
   const handleVerificationStatusChange = useCallback(
     (status: 'pending' | 'verified' | 'expired') => {
+      console.log(`Main component: Verification status changing to: ${status}`);
+
+      // Use flushSync to ensure immediate state updates
       setVerificationStatus(status);
+
       if (status === 'verified') {
-        setShowSuccessModal(true);
-        setRedirectCountdown(5); // Reset countdown to 5 seconds
+        console.log(`Main component: Setting success modal to true`);
+        // Force immediate state update for success modal
+        setTimeout(() => {
+          setShowSuccessModal(true);
+          setRedirectCountdown(5);
+        }, 0);
       }
     },
     []
   );
+
+  // Debug effect to monitor verification status changes
+  useEffect(() => {
+    console.log(`Main component: Verification status updated to: ${verificationStatus}`);
+    if (verificationStatus === 'verified' && !showSuccessModal) {
+      console.log(
+        `Main component: Verification complete but modal not shown, forcing modal display`
+      );
+      setShowSuccessModal(true);
+      setRedirectCountdown(5);
+    }
+  }, [verificationStatus, showSuccessModal]);
 
   // Handle manual continue from success modal
   const handleContinueToLogin = useCallback(() => {

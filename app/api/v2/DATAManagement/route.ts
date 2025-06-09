@@ -94,6 +94,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '10', 10);
     const countsOnly = searchParams.get('countsOnly') === 'true';
+    const exportAll = searchParams.get('exportAll') === 'true';
 
     let query = {};
     if (type !== 'All') {
@@ -105,6 +106,12 @@ export async function GET(request: NextRequest) {
       const unused = await DATAInfo.countDocuments({ ...query, type: 'Unused' });
       const bad = await DATAInfo.countDocuments({ ...query, type: 'Bad' });
       return NextResponse.json({ counts: { Used: used, Unused: unused, Bad: bad } });
+    }
+
+    if (exportAll) {
+      // Export all data without pagination and sorting to avoid memory limit
+      const entries = await DATAInfo.find({}).lean();
+      return NextResponse.json({ entries });
     }
 
     const skip = (page - 1) * limit;

@@ -111,7 +111,7 @@ export async function GET(
         console.log(`SSE Endpoint: Registering connection for pendingId: ${pendingId}`);
         registerSSEConnection(pendingId, controller, cleanup);
 
-        // Send initial connection confirmation
+        // Send initial connection confirmation and check if already verified
         const initialData = JSON.stringify({
           status: 'connected',
           pendingId,
@@ -119,6 +119,46 @@ export async function GET(
         });
         controller.enqueue(`data: ${initialData}\n\n`);
         console.log(`SSE Endpoint: Sent initial connection confirmation for ${pendingId}`);
+
+        // Immediately check if verification was already completed
+        setTimeout(async () => {
+          try {
+            const recentSeller = await Seller.findOne({
+              'verification.code': { $exists: true },
+            })
+              .select('verification store username')
+              .sort({ 'verification.verifiedAt': -1 });
+
+            if (recentSeller) {
+              const pendingReg = await PendingRegistration.findById(pendingId);
+              if (
+                pendingReg &&
+                recentSeller.verification.code === pendingReg.verification.code &&
+                recentSeller.verification.status === 'verified'
+              ) {
+                console.log(
+                  `SSE Endpoint: Found already verified seller for ${pendingId}, sending immediate verification`
+                );
+                const verifiedData = JSON.stringify({
+                  status: 'verified',
+                  sellerId: recentSeller._id,
+                  storeName: recentSeller.store.name,
+                  username: recentSeller.username,
+                  timestamp: new Date().toISOString(),
+                });
+                controller.enqueue(`data: ${verifiedData}\n\n`);
+                controller.close();
+                cleanup();
+                unregisterSSEConnection(pendingId);
+              }
+            }
+          } catch (error) {
+            console.error(
+              `SSE Endpoint: Error checking immediate verification status for ${pendingId}:`,
+              error
+            );
+          }
+        }, 1000); // Check after 1 second to allow connection to stabilize
       },
     });
 
