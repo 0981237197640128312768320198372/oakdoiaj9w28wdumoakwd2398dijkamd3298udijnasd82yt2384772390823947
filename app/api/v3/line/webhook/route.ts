@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
 import { PendingRegistration } from '@/models/v3/PendingRegistration';
+import { StoreStatistics } from '@/models/v3/StoreStatistics';
 import { LineService } from '@/lib/services/lineService';
 
 const channelSecret = process.env.LINE_CHANNEL_SECRET || 'asd';
@@ -134,10 +135,24 @@ async function handleEvent(event: any) {
 
           await newSeller.save();
 
+          // Create initial store statistics for the new seller
+          const storeStatistics = new StoreStatistics({
+            sellerId: newSeller._id,
+            totalProducts: 0,
+            totalSales: 0,
+            totalRevenue: 0,
+            monthlyStats: [],
+            dailyStats: [],
+          });
+
+          await storeStatistics.save();
+
           // Clean up pending registration
           await PendingRegistration.deleteOne({ _id: pendingRegistration._id });
 
-          console.log(`Seller account created for ${newSeller.username} after LINE verification`);
+          console.log(
+            `Seller account and store statistics created for ${newSeller.username} after LINE verification`
+          );
 
           // Clear rate limiting data for successful verification
           rateLimitMap.delete(userId);

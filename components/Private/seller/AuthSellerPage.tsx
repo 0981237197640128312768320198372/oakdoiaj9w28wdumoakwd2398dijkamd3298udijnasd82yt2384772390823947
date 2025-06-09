@@ -14,14 +14,14 @@ export const AuthSellerPage = () => {
   const [activeView, setActiveView] = useState<'login' | 'register'>('login');
 
   return (
-    <div className="w-full min-h-[75vh] flex flex-col items-center justify-center p-5 gap-5">
+    <div className="w-full min-h-[75vh] flex flex-col items-center justify-start p-5 gap-5 pt-20">
       <div className="flex overflow-hidden ">
         <button
           type="button"
           onClick={() => setActiveView('login')}
           className={cn(
             'px-4 py-2 text-xs font-medium transition-all rounded-lg duration-300 flex items-center gap-1.5',
-            activeView === 'login' ? 'bg-primary' : 'bg-transparent hover:opacity-80'
+            activeView === 'login' ? 'bg-primary text-dark-800' : 'bg-transparent hover:opacity-80'
           )}>
           <LogIn size={14} />
           เข้าสู่ระบบ
@@ -31,7 +31,9 @@ export const AuthSellerPage = () => {
           onClick={() => setActiveView('register')}
           className={cn(
             'px-4 py-2 text-xs font-medium transition-all rounded-lg duration-300 flex items-center gap-1.5',
-            activeView === 'register' ? 'bg-primary' : 'bg-transparent hover:opacity-80'
+            activeView === 'register'
+              ? 'bg-primary text-dark-800'
+              : 'bg-transparent hover:opacity-80'
           )}>
           <UserPlus size={14} />
           ลงทะเบียน

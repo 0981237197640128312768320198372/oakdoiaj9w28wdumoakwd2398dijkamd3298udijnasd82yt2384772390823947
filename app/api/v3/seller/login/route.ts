@@ -32,9 +32,20 @@ export async function POST(req: NextRequest) {
 
     const sellerObj = seller.toObject();
     const { password: _, ...sellerData } = sellerObj;
-    const storeStats = await StoreStatistics.findOne({ sellerId: seller._id });
+    let storeStats = await StoreStatistics.findOne({ sellerId: seller._id });
+
+    // Create store statistics if they don't exist (fallback for existing sellers)
     if (!storeStats) {
-      return NextResponse.json({ error: 'Store statistics not found' }, { status: 404 });
+      storeStats = new StoreStatistics({
+        sellerId: seller._id,
+        totalProducts: 0,
+        totalSales: 0,
+        totalRevenue: 0,
+        monthlyStats: [],
+        dailyStats: [],
+      });
+      await storeStats.save();
+      console.log(`Created missing store statistics for seller: ${seller.username}`);
     }
 
     const storeStatsObj = storeStats.toObject();
