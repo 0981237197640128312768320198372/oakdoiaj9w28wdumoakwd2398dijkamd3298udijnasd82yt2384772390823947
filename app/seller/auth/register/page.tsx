@@ -1,4 +1,4 @@
-import RegisterSellerPage from '@/components/public/store/RegisterSellerPage';
+import RegisterSellerPage from '@/components/Private/seller/RegisterSellerPage';
 import { generateMetadata } from '@/lib/utils';
 import React from 'react';
 export const metadata = generateMetadata({

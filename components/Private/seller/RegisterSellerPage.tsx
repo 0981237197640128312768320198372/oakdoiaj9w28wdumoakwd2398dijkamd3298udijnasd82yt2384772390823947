@@ -163,7 +163,7 @@ const checkVerificationStatus = async (pendingId: string): Promise<VerificationS
 // Components
 const FormHeader = () => (
   <div className="flex flex-col items-center gap-3">
-    <div className="relative w-16 h-16 overflow-hidden">
+    <div className="relative w-12 h-12 sm:w-16 sm:h-16 overflow-hidden">
       <Image
         src={dokmailogosquare}
         alt="Dokmai Logo"
@@ -172,19 +172,19 @@ const FormHeader = () => (
         priority
       />
     </div>
-    <h2 className="text-2xl font-bold text-light-100 flex items-center gap-2">
-      <Store size={24} className="text-primary" />
-      Create Seller Account
+    <h2 className="text-xl sm:text-2xl font-bold text-light-100 flex items-center gap-2 text-center">
+      <Store size={20} className="text-primary sm:w-6 sm:h-6" />
+      สร้างบัญชีผู้ขาย
     </h2>
   </div>
 );
 
 const ProgressSteps = ({ currentStep }: { currentStep: number }) => (
-  <div className="flex justify-center items-center gap-4 mb-8">
+  <div className="flex justify-center items-center gap-2 sm:gap-4 my-5 px-2">
     {[1, 2, 3, 4].map((s) => (
       <div key={s} className="flex items-center">
         <div
-          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+          className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 text-xs sm:text-sm ${
             currentStep >= s
               ? 'bg-primary text-dark-800'
               : 'bg-dark-500 text-light-500 border border-dark-400'
@@ -193,7 +193,7 @@ const ProgressSteps = ({ currentStep }: { currentStep: number }) => (
         </div>
         {s < 4 && (
           <div
-            className={`w-16 h-0.5 mx-2 transition-all duration-300 ${
+            className={`w-8 sm:w-16 h-0.5 mx-1 sm:mx-2 transition-all duration-300 ${
               currentStep > s ? 'bg-primary' : 'bg-dark-400'
             }`}
           />
@@ -361,21 +361,20 @@ const LineVerificationStep = ({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
       <div className="text-center">
-        <h3 className="text-xl font-semibold text-light-100 mb-2">LINE Verification Required</h3>
+        <h3 className="text-lg sm:text-xl font-semibold text-light-100 mb-2">ต้องยืนยัน LINE</h3>
         <p className="text-light-400 text-sm mb-3">
-          Please verify your LINE account to complete registration
+          กรุณายืนยันบัญชี LINE ของคุณเพื่อทำการสมัครสมาชิกให้เสร็จสิ้น
         </p>
         <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
           <p className="text-yellow-400 text-sm font-medium">
-            ⚠️ Verification is mandatory - Your account will only be created after successful
-            verification
+            ⚠️ การยืนยันเป็นสิ่งจำเป็น - บัญชีของคุณจะถูกสร้างหลังจากยืนยันสำเร็จเท่านั้น
           </p>
         </div>
       </div>
 
-      <div className="bg-dark-700 border border-dark-500 rounded-xl p-6 space-y-4">
+      <div className="bg-dark-700 border border-dark-500 rounded-xl p-4 sm:p-6 space-y-4">
         <div className="flex items-center justify-center gap-3">
           {verificationStatus === 'pending' && <Clock className="text-yellow-500" size={24} />}
           {verificationStatus === 'verified' && (
@@ -390,9 +389,9 @@ const LineVerificationStep = ({
                 ? 'text-green-500'
                 : 'text-red-500'
             }`}>
-            {verificationStatus === 'pending' && 'Waiting for verification...'}
-            {verificationStatus === 'verified' && 'Verified successfully!'}
-            {verificationStatus === 'expired' && 'Verification expired'}
+            {verificationStatus === 'pending' && 'รอการยืนยัน...'}
+            {verificationStatus === 'verified' && 'ยืนยันสำเร็จ!'}
+            {verificationStatus === 'expired' && 'รหัสยืนยันหมดอายุ'}
           </span>
         </div>
 
@@ -407,12 +406,12 @@ const LineVerificationStep = ({
                   onClick={copyToClipboard}
                   className="mt-2 flex items-center gap-2 mx-auto px-3 py-1 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
                   <Copy size={16} />
-                  {copied ? 'Copied!' : 'Copy Code'}
+                  {copied ? 'คัดลอกแล้ว!' : 'คัดลอกรหัส'}
                 </button>
               </div>
               <div className="text-light-400 text-sm space-y-2">
                 <p>
-                  Time remaining:{' '}
+                  เวลาที่เหลือ:{' '}
                   <span className="text-yellow-500 font-mono">{formatTime(timeLeft)}</span>
                 </p>
               </div>
@@ -420,13 +419,13 @@ const LineVerificationStep = ({
             <div className="border-t border-dark-600 pt-4">
               <h4 className="font-semibold text-light-100 mb-3 flex items-center gap-2">
                 <MessageCircle size={18} className="text-green-500" />
-                Instructions:
+                วิธีการ:
               </h4>
               <ol className="text-light-300 text-sm space-y-2 list-decimal list-inside">
-                <li>Add our LINE Bot as a friend</li>
-                <li>Send the verification code above to our bot</li>
-                <li>Wait for the bot's confirmation message</li>
-                <li>Click "Check Verification Status" below</li>
+                <li>เพิ่ม LINE Bot ของเราเป็นเพื่อน</li>
+                <li>ส่งรหัสยืนยันข้างต้นไปยังบอทของเรา</li>
+                <li>รอข้อความยืนยันจากบอท</li>
+                <li>กดปุ่ม "ตรวจสอบสถานะการยืนยัน" ด้านล่าง</li>
               </ol>
               <div className="mt-4 text-center">
                 <button
@@ -438,7 +437,7 @@ const LineVerificationStep = ({
                   ) : (
                     <RefreshCw size={16} />
                   )}
-                  {isChecking ? 'Checking...' : 'Check Verification Status'}
+                  {isChecking ? 'กำลังตรวจสอบ...' : 'ตรวจสอบสถานะการยืนยัน'}
                 </button>
                 {statusMessage && <p className="mt-2 text-sm text-light-400">{statusMessage}</p>}
               </div>
@@ -448,17 +447,17 @@ const LineVerificationStep = ({
 
         {verificationStatus === 'verified' && (
           <div className="text-center text-green-400">
-            <p>Your LINE account has been successfully verified!</p>
-            <p className="text-sm text-light-400 mt-2">You can now access all seller features.</p>
+            <p>บัญชี LINE ของคุณได้รับการยืนยันเรียบร้อยแล้ว!</p>
+            <p className="text-sm text-light-400 mt-2">
+              ตอนนี้คุณสามารถเข้าถึงฟีเจอร์ผู้ขายทั้งหมดได้แล้ว
+            </p>
           </div>
         )}
 
         {verificationStatus === 'expired' && (
           <div className="text-center text-red-400">
-            <p>Verification code has expired.</p>
-            <p className="text-sm text-light-400 mt-2">
-              Please refresh the page to get a new code.
-            </p>
+            <p>รหัสยืนยันหมดอายุแล้ว</p>
+            <p className="text-sm text-light-400 mt-2">กรุณารีเฟรชหน้าเพื่อรับรหัสใหม่</p>
           </div>
         )}
       </div>
@@ -533,8 +532,8 @@ export default function RegisterSellerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [verificationData, setVerificationData] = useState<VerificationData | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(true);
-  const [redirectCountdown, setRedirectCountdown] = useState(500);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(10);
 
   const [formData, setFormData] = useState<RegisterFormData>({
     store: { name: '', description: '' },
@@ -554,43 +553,43 @@ export default function RegisterSellerPage() {
     switch (step) {
       case FORM_STEPS.STORE_INFO:
         if (!formData.store.name.trim()) {
-          newErrors.storeName = 'Store name is required';
+          newErrors.storeName = 'กรุณาใส่ชื่อร้านค้า';
         } else if (formData.store.name.length < VALIDATION_RULES.STORE_NAME_MIN) {
-          newErrors.storeName = `Store name must be at least ${VALIDATION_RULES.STORE_NAME_MIN} characters`;
+          newErrors.storeName = `ชื่อร้านต้องมีอย่างน้อย ${VALIDATION_RULES.STORE_NAME_MIN} ตัวอักษร`;
         } else if (formData.store.name.length > VALIDATION_RULES.STORE_NAME_MAX) {
-          newErrors.storeName = `Store name must not exceed ${VALIDATION_RULES.STORE_NAME_MAX} characters`;
+          newErrors.storeName = `ชื่อร้านต้องไม่เกิน ${VALIDATION_RULES.STORE_NAME_MAX} ตัวอักษร`;
         }
         if (!formData.store.description.trim()) {
-          newErrors.storeDescription = 'Store description is required';
+          newErrors.storeDescription = 'กรุณาใส่คำอธิบายร้านค้า';
         } else if (formData.store.description.length < VALIDATION_RULES.STORE_DESC_MIN) {
-          newErrors.storeDescription = `Description must be at least ${VALIDATION_RULES.STORE_DESC_MIN} characters`;
+          newErrors.storeDescription = `คำอธิบายต้องมีอย่างน้อย ${VALIDATION_RULES.STORE_DESC_MIN} ตัวอักษร`;
         }
         break;
       case FORM_STEPS.ACCOUNT_INFO:
         if (!formData.username.trim()) {
-          newErrors.username = 'Username is required';
+          newErrors.username = 'กรุณาใส่ชื่อผู้ใช้';
         } else if (formData.username.length < VALIDATION_RULES.USERNAME_MIN) {
-          newErrors.username = `Username must be at least ${VALIDATION_RULES.USERNAME_MIN} characters`;
+          newErrors.username = `ชื่อผู้ใช้ต้องมีอย่างน้อย ${VALIDATION_RULES.USERNAME_MIN} ตัวอักษร`;
         }
         if (!formData.email.trim()) {
-          newErrors.email = 'Email is required';
+          newErrors.email = 'กรุณาใส่อีเมล';
         } else if (!validateEmail(formData.email)) {
-          newErrors.email = 'Please enter a valid email address';
+          newErrors.email = 'กรุณาใส่อีเมลที่ถูกต้อง';
         }
         if (!formData.password.trim()) {
-          newErrors.password = 'Password is required';
+          newErrors.password = 'กรุณาใส่รหัสผ่าน';
         } else if (formData.password.length < VALIDATION_RULES.PASSWORD_MIN) {
-          newErrors.password = `Password must be at least ${VALIDATION_RULES.PASSWORD_MIN} characters`;
+          newErrors.password = `รหัสผ่านต้องมีอย่างน้อย ${VALIDATION_RULES.PASSWORD_MIN} ตัวอักษร`;
         }
         if (!formData.repeatPassword.trim()) {
-          newErrors.repeatPassword = 'Please confirm your password';
+          newErrors.repeatPassword = 'กรุณายืนยันรหัสผ่าน';
         } else if (formData.password !== formData.repeatPassword) {
-          newErrors.repeatPassword = 'Passwords do not match';
+          newErrors.repeatPassword = 'รหัสผ่านไม่ตรงกัน';
         }
         break;
       case FORM_STEPS.CONTACT_INFO:
         if (!formData.contact.line.trim()) {
-          newErrors.line = 'LINE ID is required';
+          newErrors.line = 'กรุณาใส่ LINE ID';
         }
         break;
     }
@@ -701,10 +700,10 @@ export default function RegisterSellerPage() {
             <FormInput
               id="storeName"
               name="store.name"
-              label="Store Name"
+              label="ชื่อร้านค้า"
               value={formData.store.name}
               onChange={handleInputChange}
-              placeholder="Enter your store name"
+              placeholder="ใส่ชื่อร้านค้าของคุณ"
               required
               minLength={VALIDATION_RULES.STORE_NAME_MIN}
               maxLength={VALIDATION_RULES.STORE_NAME_MAX}
@@ -713,10 +712,10 @@ export default function RegisterSellerPage() {
             <FormInput
               id="storeDescription"
               name="store.description"
-              label="Store Description"
+              label="คำอธิบายร้านค้า"
               value={formData.store.description}
               onChange={handleInputChange}
-              placeholder="Describe your store and what you sell"
+              placeholder="อธิบายร้านค้าและสินค้าที่คุณขาย"
               required
               minLength={VALIDATION_RULES.STORE_DESC_MIN}
               rows={4}
@@ -733,10 +732,10 @@ export default function RegisterSellerPage() {
               <FormInput
                 id="username"
                 name="username"
-                label="Username"
+                label="ชื่อผู้ใช้"
                 value={formData.username}
                 onChange={handleInputChange}
-                placeholder="Choose a unique username"
+                placeholder="เลือกชื่อผู้ใช้ที่ไม่ซ้ำกัน"
                 required
                 minLength={VALIDATION_RULES.USERNAME_MIN}
               />
@@ -753,22 +752,22 @@ export default function RegisterSellerPage() {
             <FormInput
               id="email"
               name="email"
-              label="Email Address"
+              label="ที่อยู่อีเมล"
               type="email"
               value={formData.email}
               onChange={handleInputChange}
-              placeholder="Enter your email address"
+              placeholder="ใส่ที่อยู่อีเมลของคุณ"
               required
             />
             {errors.email && <p className="text-rose-500 text-sm">{errors.email}</p>}
             <FormInput
               id="password"
               name="password"
-              label="Password"
+              label="รหัสผ่าน"
               type="password"
               value={formData.password}
               onChange={handleInputChange}
-              placeholder="Create a secure password"
+              placeholder="สร้างรหัสผ่านที่ปลอดภัย"
               required
               minLength={VALIDATION_RULES.PASSWORD_MIN}
             />
@@ -776,11 +775,11 @@ export default function RegisterSellerPage() {
             <FormInput
               id="repeatPassword"
               name="repeatPassword"
-              label="Confirm Password"
+              label="ยืนยันรหัสผ่าน"
               type="password"
               value={formData.repeatPassword}
               onChange={handleInputChange}
-              placeholder="Confirm your password"
+              placeholder="ยืนยันรหัสผ่านของคุณ"
               required
             />
             {errors.repeatPassword && (
@@ -798,35 +797,35 @@ export default function RegisterSellerPage() {
               prefix="@"
               value={formData.contact.line}
               onChange={handleContactChange}
-              placeholder="your-line-id"
+              placeholder="ใส่ LINE ID ของคุณ"
               required
             />
             {errors.line && <p className="text-rose-500 text-sm">{errors.line}</p>}
             <PrefixInput
               id="facebook"
               name="facebook"
-              label="Facebook (Optional)"
+              label="Facebook (ไม่บังคับ)"
               prefix="fb.com/"
               value={formData.contact.facebook}
               onChange={handleContactChange}
-              placeholder="your-facebook-username"
+              placeholder="ชื่อผู้ใช้ Facebook ของคุณ"
             />
             <PrefixInput
               id="instagram"
               name="instagram"
-              label="Instagram (Optional)"
+              label="Instagram (ไม่บังคับ)"
               prefix="@"
               value={formData.contact.instagram}
               onChange={handleContactChange}
-              placeholder="your-instagram-handle"
+              placeholder="ชื่อผู้ใช้ Instagram ของคุณ"
             />
             <FormInput
               id="whatsapp"
               name="contact.whatsapp"
-              label="WhatsApp (Optional)"
+              label="WhatsApp (ไม่บังคับ)"
               value={formData.contact.whatsapp}
               onChange={handleInputChange}
-              placeholder="Enter your WhatsApp number"
+              placeholder="ใส่หมายเลข WhatsApp ของคุณ"
             />
           </div>
         );
@@ -850,9 +849,9 @@ export default function RegisterSellerPage() {
         countdown={redirectCountdown}
         onContinue={handleContinueToLogin}
       />
-      <div className="min-h-[75vh] flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl">
-          <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-500 rounded-2xl p-8 shadow-2xl">
+      <div className="flex items-center justify-center p-4 ">
+        <div className="w-full max-w-md sm:max-w-2xl mx-auto">
+          <div className="bg-dark-700 border border-dark-500 rounded-2xl p-6 sm:p-8 shadow-2xl">
             <FormHeader />
             <ProgressSteps currentStep={step} />
             {error && (
@@ -862,14 +861,14 @@ export default function RegisterSellerPage() {
             )}
             <div className="space-y-6">{renderStepContent()}</div>
             {step < FORM_STEPS.LINE_VERIFICATION && (
-              <div className="flex gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row gap-3 mt-6">
                 {step > 1 && (
                   <button
                     onClick={handlePrevious}
                     disabled={isLoading}
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-dark-600 hover:bg-dark-500 text-light-100 rounded-xl transition-all duration-300 disabled:opacity-50">
                     <ArrowLeft size={18} />
-                    Previous
+                    ย้อนกลับ
                   </button>
                 )}
                 <button
@@ -881,11 +880,11 @@ export default function RegisterSellerPage() {
                   ) : step === FORM_STEPS.CONTACT_INFO ? (
                     <>
                       <Send size={18} />
-                      Register
+                      สมัครสมาชิก
                     </>
                   ) : (
                     <>
-                      Next
+                      ถัดไป
                       <ArrowRight size={18} />
                     </>
                   )}
@@ -894,12 +893,12 @@ export default function RegisterSellerPage() {
             )}
             <div className="mt-8 text-center">
               <p className="text-light-400 text-sm">
-                Already have an account?{' '}
+                มีบัญชีอยู่แล้ว?{' '}
                 <Link
                   href="/auth/login"
                   className="text-primary hover:text-primary/80 transition-colors">
                   <LogIn size={16} className="inline mr-1" />
-                  Sign In
+                  เข้าสู่ระบบ
                 </Link>
               </p>
             </div>

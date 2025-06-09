@@ -227,7 +227,7 @@ export default function LoginSellerPage() {
   );
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center px-4 animate-in fade-in duration-500">
+    <div className="flex items-center justify-center px-4 animate-in fade-in duration-500">
       <div className="w-full max-w-md space-y-8 bg-dark-700 p-8 rounded-2xl border border-dark-400">
         <FormHeader />
 
