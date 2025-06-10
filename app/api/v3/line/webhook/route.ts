@@ -9,7 +9,6 @@ import { LineService } from '@/lib/services/lineService';
 
 const channelSecret = process.env.LINE_CHANNEL_SECRET || 'asd';
 
-// Rate limiting map to prevent spam (userId -> last attempt timestamp)
 const rateLimitMap = new Map<string, number>();
 const RATE_LIMIT_WINDOW = 30 * 1000; // 30 seconds
 const MAX_ATTEMPTS_PER_WINDOW = 3;

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { connectToDatabase } from '@/lib/db';
 import { Seller } from '@/models/v3/Seller';
