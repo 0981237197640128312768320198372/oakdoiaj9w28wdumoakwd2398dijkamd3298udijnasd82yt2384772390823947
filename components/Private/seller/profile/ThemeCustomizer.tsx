@@ -238,11 +238,11 @@ export default function ThemeCustomizer({
 
   if (!isInitialized || !currentTheme) {
     return (
-      <Card className="bg-dark-800 border-dark-700">
+      <Card className="bg-dark-800 text-dark-800 border-dark-700">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
-            <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto mb-3" />
-            <p className="text-sm text-light-400">Initializing theme customizer...</p>
+            <Loader2 className="h-6 w-6 animate-spin text-dark-800 mx-auto mb-3" />
+            <p className="text-sm">Initializing theme customizer...</p>
           </div>
         </div>
       </Card>
@@ -276,8 +276,8 @@ export default function ThemeCustomizer({
                 className={cn(
                   'ml-2 border-dark-600 h-8 md:h-9',
                   showPreview
-                    ? 'bg-primary text-dark-800 border-primary'
-                    : 'text-light-400 hover:bg-dark-700 hover:text-white'
+                    ? 'bg-dark-800 text-dark-800 border-primary'
+                    : 'text-dark-800 hover:bg-dark-700 hover:text-dark-800'
                 )}>
                 <EyeIcon className="h-3.5 w-3.5 mr-1.5" />
                 {showPreview ? 'Hide Preview' : 'Show Preview'}
@@ -341,13 +341,13 @@ export default function ThemeCustomizer({
                 <div className="space-y-3 md:space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Circle className="h-3 w-3 md:h-4 md:w-4 text-primary" />
-                      <h3 className="text-xs md:text-sm font-medium text-white">Base Theme</h3>
+                      <Circle className="h-3 w-3 md:h-4 md:w-4 text-dark-800" />
+                      <h3 className="text-xs md:text-sm font-medium">Base Theme</h3>
                     </div>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button className="text-light-500 hover:text-light-300">
+                          <button className="text-dark-800 hover:text-dark-800">
                             <HelpCircle className="h-3.5 w-3.5" />
                           </button>
                         </TooltipTrigger>
@@ -387,7 +387,7 @@ export default function ThemeCustomizer({
                       )}>
                       <div className="flex items-center gap-1 md:gap-2 mb-1 md:mb-2">
                         <Moon className="h-3 w-3 md:h-4 md:w-4 text-primary" />
-                        <span className="text-xs md:text-sm font-medium text-light-200">Dark</span>
+                        <span className="text-xs md:text-sm font-medium text-dark-800">Dark</span>
                       </div>
                       <div className="h-6 w-full bg-dark-800 border border-dark-600 rounded flex items-center px-2">
                         <div className="h-1 w-8 bg-dark-600 rounded mr-2" />

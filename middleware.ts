@@ -68,7 +68,10 @@ export async function middleware(req: GeoRequest) {
     path.startsWith('/images') ||
     path.startsWith('/icons') ||
     path.startsWith('/_next/static') ||
-    path.startsWith('/_next/image')
+    path.startsWith('/_next/image') ||
+    path === '/favicon.ico' ||
+    path === '/robots.txt' ||
+    path === '/sitemap.xml'
   ) {
     return NextResponse.next();
   }
@@ -85,15 +88,34 @@ export async function middleware(req: GeoRequest) {
     });
   }
 
-  if (hostname?.includes('.localhost') && subdomain !== 'www') {
+  // Skip subdomain routing for static assets and invalid subdomains
+  const invalidSubdomains = [
+    'favicon',
+    'www',
+    'seller',
+    'admin',
+    'api',
+    'static',
+    'assets',
+    'manifest',
+    'robots',
+    'sitemap',
+  ];
+
+  // Additional check for favicon.ico specifically in subdomain
+  if (subdomain === 'favicon' || subdomain?.includes('favicon')) {
+    return NextResponse.next();
+  }
+
+  if (
+    hostname?.includes('.localhost') &&
+    subdomain !== 'www' &&
+    subdomain &&
+    !invalidSubdomains.includes(subdomain)
+  ) {
     return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
   }
-  if (
-    hostname?.includes('.dokmai.store') &&
-    subdomain !== 'www' &&
-    subdomain !== 'seller' &&
-    subdomain !== 'admin'
-  ) {
+  if (hostname?.includes('.dokmai.store') && subdomain && !invalidSubdomains.includes(subdomain)) {
     return NextResponse.rewrite(new URL(`/${subdomain}`, req.url));
   }
 
@@ -121,5 +143,5 @@ export async function middleware(req: GeoRequest) {
 }
 
 export const config = {
-  matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  matcher: '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)',
 };

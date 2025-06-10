@@ -17,6 +17,33 @@ interface StorePageProps {
 
 export async function generateMetadata(props: StorePageProps) {
   const { subdomain } = await props.params;
+  console.log('Generating metadata for subdomain:', subdomain);
+
+  // Skip metadata generation for invalid subdomains
+  const invalidSubdomains = [
+    'favicon',
+    'www',
+    'seller',
+    'admin',
+    'api',
+    'static',
+    'assets',
+    'manifest',
+    'robots',
+    'sitemap',
+  ];
+  if (
+    invalidSubdomains.includes(subdomain) ||
+    subdomain.includes('favicon') ||
+    subdomain.includes('.ico')
+  ) {
+    return generateMetadataUtil({
+      title: 'Dokmai Store',
+      description: 'Welcome to Dokmai Store',
+      url: 'https://dokmai.store/',
+    });
+  }
+
   try {
     const { seller } = await fetchStoreData(subdomain);
     const storeLogo = seller?.store?.logoUrl || 'Dokmai Store';
@@ -42,6 +69,28 @@ export async function generateMetadata(props: StorePageProps) {
 
 export default async function StorePage(props: StorePageProps) {
   const { subdomain } = await props.params;
+
+  // Check for invalid subdomains and return 404
+  const invalidSubdomains = [
+    'favicon',
+    'www',
+    'seller',
+    'admin',
+    'api',
+    'static',
+    'assets',
+    'manifest',
+    'robots',
+    'sitemap',
+  ];
+  if (
+    invalidSubdomains.includes(subdomain) ||
+    subdomain.includes('favicon') ||
+    subdomain.includes('.ico')
+  ) {
+    notFound();
+  }
+
   try {
     const { theme, seller } = await fetchStoreData(subdomain);
 

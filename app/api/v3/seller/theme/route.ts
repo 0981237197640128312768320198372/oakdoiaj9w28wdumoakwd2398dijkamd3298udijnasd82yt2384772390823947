@@ -6,6 +6,7 @@ import { Theme } from '@/models/v3/Theme';
 import { ThemeType } from '@/types';
 
 interface SellerDocument {
+  _id: any;
   store: {
     theme: any;
   };
@@ -34,8 +35,37 @@ export async function POST(req: NextRequest) {
     }
 
     const theme = seller.store.theme;
+
+    // If no theme exists, return default theme instead of 404
     if (!theme) {
-      return NextResponse.json({ error: 'Theme not found for this seller' }, { status: 404 });
+      const defaultTheme: ThemeType = {
+        sellerId: seller._id,
+        baseTheme: 'light',
+        customizations: {
+          colors: {
+            primary: 'primary',
+            secondary: 'bg-dark-800',
+          },
+          button: {
+            textColor: 'text-dark-800',
+            backgroundColor: 'bg-primary',
+            roundedness: 'md',
+            shadow: 'sm',
+            border: 'none',
+            borderColor: 'border-primary',
+          },
+          componentStyles: {
+            cardRoundedness: 'md',
+            cardShadow: 'sm',
+          },
+          ads: {
+            images: [],
+            roundedness: 'md',
+            shadow: 'sm',
+          },
+        },
+      };
+      return NextResponse.json(defaultTheme);
     }
 
     // Return the complete theme data matching the model structure

@@ -8,15 +8,17 @@ import { motion } from 'framer-motion';
 interface HelpStep {
   step: string;
   description: string;
-  picture: string;
+  imageUrl: string;
 }
 
 interface HelpItem {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   categories: string[];
   steps: HelpStep[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ShowHelpList = () => {
@@ -36,9 +38,9 @@ const ShowHelpList = () => {
   const fetchHelps = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/get_helps?fetchall=true');
+      const response = await fetch('/api/v3/helps?fetchall=true');
       if (!response.ok) {
-        throw new Error('Failed to fetch helps.json');
+        throw new Error('Failed to fetch helps');
       }
 
       const data = await response.json();
@@ -110,7 +112,7 @@ const ShowHelpList = () => {
           : filteredHelps.length > 0
           ? filteredHelps.map((help) => (
               <div
-                key={help.id}
+                key={help._id}
                 className="p-5 bg-dark-600 text-light-100 rounded shadow hover:bg-dark-800 cursor-pointer w-96"
                 onClick={() => setSelectedHelp(help)}>
                 <h2 className="text-lg font-aktivGroteskBold truncate">{help.title}</h2>
@@ -133,7 +135,7 @@ const ShowHelpList = () => {
 
       {selectedHelp && (
         <motion.div
-          key={selectedHelp.id}
+          key={selectedHelp._id}
           className="bg-dark-700 p-5 rounded shadow w-full mt-10 pb-20"
           initial="hidden"
           animate="visible"
@@ -151,7 +153,7 @@ const ShowHelpList = () => {
                   <div className="flex w-full h-full gap-4">
                     <Image
                       loading="lazy"
-                      src={step.picture}
+                      src={step.imageUrl}
                       alt={step.step}
                       width={300}
                       height={300}

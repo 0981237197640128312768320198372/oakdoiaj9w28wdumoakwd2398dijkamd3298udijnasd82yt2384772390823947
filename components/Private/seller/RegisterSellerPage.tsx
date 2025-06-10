@@ -78,8 +78,8 @@ const FORM_STEPS = {
 const VALIDATION_RULES = {
   STORE_NAME_MIN: 5,
   STORE_NAME_MAX: 25,
-  STORE_DESC_MIN: 75,
-  USERNAME_MIN: 7,
+  STORE_DESC_MIN: 50,
+  USERNAME_MIN: 6,
   PASSWORD_MIN: 6,
 } as const;
 
@@ -794,7 +794,7 @@ export default function RegisterSellerPage() {
               id="line"
               name="line"
               label="LINE ID"
-              prefix="@"
+              prefix=""
               value={formData.contact.line}
               onChange={handleContactChange}
               placeholder="ใส่ LINE ID ของคุณ"

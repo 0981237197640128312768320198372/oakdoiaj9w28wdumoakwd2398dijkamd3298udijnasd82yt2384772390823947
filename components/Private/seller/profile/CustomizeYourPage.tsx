@@ -66,24 +66,24 @@ export default function CustomizeYourPage() {
   };
 
   return (
-    <div className="min-h-[75vh] bg-gradient-to-br from-dark-700 to-dark-800 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
+    <div className="min-h-[75vh] bg-dark-800 text-light-200 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
       <div className="max-w-6xl mx-auto px-4 py-10">
         <header className="mb-8">
-          <h1 className="text-2xl font-bold text-white mb-1">Store Customization</h1>
-          <p className="text-sm text-light-300">Customize your store's appearance and settings.</p>
+          <h1 className="text-2xl font-bold mb-1">Store Customization</h1>
+          <p className="text-sm">Customize your store's appearance and settings.</p>
         </header>
-        <Card className="bg-dark-760 border border-dark-400 rounded-lg shadow-lg">
+        <Card className="bg-dark-800 border border-dark-400 rounded-lg shadow-lg">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-2 bg-dark-600 border-b border-dark-400">
+            <TabsList className="grid grid-cols-2 bg-dark-800 border-b border-dark-400">
               <TabsTrigger
                 value="theme"
-                className="flex items-center justify-center py-2 text-sm font-medium text-light-300 hover:text-white transition-colors duration-200 data-[state=active]:bg-dark-500 data-[state=active]:text-white">
+                className="flex items-center justify-center py-2 text-sm font-medium hover:text-light-200 transition-colors duration-200 data-[state=active]:bg-dark-500 data-[state=active]:text-light-200">
                 <Palette className="mr-2 h-4 w-4" />
                 Theme
               </TabsTrigger>
               <TabsTrigger
                 value="profile"
-                className="flex items-center justify-center py-2 text-sm font-medium text-light-300 hover:text-white transition-colors duration-200 data-[state=active]:bg-dark-500 data-[state=active]:text-white">
+                className="flex items-center justify-center py-2 text-sm font-medium hover:text-light-200 transition-colors duration-200 data-[state=active]:bg-dark-500 data-[state=active]:text-light-200">
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </TabsTrigger>
@@ -91,8 +91,8 @@ export default function CustomizeYourPage() {
             <TabsContent value="theme" className="p-6">
               {isLoadingTheme ? (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-blue-500 mr-3" />
-                  <span className="text-base text-light-400">Loading theme...</span>
+                  <Loader2 className="h-8 w-8 animate-spin text-dark-800 mr-3" />
+                  <span className="text-base">Loading theme...</span>
                 </div>
               ) : themeError ? (
                 <div className="space-y-4">
@@ -121,7 +121,7 @@ export default function CustomizeYourPage() {
               ) : (
                 <div className="flex items-center justify-center py-12">
                   <AlertCircle className="h-8 w-8 text-amber-500 mr-3" />
-                  <span className="text-base text-light-400">No theme data available</span>
+                  <span className="text-base">No theme data available</span>
                 </div>
               )}
             </TabsContent>
