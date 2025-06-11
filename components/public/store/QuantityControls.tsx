@@ -8,6 +8,18 @@ import { Minus, Plus, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
+interface OrderData {
+  orderId: string;
+  items: Array<{
+    productTitle: string;
+    quantity: number;
+    unitPrice: number;
+  }>;
+  total: number;
+  storeName: string;
+  createdAt: string;
+}
+
 interface QuantityControlsProps {
   productId: string;
   productName: string;
@@ -17,6 +29,8 @@ interface QuantityControlsProps {
   className?: string;
   imageUrl?: string;
   stock: number;
+  onBuyNowSuccess?: (orderData: OrderData) => void;
+  onBuyNowError?: (error: string) => void;
 }
 
 const QuantityControls: React.FC<QuantityControlsProps> = ({
@@ -29,7 +43,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   imageUrl,
   stock,
 }) => {
-  const { addToCart, updateQuantity, getCartItemQuantity } = useCart();
+  const { addToCart, updateQuantity, removeFromCart, getCartItemQuantity } = useCart();
   const [showControls, setShowControls] = useState(false);
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
@@ -38,10 +52,8 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   const isInCart = itemQuantity > 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    // Stop propagation to prevent parent click events (like card navigation)
     e.stopPropagation();
 
-    // Prevent adding to cart if stock is 0
     if (stock === 0) return;
 
     if (!isInCart) {
@@ -86,6 +98,8 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
     if (itemQuantity > 1) {
       updateQuantity(productId, itemQuantity - 1, stock);
     } else {
+      // Remove item from cart completely when quantity reaches 0
+      removeFromCart(productId);
       setShowControls(false);
     }
   };
@@ -144,17 +158,18 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   }
 
   return (
-    <button
-      onClick={handleAddToCart}
-      className={cn(
-        'flex items-center justify-center gap-1 w-full p-2 rounded-lg transition-all duration-300',
-        themeUtils.getButtonClass(),
-        themeUtils.getPrimaryColorClass('bg'),
-        className
-      )}>
-      เพิ่มลงตะกร้า
-      <ShoppingCart size={18} />
-    </button>
+    <div className="flex flex-col gap-1 w-full">
+      <button
+        onClick={handleAddToCart}
+        className={cn(
+          'flex items-center justify-center gap-1 flex-1 p-2 rounded-lg transition-all duration-300',
+          themeUtils.getButtonClass(),
+          className
+        )}>
+        <ShoppingCart size={16} />
+        <span className="text-xs">เพิ่มลงตะกร้า</span>
+      </button>
+    </div>
   );
 };
 

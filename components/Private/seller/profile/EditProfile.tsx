@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import type React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Save,
   Loader2,
@@ -12,28 +12,27 @@ import {
   Mail,
   Lock,
   AlertCircle,
-  Upload,
   Check,
+  Upload,
 } from 'lucide-react';
-
+import Image from 'next/image';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { FaFacebook } from 'react-icons/fa';
 import { FaSquareInstagram } from 'react-icons/fa6';
 import { BsLine } from 'react-icons/bs';
 import { IoLogoWhatsapp } from 'react-icons/io';
-import Image from 'next/image';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button2 } from '@/components/ui/button2';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
 import type { ThemeType } from '@/types';
 
 interface EditProfileProps {
   seller: any;
-  theme?: ThemeType | null; // Keep theme prop but don't use it for styling
+  theme?: ThemeType | null;
   onProfileUpdated: () => void;
 }
 
@@ -111,13 +110,13 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
 
     setIsUploading(true);
 
-    const formData = new FormData();
-    files.forEach((file) => formData.append('images', file));
+    const formDataUpload = new FormData();
+    files.forEach((file) => formDataUpload.append('images', file));
 
     try {
       const response = await fetch('/api/v3/upload-image', {
         method: 'POST',
-        body: formData,
+        body: formDataUpload,
       });
 
       if (!response.ok) {
@@ -236,94 +235,105 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
   };
 
   return (
-    <div className="space-y-6 bg-black text-white p-4 md:p-6 lg:p-8">
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Logo Upload Section */}
-        <Card className="bg-dark-900 border border-dark-800 p-4 md:p-6 rounded-lg shadow-md">
-          <div className="flex items-center gap-3 md:gap-6">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <label className="relative group cursor-pointer">
-                    <div className="w-16 h-16 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-dark-800 group-hover:border-primary transition-all duration-300 bg-dark-800">
-                      {logoPreview ? (
-                        <Image
-                          src={logoPreview || '/placeholder.svg'}
-                          alt="Store logo"
-                          width={96}
-                          height={96}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-white">
-                          <Store size={32} />
-                        </div>
-                      )}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 rounded-full flex items-center justify-center transition-opacity duration-300 bg-dark-800/80">
-                        <div className="text-xs font-medium flex flex-col items-center gap-1 text-white">
-                          {isUploading ? (
-                            <>
-                              <Loader2 size={20} className="animate-spin" />
-                              <span>Uploading...</span>
-                            </>
-                          ) : formData.logoUrl ? (
-                            <>
-                              <Check size={20} className="text-green-500" />
-                              <span>Change</span>
-                            </>
-                          ) : (
-                            <>
-                              <Upload size={20} />
-                              <span>Upload</span>
-                            </>
-                          )}
+        <Card className="bg-dark-800 border-dark-700 p-4">
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-white flex items-center">
+              <Store className="h-4 w-4 mr-2 text-primary" />
+              Store Logo
+            </h3>
+
+            <div className="flex items-center gap-4">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <label className="relative group cursor-pointer">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden border-2 border-dark-600 group-hover:border-primary transition-all duration-300 bg-dark-700">
+                        {logoPreview ? (
+                          <Image
+                            src={logoPreview}
+                            alt="Store logo"
+                            width={64}
+                            height={64}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-light-400">
+                            <Store size={24} />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 rounded-lg flex items-center justify-center transition-opacity duration-300 bg-dark-800/80">
+                          <div className="text-xs font-medium flex flex-col items-center gap-1 text-white">
+                            {isUploading ? (
+                              <>
+                                <Loader2 size={16} className="animate-spin" />
+                                <span>Uploading...</span>
+                              </>
+                            ) : formData.logoUrl ? (
+                              <>
+                                <Check size={16} className="text-green-500" />
+                                <span>Change</span>
+                              </>
+                            ) : (
+                              <>
+                                <Upload size={16} />
+                                <span>Upload</span>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleLogoChange}
-                      disabled={isUploading}
-                    />
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent className="bg-dark-800 text-white border-dark-700">
-                  <p>Upload store logo (Max 5MB)</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleLogoChange}
+                        disabled={isUploading}
+                      />
+                    </label>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-dark-800 text-white border-dark-700">
+                    <p className="text-xs">Upload store logo (Max 5MB)</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
-            <div className="flex-1">
-              <p className="text-sm">{isUploading && 'Uploading your logo...'}</p>
+              <div className="flex-1">
+                <p className="text-xs text-light-400">
+                  Upload a logo for your store. Recommended size: 200x200px
+                </p>
+                {isUploading && <p className="text-xs text-primary mt-1">Uploading your logo...</p>}
+              </div>
             </div>
           </div>
         </Card>
 
-        <Card className="bg-dark-900 border border-dark-800 p-4 md:p-6 rounded-lg shadow-md">
-          <div className="space-y-3 md:space-y-4">
+        {/* Store Information */}
+        <Card className="bg-dark-800 border-dark-700 p-4">
+          <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <Store size={16} className="text-white md:h-[18px] md:w-[18px]" />
-              <h3 className="text-base md:text-lg font-semibold">ข้อมูลร้านค้า</h3>
+              <Store size={16} className="text-primary" />
+              <h3 className="text-sm font-medium text-white">Store Information</h3>
             </div>
-            <Separator className="bg-dark-800" />
+            <Separator className="bg-dark-600" />
 
             <div className="grid gap-4">
               <div className="space-y-2">
-                <label htmlFor="storeName" className="text-xs md:text-sm font-medium">
-                  ชื่อร้าน *
+                <label htmlFor="storeName" className="text-xs font-medium text-light-300">
+                  Store Name *
                 </label>
                 <Input
                   id="storeName"
                   name="storeName"
                   value={formData.storeName}
                   onChange={handleChange}
-                  className="bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                  className="bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                   required
                 />
                 {fieldErrors.storeName && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-red-400 flex items-center gap-1">
                     <AlertCircle size={12} />
                     {fieldErrors.storeName}
                   </p>
@@ -331,7 +341,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="storeDescription" className="text-xs md:text-sm font-medium">
+                <label htmlFor="storeDescription" className="text-xs font-medium text-light-300">
                   Store Description *
                 </label>
                 <Textarea
@@ -340,11 +350,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                   value={formData.storeDescription}
                   onChange={handleChange}
                   rows={3}
-                  className="bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 resize-none __dokmai_scrollbar"
+                  className="bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary resize-none text-xs"
                   required
                 />
                 {fieldErrors.storeDescription && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-red-400 flex items-center gap-1">
                     <AlertCircle size={12} />
                     {fieldErrors.storeDescription}
                   </p>
@@ -355,20 +365,20 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         </Card>
 
         {/* Account Information */}
-        <Card className="bg-dark-900 border border-dark-800 p-4 md:p-6 rounded-lg shadow-md">
-          <div className="space-y-3 md:space-y-4">
+        <Card className="bg-dark-800 border-dark-700 p-4">
+          <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <User size={16} className="text-white md:h-[18px] md:w-[18px]" />
-              <h3 className="text-base md:text-lg font-semibold">Account Information</h3>
+              <User size={16} className="text-primary" />
+              <h3 className="text-sm font-medium text-white">Account Information</h3>
             </div>
-            <Separator className="bg-dark-800" />
+            <Separator className="bg-dark-600" />
 
             <div className="grid gap-4">
               <div className="space-y-2">
                 <label
                   htmlFor="email"
-                  className="text-xs md:text-sm font-medium flex items-center gap-2">
-                  <Mail size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                  className="text-xs font-medium text-light-300 flex items-center gap-2">
+                  <Mail size={12} className="text-primary" />
                   Email Address *
                 </label>
                 <Input
@@ -377,11 +387,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                  className="bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                   required
                 />
                 {fieldErrors.email && (
-                  <p className="text-xs text-red-500 flex items-center gap-1">
+                  <p className="text-xs text-red-400 flex items-center gap-1">
                     <AlertCircle size={12} />
                     {fieldErrors.email}
                   </p>
@@ -392,8 +402,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                 <div className="space-y-2">
                   <label
                     htmlFor="password"
-                    className="text-xs md:text-sm font-medium flex items-center gap-2">
-                    <Lock size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                    className="text-xs font-medium text-light-300 flex items-center gap-2">
+                    <Lock size={12} className="text-primary" />
                     New Password
                   </label>
                   <Input
@@ -402,11 +412,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                    className="bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                     placeholder="Leave blank to keep current"
                   />
                   {fieldErrors.password && (
-                    <p className="text-xs text-red-500 flex items-center gap-1">
+                    <p className="text-xs text-red-400 flex items-center gap-1">
                       <AlertCircle size={12} />
                       {fieldErrors.password}
                     </p>
@@ -416,8 +426,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                 <div className="space-y-2">
                   <label
                     htmlFor="confirmPassword"
-                    className="text-xs md:text-sm font-medium flex items-center gap-2">
-                    <Lock size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                    className="text-xs font-medium text-light-300 flex items-center gap-2">
+                    <Lock size={12} className="text-primary" />
                     Confirm Password
                   </label>
                   <Input
@@ -426,11 +436,11 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                     type="password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                    className="bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                     placeholder="Confirm new password"
                   />
                   {fieldErrors.confirmPassword && (
-                    <p className="text-xs text-red-500 flex items-center gap-1">
+                    <p className="text-xs text-red-400 flex items-center gap-1">
                       <AlertCircle size={12} />
                       {fieldErrors.confirmPassword}
                     </p>
@@ -442,24 +452,24 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         </Card>
 
         {/* Contact Information */}
-        <Card className="bg-dark-900 border border-dark-800 p-4 md:p-6 rounded-lg shadow-md">
-          <div className="space-y-3 md:space-y-4">
+        <Card className="bg-dark-800 border-dark-700 p-4">
+          <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <MessageSquare size={16} className="text-white md:h-[18px] md:w-[18px]" />
-              <h3 className="text-base md:text-lg font-semibold">Contact Information</h3>
+              <MessageSquare size={16} className="text-primary" />
+              <h3 className="text-sm font-medium text-white">Contact Information</h3>
             </div>
-            <Separator className="bg-dark-800" />
+            <Separator className="bg-dark-600" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label
                   htmlFor="facebook"
-                  className="text-xs md:text-sm font-medium flex items-center gap-2">
-                  <FaFacebook size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                  className="text-xs font-medium text-light-300 flex items-center gap-2">
+                  <FaFacebook size={12} className="text-primary" />
                   Facebook
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-white">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-light-400">
                     fb.com/
                   </span>
                   <Input
@@ -467,7 +477,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                     name="facebook"
                     value={formData.facebook}
                     onChange={handleChange}
-                    className="pl-14 bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                    className="pl-14 bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                     placeholder="yourpage"
                   />
                 </div>
@@ -476,12 +486,12 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="line"
-                  className="text-xs md:text-sm font-medium flex items-center gap-2">
-                  <BsLine size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                  className="text-xs font-medium text-light-300 flex items-center gap-2">
+                  <BsLine size={12} className="text-primary" />
                   Line ID
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-white">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-light-400">
                     @
                   </span>
                   <Input
@@ -489,7 +499,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                     name="line"
                     value={formData.line}
                     onChange={handleChange}
-                    className="pl-7 bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                    className="pl-7 bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                     placeholder="yourlineid"
                   />
                 </div>
@@ -498,12 +508,12 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="instagram"
-                  className="text-xs md:text-sm font-medium flex items-center gap-2">
-                  <FaSquareInstagram size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                  className="text-xs font-medium text-light-300 flex items-center gap-2">
+                  <FaSquareInstagram size={12} className="text-primary" />
                   Instagram
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-white">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-light-400">
                     @
                   </span>
                   <Input
@@ -511,7 +521,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                     name="instagram"
                     value={formData.instagram}
                     onChange={handleChange}
-                    className="pl-7 bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                    className="pl-7 bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                     placeholder="yourinstagram"
                   />
                 </div>
@@ -520,8 +530,8 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
               <div className="space-y-2">
                 <label
                   htmlFor="whatsapp"
-                  className="text-xs md:text-sm font-medium flex items-center gap-2">
-                  <IoLogoWhatsapp size={12} className="text-white md:h-[14px] md:w-[14px]" />
+                  className="text-xs font-medium text-light-300 flex items-center gap-2">
+                  <IoLogoWhatsapp size={12} className="text-primary" />
                   WhatsApp
                 </label>
                 <Input
@@ -529,7 +539,7 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
                   name="whatsapp"
                   value={formData.whatsapp}
                   onChange={handleChange}
-                  className="bg-dark-800 border border-dark-700 text-white focus:ring-blue-500 h-10 px-3 rounded-md"
+                  className="bg-dark-700 border-dark-600 text-white focus:ring-primary focus:border-primary h-9 text-xs"
                   placeholder="+1234567890"
                 />
               </div>
@@ -555,19 +565,19 @@ export default function EditProfile({ seller, onProfileUpdated }: EditProfilePro
         )}
 
         {/* Form Actions */}
-        <div className="flex justify-end pt-4 border-t border-dark-800">
+        <div className="flex justify-end pt-4 border-t border-dark-600">
           <Button2
             type="submit"
             disabled={isLoading || isUploading}
-            className="bg-blue-600 hover:bg-blue-700 text-white h-10 px-5 rounded-md shadow-md transition-all duration-300">
+            className="bg-primary hover:bg-primary/80 text-dark-800 h-9 px-6 text-xs">
             {isLoading ? (
               <>
-                <Loader2 size={16} className="mr-2 animate-spin" />
+                <Loader2 size={14} className="mr-2 animate-spin" />
                 Saving...
               </>
             ) : (
               <>
-                <Save size={16} className="mr-2" />
+                <Save size={14} className="mr-2" />
                 Save Changes
               </>
             )}

@@ -48,11 +48,11 @@ export async function POST(req: NextRequest) {
           },
           button: {
             textColor: 'text-dark-800',
-            backgroundColor: 'bg-primary',
+            backgroundColor: 'primary',
             roundedness: 'md',
             shadow: 'sm',
             border: 'none',
-            borderColor: 'border-primary',
+            borderColor: 'primary',
           },
           componentStyles: {
             cardRoundedness: 'md',
@@ -120,14 +120,52 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
     }
 
+    let theme;
     const themeId = seller.store.theme;
-    if (!themeId) {
-      return NextResponse.json({ error: 'Theme not found for this seller' }, { status: 404 });
-    }
 
-    const theme = await Theme.findById(themeId);
-    if (!theme) {
-      return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
+    if (!themeId) {
+      // Create a new theme if none exists
+      theme = new Theme({
+        sellerId: seller._id,
+        baseTheme: updatedThemeData.baseTheme || 'dark',
+        customizations: {
+          colors: {
+            primary: updatedThemeData.customizations?.colors?.primary || 'primary',
+            secondary: updatedThemeData.customizations?.colors?.secondary || 'bg-dark-800',
+          },
+          button: {
+            textColor: updatedThemeData.customizations?.button?.textColor || 'text-dark-800',
+            backgroundColor:
+              updatedThemeData.customizations?.button?.backgroundColor || 'bg-primary',
+            roundedness: updatedThemeData.customizations?.button?.roundedness || 'md',
+            shadow: updatedThemeData.customizations?.button?.shadow || 'sm',
+            border: updatedThemeData.customizations?.button?.border || 'none',
+            borderColor: updatedThemeData.customizations?.button?.borderColor || 'border-primary',
+          },
+          componentStyles: {
+            cardRoundedness:
+              updatedThemeData.customizations?.componentStyles?.cardRoundedness || 'md',
+            cardShadow: updatedThemeData.customizations?.componentStyles?.cardShadow || 'sm',
+          },
+          ads: {
+            images: updatedThemeData.customizations?.ads?.images || [],
+            roundedness: updatedThemeData.customizations?.ads?.roundedness || 'md',
+            shadow: updatedThemeData.customizations?.ads?.shadow || 'sm',
+          },
+        },
+      });
+
+      await theme.save({ validateBeforeSave: false });
+
+      // Update seller to reference the new theme
+      seller.store.theme = theme._id;
+      await seller.save();
+    } else {
+      // Update existing theme
+      theme = await Theme.findById(themeId);
+      if (!theme) {
+        return NextResponse.json({ error: 'Theme not found' }, { status: 404 });
+      }
     }
 
     // Update baseTheme if provided

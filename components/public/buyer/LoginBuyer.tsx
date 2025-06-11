@@ -163,7 +163,7 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
           className={cn(
             'mb-6 p-4 border-l-4',
             themeUtils.getComponentRoundednessClass(),
-            'bg-blue-50 border-blue-400 text-blue-700 dark:bg-blue-900/30 dark:border-blue-600 dark:text-blue-300'
+            'bg-blue-50 border-blue-400 text-blue-700'
           )}>
           <div className="flex items-start gap-2">
             <div className="flex-shrink-0 mt-0.5">

@@ -7,7 +7,7 @@ import ProductCard from '../../shared/ProductCard';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { ArrowRight } from 'lucide-react';
-import { RiDiscountPercentLine } from 'react-icons/ri';
+import { FaPercent } from 'react-icons/fa';
 
 interface DiscountedProductsProps {
   products: Product[];
@@ -64,7 +64,7 @@ export default function DiscountedProducts({
           themeUtils.getPrimaryColorClass('border')
         )}>
         <h2 className="lg:text-xl text-sm font-semibold flex gap-1">
-          <RiDiscountPercentLine className="text-2xl" />
+          <FaPercent className="text-2xl" />
           ดีลส่วนลดสุดพิเศษ
         </h2>
         {discountedProducts.length > 0 && (

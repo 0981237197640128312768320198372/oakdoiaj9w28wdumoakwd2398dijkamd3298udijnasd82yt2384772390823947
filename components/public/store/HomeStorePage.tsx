@@ -7,11 +7,12 @@ import { motion } from 'framer-motion';
 import ProductsCategory from './ProductsCategory';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
-import DiscountedProducts from './DiscountedProducts';
+import ProductShowcase from './ProductShowcase';
 interface HomeStorePageProps {
   products: Product[];
   categories: Category[];
   theme: any;
+  sellerId?: string;
   onNavigate: (page: string) => void;
 }
 
@@ -19,6 +20,7 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
   products,
   categories,
   theme,
+  sellerId,
   onNavigate,
 }) => {
   const handleViewProductDetail = (productId: string) => {
@@ -35,10 +37,11 @@ const HomeStorePage: React.FC<HomeStorePageProps> = ({
       transition={{ duration: 0.4 }}
       className="w-full space-y-10 max-w-screen-lg min-h-[75vh]">
       <BannerAdsCarousel theme={theme} />
-      <DiscountedProducts
-        onViewDetails={handleViewProductDetail}
+      <ProductShowcase
         products={products}
         theme={theme}
+        sellerId={sellerId}
+        onViewDetails={handleViewProductDetail}
         onNavigate={onNavigate}
       />
       <ProductsCategory

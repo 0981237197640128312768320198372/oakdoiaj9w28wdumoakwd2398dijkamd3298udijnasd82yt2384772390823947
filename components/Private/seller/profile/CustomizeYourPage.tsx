@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { Card } from '@/components/ui/card';
@@ -66,33 +65,40 @@ export default function CustomizeYourPage() {
   };
 
   return (
-    <div className="min-h-[75vh] bg-dark-800 text-light-200 rounded-xl p-4 border border-dark-600 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
-      <div className="max-w-6xl mx-auto px-4 py-10">
-        <header className="mb-8">
-          <h1 className="text-2xl font-bold mb-1">Store Customization</h1>
-          <p className="text-sm">Customize your store's appearance and settings.</p>
-        </header>
-        <Card className="bg-dark-800 border border-dark-400 rounded-lg shadow-lg">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-2 bg-dark-800 border-b border-dark-400">
-              <TabsTrigger
-                value="theme"
-                className="flex items-center justify-center py-2 text-sm font-medium hover:text-light-200 transition-colors duration-200 data-[state=active]:bg-dark-500 data-[state=active]:text-light-200">
-                <Palette className="mr-2 h-4 w-4" />
-                Theme
-              </TabsTrigger>
-              <TabsTrigger
-                value="profile"
-                className="flex items-center justify-center py-2 text-sm font-medium hover:text-light-200 transition-colors duration-200 data-[state=active]:bg-dark-500 data-[state=active]:text-light-200">
-                <User className="mr-2 h-4 w-4" />
-                Profile
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="theme" className="p-6">
+    <div className="space-y-8 animate-fade-in mb-5">
+      <Tabs defaultValue="theme" className="w-full" onValueChange={setActiveTab}>
+        <TabsList className="w-full max-w-md mx-auto my-5 bg-dark-700 p-1 rounded-full border-[1px] border-dark-500">
+          <TabsTrigger
+            value="theme"
+            className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+            <Palette size={16} className="mr-2" />
+            Theme
+          </TabsTrigger>
+          <TabsTrigger
+            value="profile"
+            className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
+            <User size={16} className="mr-2" />
+            Profile
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="theme" className="mt-10 animate-fadeIn">
+          <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
+            <div className="bg-dark-700 rounded-xl border border-dark-500 shadow-lg overflow-hidden p-5">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-light-100 flex items-center">
+                    <Palette className="mr-2 text-primary" size={24} />
+                    Theme Customizer
+                  </h2>
+                  <p className="text-light-400 mt-1">Customize your store's appearance and theme</p>
+                </div>
+              </div>
+
               {isLoadingTheme ? (
                 <div className="flex items-center justify-center py-12">
-                  <Loader2 className="h-8 w-8 animate-spin text-dark-800 mr-3" />
-                  <span className="text-base">Loading theme...</span>
+                  <Loader2 className="h-8 w-8 animate-spin text-primary mr-3" />
+                  <span className="text-base text-light-400">Loading theme...</span>
                 </div>
               ) : themeError ? (
                 <div className="space-y-4">
@@ -121,20 +127,35 @@ export default function CustomizeYourPage() {
               ) : (
                 <div className="flex items-center justify-center py-12">
                   <AlertCircle className="h-8 w-8 text-amber-500 mr-3" />
-                  <span className="text-base">No theme data available</span>
+                  <span className="text-base text-light-400">No theme data available</span>
                 </div>
               )}
-            </TabsContent>
-            <TabsContent value="profile" className="p-6">
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="profile" className="mt-10 animate-fadeIn">
+          <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
+            <div className="bg-dark-700 rounded-xl border border-dark-500 shadow-lg overflow-hidden p-5">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-light-100 flex items-center">
+                    <User className="mr-2 text-primary" size={24} />
+                    Profile Settings
+                  </h2>
+                  <p className="text-light-400 mt-1">Manage your store and account information</p>
+                </div>
+              </div>
+
               <EditProfile
                 theme={currentTheme}
                 seller={seller}
                 onProfileUpdated={refreshSellerData}
               />
-            </TabsContent>
-          </Tabs>
-        </Card>
-      </div>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
