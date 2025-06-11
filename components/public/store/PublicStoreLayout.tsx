@@ -127,7 +127,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
           transition={{ duration: 0.5, ease: 'easeOut' }}>
           <AnimatePresence mode="wait">
             <motion.div
-              className="w-full px-5 lg:px-0 max-w-screen-lg pt-28 lg:pt-32"
+              className="w-full px-5 lg:px-0 max-w-screen-lg pt-20"
               key={activePage}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

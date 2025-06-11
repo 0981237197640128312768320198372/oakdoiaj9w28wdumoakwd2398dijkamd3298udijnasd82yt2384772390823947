@@ -111,7 +111,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="w-full max-w-screen-lg lg:px-5 xl:px-0 space-y-5 min-h-[75vh]">
+        className="w-full max-w-screen-lg lg:px-5 xl:px-0 pt-10 space-y-5 min-h-[75vh]">
         <DashboardHeader
           buyer={localBuyer}
           theme={theme}

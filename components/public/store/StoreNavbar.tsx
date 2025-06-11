@@ -1,7 +1,6 @@
 'use client';
 
-import type React from 'react';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import {
@@ -45,23 +44,11 @@ interface NavButtonProps {
 
 interface MobileNavButtonProps {
   icon: React.ReactNode;
-  isActive: boolean;
+  isActive?: boolean;
   onClick: () => void;
   theme: ThemeType | null;
   label: string;
-}
-
-interface MobileCartButtonProps {
-  onClick: () => void;
-  theme: ThemeType | null;
-  label: string;
-}
-
-interface MobileAccountButtonProps {
-  isAuthenticated: boolean;
-  onClick: () => void;
-  theme: ThemeType | null;
-  label: string;
+  badge?: number;
 }
 
 export const StoreNavbar: React.FC<StoreNavbarProps> = ({
@@ -76,6 +63,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
   const [scrolled, setScrolled] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { buyer, logout } = useBuyerAuth();
+  const { cart } = useCart();
 
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
@@ -198,7 +186,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         themeUtils.getButtonRoundednessClass()
       ),
       mobileNav: cn(
-        'fixed flex backdrop-blur-md items-center justify-between bottom-0 left-0 w-full z-50 transform md:hidden border-t',
+        'fixed flex backdrop-blur-md items-center justify-between bottom-0 left-0 w-full z-50 transform md:hidden border-t pb-4',
         isLight
           ? 'bg-white/90 border-light-300 shadow-lg shadow-black/10'
           : 'bg-dark-700/90 border-dark-300 shadow-lg shadow-black/20'
@@ -263,7 +251,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             )}
           </motion.button>
 
-          {/* Desktop Navigation */}
           <div className="items-center gap-1 hidden md:flex">
             {navigationItems.map((item) => (
               <NavButton
@@ -277,14 +264,11 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             ))}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            {/* Cart Button - Hidden on mobile since it's in mobile nav */}
             <div className="hidden md:block">
               <CartButton onClick={onCartOpen} theme={theme} />
             </div>
 
-            {/* Search Button */}
             <motion.button
               onClick={handleSearch}
               className={navbarStyles.searchButton}
@@ -300,7 +284,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                     : 'text-light-500 group-hover:text-light-100'
                 )}
               />
-              {/* Keyboard shortcut hint */}
               <div
                 className={cn(
                   'absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap',
@@ -310,7 +293,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
               </div>
             </motion.button>
 
-            {/* User Authentication - Hidden on mobile since it's in mobile nav */}
             <div className="hidden md:block">
               <AnimatePresence mode="wait">
                 {isAuthenticated ? (
@@ -351,7 +333,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                       />
                     </motion.button>
 
-                    {/* User Dropdown Menu */}
                     <AnimatePresence>
                       {isUserMenuOpen && (
                         <motion.div
@@ -376,15 +357,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                               )}>
                               {buyer?.name || buyer?.username}
                             </p>
-                            {buyer?.balance !== undefined && buyer?.balance !== null && (
-                              <p
-                                className={cn(
-                                  'text-xs',
-                                  isLight ? 'text-dark-600' : 'text-light-400'
-                                )}>
-                                ยอดเงิน: {buyer.balance.amount.toLocaleString()}
-                              </p>
-                            )}
                           </div>
 
                           <button
@@ -442,7 +414,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         </div>
       </motion.nav>
 
-      {/* Mobile Navigation */}
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -459,19 +430,22 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
           />
         ))}
 
-        {/* Mobile Cart Button */}
-        <MobileCartButton onClick={onCartOpen} theme={theme} label="ตะกร้า" />
+        <MobileNavButton
+          icon={<ShoppingCart size={16} />}
+          onClick={onCartOpen}
+          theme={theme}
+          label="ตะกร้า"
+          badge={cart.reduce((total, item) => total + item.quantity, 0)}
+        />
 
-        {/* Mobile Account Button */}
-        <MobileAccountButton
-          isAuthenticated={isAuthenticated}
+        <MobileNavButton
+          icon={isAuthenticated ? <CircleUserRound size={16} /> : <Power size={16} />}
           onClick={() => (isAuthenticated ? onNavigate('buyerdashboard') : onNavigate('authbuyer'))}
           theme={theme}
           label={isAuthenticated ? 'บัญชี' : 'เข้าสู่ระบบ'}
         />
       </motion.div>
 
-      {/* Search Modal */}
       {seller && (
         <SearchModal
           isOpen={isSearchOpen}
@@ -518,133 +492,152 @@ const NavButton: React.FC<NavButtonProps> = ({
   );
 };
 
-const MobileNavButton: React.FC<MobileNavButtonProps> = ({
-  icon,
-  isActive,
-  onClick,
-  theme,
-  label,
-}) => {
-  const themeUtils = useThemeUtils(theme);
-  const isLight = themeUtils.baseTheme === 'light';
+const MobileNavButton: React.FC<MobileNavButtonProps> = React.memo(
+  ({ icon, isActive = false, onClick, theme, label, badge }) => {
+    const themeUtils = useThemeUtils(theme);
+    const isLight = themeUtils.baseTheme === 'light';
 
-  return (
-    <motion.button
-      onClick={onClick}
-      className={cn(
-        'flex flex-col transition-all duration-300 items-center justify-center relative p-3 min-w-0 flex-1',
-        themeUtils.getButtonRoundednessClass(),
-        isActive
-          ? cn(themeUtils.getButtonClass(), themeUtils.getPrimaryColorClass('border'), 'border-t-2')
-          : 'border-transparent'
-      )}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={label}>
-      <div className="flex flex-col justify-center items-center gap-1">
-        <div
-          className={cn(
-            'transition-colors duration-300',
-            isActive ? themeUtils.getButtonClass() : isLight ? 'text-gray-600' : 'text-gray-400'
-          )}>
-          {icon}
-        </div>
-        <span
-          className={cn(
-            'text-[10px] font-medium transition-all duration-300 truncate max-w-[60px]',
-            isActive ? themeUtils.getButtonClass() : isLight ? 'text-gray-600' : 'text-gray-400'
-          )}>
-          {label}
-        </span>
-      </div>
-    </motion.button>
-  );
-};
+    // Memoize styles for better performance
+    const buttonStyles = useMemo(
+      () => ({
+        container: cn(
+          'flex flex-col transition-all duration-300 items-center justify-center relative min-w-0 flex-1 touch-manipulation',
+          'active:scale-95 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2',
+          themeUtils.getButtonRoundednessClass(),
+          'focus:ring-2 focus:ring-primary/50',
+          isActive
+            ? cn('shadow-sm', isLight ? 'bg-white/60 shadow-black/5' : 'bg-white/5 shadow-white/5')
+            : 'hover:bg-black/5 dark:hover:bg-white/5'
+        ),
+        iconContainer: cn(
+          'flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-300 relative',
+          'transform-gpu will-change-transform',
+          isActive
+            ? cn(themeUtils.getButtonClass(), 'shadow-sm scale-110')
+            : cn(
+                'group-hover:scale-105',
+                isLight ? 'text-gray-600 hover:text-gray-800' : 'text-gray-400 hover:text-gray-200'
+              )
+        ),
+        badge: cn(
+          'absolute -top-1 -right-1 min-w-[16px] h-[16px] flex items-center justify-center rounded-full text-[9px] font-bold shadow-sm',
+          'transform-gpu will-change-transform',
+          themeUtils.getButtonClass(),
+          'border-2',
+          isLight ? 'border-white' : 'border-dark-700'
+        ),
+        label: cn(
+          'text-xs font-medium transition-all duration-300 truncate max-w-[70px] mt-1',
+          'transform-gpu will-change-transform',
+          isActive
+            ? cn(themeUtils.getPrimaryColorClass('text'), 'font-semibold scale-105')
+            : isLight
+            ? 'text-gray-600 group-hover:text-gray-800'
+            : 'text-gray-400 group-hover:text-gray-200'
+        ),
+      }),
+      [isActive, isLight, themeUtils]
+    );
 
-const MobileCartButton: React.FC<MobileCartButtonProps> = ({ onClick, theme, label }) => {
-  const { cart } = useCart();
-  const themeUtils = useThemeUtils(theme);
-  const isLight = themeUtils.baseTheme === 'light';
+    // Animation variants for better performance
+    const buttonVariants = useMemo(
+      () => ({
+        initial: { scale: 1, y: 0 },
+        hover: {
+          scale: 1.05,
+          y: -2,
+          transition: { type: 'spring', stiffness: 400, damping: 25 },
+        },
+        tap: {
+          scale: 0.95,
+          y: 0,
+          transition: { type: 'spring', stiffness: 600, damping: 30 },
+        },
+        active: {
+          scale: 1.02,
+          y: -1,
+          transition: { type: 'spring', stiffness: 300, damping: 20 },
+        },
+      }),
+      []
+    );
 
-  const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+    const iconVariants = useMemo(
+      () => ({
+        initial: { scale: 1, rotate: 0 },
+        hover: {
+          scale: 1.1,
+          rotate: isActive ? 0 : 5,
+          transition: { type: 'spring', stiffness: 400, damping: 25 },
+        },
+        tap: {
+          scale: 0.9,
+          transition: { type: 'spring', stiffness: 600, damping: 30 },
+        },
+      }),
+      [isActive]
+    );
 
-  return (
-    <motion.button
-      onClick={onClick}
-      className={cn(
-        'flex flex-col transition-all duration-300 items-center justify-center relative p-3 min-w-0 flex-1',
-        themeUtils.getButtonRoundednessClass(),
-        'border-transparent'
-      )}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={label}>
-      <div className="flex flex-col justify-center items-center gap-1">
-        <div className="relative">
-          <ShoppingCart size={16} className={cn('transition-colors duration-300')} />
-          <AnimatePresence>
-            {itemCount > 0 && (
+    return (
+      <motion.button
+        onClick={onClick}
+        className={buttonStyles.container}
+        variants={buttonVariants}
+        initial="initial"
+        whileHover="hover"
+        whileTap="tap"
+        animate={isActive ? 'active' : 'initial'}
+        aria-label={`${label}${badge && badge > 0 ? ` (${badge} รายการ)` : ''}`}
+        aria-pressed={isActive || false}
+        tabIndex={0}>
+        <div className="flex flex-col justify-center items-center gap-1.5 p-2 group">
+          <motion.div
+            className={buttonStyles.iconContainer}
+            variants={iconVariants}
+            initial="initial"
+            whileHover="hover"
+            whileTap="tap">
+            {icon}
+            {/* Badge for cart count */}
+            <AnimatePresence>
+              {badge && badge > 0 && (
+                <motion.div
+                  className={buttonStyles.badge}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                  role="status"
+                  aria-live="polite">
+                  {badge > 99 ? '99+' : badge}
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* Active state background */}
+            {isActive && (
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
                 className={cn(
-                  'absolute -top-4 -right-5 w-4 h-4 flex items-center justify-center rounded-full text-[9px] font-aktivGroteskBlack',
-                  themeUtils.getButtonClass()
-                )}>
-                {itemCount > 99 ? '99+' : itemCount}
-              </motion.div>
+                  'absolute inset-0 rounded-lg',
+                  themeUtils.getPrimaryColorClass('bg'),
+                  'opacity-10'
+                )}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 0.1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              />
             )}
-          </AnimatePresence>
+          </motion.div>
+          <motion.span
+            className={buttonStyles.label}
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}>
+            {label}
+          </motion.span>
         </div>
-        <span
-          className={cn(
-            'text-[10px] font-medium transition-all duration-300 truncate max-w-[60px]',
-            isLight ? 'text-gray-600' : 'text-gray-400'
-          )}>
-          {label}
-        </span>
-      </div>
-    </motion.button>
-  );
-};
+      </motion.button>
+    );
+  }
+);
 
-const MobileAccountButton: React.FC<MobileAccountButtonProps> = ({
-  isAuthenticated,
-  onClick,
-  theme,
-  label,
-}) => {
-  const themeUtils = useThemeUtils(theme);
-  const isLight = themeUtils.baseTheme === 'light';
-
-  return (
-    <motion.button
-      onClick={onClick}
-      className={cn(
-        'flex flex-col transition-all duration-300 items-center justify-center relative p-3 min-w-0 flex-1',
-        themeUtils.getButtonRoundednessClass(),
-        'border-transparent'
-      )}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      aria-label={label}>
-      <div className="flex flex-col justify-center items-center gap-1">
-        <div
-          className={cn(
-            'transition-colors duration-300',
-            isLight ? 'text-gray-600' : 'text-gray-400'
-          )}>
-          {isAuthenticated ? <CircleUserRound size={16} /> : <Power size={16} />}
-        </div>
-        <span
-          className={cn(
-            'text-[10px] font-medium transition-all duration-300 truncate max-w-[60px]',
-            isLight ? 'text-gray-600' : 'text-gray-400'
-          )}>
-          {label}
-        </span>
-      </div>
-    </motion.button>
-  );
-};
+MobileNavButton.displayName = 'MobileNavButton';

@@ -3,7 +3,7 @@
 
 import type React from 'react';
 import { useState } from 'react';
-import { LogIn, Loader2, Key, Eye, EyeOff, Mail, UserIcon } from 'lucide-react'; // Renamed User to UserIcon
+import { LogIn, Loader2, Key, Eye, EyeOff, Mail, UserIcon, Info } from 'lucide-react'; // Renamed User to UserIcon
 import { motion } from 'framer-motion';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useClientIP } from '@/hooks/useClientIP';
@@ -163,17 +163,13 @@ export const LoginBuyer: React.FC<LoginBuyerProps> = ({ onNavigate, theme }) => 
           className={cn(
             'mb-6 p-4 border-l-4',
             themeUtils.getComponentRoundednessClass(),
-            'bg-blue-50 border-blue-400 text-blue-700'
+            themeUtils.getPrimaryColorClass('text'),
+            themeUtils.getPrimaryColorClass('bg') + '/10',
+            themeUtils.getPrimaryColorClass('border')
           )}>
           <div className="flex items-start gap-2">
             <div className="flex-shrink-0 mt-0.5">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <Info />
             </div>
             <div>
               <p className="text-xs font-medium mb-1">บัญชีเดียว ใช้ได้ทุกร้าน</p>

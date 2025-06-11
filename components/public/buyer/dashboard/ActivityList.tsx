@@ -608,7 +608,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       ) : (
         <>
           <AnimatePresence>
-            <div className="space-y-5 max-h-[75vh] overflow-y-auto px-5">
+            <div className="space-y-5 max-h-[75vh] overflow-y-auto">
               {visibleActivities.map((activity, index) => (
                 <div
                   onClick={(e) => {
@@ -839,7 +839,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
           </AnimatePresence>
 
           {visibleCount < filteredActivities.length && (
-            <div className="w-full px-5">
+            <div className="w-full">
               <button
                 onClick={handleLoadMoreLocal}
                 disabled={loading}
