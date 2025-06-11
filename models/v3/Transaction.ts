@@ -102,6 +102,14 @@ interface ITransactionModel extends Model<ITransaction> {
     metadata?: Record<string, unknown>
   ): Promise<ITransaction>;
 
+  createPurchaseTransaction(
+    buyerId: Types.ObjectId,
+    sellerId: Types.ObjectId,
+    amount: number,
+    paymentReference: string,
+    metadata?: Record<string, unknown>
+  ): Promise<ITransaction>;
+
   updateTransactionStatus(
     transactionId: string,
     status:
@@ -360,7 +368,7 @@ TransactionSchema.statics.createDepositTransaction = async function (
     status: 'pending',
     metadata: {
       ...metadata,
-      dokmaiCoins: amount, // 1 THB = 1 Dokmai Coin
+      dokmaiCoins: amount,
     },
     statusHistory: [
       {
@@ -368,6 +376,54 @@ TransactionSchema.statics.createDepositTransaction = async function (
         timestamp: new Date(),
       },
     ],
+  });
+};
+
+// Static method to create a purchase transaction
+TransactionSchema.statics.createPurchaseTransaction = async function (
+  buyerId: Types.ObjectId,
+  sellerId: Types.ObjectId,
+  amount: number,
+  paymentReference: string,
+  metadata: Record<string, unknown> = {}
+) {
+  const transactionId = `PUR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+  // Calculate fees for purchase (platform fee)
+  const platformFee = 0; // No platform fee for now
+  const paymentFee = 0; // No payment processing fee for internal transactions
+  const netAmount = amount - platformFee - paymentFee;
+
+  return this.create({
+    transactionId,
+    sourceId: buyerId,
+    sourceType: 'buyer',
+    destinationId: sellerId,
+    destinationType: 'seller',
+    amount,
+    fees: {
+      platform: platformFee,
+      payment: paymentFee,
+      tax: 0,
+    },
+    netAmount,
+    type: 'purchase',
+    category: 'internal',
+    paymentMethod: 'balance',
+    paymentReference,
+    paymentProvider: 'internal',
+    status: 'completed',
+    metadata: {
+      ...metadata,
+      dokmaiCoins: amount,
+    },
+    statusHistory: [
+      {
+        status: 'completed',
+        timestamp: new Date(),
+      },
+    ],
+    completedAt: new Date(),
   });
 };
 

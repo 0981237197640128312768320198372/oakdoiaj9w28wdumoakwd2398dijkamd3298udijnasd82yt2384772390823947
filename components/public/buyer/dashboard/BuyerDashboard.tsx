@@ -9,12 +9,14 @@ import { User } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivitiesWithSWR } from '@/hooks/useBuyerActivitiesWithSWR';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
+import { useBuyerOrderStats } from '@/hooks/useBuyerOrderStats';
 import type { ThemeType } from '@/types';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { DashboardHeader } from './DashboardHeader';
 import DepositForm from './DepositForm';
 import { EditProfileModal } from './EditProfileModal';
+import OrderHistory from '../../store/OrderHistory';
 
 interface BuyerDashboardProps {
   theme: ThemeType | null;
@@ -50,6 +52,8 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     loadMore,
   } = useBuyerActivitiesWithSWR(activityFilter);
 
+  const { orderStats, refetch: refetchOrderStats } = useBuyerOrderStats();
+
   const handleFilterChange = (newFilter: { category?: string; type?: string; search?: string }) => {
     setActivityFilter(newFilter);
     refetch(newFilter);
@@ -58,13 +62,18 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   const refreshAllData = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      await Promise.all([refreshBuyerDetails(), refetch(activityFilter), refreshBalance()]);
+      await Promise.all([
+        refreshBuyerDetails(),
+        refetch(activityFilter),
+        refreshBalance(),
+        refetchOrderStats(),
+      ]);
     } finally {
       setTimeout(() => {
         setIsRefreshing(false);
       }, 500);
     }
-  }, [refreshBuyerDetails, refetch, activityFilter, refreshBalance]);
+  }, [refreshBuyerDetails, refetch, activityFilter, refreshBalance, refetchOrderStats]);
 
   if (!localBuyer) {
     return (
@@ -92,6 +101,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     totalActivities: activities.length,
     completedTransactions: completedTransactions.length,
     interactions: interactionActivities.length,
+    totalOrders: orderStats.totalOrders,
     memberSince: localBuyer.createdAt,
   };
 
@@ -140,18 +150,22 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}>
-                  <ActivityList
-                    activities={activities}
-                    loading={activitiesLoading}
-                    error={activitiesError}
-                    pagination={pagination}
-                    activeTab={activeTab || 'latest'}
-                    filter={activityFilter}
-                    onFilterChange={handleFilterChange}
-                    onLoadMore={loadMore}
-                    onRefresh={() => refetch()}
-                    theme={theme}
-                  />
+                  {activeTab === 'orders' ? (
+                    <OrderHistory theme={theme} />
+                  ) : (
+                    <ActivityList
+                      activities={activities}
+                      loading={activitiesLoading}
+                      error={activitiesError}
+                      pagination={pagination}
+                      activeTab={activeTab || 'latest'}
+                      filter={activityFilter}
+                      onFilterChange={handleFilterChange}
+                      onLoadMore={loadMore}
+                      onRefresh={() => refetch()}
+                      theme={theme}
+                    />
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>

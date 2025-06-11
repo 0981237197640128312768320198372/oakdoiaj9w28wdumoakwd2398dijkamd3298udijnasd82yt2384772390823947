@@ -17,9 +17,7 @@ interface StorePageProps {
 
 export async function generateMetadata(props: StorePageProps) {
   const { subdomain } = await props.params;
-  console.log('Generating metadata for subdomain:', subdomain);
 
-  // Skip metadata generation for invalid subdomains
   const invalidSubdomains = [
     'favicon',
     'www',

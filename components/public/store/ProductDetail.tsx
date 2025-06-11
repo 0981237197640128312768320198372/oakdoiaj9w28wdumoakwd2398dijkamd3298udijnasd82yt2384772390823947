@@ -314,10 +314,22 @@ export default function ProductDetail({
                 src={currentImage}
                 alt={product.title}
                 fill
-                className="object-center w-full h-full"
+                className={cn(
+                  'object-center w-full h-full',
+                  product._stock === 0 ? 'grayscale' : ''
+                )}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
+
+              {/* Sold out overlay */}
+              {product._stock === 0 && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+                  <div className="bg-red-500/15 text-red-500 border-red-500/30 border-[1px] px-6 py-3 rounded-lg font-bold text-2xl shadow-lg  rotate-12">
+                    SOLD
+                  </div>
+                </div>
+              )}
               {product.images.length > 1 && (
                 <>
                   <button
@@ -469,6 +481,7 @@ export default function ProductDetail({
                   theme={theme}
                   className="w-full h-12"
                   imageUrl={product.images[0]}
+                  stock={product._stock || 0}
                 />
               </div>
             </div>

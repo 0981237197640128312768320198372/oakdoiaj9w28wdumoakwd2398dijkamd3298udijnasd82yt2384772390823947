@@ -16,6 +16,7 @@ interface QuantityControlsProps {
   theme: ThemeType | null;
   className?: string;
   imageUrl?: string;
+  stock: number;
 }
 
 const QuantityControls: React.FC<QuantityControlsProps> = ({
@@ -26,6 +27,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   theme,
   className,
   imageUrl,
+  stock,
 }) => {
   const { addToCart, updateQuantity, getCartItemQuantity } = useCart();
   const [showControls, setShowControls] = useState(false);
@@ -38,6 +40,9 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   const handleAddToCart = (e: React.MouseEvent) => {
     // Stop propagation to prevent parent click events (like card navigation)
     e.stopPropagation();
+
+    // Prevent adding to cart if stock is 0
+    if (stock === 0) return;
 
     if (!isInCart) {
       addToCart({
@@ -55,8 +60,15 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
 
   const handleIncrement = (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    // Prevent increment if stock is 0 or would exceed stock
+    if (stock === 0) return;
+
     if (isInCart) {
-      updateQuantity(productId, itemQuantity + 1);
+      // Don't allow quantity to exceed available stock
+      if (itemQuantity < stock) {
+        updateQuantity(productId, itemQuantity + 1, stock);
+      }
     } else {
       addToCart({
         id: productId,
@@ -72,7 +84,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   const handleDecrement = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (itemQuantity > 1) {
-      updateQuantity(productId, itemQuantity - 1);
+      updateQuantity(productId, itemQuantity - 1, stock);
     } else {
       setShowControls(false);
     }
@@ -95,22 +107,39 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
             'p-2 h-full flex items-center justify-center transition-colors',
             isLight ? 'hover:bg-opacity-10 hover:bg-black' : 'hover:bg-opacity-10 hover:bg-white'
           )}>
-          <Minus size={16} className={isLight ? 'text-light-100' : 'text-dark-800'} />
+          <Minus size={16} />
         </button>
 
-        <span className={cn('font-medium', isLight ? 'text-light-100' : 'text-dark-800')}>
-          {itemQuantity || 1}
-        </span>
+        <span className={cn('font-medium')}>{itemQuantity || 1}</span>
 
         <button
           onClick={handleIncrement}
+          disabled={itemQuantity >= stock}
           className={cn(
             'p-2 h-full flex items-center justify-center transition-colors',
-            isLight ? 'hover:bg-opacity-10 hover:bg-black' : 'hover:bg-opacity-10 hover:bg-white'
+            itemQuantity >= stock
+              ? 'opacity-50 cursor-not-allowed'
+              : isLight
+              ? 'hover:bg-opacity-10 hover:bg-black'
+              : 'hover:bg-opacity-10 hover:bg-white'
           )}>
-          <Plus size={16} className={isLight ? 'text-light-100' : 'text-dark-800'} />
+          <Plus size={16} />
         </button>
       </motion.div>
+    );
+  }
+
+  // Don't render add to cart button if stock is 0
+  if (stock === 0) {
+    return (
+      <div
+        className={cn(
+          'flex items-center justify-center gap-1 w-full p-2 rounded-lg opacity-50 cursor-not-allowed',
+          isLight ? 'bg-gray-300 text-gray-500' : 'bg-gray-600 text-gray-400',
+          className
+        )}>
+        สินค้าหมด
+      </div>
     );
   }
 
@@ -124,7 +153,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
         className
       )}>
       เพิ่มลงตะกร้า
-      <ShoppingCart size={18} className={isLight ? 'text-light-100' : 'text-dark-800'} />
+      <ShoppingCart size={18} />
     </button>
   );
 };

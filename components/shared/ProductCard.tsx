@@ -129,9 +129,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         isLight ? 'bg-dark-500/30 hover:bg-dark-500/50' : 'bg-light-500/50 hover:bg-light-500'
       ),
       discountBadge: cn(
-        'absolute top-3 right-1 px-1 py-0.5 rounded text-sm lg:text-lg font-bold animate-bounce pointer-events-none',
-        themeUtils?.getPrimaryColorClass('bg'),
-        isLight ? 'text-light-100' : 'text-dark-800'
+        'absolute top-3 right-1 px-1 py-0.5 rounded text-sm lg:text-lg font-black animate-bounce pointer-events-none',
+        themeUtils.getButtonClass()
       ),
       statusBadge: cn(
         'absolute top-1 left-1 px-2 py-1 text-xs font-medium rounded-full backdrop-blur-sm border',
@@ -165,11 +164,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
         isLight ? 'text-light-100' : 'text-dark-800'
       ),
       actionButton: cn(
-        'relative p-1.5 rounded-full transition-all duration-200 z-10',
-        isLight ? 'text-dark-500 hover:bg-primary/10' : 'text-light-500 hover:bg-primary/10'
+        'relative p-1.5 w-full flex items-center justify-center rounded transition-all duration-200 z-10'
       ),
-      editButton: cn('hover:text-primary'),
-      deleteButton: cn('hover:text-red-500 hover:bg-red-500/10'),
+      editButton: cn('text-primary bg-primary/10 hover:bg-primary/20 py-1 px-2'),
+      deleteButton: cn('text-red-500 bg-red-500/10 hover:bg-red-500/20 py-1 px-2'),
       createdDate: cn(
         'text-xs flex items-center gap-1',
         isLight ? 'text-dark-500' : 'text-light-600'
@@ -209,10 +207,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
           fill
           className={cn(
             'object-contain group-hover:scale-105 transition-transform duration-500 w-full h-full',
-            themeUtils.getComponentRoundednessClass()
+            themeUtils.getComponentRoundednessClass(),
+            product._stock === 0 ? 'grayscale' : ''
           )}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
+
+        {/* Sold out overlay */}
+        {product._stock === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center backdop-blur-sm bg-black/5">
+            <div className="bg-red-500/15 text-red-500 border-red-500/30 border-[1px] px-4 py-2 rounded-lg font-bold text-lg shadow-lg rotate-12">
+              SOLD
+            </div>
+          </div>
+        )}
 
         {product.images.length > 1 && (
           <>
@@ -357,14 +365,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         <div className={styles.footer}>
           {isSeller ? (
-            <div className="flex -space-x-1">
-              <button onClick={handleEdit} className={cn(styles.actionButton, styles.editButton)}>
-                <Edit size={14} />
-              </button>
+            <div className="flex gap-2 w-full justify-between">
               <button
                 onClick={handleDelete}
                 className={cn(styles.actionButton, styles.deleteButton)}>
                 <Trash2 size={14} />
+              </button>
+              <button onClick={handleEdit} className={cn(styles.actionButton, styles.editButton)}>
+                <Edit size={14} />
               </button>
             </div>
           ) : (
@@ -376,6 +384,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 price={discountedPrice}
                 theme={theme}
                 imageUrl={product.images[0]}
+                stock={product._stock || 0}
               />
             </div>
           )}

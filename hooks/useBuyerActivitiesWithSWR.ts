@@ -145,8 +145,15 @@ export function useBuyerActivitiesWithSWR(
     revalidateOnFocus: false,
     dedupingInterval: 5000, // Deduplicate requests within 5 seconds
     onSuccess: (data) => {
-      setLocalActivities(data.activities);
-      setPagination(data.pagination);
+      setLocalActivities(data.activities || []);
+      setPagination(
+        data.pagination || {
+          total: 0,
+          limit: currentFilters?.limit || 20,
+          skip: currentFilters?.skip || 0,
+          hasMore: false,
+        }
+      );
     },
   });
 

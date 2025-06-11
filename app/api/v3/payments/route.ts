@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
     // Validate minimum deposit amount
     if (amount < 10) {
-      return NextResponse.json({ error: 'Minimum deposit amount is 10 THB' }, { status: 400 });
+      return NextResponse.json({ error: 'Minimum deposit amount is 10' }, { status: 400 });
     }
 
     const paymentIntent = await stripe.paymentIntents.create({

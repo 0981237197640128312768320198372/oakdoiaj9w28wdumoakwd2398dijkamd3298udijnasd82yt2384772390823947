@@ -5,7 +5,6 @@ export interface IPayment extends Document {
   buyerId: Types.ObjectId;
   amount: number;
   status: 'pending' | 'processing' | 'succeeded' | 'failed' | 'canceled';
-  currency: string;
   paymentMethod: string;
   metadata?: Record<string, unknown>;
   createdAt: Date;
@@ -38,11 +37,6 @@ const paymentSchema = new Schema<IPayment>(
       default: 'pending',
       required: true,
       index: true,
-    },
-    currency: {
-      type: String,
-      default: 'THB',
-      required: true,
     },
     paymentMethod: {
       type: String,

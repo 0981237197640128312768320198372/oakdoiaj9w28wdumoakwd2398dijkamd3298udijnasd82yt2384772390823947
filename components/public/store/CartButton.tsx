@@ -47,8 +47,7 @@ const CartButton: React.FC<CartButtonProps> = ({ onClick, theme, className }) =>
             exit={{ scale: 0 }}
             className={cn(
               'absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center rounded-full text-[10px] font-bold',
-              themeUtils.getPrimaryColorClass('bg'),
-              isLight ? 'text-white' : 'text-dark-800'
+              themeUtils.getButtonClass()
             )}>
             {itemCount > 99 ? '99+' : itemCount}
           </motion.div>

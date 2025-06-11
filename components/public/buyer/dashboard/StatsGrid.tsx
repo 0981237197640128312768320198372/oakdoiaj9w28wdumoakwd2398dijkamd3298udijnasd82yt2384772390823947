@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import { History, Star, ArrowLeftRight } from 'lucide-react';
+import { History, Star, ArrowLeftRight, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
@@ -12,6 +12,7 @@ interface StatsGridProps {
     totalActivities: number;
     completedTransactions: number;
     interactions: number;
+    totalOrders: number;
     memberSince: string;
   };
   theme: ThemeType | null;
@@ -47,10 +48,18 @@ export const StatsGrid: React.FC<StatsGridProps> = ({ stats, theme, activeTab, o
       color: 'text-yellow-500',
       bgColor: 'bg-yellow-500/20 ',
     },
+    {
+      id: 'orders',
+      icon: Package,
+      label: 'ประวัติการสั่งซื้อ',
+      value: (stats.totalOrders || 0).toString(),
+      color: themeUtils.getPrimaryColorClass('text'),
+      bgColor: themeUtils.getPrimaryColorClass('bg') + '/20',
+    },
   ];
   const isLight = themeUtils.baseTheme === 'light';
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
       {statItems.map((item, index) => (
         <motion.div
           key={item.label}

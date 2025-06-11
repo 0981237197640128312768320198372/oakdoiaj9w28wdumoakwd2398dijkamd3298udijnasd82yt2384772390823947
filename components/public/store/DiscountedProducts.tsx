@@ -28,7 +28,7 @@ export default function DiscountedProducts({
     return products
       .filter((product) => product.discountPercentage > 0)
       .sort((a, b) => b.discountPercentage - a.discountPercentage)
-      .slice(0, 10);
+      .slice(0, 8);
   }, [products]);
 
   const containerVariants = {

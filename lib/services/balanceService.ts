@@ -73,7 +73,7 @@ export class BalanceService {
       status: 'completed',
       metadata: {
         ...metadata,
-        dokmaiCoins: amount, // 1 THB = 1 Dokmai Coin
+        dokmaiCoins: amount,
       },
       statusHistory: [
         {
@@ -291,7 +291,7 @@ export class BalanceService {
         ...metadata,
         sourceBalanceType,
         destinationBalanceType,
-        dokmaiCoins: amount, // 1 THB = 1 Dokmai Coin
+        dokmaiCoins: amount,
       },
       statusHistory: [
         {
@@ -427,7 +427,7 @@ export class BalanceService {
     metadata: Record<string, unknown> = {}
   ) {
     if (amount < 10) {
-      throw new Error('Minimum deposit amount is 10 THB');
+      throw new Error('Minimum deposit amount is 10');
     }
 
     const buyerIdObj = typeof buyerId === 'string' ? new Types.ObjectId(buyerId) : buyerId;

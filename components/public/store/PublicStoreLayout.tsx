@@ -113,7 +113,12 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
           </AnimatePresence>
         </motion.div>
         <StoreFooter seller={seller} theme={theme} />
-        <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} theme={theme} />
+        <CartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          theme={theme}
+          onNavigate={setActivePage}
+        />
       </div>
     </CartProvider>
   );

@@ -29,7 +29,6 @@ export async function createPurchaseActivity(data: {
     },
     metadata: {
       amount: data.amount,
-      currency: 'THB',
       productId: new Types.ObjectId(data.productId),
       productName: data.productName,
       quantity: data.quantity,
@@ -69,7 +68,6 @@ export async function createDepositActivity(data: {
     },
     metadata: {
       amount: data.amount,
-      currency: 'THB',
       paymentMethod: data.paymentMethod,
       transactionId: data.transactionId,
     },
@@ -242,7 +240,6 @@ export async function createWithdrawalActivity(data: {
     },
     metadata: {
       amount: data.amount,
-      currency: 'THB',
       paymentMethod: data.paymentMethod,
       transactionId: data.transactionId,
       bankAccount: data.bankAccount,

@@ -64,15 +64,6 @@ export class PaymentVerificationService {
         };
       }
 
-      // Verify currency
-      if (paymentIntent.currency !== 'thb') {
-        return {
-          isValid: false,
-          paymentIntent,
-          error: `Invalid currency: expected THB, got ${paymentIntent.currency.toUpperCase()}`,
-        };
-      }
-
       // Verify payment method type
       if (!paymentIntent.payment_method_types.includes('promptpay')) {
         return {
@@ -155,7 +146,7 @@ export class PaymentVerificationService {
       return {
         isValid: false,
         paymentIntent,
-        error: 'Deposit amount is below minimum (10 THB)',
+        error: 'Deposit amount is below minimum (10)',
         amount,
       };
     }
@@ -165,7 +156,7 @@ export class PaymentVerificationService {
       return {
         isValid: false,
         paymentIntent,
-        error: 'Deposit amount exceeds maximum (100,000 THB)',
+        error: 'Deposit amount exceeds maximum (100,000)',
         amount,
       };
     }

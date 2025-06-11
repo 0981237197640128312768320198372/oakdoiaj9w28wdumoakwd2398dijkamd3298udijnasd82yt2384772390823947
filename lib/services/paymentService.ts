@@ -23,7 +23,7 @@ export class PaymentService {
     amount: number;
   }> {
     if (amount < 10) {
-      throw new Error('Minimum deposit amount is 10 THB');
+      throw new Error('Minimum deposit amount is 10');
     }
 
     // Ensure database connection
@@ -67,7 +67,6 @@ export class PaymentService {
         buyerId: buyerIdObj,
         amount,
         status: confirmedPaymentIntent.status,
-        currency: 'THB',
         paymentMethod: 'promptpay',
         metadata: {
           email,

@@ -13,7 +13,7 @@ type CartItem = {
 type CartContextType = {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  updateQuantity: (id: string, quantity: number, maxStock?: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
   total: number;
@@ -37,9 +37,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const updateQuantity = (id: string, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number, maxStock?: number) => {
     setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item))
+      prevCart.map((item) => {
+        if (item.id === id) {
+          let newQuantity = Math.max(1, quantity);
+          // If maxStock is provided, don't exceed it
+          if (maxStock !== undefined) {
+            newQuantity = Math.min(newQuantity, maxStock);
+          }
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      })
     );
   };
 

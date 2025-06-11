@@ -28,10 +28,10 @@ export default function LivePreview({ theme, seller }: LivePreviewProps) {
 
   // Mock data for preview
   const mockProducts = [
-    { id: 1, name: 'Product 1', price: '฿299', image: '' },
-    { id: 2, name: 'Product 2', price: '฿199', image: '' },
-    { id: 3, name: 'Product 3', price: '฿399', image: '' },
-    { id: 4, name: 'Product 4', price: '฿499', image: '' },
+    { id: 1, name: 'Product 1', price: '299', image: '' },
+    { id: 2, name: 'Product 2', price: '199', image: '' },
+    { id: 3, name: 'Product 3', price: '399', image: '' },
+    { id: 4, name: 'Product 4', price: '499', image: '' },
   ];
 
   const layoutStyles = {

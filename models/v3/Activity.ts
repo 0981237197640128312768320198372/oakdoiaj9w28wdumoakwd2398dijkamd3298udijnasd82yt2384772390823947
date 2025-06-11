@@ -208,12 +208,12 @@ activitySchema.index({ tags: 1 });
 
 activitySchema.virtual('description').get(function () {
   const descriptions: { [key: string]: string } = {
-    transaction: `Transaction of ${this.metadata.amount} ${this.metadata.currency || 'THB'}`,
+    transaction: `Transaction of ${this.metadata.amount}`,
     review: `Review with rating ${this.metadata.rating}/5`,
     credit: `${this.metadata.creditType} credit: ${this.metadata.creditValue}`,
     purchase: `Purchase of ${this.metadata.productName}`,
-    deposit: `Deposit of ${this.metadata.amount} ${this.metadata.currency || 'THB'}`,
-    withdrawal: `Withdrawal of ${this.metadata.amount} ${this.metadata.currency || 'THB'}`,
+    deposit: `Deposit of ${this.metadata.amount}`,
+    withdrawal: `Withdrawal of ${this.metadata.amount}`,
     login: `Login from ${this.metadata.ipAddress}`,
     message: `Message sent`,
   };
@@ -246,7 +246,6 @@ activitySchema.statics.createTransaction = function (data: {
     },
     metadata: {
       amount: data.amount,
-      currency: 'THB',
       description: data.description,
       transactionId: data.reference,
     },
@@ -335,7 +334,6 @@ activitySchema.statics.createDepositActivity = function (data: {
     },
     metadata: {
       amount: data.amount,
-      currency: 'THB',
       paymentMethod: 'promptpay',
       paymentIntentId: data.paymentIntentId,
       qrCodeData: data.qrCodeData,

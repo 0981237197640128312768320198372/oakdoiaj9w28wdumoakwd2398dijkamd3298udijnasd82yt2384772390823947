@@ -83,7 +83,6 @@ balanceSchema.statics.findOrCreateBalance = async function (
     balance = await this.create({
       ...query,
       amount: 0,
-      currency: 'THB',
       status: 'active',
     });
   }

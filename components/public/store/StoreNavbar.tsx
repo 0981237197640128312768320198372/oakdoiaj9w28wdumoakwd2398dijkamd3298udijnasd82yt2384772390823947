@@ -4,7 +4,16 @@ import type React from 'react';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
-import { Search, Home, Package, LogOut, Power, User, ChevronDown } from 'lucide-react';
+import {
+  Search,
+  Home,
+  Package,
+  LogOut,
+  Power,
+  User,
+  ChevronDown,
+  ShoppingCart,
+} from 'lucide-react';
 import CartButton from './CartButton';
 import SearchModal from './SearchModal';
 import { cn } from '@/lib/utils';
@@ -14,6 +23,7 @@ import { CircleUserRound } from 'lucide-react';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TbInfoHexagon } from 'react-icons/tb';
+import { useCart } from '@/context/CartContext';
 
 interface StoreNavbarProps {
   seller: Seller;
@@ -36,6 +46,19 @@ interface NavButtonProps {
 interface MobileNavButtonProps {
   icon: React.ReactNode;
   isActive: boolean;
+  onClick: () => void;
+  theme: ThemeType | null;
+  label: string;
+}
+
+interface MobileCartButtonProps {
+  onClick: () => void;
+  theme: ThemeType | null;
+  label: string;
+}
+
+interface MobileAccountButtonProps {
+  isAuthenticated: boolean;
   onClick: () => void;
   theme: ThemeType | null;
   label: string;
@@ -175,7 +198,7 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         themeUtils.getButtonRoundednessClass()
       ),
       mobileNav: cn(
-        'fixed flex px-5 backdrop-blur-md items-center justify-between bottom-0 left-0 w-full z-50 transform md:hidden border-t',
+        'fixed flex backdrop-blur-md items-center justify-between bottom-0 left-0 w-full z-50 transform md:hidden border-t',
         isLight
           ? 'bg-white/90 border-light-300 shadow-lg shadow-black/10'
           : 'bg-dark-700/90 border-dark-300 shadow-lg shadow-black/20'
@@ -215,23 +238,27 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             {seller && (
               <div className="flex flex-col items-start">
                 <h1 className={navbarStyles.storeName}>{seller.store.name}</h1>
-                <div className="flex items-center gap-1 mt-0.5">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <span
-                        key={i}
-                        className={cn(
-                          'text-xs',
-                          i < Math.floor(seller.store.rating) ? 'text-yellow-400' : 'text-gray-300'
-                        )}>
-                        ★
-                      </span>
-                    ))}
+                {seller.store.rating ? (
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <span
+                          key={i}
+                          className={cn(
+                            'text-xs',
+                            i < Math.floor(seller.store.rating)
+                              ? 'text-yellow-400'
+                              : 'text-gray-300'
+                          )}>
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                    <span className={cn('text-xs', isLight ? 'text-gray-600' : 'text-gray-400')}>
+                      ({seller.store.rating.toFixed(1)})
+                    </span>
                   </div>
-                  <span className={cn('text-xs', isLight ? 'text-gray-600' : 'text-gray-400')}>
-                    ({seller.store.rating.toFixed(1)})
-                  </span>
-                </div>
+                ) : null}
               </div>
             )}
           </motion.button>
@@ -252,8 +279,10 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
-            {/* Cart Button */}
-            <CartButton onClick={onCartOpen} theme={theme} />
+            {/* Cart Button - Hidden on mobile since it's in mobile nav */}
+            <div className="hidden md:block">
+              <CartButton onClick={onCartOpen} theme={theme} />
+            </div>
 
             {/* Search Button */}
             <motion.button
@@ -281,132 +310,134 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
               </div>
             </motion.button>
 
-            {/* User Authentication */}
-            <AnimatePresence mode="wait">
-              {isAuthenticated ? (
-                <motion.div
-                  key="authenticated"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative"
-                  data-user-menu>
-                  <motion.button
-                    onClick={handleUserMenuToggle}
-                    className={cn(
-                      'flex items-center gap-2 p-2 lg:p-2.5 transition-all duration-300 text-sm relative',
-                      themeUtils.getPrimaryColorClass('border'),
-                      isUserMenuOpen || activePage === 'buyerdashboard'
-                        ? themeUtils.getButtonClass()
-                        : isLight
-                        ? 'hover:bg-light-300 bg-light-100'
-                        : 'hover:bg-dark-500 bg-dark-600',
-                      themeUtils.getButtonRoundednessClass()
-                    )}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    aria-label="เมนูผู้ใช้"
-                    aria-expanded={isUserMenuOpen}>
-                    <CircleUserRound size={16} />
-                    <span className="hidden lg:inline font-medium truncate max-w-[100px]">
-                      {buyer?.username?.split(' ')[0] || buyer?.email?.split('@')[0] || 'ผู้ใช้'}
-                    </span>
-                    <ChevronDown
-                      size={14}
+            {/* User Authentication - Hidden on mobile since it's in mobile nav */}
+            <div className="hidden md:block">
+              <AnimatePresence mode="wait">
+                {isAuthenticated ? (
+                  <motion.div
+                    key="authenticated"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                    className="relative"
+                    data-user-menu>
+                    <motion.button
+                      onClick={handleUserMenuToggle}
                       className={cn(
-                        'transition-transform duration-200 hidden lg:block',
-                        isUserMenuOpen ? 'rotate-180' : ''
+                        'flex items-center gap-2 p-2 lg:p-2.5 transition-all duration-300 text-sm relative',
+                        themeUtils.getPrimaryColorClass('border'),
+                        isUserMenuOpen || activePage === 'buyerdashboard'
+                          ? themeUtils.getButtonClass()
+                          : isLight
+                          ? 'hover:bg-light-300 bg-light-100'
+                          : 'hover:bg-dark-500 bg-dark-600',
+                        themeUtils.getButtonRoundednessClass()
                       )}
-                    />
-                  </motion.button>
-
-                  {/* User Dropdown Menu */}
-                  <AnimatePresence>
-                    {isUserMenuOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      aria-label="เมนูผู้ใช้"
+                      aria-expanded={isUserMenuOpen}>
+                      <CircleUserRound size={16} />
+                      <span className="hidden lg:inline font-medium truncate max-w-[100px]">
+                        {buyer?.name?.split(' ')[0] || buyer?.username}
+                      </span>
+                      <ChevronDown
+                        size={14}
                         className={cn(
-                          'absolute right-0 top-full mt-2 w-48 py-2 shadow-xl border z-50',
-                          isLight ? 'bg-white border-light-200' : 'bg-dark-700 border-dark-500',
-                          themeUtils.getComponentRoundednessClass()
-                        )}>
-                        <div
+                          'transition-transform duration-200 hidden lg:block',
+                          isUserMenuOpen ? 'rotate-180' : ''
+                        )}
+                      />
+                    </motion.button>
+
+                    {/* User Dropdown Menu */}
+                    <AnimatePresence>
+                      {isUserMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.2 }}
                           className={cn(
-                            'px-4 py-2 border-b',
-                            isLight ? 'border-light-200' : 'border-dark-500'
+                            'absolute right-0 top-full mt-2 w-48 py-2 shadow-xl border z-50',
+                            isLight ? 'bg-white border-light-200' : 'bg-dark-700 border-dark-500',
+                            themeUtils.getComponentRoundednessClass()
                           )}>
-                          <p
+                          <div
                             className={cn(
-                              'font-medium text-sm',
-                              isLight ? 'text-dark-800' : 'text-light-100'
+                              'px-4 py-2 border-b',
+                              isLight ? 'border-light-200' : 'border-dark-500'
                             )}>
-                            {buyer?.username || buyer?.email}
-                          </p>
-                          {buyer?.balance !== undefined && buyer?.balance !== null && (
                             <p
                               className={cn(
-                                'text-xs',
-                                isLight ? 'text-dark-600' : 'text-light-400'
+                                'font-medium text-sm',
+                                isLight ? 'text-dark-800' : 'text-light-100'
                               )}>
-                              ยอดเงิน: {buyer.balance.toLocaleString()} บาท
+                              {buyer?.name || buyer?.username}
                             </p>
-                          )}
-                        </div>
+                            {buyer?.balance !== undefined && buyer?.balance !== null && (
+                              <p
+                                className={cn(
+                                  'text-xs',
+                                  isLight ? 'text-dark-600' : 'text-light-400'
+                                )}>
+                                ยอดเงิน: {buyer.balance.amount.toLocaleString()}
+                              </p>
+                            )}
+                          </div>
 
-                        <button
-                          onClick={() => {
-                            onNavigate('buyerdashboard');
-                            setIsUserMenuOpen(false);
-                          }}
-                          className={cn(
-                            'w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200',
-                            isLight
-                              ? 'hover:bg-light-100 text-dark-700'
-                              : 'hover:bg-dark-600 text-light-200'
-                          )}>
-                          <User size={16} />
-                          แดชบอร์ด
-                        </button>
+                          <button
+                            onClick={() => {
+                              onNavigate('buyerdashboard');
+                              setIsUserMenuOpen(false);
+                            }}
+                            className={cn(
+                              'w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200',
+                              isLight
+                                ? 'hover:bg-light-100 text-dark-700'
+                                : 'hover:bg-dark-600 text-light-200'
+                            )}>
+                            <User size={16} />
+                            แดชบอร์ด
+                          </button>
 
-                        <button
-                          onClick={handleLogout}
-                          className={cn(
-                            'w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
-                          )}>
-                          <LogOut size={16} />
-                          ออกจากระบบ
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="unauthenticated"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex items-center gap-2">
-                  <motion.button
-                    onClick={() => onNavigate('authbuyer')}
-                    className={cn(
-                      'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm font-medium',
-                      themeUtils.getButtonClass(),
-                      themeUtils.getButtonRoundednessClass()
-                    )}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}>
-                    <Power size={16} />
-                    <span className="hidden lg:inline">เข้าสู่ระบบ</span>
-                  </motion.button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                          <button
+                            onClick={handleLogout}
+                            className={cn(
+                              'w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors duration-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
+                            )}>
+                            <LogOut size={16} />
+                            ออกจากระบบ
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="unauthenticated"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-center gap-2">
+                    <motion.button
+                      onClick={() => onNavigate('authbuyer')}
+                      className={cn(
+                        'flex items-center gap-2 px-3 py-1.5 transition-all duration-300 text-sm font-medium',
+                        themeUtils.getButtonClass(),
+                        themeUtils.getButtonRoundednessClass()
+                      )}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}>
+                      <Power size={16} />
+                      <span className="hidden lg:inline">เข้าสู่ระบบ</span>
+                    </motion.button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </motion.nav>
@@ -427,6 +458,17 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
             label={item.label}
           />
         ))}
+
+        {/* Mobile Cart Button */}
+        <MobileCartButton onClick={onCartOpen} theme={theme} label="ตะกร้า" />
+
+        {/* Mobile Account Button */}
+        <MobileAccountButton
+          isAuthenticated={isAuthenticated}
+          onClick={() => (isAuthenticated ? onNavigate('buyerdashboard') : onNavigate('authbuyer'))}
+          theme={theme}
+          label={isAuthenticated ? 'บัญชี' : 'เข้าสู่ระบบ'}
+        />
       </motion.div>
 
       {/* Search Modal */}
@@ -442,7 +484,6 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
   );
 };
 
-// NavButton Component
 const NavButton: React.FC<NavButtonProps> = ({
   icon,
   label,
@@ -477,7 +518,6 @@ const NavButton: React.FC<NavButtonProps> = ({
   );
 };
 
-// MobileNavButton Component
 const MobileNavButton: React.FC<MobileNavButtonProps> = ({
   icon,
   isActive,
@@ -505,22 +545,102 @@ const MobileNavButton: React.FC<MobileNavButtonProps> = ({
         <div
           className={cn(
             'transition-colors duration-300',
-            isActive
-              ? themeUtils.getPrimaryColorClass('text')
-              : isLight
-              ? 'text-gray-600'
-              : 'text-gray-400'
+            isActive ? themeUtils.getButtonClass() : isLight ? 'text-gray-600' : 'text-gray-400'
           )}>
           {icon}
         </div>
         <span
           className={cn(
             'text-[10px] font-medium transition-all duration-300 truncate max-w-[60px]',
-            isActive
-              ? themeUtils.getPrimaryColorClass('text')
-              : isLight
-              ? 'text-gray-600'
-              : 'text-gray-400'
+            isActive ? themeUtils.getButtonClass() : isLight ? 'text-gray-600' : 'text-gray-400'
+          )}>
+          {label}
+        </span>
+      </div>
+    </motion.button>
+  );
+};
+
+const MobileCartButton: React.FC<MobileCartButtonProps> = ({ onClick, theme, label }) => {
+  const { cart } = useCart();
+  const themeUtils = useThemeUtils(theme);
+  const isLight = themeUtils.baseTheme === 'light';
+
+  const itemCount = cart.reduce((total, item) => total + item.quantity, 0);
+
+  return (
+    <motion.button
+      onClick={onClick}
+      className={cn(
+        'flex flex-col transition-all duration-300 items-center justify-center relative p-3 min-w-0 flex-1',
+        themeUtils.getButtonRoundednessClass(),
+        'border-transparent'
+      )}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      aria-label={label}>
+      <div className="flex flex-col justify-center items-center gap-1">
+        <div className="relative">
+          <ShoppingCart size={16} className={cn('transition-colors duration-300')} />
+          <AnimatePresence>
+            {itemCount > 0 && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                className={cn(
+                  'absolute -top-4 -right-5 w-4 h-4 flex items-center justify-center rounded-full text-[9px] font-aktivGroteskBlack',
+                  themeUtils.getButtonClass()
+                )}>
+                {itemCount > 99 ? '99+' : itemCount}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <span
+          className={cn(
+            'text-[10px] font-medium transition-all duration-300 truncate max-w-[60px]',
+            isLight ? 'text-gray-600' : 'text-gray-400'
+          )}>
+          {label}
+        </span>
+      </div>
+    </motion.button>
+  );
+};
+
+const MobileAccountButton: React.FC<MobileAccountButtonProps> = ({
+  isAuthenticated,
+  onClick,
+  theme,
+  label,
+}) => {
+  const themeUtils = useThemeUtils(theme);
+  const isLight = themeUtils.baseTheme === 'light';
+
+  return (
+    <motion.button
+      onClick={onClick}
+      className={cn(
+        'flex flex-col transition-all duration-300 items-center justify-center relative p-3 min-w-0 flex-1',
+        themeUtils.getButtonRoundednessClass(),
+        'border-transparent'
+      )}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      aria-label={label}>
+      <div className="flex flex-col justify-center items-center gap-1">
+        <div
+          className={cn(
+            'transition-colors duration-300',
+            isLight ? 'text-gray-600' : 'text-gray-400'
+          )}>
+          {isAuthenticated ? <CircleUserRound size={16} /> : <Power size={16} />}
+        </div>
+        <span
+          className={cn(
+            'text-[10px] font-medium transition-all duration-300 truncate max-w-[60px]',
+            isLight ? 'text-gray-600' : 'text-gray-400'
           )}>
           {label}
         </span>

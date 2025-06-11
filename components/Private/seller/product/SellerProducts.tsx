@@ -90,7 +90,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
     <>
       <div className="space-y-8 animate-fade-in mb-5">
         <Tabs defaultValue="products" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="w-full max-w-md mx-auto my-5 bg-dark-700 p-1 rounded-full">
+          <TabsList className="w-full max-w-md mx-auto my-5 bg-dark-700 p-1 rounded-full border-[1px] border-dark-500">
             <TabsTrigger
               value="products"
               className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">

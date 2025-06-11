@@ -91,20 +91,14 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
               <div className="flex items-center gap-3 w-full">
                 <div
                   className={cn(
-                    'relative w-12 h-12 overflow-hidden bg-cover bg-center flex-shrink-0 border-[1px]',
-                    themeUtils.getComponentRoundednessClass(),
-                    themeUtils.baseTheme === 'light' ? 'border-light-300' : 'border-dark-400'
+                    'relative w-12 h-12 overflow-hidden bg-cover bg-center flex-shrink-0 '
                   )}>
                   <Image
                     src={seller?.store?.logoUrl || dokmailogosquare}
                     alt={seller?.store?.name || 'Store logo'}
                     width={100}
                     height={100}
-                    className={cn(
-                      'w-full h-full overflow-hidden object-cover border-[1px]',
-                      themeUtils.getComponentRoundednessClass(),
-                      themeUtils.baseTheme === 'light' ? 'border-light-400' : 'border-dark-600'
-                    )}
+                    className={cn('w-full h-full overflow-hidden object-cover')}
                   />
                 </div>
                 <div className="flex flex-col">

@@ -119,7 +119,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     }
   );
 
-  const displayedBalance =
+  const displayedBalance = Math.round(
     balanceData !== undefined
       ? typeof balanceData === 'object' && balanceData
         ? balanceData.amount
@@ -130,7 +130,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       ? localBuyer.balance.amount
       : typeof localBuyer.balance === 'number'
       ? localBuyer.balance
-      : 0;
+      : 0
+  );
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
@@ -170,8 +171,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   <Image
                     src={localBuyer.avatarUrl}
                     alt={localBuyer.name || 'User'}
-                    width={96}
-                    height={96}
+                    width={20}
+                    height={20}
                     className={cn(
                       'w-20 h-20 md:w-24 md:h-24 border-[1px] rounded-full',
                       themeUtils.getPrimaryColorClass('border')

@@ -91,7 +91,7 @@ export default function ProductForm({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn p-5 border-[1px] border-dark-500 rounded-lg">
+    <div className="space-y-5 animate-fadeIn p-5 border-[1px] border-dark-500 rounded-lg">
       <div className="grid gap-5  p-5">
         {/* Title field */}
         <FormField id="title" label="Product Title" error={formErrors.title}>

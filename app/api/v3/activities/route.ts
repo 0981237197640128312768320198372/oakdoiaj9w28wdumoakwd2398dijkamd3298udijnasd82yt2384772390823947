@@ -64,20 +64,47 @@ export async function GET(request: NextRequest) {
       const category = searchParams.get('category');
       const type = searchParams.get('type');
       const status = searchParams.get('status');
+      const search = searchParams.get('search');
+      const limit = parseInt(searchParams.get('limit') || '20');
+      const skip = parseInt(searchParams.get('skip') || '0');
 
       const userType = searchParams.get('userType') || 'buyer';
 
       const query: any = {};
 
       if (userType === 'buyer') {
-        query['actors.primary.id'] = userId;
+        query['actors.primary.id'] = new Types.ObjectId(userId);
       } else {
-        query.$or = [{ 'actors.primary.id': userId }, { 'actors.secondary.id': userId }];
+        query.$or = [
+          { 'actors.primary.id': new Types.ObjectId(userId) },
+          { 'actors.secondary.id': new Types.ObjectId(userId) },
+        ];
       }
 
       if (category) query.category = category;
       if (type) query.type = type;
       if (status) query.status = status;
+
+      // Add search functionality
+      if (search) {
+        const searchConditions = [
+          { 'metadata.productName': { $regex: search, $options: 'i' } },
+          { 'metadata.orderNumber': { $regex: search, $options: 'i' } },
+          { 'metadata.description': { $regex: search, $options: 'i' } },
+          { type: { $regex: search, $options: 'i' } },
+        ];
+
+        if (query.$or) {
+          // If we already have $or conditions (for user access), combine them with AND
+          query.$and = [{ $or: query.$or }, { $or: searchConditions }];
+          delete query.$or;
+        } else {
+          query.$or = searchConditions;
+        }
+      }
+
+      // Get total count for pagination
+      const total = await Activity.countDocuments(query);
 
       const activities = await Activity.find(query)
         .populate({
@@ -85,7 +112,9 @@ export async function GET(request: NextRequest) {
           select: 'username store.name store.logoUrl',
           model: 'Seller',
         })
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
       const formattedActivities = activities.map((activity) => ({
         id: activity._id,
@@ -107,6 +136,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         success: true,
         activities: formattedActivities,
+        pagination: {
+          total,
+          limit,
+          skip,
+          hasMore: skip + limit < total,
+        },
       });
     }
   } catch (error) {

@@ -5,27 +5,31 @@ import { useThemeUtils } from '@/lib/theme-utils';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { ThemeType } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, ShoppingCart, Trash2, CreditCard } from 'lucide-react';
+import { X, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
-import ButtonWithLoader from '@/components/ui/ButtonWithLoader';
+import CheckoutButton from './CheckoutButton';
 
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   theme: ThemeType | null;
+  onNavigate?: (page: string) => void;
 }
 
-const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme }) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme, onNavigate }) => {
   const { cart, updateQuantity, removeFromCart, total, clearCart } = useCart();
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
   const dokmaiCoin = dokmaiCoinSymbol(isLight);
-  const handleCheckout = () => {
-    // Implement checkout logic here
-    console.log('Proceeding to checkout with items:', cart);
-    // For now, we'll just close the drawer
+  const handleCheckoutSuccess = () => {
+    // Close drawer on successful checkout
     onClose();
+  };
+
+  const handleCheckoutError = (error: string) => {
+    console.error('Checkout error:', error);
+    // You can add toast notification here if needed
   };
   return (
     <AnimatePresence>
@@ -217,19 +221,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme }) => {
                   </div>
                 </div>
 
-                <ButtonWithLoader
-                  onClick={handleCheckout}
-                  className={cn(
-                    'w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg hover:scale-[1.02]',
-                    themeUtils.getButtonClass(),
-                    themeUtils.getPrimaryColorClass('bg')
-                  )}>
-                  <CreditCard size={20} />
-                  <span>ดำเนินการชำระเงิน</span>
-                  <div className="flex items-center gap-1 ml-1">
-                    <span className="font-bold">{total.toLocaleString()}</span>
-                  </div>
-                </ButtonWithLoader>
+                <CheckoutButton
+                  theme={theme}
+                  onSuccess={handleCheckoutSuccess}
+                  onError={handleCheckoutError}
+                  onNavigate={onNavigate}
+                />
               </div>
             )}
           </motion.div>

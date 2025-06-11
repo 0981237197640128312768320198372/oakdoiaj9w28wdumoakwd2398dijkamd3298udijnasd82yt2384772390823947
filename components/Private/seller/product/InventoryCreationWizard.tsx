@@ -274,6 +274,7 @@ const InventoryCreationWizard: React.FC<InventoryCreationWizardProps> = ({
                               </label>
                               <input
                                 type="text"
+                                required
                                 value={asset[key] || ''}
                                 onChange={(e) =>
                                   handleDigitalAssetChange(assetIndex, key, e.target.value)

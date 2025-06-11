@@ -30,7 +30,7 @@ interface Buyer {
   personalKey?: string;
   avatarUrl?: string;
   contact: BuyerContact;
-  balance: Balance | number | null;
+  balance: Balance | null;
   createdAt: string;
   updatedAt: string;
   iat?: number;

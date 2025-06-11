@@ -170,7 +170,8 @@ export const ActivityList: React.FC<ActivityListProps> = ({
         case 'deposit':
           return `เติมเงิน ${metadata.amount} Dokmai Coin`;
         case 'purchase':
-          return `ซื้อ ${metadata.productName || 'สินค้าที่ไม่รู้จัก'}`;
+          const productName = metadata.productName || 'สินค้าที่ไม่รู้จัก';
+          return `${productName}`;
         default:
           return `${type.charAt(0).toUpperCase() + type.slice(1)} การชำระเงิน`;
       }
@@ -198,6 +199,36 @@ export const ActivityList: React.FC<ActivityListProps> = ({
       }
     }
     return `${type.charAt(0).toUpperCase() + type.slice(1)} กิจกรรม`;
+  };
+
+  const renderPurchaseActivityDetails = (activity: any) => {
+    const { metadata } = activity;
+    const quantity = metadata.quantity || 1;
+    const amount = metadata.amount || 0;
+    const storeName = metadata.sellerName || 'ไม่ระบุร้านค้า';
+    const orderId = metadata.orderId || metadata.orderNumber || 'ไม่ระบุ';
+
+    return (
+      <div className="flex flex-col gap-1 text-xs">
+        <div className="flex items-center justify-between">
+          <span className={cn('font-medium', themeUtils.getTextColors())}>
+            จำนวน: {quantity} ชิ้น
+          </span>
+          <span className={cn('font-bold', themeUtils.getTextColors())}>
+            {amount.toLocaleString()} เหรียญ
+          </span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className={cn(themeUtils.getTextColors())}>ร้านค้า: {storeName}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className={cn('font-mono text-xs', themeUtils.getTextColors())}>#{orderId}</span>
+          <span className={cn('text-xs', themeUtils.getTextColors())}>
+            {formatDate(activity.createdAt)}
+          </span>
+        </div>
+      </div>
+    );
   };
 
   // Function to get metadata display name
@@ -608,35 +639,39 @@ export const ActivityList: React.FC<ActivityListProps> = ({
                           )}>
                           {getActivityDescription(activity)}
                         </p>
-                        <div
-                          className={cn(
-                            'flex flex-wrap items-center gap-1 sm:gap-2 text-xs mt-0.5',
-                            themeUtils.getTextColors()
-                          )}>
-                          <div className="flex items-center gap-1">
-                            {getStatusIcon(activity.status)}
-                            <span className="capitalize">{activity.status}</span>
-                          </div>
-
-                          {activity.metadata.ipAddress && (
-                            <div
-                              className={cn(
-                                'flex items-center gap-1 ml-1 sm:ml-2 px-1.5 py-0.5 rounded border',
-                                themeUtils.baseTheme === 'light'
-                                  ? ' bg-light-100 border-light-400'
-                                  : ' bg-dark-600 border-dark-400',
-                                themeUtils.getTextColors()
-                              )}>
-                              <Globe
-                                size={12}
-                                className={themeUtils.getPrimaryColorClass('text')}
-                              />
-                              <span className="font-mono text-xs">
-                                {formatIpAddress(activity.metadata.ipAddress)}
-                              </span>
+                        {activity.type === 'purchase' && activity.category === 'financial' ? (
+                          renderPurchaseActivityDetails(activity)
+                        ) : (
+                          <div
+                            className={cn(
+                              'flex flex-wrap items-center gap-1 sm:gap-2 text-xs mt-0.5',
+                              themeUtils.getTextColors()
+                            )}>
+                            <div className="flex items-center gap-1">
+                              {getStatusIcon(activity.status)}
+                              <span className="capitalize">{activity.status}</span>
                             </div>
-                          )}
-                        </div>
+
+                            {activity.metadata.ipAddress && (
+                              <div
+                                className={cn(
+                                  'flex items-center gap-1 ml-1 sm:ml-2 px-1.5 py-0.5 rounded border',
+                                  themeUtils.baseTheme === 'light'
+                                    ? ' bg-light-100 border-light-400'
+                                    : ' bg-dark-600 border-dark-400',
+                                  themeUtils.getTextColors()
+                                )}>
+                                <Globe
+                                  size={12}
+                                  className={themeUtils.getPrimaryColorClass('text')}
+                                />
+                                <span className="font-mono text-xs">
+                                  {formatIpAddress(activity.metadata.ipAddress)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
 
