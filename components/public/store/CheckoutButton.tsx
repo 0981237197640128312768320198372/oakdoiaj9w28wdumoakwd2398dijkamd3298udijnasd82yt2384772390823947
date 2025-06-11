@@ -143,7 +143,7 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({ theme, onSuccess, onErr
             ? 'bg-light-200 border-light-300 text-dark-600'
             : 'bg-dark-700 border-dark-600 text-light-400'
         )}>
-        <p className="text-sm">Please login to checkout</p>
+        <p className="text-sm">กรุณาเข้าสู่ระบบก่อนเพื่อชำระเงิน</p>
       </div>
     );
   }

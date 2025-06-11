@@ -47,7 +47,6 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   const [showControls, setShowControls] = useState(false);
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
-
   const itemQuantity = getCartItemQuantity(productId);
   const isInCart = itemQuantity > 0;
 

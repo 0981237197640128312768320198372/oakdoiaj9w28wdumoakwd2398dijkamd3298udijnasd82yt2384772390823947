@@ -71,7 +71,7 @@ export default function ProductDetail({
       prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
     );
   };
-
+  console.log(product);
   const getStyles = () => {
     return {
       container: cn(

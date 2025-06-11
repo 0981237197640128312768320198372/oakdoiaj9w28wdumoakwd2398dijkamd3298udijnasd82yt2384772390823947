@@ -3,12 +3,11 @@
 
 import { useCart } from '@/context/CartContext';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { cn, dokmaiCoinSymbol } from '@/lib/utils';
+import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
 import { ThemeType } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import CheckoutButton from './CheckoutButton';
 
 interface CartDrawerProps {
@@ -30,7 +29,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
   const dokmaiCoin = dokmaiCoinSymbol(isLight);
-
+  const imagePlaceholder = dokmaiImagePlaceholder(isLight);
   const handleCheckoutSuccess = (orderData: any) => {
     console.log('🎉 CartDrawer received order success:', orderData);
     // Pass order data up to parent instead of just closing drawer
@@ -123,13 +122,25 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
                         isLight ? 'bg-light-200' : 'bg-dark-700'
                       )}>
                       {/* Product Image */}
-                      <div className="relative w-16 h-16 overflow-hidden rounded-lg flex-shrink-0 flex items-center justify-center">
+                      <div
+                        className={cn(
+                          'relative w-16 h-16 overflow-hidden rounded-lg flex-shrink-0 flex items-center justify-center',
+                          isLight ? 'bg-light-200' : 'bg-dark-600'
+                        )}>
                         <Image
-                          src={item.imageUrl || dokmailogosquare}
+                          src={item.imageUrl || imagePlaceholder}
                           alt={item.appName}
                           fill
                           className="object-contain p-1"
                           sizes="64px"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (typeof imagePlaceholder === 'string') {
+                              target.src = imagePlaceholder;
+                            } else {
+                              target.src = imagePlaceholder.src;
+                            }
+                          }}
                         />
                       </div>
 
