@@ -9,6 +9,7 @@ import { Transaction } from '@/models/v3/Transaction';
 import { Activity } from '@/models/v3/Activity';
 import { Types } from 'mongoose';
 import { headers } from 'next/headers';
+import { formatPrice } from '@/lib/utils';
 
 interface CartItem {
   productId: string;
@@ -225,7 +226,7 @@ export async function POST(request: NextRequest) {
           quantity: item.quantity,
           unitPrice: item.price,
           totalPrice: itemTotal,
-          digitalAssets: [], // Will be populated on completion
+          digitalAssets: [],
         };
       });
 
@@ -275,9 +276,8 @@ export async function POST(request: NextRequest) {
           metadata: {
             productName,
             quantity: totalQuantity,
-            amount: totalAmount,
+            amount: formatPrice(totalAmount),
             sellerName: seller.store?.name || 'Store Name Error',
-            description: `ซื้อ ${productName} (${totalQuantity} ชิ้น) - ${totalAmount.toLocaleString()} เหรียญ`,
           },
           references: {
             order: order._id,
@@ -317,6 +317,7 @@ export async function POST(request: NextRequest) {
           orderId: order.orderId,
           status: 'completed',
           total: totalAmount,
+          storeName: seller.store?.name || 'ไม่ระบุชื่อร้าน',
           items: cartItems.map((item) => ({
             productTitle: item.productTitle,
             quantity: item.quantity,
@@ -498,7 +499,11 @@ async function confirmOrder(orderId: string) {
 // Helper function to send LINE notification to seller
 async function sendSellerNotification(
   seller: SellerGroup['seller'],
-  buyer: { username?: string; email: string },
+  buyer: {
+    name: string;
+    username?: string;
+    email: string;
+  },
   order: { orderId: string },
   cartItems: CartItemForOrder[]
 ) {
@@ -508,11 +513,10 @@ async function sendSellerNotification(
       return;
     }
 
-    const buyerName = buyer.username || buyer.email;
+    const buyerName = buyer.name || buyer.username;
     const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    // Handle multiple products
     const productName =
       cartItems.length > 1
         ? `${cartItems[0].productTitle} และอีก ${cartItems.length - 1} รายการ`

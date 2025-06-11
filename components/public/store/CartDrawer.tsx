@@ -15,16 +15,25 @@ interface CartDrawerProps {
   onClose: () => void;
   theme: ThemeType | null;
   onNavigate?: (page: string) => void;
+  onOrderSuccess?: (orderData: any) => void;
 }
 
-const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, theme, onNavigate }) => {
+const CartDrawer: React.FC<CartDrawerProps> = ({
+  isOpen,
+  onClose,
+  theme,
+  onNavigate,
+  onOrderSuccess,
+}) => {
   const { cart, updateQuantity, removeFromCart, total, clearCart } = useCart();
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
   const dokmaiCoin = dokmaiCoinSymbol(isLight);
-  const handleCheckoutSuccess = () => {
-    // Close drawer on successful checkout
-    onClose();
+
+  const handleCheckoutSuccess = (orderData: any) => {
+    console.log('🎉 CartDrawer received order success:', orderData);
+    // Pass order data up to parent instead of just closing drawer
+    onOrderSuccess?.(orderData);
   };
 
   const handleCheckoutError = (error: string) => {

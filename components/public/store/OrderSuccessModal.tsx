@@ -41,8 +41,17 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   const isLight = themeUtils.baseTheme === 'light';
   const dokmaiCoin = dokmaiCoinSymbol(isLight);
 
+  // Debug logging
+  console.log('🎭 OrderSuccessModal render:', {
+    isOpen,
+    hasOrderData: !!orderData,
+    orderData,
+    theme: theme?.baseTheme || 'no theme',
+  });
+
   // Early return after hooks are called
   if (!isOpen) {
+    console.log('🚫 Modal not open, returning null');
     return null;
   }
 
@@ -102,7 +111,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 h-screen w-screen z-[99999] flex flex-col justify-center items-center backdrop-blur-md bg-dark-800/30 animate-fade-in">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}

@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StoreNavbar } from './StoreNavbar';
 import CartDrawer from './CartDrawer';
+import OrderSuccessModal from './OrderSuccessModal';
 import { CartProvider } from '@/context/CartContext';
 import PublicStoreProfile from './PublicStoreProfile';
 import StoreProducts from './StoreProducts';
@@ -36,6 +37,8 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   const [loaded, setLoaded] = useState(false);
   const [activePage, setActivePage] = useState('home');
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderSuccessData, setOrderSuccessData] = useState<any>(null);
 
   const themeUtils = useThemeUtils(theme);
   const { isAuthenticated, buyer, logout } = useBuyerAuth();
@@ -46,6 +49,28 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
     }, 100);
     return () => clearTimeout(timer);
   }, []);
+
+  // Handle order success from checkout
+  const handleOrderSuccess = (orderData: any) => {
+    console.log('🎉 Order success received in PublicStoreLayout:', orderData);
+    setOrderSuccessData(orderData);
+    setShowOrderModal(true);
+    setIsCartOpen(false); // Close cart drawer
+  };
+
+  // Handle closing order modal
+  const handleCloseOrderModal = () => {
+    console.log('🚪 Closing order modal');
+    setShowOrderModal(false);
+    setOrderSuccessData(null);
+  };
+
+  // Handle view order details
+  const handleViewOrderDetails = () => {
+    console.log('👁️ View order details requested');
+    handleCloseOrderModal();
+    setActivePage('buyerdashboard');
+  };
 
   const renderContent = () => {
     switch (activePage) {
@@ -118,7 +143,19 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
           onClose={() => setIsCartOpen(false)}
           theme={theme}
           onNavigate={setActivePage}
+          onOrderSuccess={handleOrderSuccess}
         />
+
+        {/* Order Success Modal */}
+        {showOrderModal && orderSuccessData && (
+          <OrderSuccessModal
+            isOpen={showOrderModal}
+            onClose={handleCloseOrderModal}
+            orderData={orderSuccessData}
+            theme={theme}
+            onViewOrderDetails={handleViewOrderDetails}
+          />
+        )}
       </div>
     </CartProvider>
   );
