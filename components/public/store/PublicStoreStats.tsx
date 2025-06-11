@@ -8,7 +8,7 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import { PublicInfoSection } from './PublicInfoSection';
 import { Star, ThumbsDown, ThumbsUp, TrendingUp, Package, ShoppingCart } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 
 interface PublicStoreStatsProps {
@@ -28,7 +28,7 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
   const totalSales = 0;
   const totalCredits = credits.positive + credits.negative;
   const positivePercentage =
-    totalCredits > 0 ? Math.round((credits.positive / totalCredits) * 100) : 0;
+    totalCredits > 0 ? formatPrice((credits.positive / totalCredits) * 100) : 0;
 
   return (
     <PublicInfoSection title="สถิติร้าน" icon={<TrendingUp className="w-4 h-4" />} theme={theme}>

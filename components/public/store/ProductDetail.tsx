@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import QuantityControls from './QuantityControls';
 import { Product, Category, ThemeType } from '@/types';
-import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
+import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import RelatedProducts from './RelatedProducts';
 
@@ -325,7 +325,7 @@ export default function ProductDetail({
               {/* Sold out overlay */}
               {product._stock === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-                  <div className="bg-red-500/15 text-red-500 border-red-500/30 border-[1px] px-6 py-3 rounded-lg font-bold text-2xl shadow-lg  rotate-12">
+                  <div className="bg-red-500/20 text-red-500 border-red-500/30 border-[1px] px-6 py-3 rounded-lg font-bold text-2xl shadow-lg  rotate-12">
                     SOLD
                   </div>
                 </div>
@@ -423,7 +423,7 @@ export default function ProductDetail({
                       width={50}
                       height={50}
                     />
-                    {product.price.toFixed(2)}
+                    {formatPrice(product.price)}
                   </span>
                   <span className={styles.discountedPrice}>
                     <Image
@@ -433,7 +433,7 @@ export default function ProductDetail({
                       width={50}
                       height={50}
                     />
-                    {discountedPrice.toFixed(2)}
+                    {formatPrice(discountedPrice)}
                   </span>
                 </>
               ) : (

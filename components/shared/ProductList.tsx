@@ -15,7 +15,7 @@ import {
   ShoppingBag,
 } from 'lucide-react';
 import ProductCard from './ProductCard';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { AiOutlineProduct } from 'react-icons/ai';
 
@@ -297,7 +297,7 @@ const ProductList: React.FC<ProductListProps> = ({
             <p className={styles.statsValue}>{activeProducts}</p>
             <div className={styles.statsSubtext}>
               {activeProducts > 0
-                ? `${Math.round((activeProducts / totalProducts) * 100)}% of products active`
+                ? `${formatPrice((activeProducts / totalProducts) * 100)}% of products active`
                 : 'No active products'}
             </div>
             {totalProducts > 0 && (
@@ -308,7 +308,9 @@ const ProductList: React.FC<ProductListProps> = ({
                 )}>
                 <div
                   className="bg-green-500 h-1.5 rounded-full transition-all duration-500"
-                  style={{ width: `${Math.round((activeProducts / totalProducts) * 100)}%` }}></div>
+                  style={{
+                    width: `${formatPrice((activeProducts / totalProducts) * 100)}%`,
+                  }}></div>
               </div>
             )}
           </div>
@@ -324,7 +326,7 @@ const ProductList: React.FC<ProductListProps> = ({
             <p className={styles.statsValue}>{totalCategories}</p>
             <div className={styles.statsSubtext}>
               {totalCategories > 0 && categories.length > 0
-                ? `${Math.round(
+                ? `${formatPrice(
                     (totalCategories / categories.length) * 100
                   )}% of available categories used`
                 : 'No categories used'}
@@ -338,7 +340,7 @@ const ProductList: React.FC<ProductListProps> = ({
                 <div
                   className="bg-purple-500 h-1.5 rounded-full transition-all duration-500"
                   style={{
-                    width: `${Math.round((totalCategories / categories.length) * 100)}%`,
+                    width: `${formatPrice((totalCategories / categories.length) * 100)}%`,
                   }}></div>
               </div>
             )}

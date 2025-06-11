@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import dokmaicoin from '@/assets/images/dokmaicoin3d.png';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { FiDelete } from 'react-icons/fi';
 
@@ -320,7 +320,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
                                 <>
                                   <span
                                     className={cn('line-through mr-1', modalStyles.secondaryText)}>
-                                    {result.price}
+                                    {formatPrice(result.price)}
                                   </span>
                                   {result.discountedPrice}
                                 </>

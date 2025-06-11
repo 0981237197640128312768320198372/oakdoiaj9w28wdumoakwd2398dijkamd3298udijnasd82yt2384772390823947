@@ -1,3 +1,4 @@
+import { formatPrice } from '@/lib/utils';
 import { Schema, model, Document, Types, Model } from 'mongoose';
 
 interface IStatusHistory {
@@ -327,7 +328,6 @@ TransactionSchema.pre('save', function (next) {
   next();
 });
 
-// Static method to create a deposit transaction
 TransactionSchema.statics.createDepositTransaction = async function (
   buyerId: Types.ObjectId,
   amount: number,
@@ -343,7 +343,7 @@ TransactionSchema.statics.createDepositTransaction = async function (
 
   if (paymentMethod === 'stripe') {
     // Stripe typically charges 2.9% + 30 cents
-    paymentFee = Math.round(amount * 0.029 + 30);
+    paymentFee = parseFloat(formatPrice(amount * 0.029 + 30));
   }
 
   const netAmount = amount - platformFee - paymentFee;

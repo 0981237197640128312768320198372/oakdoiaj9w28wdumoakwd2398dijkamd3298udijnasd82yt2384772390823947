@@ -34,7 +34,7 @@ import {
   DollarSign,
   ShoppingBag,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
 
@@ -313,7 +313,7 @@ export const ActivityList: React.FC<ActivityListProps> = ({
     }
 
     if ((key === 'amount' || key === 'price') && typeof value === 'number') {
-      return <span className="font-medium">{value}</span>;
+      return <span className="font-medium">{formatPrice(value)}</span>;
     }
 
     // Format dates

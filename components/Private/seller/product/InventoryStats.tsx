@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link, Link2Off, BarChart3 } from 'lucide-react';
 import { HiOutlineInboxStack } from 'react-icons/hi2';
+import { formatPrice } from '@/lib/utils';
 
 interface InventoryStatsProps {
   totalInventory: number;
@@ -18,12 +19,12 @@ const InventoryStats: React.FC<InventoryStatsProps> = ({
 }) => {
   // Calculate percentages for the progress bars
   const linkedPercentage =
-    totalInventory > 0 ? Math.round((linkedItems / totalInventory) * 100) : 0;
+    totalInventory > 0 ? formatPrice((linkedItems / totalInventory) * 100) : 0;
   const unlinkedPercentage =
-    totalInventory > 0 ? Math.round((unlinkedItems / totalInventory) * 100) : 0;
+    totalInventory > 0 ? formatPrice((unlinkedItems / totalInventory) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
       <div className="bg-dark-600 rounded-xl p-4 border border-dark-400 shadow-sm hover:shadow-md transition-all duration-300 hover:border-dark-500">
         <div className="flex items-center justify-between">
           <h3 className="text-light-300 text-sm font-medium">Total Inventory</h3>

@@ -358,3 +358,8 @@ export const dokmaiCoinSymbol = (isLight: boolean) => {
 export const dokmaiImagePlaceholder = (isLight: boolean) => {
   return isLight ? noImageWhite : noImageBlack;
 };
+
+export const formatPrice = (price: number): string => {
+  const rounded = Math.round((price + Number.EPSILON) * 100) / 100;
+  return rounded.toFixed(2);
+};

@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Star, Edit, Trash2, AlertTriangle, Check } f
 import QuantityControls from '@/components/public/store/QuantityControls';
 import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
-import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder } from '@/lib/utils';
+import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 
 interface ProductCardProps {
@@ -216,7 +216,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {/* Sold out overlay */}
         {product._stock === 0 && (
           <div className="absolute inset-0 flex items-center justify-center backdop-blur-sm bg-black/5">
-            <div className="bg-red-500/15 text-red-500 border-red-500/30 border-[1px] px-4 py-2 rounded-lg font-bold text-lg shadow-lg rotate-12">
+            <div className="bg-red-500/20 text-red-500 border-red-500/30 border-[1px] px-4 py-2 rounded-lg font-bold text-lg shadow-lg rotate-12">
               SOLD
             </div>
           </div>
@@ -341,7 +341,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                       width={50}
                       height={50}
                     />
-                    {discountedPrice.toFixed(2)}
+                    {formatPrice(discountedPrice)}
                   </span>
                 </div>
               ) : (

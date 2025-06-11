@@ -29,9 +29,9 @@ const InventorySearch: React.FC<InventorySearchProps> = ({
   };
 
   return (
-    <div className="w-full space-y-3">
-      <div className="flex flex-col gap-3 w-full">
-        <div className="flex flex-wrap gap-2">
+    <div className="w-full space-y-5 animate-fadeIn">
+      <div className="flex flex-col gap-5 w-full">
+        <div className="flex flex-wrap gap-5">
           <div className="relative flex-grow">
             <Search
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"

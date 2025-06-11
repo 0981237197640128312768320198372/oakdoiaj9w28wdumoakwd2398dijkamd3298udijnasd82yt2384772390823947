@@ -13,7 +13,7 @@ import {
   ShoppingCart,
   DollarSign,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 
 interface StoreStatsProps {
   seller: any;
@@ -26,7 +26,7 @@ export function StoreStats({ seller }: StoreStatsProps) {
   const totalSales = 0; // temporary
   const totalCredits = credits.positive + credits.negative;
   const positivePercentage =
-    totalCredits > 0 ? Math.round((credits.positive / totalCredits) * 100) : 0;
+    totalCredits > 0 ? formatPrice((credits.positive / totalCredits) * 100) : 0;
 
   return (
     <InfoSection
