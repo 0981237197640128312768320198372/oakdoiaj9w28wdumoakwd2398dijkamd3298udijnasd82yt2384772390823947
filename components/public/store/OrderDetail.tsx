@@ -11,7 +11,6 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Copy,
   CreditCard,
   Truck,
 } from 'lucide-react';
