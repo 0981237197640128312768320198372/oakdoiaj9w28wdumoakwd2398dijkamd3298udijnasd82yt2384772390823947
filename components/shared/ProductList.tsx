@@ -163,7 +163,7 @@ const ProductList: React.FC<ProductListProps> = ({
 
       // Search and filter styles
       searchInput: cn(
-        'pl-10 pr-10 py-2.5 w-full border rounded-lg text-sm focus:outline-none focus:ring-1',
+        'pl-10 pr-10 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-1',
         isLight
           ? 'bg-light-100 border-light-300 text-dark-800 focus:ring-0 focus:bg-light-200'
           : 'bg-dark-600 border-dark-400 text-light-200 focus:ring-0 focus:bg-dark-500'
@@ -365,10 +365,10 @@ const ProductList: React.FC<ProductListProps> = ({
       )}
 
       {/* Search and Filters */}
-      <div className="w-full space-y-3 mb-6">
-        <div className="flex flex-col gap-3 w-full">
-          <div className="flex flex-wrap gap-5">
-            <div className="relative flex-grow">
+      <div className="w-full space-y-5 mb-5">
+        <div className="flex flex-col gap-5 w-full">
+          <div className="flex gap-5">
+            <div className="relative  w-fit">
               <Search
                 className={cn(
                   'absolute left-3 top-1/2 transform -translate-y-1/2',
@@ -380,7 +380,7 @@ const ProductList: React.FC<ProductListProps> = ({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search products..."
+                placeholder="Search"
                 className={styles.searchInput}
               />
               {searchTerm && (
@@ -395,7 +395,7 @@ const ProductList: React.FC<ProductListProps> = ({
                 </button>
               )}
             </div>
-            <div className="relative flex-1 min-w-[180px]">
+            <div className="relative flex-1">
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}

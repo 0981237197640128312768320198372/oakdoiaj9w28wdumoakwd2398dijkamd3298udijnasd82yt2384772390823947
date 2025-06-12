@@ -146,7 +146,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
           onOrderSuccess={handleOrderSuccess}
         />
 
-        {/* Order Success Modal */}
         {showOrderModal && orderSuccessData && (
           <OrderSuccessModal
             isOpen={showOrderModal}

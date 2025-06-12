@@ -399,8 +399,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                 isLight ? themeUtils.getCardClass() : 'bg-dark-600 border border-dark-400'
               )}>
               <div className="p-5">
-                {/* Individual Asset Cards */}
-                <div className="space-y-4">
+                <div className="space-y-5">
                   {order.items.map((item, itemIndex) => {
                     if (!item.digitalAssets || item.digitalAssets.length === 0) {
                       return null;
@@ -478,11 +477,19 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                     );
                   })}
                 </div>
+                <button
+                  onClick={copyAllAssets}
+                  className={cn(
+                    'flex items-center justify-center mt-5 w-full gap-1 p-1.5 text-sm font-black transition-colors border duration-200',
+                    themeUtils.getButtonClass()
+                  )}>
+                  {copiedAssets ? 'Copied!' : 'Copy All'}
+                </button>
               </div>
             </motion.div>
           )}
         </div>
-        <div className="w-full flex gap-5 mt-5">
+        <div className="w-full mt-5">
           {onBack && (
             <button
               onClick={onBack}
@@ -493,14 +500,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
               Close
             </button>
           )}
-          <button
-            onClick={copyAllAssets}
-            className={cn(
-              'flex items-center justify-center w-full gap-1 p-1.5 text-sm font-black transition-colors border duration-200',
-              themeUtils.getButtonClass()
-            )}>
-            {copiedAssets ? 'Copied!' : 'Copy All'}
-          </button>
         </div>
       </div>
     </>
