@@ -209,7 +209,7 @@ export async function POST(request: NextRequest) {
       const random = Math.floor(Math.random() * 1000)
         .toString()
         .padStart(3, '0');
-      const orderId = `ORD-${timestamp}-${random}`;
+      const orderId = `D${timestamp}${random}S`;
 
       // Calculate totals
       let subtotal = 0;

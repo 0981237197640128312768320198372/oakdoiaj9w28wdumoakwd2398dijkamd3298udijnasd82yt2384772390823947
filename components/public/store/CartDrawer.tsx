@@ -31,8 +31,6 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   const dokmaiCoin = dokmaiCoinSymbol(isLight);
   const imagePlaceholder = dokmaiImagePlaceholder(isLight);
   const handleCheckoutSuccess = (orderData: any) => {
-    console.log('🎉 CartDrawer received order success:', orderData);
-    // Pass order data up to parent instead of just closing drawer
     onOrderSuccess?.(orderData);
   };
 

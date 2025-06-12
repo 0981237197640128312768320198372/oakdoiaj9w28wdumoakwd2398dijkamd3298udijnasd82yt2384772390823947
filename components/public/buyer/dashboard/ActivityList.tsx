@@ -37,6 +37,7 @@ import {
 import { cn, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import type { ThemeType } from '@/types';
+import { BsShop } from 'react-icons/bs';
 
 interface ActivityListProps {
   activities: any[];
@@ -203,31 +204,12 @@ export const ActivityList: React.FC<ActivityListProps> = ({
 
   const renderPurchaseActivityDetails = (activity: any) => {
     const { metadata } = activity;
-    const quantity = metadata.quantity || 1;
-    const amount = metadata.amount || 0;
     const storeName = metadata.sellerName || 'ไม่ระบุร้านค้า';
-    const orderId = metadata.orderId || metadata.orderNumber || 'ไม่ระบุ';
 
     return (
-      <div className="flex flex-col gap-1 text-xs">
-        <div className="flex items-center justify-between">
-          <span className={cn('font-medium', themeUtils.getTextColors())}>
-            จำนวน: {quantity} ชิ้น
-          </span>
-          <span className={cn('font-bold', themeUtils.getTextColors())}>
-            {amount.toLocaleString()} เหรียญ
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className={cn(themeUtils.getTextColors())}>ร้านค้า: {storeName}</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className={cn('font-mono text-xs', themeUtils.getTextColors())}>#{orderId}</span>
-          <span className={cn('text-xs', themeUtils.getTextColors())}>
-            {formatDate(activity.createdAt)}
-          </span>
-        </div>
-      </div>
+      <span className={cn('text-xs flex gap-1 items-center', themeUtils.getTextColors())}>
+        <BsShop /> {storeName}
+      </span>
     );
   };
 

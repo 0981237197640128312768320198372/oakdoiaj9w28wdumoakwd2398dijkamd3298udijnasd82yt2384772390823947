@@ -328,8 +328,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                       src={styles.dokmaiCoin}
                       alt="Dokmai Coin"
                       className="h-3 w-auto"
-                      width={50}
-                      height={50}
+                      width={21}
+                      height={21}
                     />
                     {product.price.toFixed(2)}
                   </span>
@@ -338,8 +338,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                       src={styles.dokmaiCoin}
                       alt="Dokmai Coin"
                       className="h-4 w-auto"
-                      width={50}
-                      height={50}
+                      width={21}
+                      height={21}
                     />
                     {formatPrice(discountedPrice)}
                   </span>
@@ -350,8 +350,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     src={styles.dokmaiCoin}
                     alt="Dokmai Coin"
                     className="h-4 w-auto"
-                    width={50}
-                    height={50}
+                    width={21}
+                    height={21}
                   />
                   {product.price.toFixed(2)}
                 </span>

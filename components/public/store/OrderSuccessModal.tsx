@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, Package, Calendar, Store, Hash, Eye, X } from 'lucide-react';
+import { CheckCircle, Calendar, Store, Hash, Eye, X } from 'lucide-react';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { cn, dokmaiCoinSymbol } from '@/lib/utils';
 import { ThemeType } from '@/types';
@@ -118,26 +118,36 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className={cn(
-              'max-w-md w-full rounded-2xl border shadow-2xl',
-              isLight ? 'bg-light-100 border-light-300' : 'bg-dark-700 border-dark-600'
+              'max-w-md w-full shadow-2xl',
+              themeUtils.getCardClass(),
+              themeUtils.getComponentRoundednessClass(),
+              themeUtils.getComponentShadowClass()
             )}>
             {/* Header */}
-            <div className="p-6 text-center border-b border-green-200">
+            <div
+              className={cn(
+                'p-6 text-center border-b',
+                isLight ? 'border-light-200' : 'border-dark-600'
+              )}>
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.3, ease: 'easeOut' }}
-                className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle size={32} className="text-green-600" />
+                className={cn(
+                  'w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center',
+                  themeUtils.getComponentRoundednessClass(),
+                  isLight ? 'bg-green-100' : 'bg-green-900/30'
+                )}>
+                <CheckCircle
+                  size={32}
+                  className={cn(isLight ? 'text-green-600' : 'text-green-400')}
+                />
               </motion.div>
               <motion.h2
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.3 }}
-                className={cn(
-                  'text-xl font-bold mb-2',
-                  isLight ? 'text-dark-800' : 'text-light-200'
-                )}>
+                className={cn('text-xl font-bold mb-2', themeUtils.getTextColors())}>
                 สั่งซื้อสำเร็จ!
               </motion.h2>
               <motion.p
@@ -157,21 +167,22 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.3 }}
                 className={cn(
-                  'flex items-start gap-3 p-4 rounded-xl border',
-                  isLight ? 'bg-light-200 border-light-300' : 'bg-dark-600 border-dark-500'
+                  'flex items-start gap-3 p-4 border',
+                  themeUtils.getCardClass(),
+                  themeUtils.getComponentRoundednessClass(),
+                  isLight ? 'bg-light-200' : 'bg-dark-600'
                 )}>
-                <Package size={20} className={themeUtils.getPrimaryColorClass('text')} />
                 <div className="flex-1 min-w-0">
-                  <h3
-                    className={cn(
-                      'font-semibold text-sm mb-1',
-                      isLight ? 'text-dark-800' : 'text-light-200'
-                    )}>
+                  <h3 className={cn('font-semibold text-sm mb-1', themeUtils.getTextColors())}>
                     {getProductDisplayName()}
                   </h3>
-                  <div className="flex items-center gap-4 text-xs">
-                    <span className={cn(isLight ? 'text-dark-600' : 'text-light-500')}>
-                      จำนวน: {getTotalQuantity()} ชิ้น
+                  <div className="flex items-center gap-4 justify-between text-xs ">
+                    <span
+                      className={cn(
+                        'px-2 py-1 rounded font-semibold',
+                        isLight ? 'bg-light-100' : 'bg-dark-500'
+                      )}>
+                      {getTotalQuantity()}x
                     </span>
                     <div className="flex items-center gap-1">
                       <Image
@@ -181,8 +192,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                         height={14}
                         className="h-3.5 w-auto"
                       />
-                      <span
-                        className={cn('font-bold', isLight ? 'text-dark-800' : 'text-light-200')}>
+                      <span className={cn('font-bold', themeUtils.getTextColors())}>
                         {orderData.total.toLocaleString()}
                       </span>
                     </div>
@@ -208,11 +218,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                       ร้านค้า
                     </span>
                   </div>
-                  <p
-                    className={cn(
-                      'text-sm font-semibold',
-                      isLight ? 'text-dark-800' : 'text-light-200'
-                    )}>
+                  <p className={cn('text-sm font-semibold', themeUtils.getTextColors())}>
                     {orderData.storeName || 'ไม่ระบุ'}
                   </p>
                 </div>
@@ -232,11 +238,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                       วันที่สั่ง
                     </span>
                   </div>
-                  <p
-                    className={cn(
-                      'text-sm font-semibold',
-                      isLight ? 'text-dark-800' : 'text-light-200'
-                    )}>
+                  <p className={cn('text-sm font-semibold', themeUtils.getTextColors())}>
                     {formatDate(orderData.createdAt)}
                   </p>
                 </div>
@@ -258,11 +260,7 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                     หมายเลขคำสั่งซื้อ
                   </span>
                 </div>
-                <p
-                  className={cn(
-                    'font-mono text-sm font-semibold',
-                    isLight ? 'text-dark-800' : 'text-light-200'
-                  )}>
+                <p className={cn('font-mono text-sm font-semibold', themeUtils.getTextColors())}>
                   {orderData.orderId}
                 </p>
               </motion.div>
@@ -276,9 +274,10 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                 transition={{ delay: 0.8, duration: 0.3 }}
                 onClick={onViewOrderDetails}
                 className={cn(
-                  'w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all shadow-md hover:shadow-lg hover:scale-[1.02]',
+                  'w-full flex items-center justify-center gap-2 py-3 font-bold transition-all hover:shadow-lg hover:scale-[1.02]',
                   themeUtils.getButtonClass(),
-                  themeUtils.getPrimaryColorClass('bg')
+                  themeUtils.getButtonRoundednessClass(),
+                  themeUtils.getButtonShadowClass()
                 )}>
                 <Eye size={18} />
                 <span>ดูรายละเอียดคำสั่งซื้อ</span>
@@ -290,10 +289,9 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                 transition={{ delay: 0.9, duration: 0.3 }}
                 onClick={onClose}
                 className={cn(
-                  'w-full flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all border',
-                  isLight
-                    ? 'bg-light-200 border-light-300 text-dark-700 hover:bg-light-300'
-                    : 'bg-dark-600 border-dark-500 text-light-300 hover:bg-dark-500'
+                  'w-full flex items-center justify-center gap-2 py-3 font-medium transition-all',
+                  themeUtils.getButtonClass('secondary'),
+                  themeUtils.getButtonRoundednessClass()
                 )}>
                 <X size={18} />
                 <span>ปิด</span>

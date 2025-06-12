@@ -106,7 +106,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
 
   return (
     <motion.div
-      className="w-full py-8 min-h-[75vh]"
+      className="w-full min-h-[75vh]"
       variants={containerVariants}
       initial="hidden"
       animate="visible">

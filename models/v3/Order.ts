@@ -212,8 +212,8 @@ OrderSchema.pre('save', function (next) {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 1000)
       .toString()
-      .padStart(3, '0');
-    this.orderId = `ORD-${timestamp}-${random}`;
+      .padStart(5, '0');
+    this.orderId = `D${timestamp}${random}S`;
   }
   next();
 });
