@@ -365,37 +365,39 @@ const ProductList: React.FC<ProductListProps> = ({
       )}
 
       {/* Search and Filters */}
-      <div className="w-full space-y-5 mb-5">
-        <div className="flex flex-col gap-5 w-full">
-          <div className="flex gap-5">
-            <div className="relative  w-fit">
-              <Search
+      <div className="w-full space-y-3 mb-5">
+        {/* Mobile-first responsive layout */}
+        <div className="flex flex-col gap-3 w-full">
+          {/* Search Bar - Full width on mobile, flexible on larger screens */}
+          <div className="relative w-full sm:flex-1">
+            <Search
+              className={cn('absolute left-3 top-1/2 transform -translate-y-1/2', styles.iconColor)}
+              size={16}
+            />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search products..."
+              className={cn(styles.searchInput, 'w-full')}
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
                 className={cn(
-                  'absolute left-3 top-1/2 transform -translate-y-1/2',
+                  'absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-light-300',
                   styles.iconColor
                 )}
-                size={16}
-              />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search"
-                className={styles.searchInput}
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm('')}
-                  className={cn(
-                    'absolute right-3 top-1/2 transform -translate-y-1/2 hover:text-light-300',
-                    styles.iconColor
-                  )}
-                  aria-label="Clear search">
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-            <div className="relative flex-1">
+                aria-label="Clear search">
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Filters Row - Stack on mobile, inline on larger screens */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
+            {/* Category Filter */}
+            <div className="relative w-full sm:flex-1 sm:min-w-[180px]">
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
@@ -432,9 +434,9 @@ const ProductList: React.FC<ProductListProps> = ({
               </div>
             </div>
 
-            {/* Status filter - only for seller view */}
+            {/* Status Filter - Only for seller view */}
             {isSeller && (
-              <div className="relative flex-1 min-w-[180px]">
+              <div className="relative w-full sm:flex-1 sm:min-w-[180px]">
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
@@ -467,39 +469,43 @@ const ProductList: React.FC<ProductListProps> = ({
               </div>
             )}
 
-            <button
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={cn(
-                styles.filterButton,
-                showAdvancedFilters
-                  ? isLight
-                    ? 'bg-light-200 text-dark-800'
-                    : 'bg-dark-600 text-light-200'
-                  : ''
-              )}
-              title="Advanced filters">
-              <SlidersHorizontal size={16} />
-              <span className="text-sm hidden sm:inline">Filters</span>
-              <ChevronDown
-                size={16}
-                className={cn('transition-transform', showAdvancedFilters ? 'rotate-180' : '')}
-              />
-            </button>
+            {/* Action Buttons Row - Stack on mobile, inline on larger screens */}
+            <div className="flex gap-3 w-full sm:w-auto">
+              <button
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className={cn(
+                  styles.filterButton,
+                  'flex-1 sm:flex-none justify-center sm:justify-start',
+                  showAdvancedFilters
+                    ? isLight
+                      ? 'bg-light-200 text-dark-800'
+                      : 'bg-dark-600 text-light-200'
+                    : ''
+                )}
+                title="Advanced filters">
+                <SlidersHorizontal size={16} />
+                <span className="text-xs sm:text-sm">Filters</span>
+                <ChevronDown
+                  size={16}
+                  className={cn('transition-transform', showAdvancedFilters ? 'rotate-180' : '')}
+                />
+              </button>
 
-            <button
-              onClick={handleRefresh}
-              className={cn(
-                'h-10 w-10 p-2.5 transition-colors rounded-lg border',
-                isLight
-                  ? 'bg-light-100 border-light-300 text-dark-600'
-                  : 'bg-dark-600 border-dark-400 text-light-400'
-              )}
-              title="Refresh data">
-              <RefreshCw
-                size={18}
-                className={`${isRefreshing ? 'animate-spin' : 'hover:animate-spin'}`}
-              />
-            </button>
+              <button
+                onClick={handleRefresh}
+                className={cn(
+                  'h-10 w-10 p-2.5 transition-colors rounded-lg border flex-shrink-0',
+                  isLight
+                    ? 'bg-light-100 border-light-300 text-dark-600'
+                    : 'bg-dark-600 border-dark-400 text-light-400'
+                )}
+                title="Refresh data">
+                <RefreshCw
+                  size={18}
+                  className={`${isRefreshing ? 'animate-spin' : 'hover:animate-spin'}`}
+                />
+              </button>
+            </div>
           </div>
         </div>
 
