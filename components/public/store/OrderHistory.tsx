@@ -12,10 +12,10 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Eye,
   RefreshCw,
   Calendar,
   ShoppingBag,
+  ChevronDown,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useBuyerAuth } from '@/hooks/useBuyerAuth';
@@ -90,8 +90,8 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ theme }) => {
   const [error, setError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [visibleCount, setVisibleCount] = useState(8);
 
   useEffect(() => {
     if (isAuthenticated && buyer) {
@@ -124,7 +124,6 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ theme }) => {
       }
 
       setOrders(data.orders);
-      setTotalPages(data.pagination.totalPages);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch orders');
     } finally {
@@ -150,15 +149,25 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ theme }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-500/5 text-yellow-500 border-yellow-500';
       case 'confirmed':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-500/5 text-blue-500 border-blue-500';
       case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-500/5 text-green-500 border-green-500';
       case 'cancelled':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-500/5 text-red-500 border-red-500';
+      case 'paid':
+        return 'bg-green-500/5 text-green-500 border-green-500';
+      case 'failed':
+        return 'bg-red-500/5 text-red-500 border-red-500';
+      case 'refunded':
+        return 'bg-orange-500/5 text-orange-500 border-orange-500';
+      case 'processing':
+        return 'bg-blue-500/5 text-blue-500 border-blue-500';
+      case 'delivered':
+        return 'bg-green-500/5 text-green-500 border-green-500';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-500/5 text-gray-500 border-gray-500';
     }
   };
 
@@ -178,6 +187,10 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ theme }) => {
 
   const handleBackToList = () => {
     setSelectedOrder(null);
+  };
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 8);
   };
 
   if (!isAuthenticated) {
@@ -320,34 +333,82 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ theme }) => {
               </p>
             </motion.div>
           ) : (
-            <div className="space-y-4">
-              {orders.map((order) => (
-                <motion.div
-                  key={order.orderId}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={cn(
-                    'p-3 sm:p-4 rounded-xl border transition-all duration-200 hover:shadow-md',
-                    themeUtils.getCardClass()
-                  )}>
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="space-y-1">
+            <>
+              <div className="space-y-5 ">
+                {orders.slice(0, visibleCount).map((order) => (
+                  <motion.div
+                    key={order.orderId}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    onClick={() => handleViewDetails(order)}
+                    className={cn(
+                      'p-5 transition-all duration-200 hover:shadow-md cursor-pointer',
+                      themeUtils.getCardClass(),
+                      themeUtils.getComponentRoundednessClass(),
+                      isLight ? 'hover:!bg-gray-50' : 'hover:!bg-dark-600'
+                    )}>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={cn(
+                              'font-mono text-xs sm:text-sm',
+                              isLight ? 'text-dark-800' : 'text-light-200'
+                            )}>
+                            #{order.orderId}
+                          </span>
+                          <div
+                            className={cn(
+                              'flex items-center gap-1 px-2 py-1 rounded-full text-xs border',
+                              getStatusColor(order.status)
+                            )}>
+                            {getStatusIcon(order.status)}
+                            <span className="capitalize">{order.status}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right ">
+                        <div className="flex items-center gap-1">
+                          <Image
+                            src={dokmaiCoin}
+                            alt="Dokmai Coin"
+                            width={14}
+                            height={14}
+                            className="h-3.5 w-auto"
+                          />
+                          <span
+                            className={cn(
+                              'font-bold text-sm',
+                              isLight ? 'text-dark-800' : 'text-light-200'
+                            )}>
+                            {order.totals.total.toLocaleString()}
+                          </span>
+                        </div>
+                        <div
+                          className={cn('text-xs', isLight ? 'text-dark-600' : 'text-light-500')}>
+                          {order.items.length} item{order.items.length > 1 ? 's' : ''}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
+                        {order.seller.logoUrl && (
+                          <Image
+                            src={order.seller.logoUrl}
+                            alt={order.seller.storeName || order.seller.username}
+                            width={20}
+                            height={20}
+                            className="rounded-full"
+                          />
+                        )}
                         <span
                           className={cn(
-                            'font-mono text-xs sm:text-sm',
-                            isLight ? 'text-dark-800' : 'text-light-200'
+                            'text-xs sm:text-sm',
+                            isLight ? 'text-dark-700' : 'text-light-300'
                           )}>
-                          #{order.orderId}
+                          {order.seller.storeName || order.seller.username}
                         </span>
-                        <div
-                          className={cn(
-                            'flex items-center gap-1 px-2 py-1 rounded-full text-xs border',
-                            getStatusColor(order.status)
-                          )}>
-                          {getStatusIcon(order.status)}
-                          <span className="capitalize">{order.status}</span>
-                        </div>
                       </div>
                       <div className="flex items-center gap-2 text-xs">
                         <Calendar size={10} />
@@ -356,92 +417,40 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ theme }) => {
                         </span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1">
-                        <Image
-                          src={dokmaiCoin}
-                          alt="Dokmai Coin"
-                          width={14}
-                          height={14}
-                          className="h-3.5 w-auto"
-                        />
-                        <span
-                          className={cn(
-                            'font-bold text-sm',
-                            isLight ? 'text-dark-800' : 'text-light-200'
-                          )}>
-                          {order.totals.total.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className={cn('text-xs', isLight ? 'text-dark-600' : 'text-light-500')}>
-                        {order.items.length} item{order.items.length > 1 ? 's' : ''}
-                      </div>
-                    </div>
-                  </div>
+                  </motion.div>
+                ))}
+              </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {order.seller.logoUrl && (
-                        <Image
-                          src={order.seller.logoUrl}
-                          alt={order.seller.storeName || order.seller.username}
-                          width={20}
-                          height={20}
-                          className="rounded-full"
-                        />
-                      )}
-                      <span
-                        className={cn(
-                          'text-xs sm:text-sm',
-                          isLight ? 'text-dark-700' : 'text-light-300'
-                        )}>
-                        {order.seller.storeName || order.seller.username}
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleViewDetails(order)}
-                      className={cn(
-                        'flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-                        themeUtils.getButtonClass()
-                      )}>
-                      <Eye size={12} />
-                      View Details
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+              {/* Load More Button */}
+              {visibleCount < orders.length && (
+                <div className="w-full">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loading}
+                    className={cn(
+                      'mt-5 px-4 py-2 border w-full text-sm transition-colors rounded-md flex items-center justify-center gap-2',
+                      themeUtils.getCardClass(),
+                      isLight
+                        ? 'hover:!bg-light-100/50 hover:!border-white'
+                        : 'hover:!bg-dark-600 hover:!border-dark-400'
+                    )}>
+                    {loading ? (
+                      <>
+                        <RefreshCw size={14} className="animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown size={14} />
+                        Load More ({orders.length - visibleCount} remaining)
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </AnimatePresence>
-      )}
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className={cn(
-              'px-3 py-2 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-              themeUtils.getButtonClass()
-            )}>
-            Previous
-          </button>
-
-          <span className={cn('px-3 py-2 text-xs', isLight ? 'text-dark-600' : 'text-light-500')}>
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <button
-            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            className={cn(
-              'px-3 py-2 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-              themeUtils.getButtonClass()
-            )}>
-            Next
-          </button>
-        </div>
       )}
     </div>
   );

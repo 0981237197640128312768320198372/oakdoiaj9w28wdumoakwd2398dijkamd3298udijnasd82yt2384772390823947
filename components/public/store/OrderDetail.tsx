@@ -156,7 +156,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
   };
 
   const getCurrentStatus = () => {
-    // Priority order: cancelled > failed > pending payment > delivery status > order status
     if (order.status === 'cancelled') {
       return {
         type: 'ORDER',
