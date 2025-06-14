@@ -9,7 +9,8 @@ import { Transaction } from '@/models/v3/Transaction';
 import { Activity } from '@/models/v3/Activity';
 import { Types } from 'mongoose';
 import { headers } from 'next/headers';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, roundToTwo, safeAdd, safeSubtract, safeMultiply } from '@/lib/utils';
+import { ReviewService } from '@/lib/services/reviewService';
 
 interface CartItem {
   productId: string;
@@ -147,14 +148,14 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Calculate price (with discount if applicable)
+      // Calculate price (with discount if applicable) using safe arithmetic
       const unitPrice =
         product.discountPercentage > 0
-          ? product.price * (1 - product.discountPercentage / 100)
-          : product.price;
+          ? safeMultiply(product.price, safeSubtract(1, product.discountPercentage / 100))
+          : roundToTwo(product.price);
 
-      const itemTotal = unitPrice * quantity;
-      totalAmount += itemTotal;
+      const itemTotal = safeMultiply(unitPrice, quantity);
+      totalAmount = safeAdd(totalAmount, itemTotal);
 
       cartItems.push({
         productId: product._id.toString(),
@@ -216,24 +217,24 @@ export async function POST(request: NextRequest) {
       let totalQuantity = 0;
 
       const orderItemsForDB = cartItems.map((item) => {
-        const itemTotal = item.price * item.quantity;
-        subtotal += itemTotal;
+        const itemTotal = safeMultiply(item.price, item.quantity);
+        subtotal = safeAdd(subtotal, itemTotal);
         totalQuantity += item.quantity;
 
         return {
           productId: new Types.ObjectId(item.productId),
           productTitle: item.productTitle,
           quantity: item.quantity,
-          unitPrice: item.price,
+          unitPrice: roundToTwo(item.price),
           totalPrice: itemTotal,
           digitalAssets: [],
         };
       });
 
       const totals = {
-        subtotal,
+        subtotal: roundToTwo(subtotal),
         discount: 0,
-        total: subtotal,
+        total: roundToTwo(subtotal),
       };
 
       // Set expiration to 2 minutes from now
@@ -489,6 +490,15 @@ async function confirmOrder(orderId: string) {
       transactionId: transaction._id,
     });
 
+    // Step 5: Create pending reviews for the order
+    try {
+      await ReviewService.createPendingReviews(order);
+      console.log('Pending reviews created for order:', order.orderId);
+    } catch (reviewError) {
+      console.error('Failed to create pending reviews:', reviewError);
+      // Don't fail the order if review creation fails
+    }
+
     console.log('Order confirmed and completed:', order.orderId);
   } catch (error) {
     console.error('Error confirming order:', error);
@@ -515,7 +525,10 @@ async function sendSellerNotification(
 
     const buyerName = buyer.name || buyer.username;
     const totalQty = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const totalPrice = cartItems.reduce(
+      (sum, item) => safeAdd(sum, safeMultiply(item.price, item.quantity)),
+      0
+    );
 
     const productName =
       cartItems.length > 1

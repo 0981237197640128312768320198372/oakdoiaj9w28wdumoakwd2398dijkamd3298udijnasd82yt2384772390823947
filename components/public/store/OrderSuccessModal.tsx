@@ -172,11 +172,11 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                   themeUtils.getComponentRoundednessClass(),
                   isLight ? 'bg-light-200' : 'bg-dark-600'
                 )}>
-                <div className="flex-1 min-w-0">
-                  <h3 className={cn('font-semibold text-sm mb-1', themeUtils.getTextColors())}>
-                    {getProductDisplayName()}
-                  </h3>
-                  <div className="flex items-center gap-4 justify-between text-xs ">
+                <div className="flex flex-col w-full gap-3">
+                  <div className="flex justify-between items-center w-full">
+                    <h3 className={cn('font-semibold text-sm mb-1', themeUtils.getTextColors())}>
+                      {getProductDisplayName()}
+                    </h3>
                     <span
                       className={cn(
                         'px-2 py-1 rounded font-semibold',
@@ -184,6 +184,10 @@ const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
                       )}>
                       {getTotalQuantity()}x
                     </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 justify-center w-full">
+                    Total
                     <div className="flex items-center gap-1">
                       <Image
                         src={dokmaiCoin}

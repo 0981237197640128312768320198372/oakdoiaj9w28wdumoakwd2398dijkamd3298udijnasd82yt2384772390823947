@@ -7,6 +7,7 @@ import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { useProductReviews } from '@/hooks/useReviews';
 
 interface ProductCardProps {
   product: Product;
@@ -36,6 +37,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [isHovering, setIsHovering] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const themeUtils = useThemeUtils(theme || null);
+
+  const { stats: reviewStats, isLoading: reviewsLoading } = useProductReviews(product._id);
 
   const isLight = themeUtils.baseTheme === 'light';
   const isSeller = role === 'seller';
@@ -154,7 +157,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         isLight ? 'text-dark-800' : themeUtils?.getPrimaryColorClass('text')
       ),
       footer: cn(
-        'flex items-center justify-between pt-2 mt-5 border-t',
+        'flex flex-col items-center pt-3 border-t',
         isLight ? 'border-light-300' : 'border-dark-300'
       ),
       stockText: cn('text-xs', isLight ? 'text-dark-600' : 'text-light-600'),
@@ -196,7 +199,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div
-      className={styles.card}
+      className={cn(styles.card, 'h-full flex flex-col')}
       onClick={handleViewDetails}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}>
@@ -276,26 +279,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
-      <div className={styles.contentContainer}>
-        <div className="flex flex-col items-end justify-start gap-1">
-          {product.rating ? (
+      <div className={cn(styles.contentContainer, 'flex-grow flex flex-col justify-between ')}>
+        <div className="flex flex-col items-start justify-end gap-1">
+          {reviewsLoading ? (
+            <div className="flex items-center bg-gray-200 animate-pulse px-2 py-1 rounded">
+              <div className="w-16 h-3 bg-gray-300 rounded"></div>
+            </div>
+          ) : reviewStats && reviewStats.averageRating > 0 ? (
             <div className={styles.ratingContainer}>
-              <div className="flex items-center bg-amber-500/10 px-2 py-1 rounded">
+              <div className="flex items-center justify-center bg-amber-500/10 border-[1px] border-amber-500 px-2 py-1 rounded">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
                     size={12}
-                    fill={parseFloat(product.rating) >= star ? 'currentColor' : 'none'}
+                    fill={reviewStats.averageRating >= star ? 'currentColor' : 'none'}
                     stroke="currentColor"
                     className="mr-0.5"
                   />
                 ))}
-                <span className="text-xs ml-1 font-medium">{product.rating}</span>
+                <span className="text-xs ml-1 font-medium">
+                  {reviewStats.averageRating.toFixed(1)}
+                </span>
+                <span className="text-xs ml-1 opacity-70">({reviewStats.totalReviews})</span>
               </div>
             </div>
-          ) : (
-            ''
-          )}
+          ) : null}
           <div className="flex items-center gap-1 text-xs w-full justify-between">
             <h3 className={styles.title}>{product.title}</h3>
             <div className={cn(styles.categoryTag)}>
@@ -363,7 +371,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         </div>
 
-        <div className={styles.footer}>
+        <div className={cn(styles.footer)}>
           {isSeller ? (
             <div className="flex gap-2 w-full justify-between">
               <button

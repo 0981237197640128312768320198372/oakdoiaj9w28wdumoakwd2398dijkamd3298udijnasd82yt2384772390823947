@@ -11,7 +11,6 @@ import {
   ChevronRight,
   Package,
   Info,
-  MessageSquare,
   Truck,
   ShieldCheck,
 } from 'lucide-react';
@@ -20,6 +19,9 @@ import { Product, Category, ThemeType } from '@/types';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import RelatedProducts from './RelatedProducts';
+import { useProductReviews } from '@/hooks/useReviews';
+import { RatingDistribution } from '@/components/shared/RatingDistribution';
+import { ReviewsList } from '@/components/shared/ReviewsList';
 
 interface ProductDetailProps {
   product: Product;
@@ -49,6 +51,15 @@ export default function ProductDetail({
     'description'
   );
 
+  // Fetch product reviews and stats
+  const {
+    reviews,
+    stats: reviewStats,
+    isLoading: reviewsLoading,
+    hasMore,
+    loadMore,
+  } = useProductReviews(product._id);
+
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
   const imagePlaceholder = dokmaiImagePlaceholder(isLight);
@@ -71,7 +82,7 @@ export default function ProductDetail({
       prevIndex === product.images.length - 1 ? 0 : prevIndex + 1
     );
   };
-  console.log(product);
+
   const getStyles = () => {
     return {
       container: cn(
@@ -393,22 +404,31 @@ export default function ProductDetail({
               )}
             </div>
             <h1 className={styles.title}>{product.title}</h1>
+            {/* Dynamic rating display from review data */}
             <div className="flex items-center gap-3 flex-wrap">
-              {product.rating ? (
+              {reviewsLoading ? (
+                <div className="flex items-center bg-gray-200 animate-pulse px-3 py-1.5 rounded-lg">
+                  <div className="w-20 h-4 bg-gray-300 rounded"></div>
+                </div>
+              ) : reviewStats && reviewStats.averageRating > 0 ? (
                 <div className={styles.ratingContainer}>
                   <div className={styles.ratingBadge}>
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
                         size={16}
-                        fill={parseFloat(product.rating) >= star ? 'currentColor' : 'none'}
+                        fill={reviewStats.averageRating >= star ? 'currentColor' : 'none'}
                         stroke="currentColor"
                         className="mr-0.5"
                       />
                     ))}
-                    <span className="text-sm ml-1 font-medium">{product.rating}</span>
+                    <span className="text-sm ml-1 font-medium">
+                      {reviewStats.averageRating.toFixed(1)}
+                    </span>
                   </div>
-                  <span className={styles.ratingCount}>(รีวิว 24 รายการ)</span>
+                  <span className={styles.ratingCount}>
+                    (รีวิว {reviewStats.totalReviews} รายการ)
+                  </span>
                 </div>
               ) : null}
             </div>
@@ -518,40 +538,25 @@ export default function ProductDetail({
                 </div>
               </motion.div>
             )}
-            {activeTab === 'specifications' && (
-              <motion.div
-                key="specifications"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}>
-                <h3 className="text-xl font-semibold mb-4">ข้อมูลจำเพาะ</h3>
-                <div
-                  className={cn(
-                    'rounded-xl overflow-hidden border',
-                    isLight ? 'border-light-300' : 'border-dark-600'
-                  )}></div>
-              </motion.div>
-            )}
             {activeTab === 'reviews' && (
               <motion.div
                 key="reviews"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}>
+                transition={{ duration: 0.2 }}
+                className="space-y-6">
                 <h3 className="text-xl font-semibold mb-4">รีวิวจากลูกค้า</h3>
-                <div
-                  className={cn(
-                    'p-8 rounded-xl border flex flex-col items-center justify-center text-center',
-                    isLight ? 'bg-light-50 border-light-300' : 'bg-dark-800/50 border-dark-600'
-                  )}>
-                  <MessageSquare size={40} className="opacity-40 mb-3" />
-                  <p className="text-lg font-medium mb-2">ยังไม่มีรีวิวสำหรับสินค้านี้</p>
-                  <p className={cn('text-sm', isLight ? 'text-dark-500' : 'text-light-500')}>
-                    เป็นคนแรกที่รีวิวสินค้านี้หลังจากการซื้อ
-                  </p>
-                </div>
+
+                <RatingDistribution stats={reviewStats} theme={theme} />
+
+                <ReviewsList
+                  reviews={reviews}
+                  isLoading={reviewsLoading}
+                  hasMore={hasMore}
+                  onLoadMore={loadMore}
+                  theme={theme}
+                />
               </motion.div>
             )}
           </AnimatePresence>

@@ -5,11 +5,11 @@
 import type React from 'react';
 
 import { useState } from 'react';
-import useSWR from 'swr';
 import { PublicInfoSection } from './PublicInfoSection';
 import { Star, ThumbsDown, ThumbsUp, TrendingUp, Package, ShoppingCart } from 'lucide-react';
 import { cn, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
+import { useSellerStats } from '@/hooks/useSellerStats';
 
 interface PublicStoreStatsProps {
   seller: any;
@@ -19,16 +19,22 @@ interface PublicStoreStatsProps {
 export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
   const { rating, credits } = seller.store;
   const themeUtils = useThemeUtils(theme);
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: productCountData, error: productCountError } = useSWR(
-    seller ? `/api/v3/products?countTotalProducts=${seller.username}` : null,
-    fetcher
-  );
-  const totalProducts = productCountData?.count ?? 0;
-  const totalSales = 0;
+
+  // Fetch seller statistics using the custom hook
+  const {
+    statistics,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useSellerStats(seller?.username || null);
+
+  const totalProducts = statistics?.totalProducts ?? 0;
+  const totalSales = statistics?.totalSales ?? 0;
   const totalCredits = credits.positive + credits.negative;
   const positivePercentage =
     totalCredits > 0 ? formatPrice((credits.positive / totalCredits) * 100) : 0;
+
+  // Show error state if statistics failed to load
+  const showError = statsError && !statsLoading;
 
   return (
     <PublicInfoSection title="สถิติร้าน" icon={<TrendingUp className="w-4 h-4" />} theme={theme}>
@@ -37,14 +43,14 @@ export function PublicStoreStats({ seller, theme }: PublicStoreStatsProps) {
           <StatItem
             icon={<Package className="h-6 w-6" />}
             label="สินค้า"
-            value={totalProducts}
+            value={statsLoading ? '...' : showError ? 'N/A' : totalProducts}
             color="blue"
             theme={theme}
           />
           <StatItem
             icon={<ShoppingCart className="h-6 w-6" />}
             label="ขายแล้ว(ชิ้น)"
-            value={totalSales}
+            value={statsLoading ? '...' : showError ? 'N/A' : totalSales}
             color="fuchsia"
             theme={theme}
           />

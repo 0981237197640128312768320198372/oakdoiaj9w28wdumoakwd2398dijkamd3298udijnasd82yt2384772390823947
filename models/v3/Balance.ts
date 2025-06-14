@@ -1,4 +1,5 @@
 import { Schema, model, Document, Types, Model } from 'mongoose';
+import { roundToTwo, safeAdd, safeSubtract } from '@/lib/utils';
 
 interface IBalance extends Document {
   buyerId?: Types.ObjectId;
@@ -48,6 +49,11 @@ const balanceSchema = new Schema<IBalance>({
 });
 
 balanceSchema.pre('save', function (next) {
+  // Round amount to 2 decimal places to prevent floating-point precision issues
+  if (this.isModified('amount')) {
+    this.amount = roundToTwo(this.amount);
+  }
+
   if (this.balanceType === 'wallet') {
     if (!this.buyerId) {
       next(new Error('buyerId is required for wallet balance'));
@@ -116,7 +122,8 @@ balanceSchema.statics.updateBalance = async function (
     throw new Error('Insufficient balance');
   }
 
-  const newAmount = operation === 'add' ? balance.amount + amount : balance.amount - amount;
+  const newAmount =
+    operation === 'add' ? safeAdd(balance.amount, amount) : safeSubtract(balance.amount, amount);
 
   return this.findOneAndUpdate(
     query,

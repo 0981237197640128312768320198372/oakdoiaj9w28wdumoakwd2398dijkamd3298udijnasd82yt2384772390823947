@@ -157,18 +157,16 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-1 w-full">
-      <button
-        onClick={handleAddToCart}
-        className={cn(
-          'flex items-center justify-center gap-1 flex-1 p-2 rounded-lg transition-all duration-300',
-          themeUtils.getButtonClass(),
-          className
-        )}>
-        <ShoppingCart size={16} />
-        <span className="text-xs">เพิ่มลงตะกร้า</span>
-      </button>
-    </div>
+    <button
+      onClick={handleAddToCart}
+      className={cn(
+        'flex items-center justify-center gap-1 w-full h-full p-2 rounded-lg transition-all duration-300',
+        themeUtils.getButtonClass(),
+        className
+      )}>
+      <ShoppingCart size={16} />
+      <span className="text-xs">เพิ่มลงตะกร้า</span>
+    </button>
   );
 };
 

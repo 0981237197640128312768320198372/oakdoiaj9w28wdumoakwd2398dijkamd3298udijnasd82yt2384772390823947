@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import type { ThemeType } from '@/types';
 import { motion } from 'framer-motion';
-import { User, Calendar, Mail, Wallet, Eye, EyeOff } from 'lucide-react';
+import { User, Calendar, Mail, Wallet, Eye, EyeOff, Star } from 'lucide-react';
 import { cn, dokmaiCoinSymbol, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { ContactList } from './ContactList';
@@ -61,6 +61,9 @@ interface DashboardHeaderProps {
   isEditProfileModalOpen: boolean;
   setIsEditProfileModalOpen: (open: boolean) => void;
   showContactList: boolean;
+  // Review props
+  pendingReviewsCount?: number;
+  onReviewClick?: () => void;
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
@@ -76,6 +79,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   isEditProfileModalOpen,
   setIsEditProfileModalOpen,
   showContactList,
+  pendingReviewsCount = 0,
+  onReviewClick,
 }) => {
   const { buyer, refreshBuyerDetails } = useBuyerDetailsWithSWR();
   const [localBuyer, setLocalBuyer] = useState(initialBuyer);
@@ -173,10 +178,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     alt={localBuyer.name || 'User'}
                     width={20}
                     height={20}
-                    className={cn(
-                      'w-20 h-20 md:w-24 md:h-24 border-[1px] rounded-full',
-                      themeUtils.getPrimaryColorClass('border')
-                    )}
+                    className={cn('w-20 h-20 md:w-24 md:h-24 rounded-full')}
                   />
                 ) : (
                   <div
@@ -282,6 +284,24 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               )}>
               เติมเงินเลย
             </button>
+
+            {/* Review Notification Button */}
+            {pendingReviewsCount > 0 && onReviewClick && (
+              <button
+                onClick={onReviewClick}
+                className={cn(
+                  'relative flex items-center justify-center gap-1.5 px-3 py-3 text-sm font-medium transition-all duration-300',
+                  themeUtils.getButtonRoundednessClass(),
+                  'bg-yellow-500 hover:bg-yellow-600 text-white border border-yellow-500'
+                )}>
+                <Star size={16} />
+                <span className="hidden sm:inline">รีวิว</span>
+                {/* Badge */}
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {pendingReviewsCount}
+                </span>
+              </button>
+            )}
           </div>
 
           {showContactList && (

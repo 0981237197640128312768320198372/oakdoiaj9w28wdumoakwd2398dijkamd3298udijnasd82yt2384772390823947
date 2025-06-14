@@ -16,6 +16,8 @@ import { useThemeUtils } from '@/lib/theme-utils';
 import { PublicStoreHeader } from './PublicStoreHeader';
 import { PublicStoreStats } from './PublicStoreStats';
 import { SocialLinks } from '@/components/Private/seller/profile/SocialLinks';
+import { useSellerReviews } from '@/hooks/useReviews';
+import { StoreRatingStats } from '@/components/shared/StoreRatingStats';
 
 interface PublicStoreProfileProps {
   seller: any;
@@ -24,6 +26,9 @@ interface PublicStoreProfileProps {
 
 const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }) => {
   const [isVisible, setIsVisible] = useState(false);
+
+  // Fetch seller reviews and stats
+  const { stats: sellerReviewStats } = useSellerReviews(seller?._id || null);
 
   const themeUtils = useThemeUtils(theme);
 
@@ -118,6 +123,10 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
 
             <div className="space-y-6">
               <PublicStoreStats theme={theme} seller={seller} />
+
+              {/* Store Rating Stats */}
+              {sellerReviewStats && <StoreRatingStats stats={sellerReviewStats} theme={theme} />}
+
               <PublicInfoSection
                 theme={theme}
                 title="ข้อมูลการติดต่อ"

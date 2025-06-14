@@ -67,7 +67,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
   const themeUtils = useThemeUtils(theme);
   const isLight = themeUtils.baseTheme === 'light';
   const dokmaiCoin = dokmaiCoinSymbol(isLight);
-  const [copiedAssets, setCopiedAssets] = useState(false);
+  const [copiedAssets, setCopiedAssets] = useState<Record<string, boolean>>({});
 
   const parseAssetValue = (value: string) => {
     try {
@@ -81,37 +81,37 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
     }
   };
 
-  const copyAllAssets = async () => {
-    const allAssets: string[] = [];
+  const copyIndividualAsset = async (
+    itemIndex: number,
+    assetIndex: number,
+    asset: { key: string; value: string }
+  ) => {
+    const assetId = `${itemIndex}-${assetIndex}`;
+    const parsedValue = parseAssetValue(asset.value);
+    let assetText = '';
 
-    order.items.forEach((item) => {
-      if (item.digitalAssets && item.digitalAssets.length > 0) {
-        item.digitalAssets.forEach((asset) => {
-          const parsedValue = parseAssetValue(asset.value);
-
-          if (parsedValue) {
-            // Handle JSON objects
-            Object.entries(parsedValue).forEach(([key, value]) => {
-              const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-              allAssets.push(`${capitalizedKey}: ${String(value)}`);
-            });
-          } else {
-            // Handle plain text values
-            const capitalizedKey = asset.key.charAt(0).toUpperCase() + asset.key.slice(1);
-            allAssets.push(`${capitalizedKey}: ${asset.value}`);
-          }
-        });
-      }
-    });
-
-    const assetsText = allAssets.join('\n');
+    if (parsedValue) {
+      // Handle JSON objects
+      const assetParts: string[] = [];
+      Object.entries(parsedValue).forEach(([key, value]) => {
+        const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+        assetParts.push(`${capitalizedKey}: ${String(value)}`);
+      });
+      assetText = assetParts.join('\n');
+    } else {
+      // Handle plain text values
+      const capitalizedKey = asset.key.charAt(0).toUpperCase() + asset.key.slice(1);
+      assetText = `${capitalizedKey}: ${asset.value}`;
+    }
 
     try {
-      await navigator.clipboard.writeText(assetsText);
-      setCopiedAssets(true);
-      setTimeout(() => setCopiedAssets(false), 3000);
+      await navigator.clipboard.writeText(assetText);
+      setCopiedAssets((prev) => ({ ...prev, [assetId]: true }));
+      setTimeout(() => {
+        setCopiedAssets((prev) => ({ ...prev, [assetId]: false }));
+      }, 3000);
     } catch (err) {
-      console.error('Failed to copy assets: ', err);
+      console.error('Failed to copy asset: ', err);
     }
   };
 
@@ -397,16 +397,35 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                 isLight ? themeUtils.getCardClass() : 'bg-dark-600 border border-dark-400'
               )}>
               <div className="p-5">
-                <div className="space-y-5">
+                <div className="space-y-6">
                   {order.items.map((item, itemIndex) => {
                     if (!item.digitalAssets || item.digitalAssets.length === 0) {
                       return null;
                     }
                     return (
-                      <div key={itemIndex} className="space-y-2">
-                        <div className="grid  gap-5">
+                      <div key={itemIndex} className="space-y-4">
+                        {/* Product Title Header */}
+                        <div
+                          className={cn(
+                            'pb-2 border-b',
+                            isLight ? 'border-light-400' : 'border-dark-400'
+                          )}>
+                          <h4
+                            className={cn(
+                              'text-sm font-semibold',
+                              isLight ? 'text-dark-800' : 'text-light-200'
+                            )}>
+                            {item.productTitle}
+                          </h4>
+                        </div>
+
+                        {/* Digital Assets for this Product */}
+                        <div className="grid gap-4">
                           {item.digitalAssets.map((asset, assetIndex) => {
                             const parsedValue = parseAssetValue(asset.value);
+                            const assetId = `${itemIndex}-${assetIndex}`;
+                            const isCopied = copiedAssets[assetId] || false;
+
                             return (
                               <motion.div
                                 key={assetIndex}
@@ -414,59 +433,73 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.1 * assetIndex }}
                                 className={cn(
-                                  'p-5 border',
+                                  'p-4 border space-y-3',
                                   themeUtils.getComponentRoundednessClass(),
                                   isLight
                                     ? themeUtils.getCardClass()
                                     : 'bg-dark-500 border border-dark-400'
                                 )}>
-                                {parsedValue ? (
-                                  <div className="space-y-2">
-                                    {Object.entries(parsedValue).map(([key, value], index) => (
-                                      <div key={index} className={cn('flex flex-col')}>
-                                        <label
-                                          className={cn(
-                                            'text-xs font-thin',
-                                            isLight ? 'text-dark-600' : 'text-light-400'
-                                          )}>
-                                          {key.charAt(0).toUpperCase() + key.slice(1)}
-                                        </label>
-                                        <span
-                                          className={cn(
-                                            'text-xs text-end font-bold w-full border-b-[1px]',
-                                            isLight
-                                              ? 'text-dark-800 border-light-400'
-                                              : 'text-light-200 border-dark-400'
-                                          )}>
-                                          {String(value)}
-                                        </span>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <div
-                                    className={cn(
-                                      'flex items-center justify-between p-2 rounded border text-xs',
-                                      isLight
-                                        ? 'bg-white border-gray-200'
-                                        : 'bg-dark-800 border-dark-500'
-                                    )}>
-                                    <span
+                                {/* Asset Content */}
+                                <div>
+                                  {parsedValue ? (
+                                    <div className="space-y-2">
+                                      {Object.entries(parsedValue).map(([key, value], index) => (
+                                        <div key={index} className={cn('flex flex-col')}>
+                                          <label
+                                            className={cn(
+                                              'text-xs font-thin',
+                                              isLight ? 'text-dark-600' : 'text-light-400'
+                                            )}>
+                                            {key.charAt(0).toUpperCase() + key.slice(1)}
+                                          </label>
+                                          <span
+                                            className={cn(
+                                              'text-xs text-end font-bold w-full border-b-[1px]',
+                                              isLight
+                                                ? 'text-dark-800 border-light-400'
+                                                : 'text-light-200 border-dark-400'
+                                            )}>
+                                            {String(value)}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div
                                       className={cn(
-                                        'font-medium',
-                                        isLight ? 'text-dark-600' : 'text-light-400'
+                                        'flex items-center justify-between p-2 rounded border text-xs',
+                                        isLight
+                                          ? 'bg-white border-gray-200'
+                                          : 'bg-dark-800 border-dark-500'
                                       )}>
-                                      {asset.key.charAt(0).toUpperCase() + asset.key.slice(1)}:
-                                    </span>
-                                    <span
-                                      className={cn(
-                                        'font-mono break-all',
-                                        isLight ? 'text-dark-800' : 'text-light-200'
-                                      )}>
-                                      {asset.value}
-                                    </span>
-                                  </div>
-                                )}
+                                      <span
+                                        className={cn(
+                                          'font-medium',
+                                          isLight ? 'text-dark-600' : 'text-light-400'
+                                        )}>
+                                        {asset.key.charAt(0).toUpperCase() + asset.key.slice(1)}:
+                                      </span>
+                                      <span
+                                        className={cn(
+                                          'font-mono break-all',
+                                          isLight ? 'text-dark-800' : 'text-light-200'
+                                        )}>
+                                        {asset.value}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Individual Copy Button */}
+                                <button
+                                  onClick={() => copyIndividualAsset(itemIndex, assetIndex, asset)}
+                                  className={cn(
+                                    'flex items-center justify-center w-full gap-1 p-1.5 text-xs font-black transition-colors border duration-200',
+                                    themeUtils.getButtonClass(),
+                                    themeUtils.getButtonRoundednessClass()
+                                  )}>
+                                  {isCopied ? 'Copied!' : 'Copy'}
+                                </button>
                               </motion.div>
                             );
                           })}
@@ -475,14 +508,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                     );
                   })}
                 </div>
-                <button
-                  onClick={copyAllAssets}
-                  className={cn(
-                    'flex items-center justify-center mt-5 w-full gap-1 p-1.5 text-sm font-black transition-colors border duration-200',
-                    themeUtils.getButtonClass()
-                  )}>
-                  {copiedAssets ? 'Copied!' : 'Copy All'}
-                </button>
               </div>
             </motion.div>
           )}
@@ -493,7 +518,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
               onClick={onBack}
               className={cn(
                 'p-1.5 text-sm font-black transition-colors w-full bg-red-500/20 hover:bg-red-500/50 border-red-500/70 text-red-500',
-                themeUtils.getButtonBorderClass()
+                themeUtils.getButtonRoundednessClass()
               )}>
               Close
             </button>

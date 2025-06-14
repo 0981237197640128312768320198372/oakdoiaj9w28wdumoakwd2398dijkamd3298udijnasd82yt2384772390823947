@@ -10,12 +10,14 @@ import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useBuyerActivitiesWithSWR } from '@/hooks/useBuyerActivitiesWithSWR';
 import { useBuyerDetailsWithSWR } from '@/hooks/useBuyerDetailsWithSWR';
 import { useBuyerOrderStats } from '@/hooks/useBuyerOrderStats';
+import { useReviews } from '@/hooks/useReviews';
 import type { ThemeType } from '@/types';
 import { ActivityList } from './ActivityList';
 import { StatsGrid } from './StatsGrid';
 import { DashboardHeader } from './DashboardHeader';
 import DepositForm from './DepositForm';
 import { EditProfileModal } from './EditProfileModal';
+import { ReviewModal } from './ReviewModal';
 import OrderHistory from '../../store/OrderHistory';
 
 interface BuyerDashboardProps {
@@ -36,6 +38,7 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [showContactList, setShowContactList] = useState(false);
   const [activityFilter, setActivityFilter] = useState<{
     category?: string;
@@ -54,9 +57,32 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
 
   const { orderStats, refetch: refetchOrderStats } = useBuyerOrderStats();
 
+  // Reviews hook
+  const {
+    pendingReviews,
+    reviewStats,
+    hasPendingReviews,
+    submitReview,
+    isSubmitting,
+    submitError,
+    refreshReviews,
+  } = useReviews(localBuyer?.id || null);
+
   const handleFilterChange = (newFilter: { category?: string; type?: string; search?: string }) => {
     setActivityFilter(newFilter);
     refetch(newFilter);
+  };
+
+  // Handle review submission (SIMPLIFIED - product only)
+  const handleSubmitReview = async (data: {
+    orderId: string;
+    rating: number;
+    comment: string;
+    reviewType: 'product';
+  }) => {
+    await submitReview(data);
+    // Refresh all data after successful review submission
+    await refreshAllData();
   };
 
   const refreshAllData = useCallback(async () => {
@@ -67,13 +93,32 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
         refetch(activityFilter),
         refreshBalance(),
         refetchOrderStats(),
+        refreshReviews(),
       ]);
     } finally {
       setTimeout(() => {
         setIsRefreshing(false);
       }, 500);
     }
-  }, [refreshBuyerDetails, refetch, activityFilter, refreshBalance, refetchOrderStats]);
+  }, [
+    refreshBuyerDetails,
+    refetch,
+    activityFilter,
+    refreshBalance,
+    refetchOrderStats,
+    refreshReviews,
+  ]);
+
+  // Auto-open review modal if there are pending reviews (only once per session)
+  useEffect(() => {
+    if (hasPendingReviews && pendingReviews.length > 0 && !isReviewModalOpen) {
+      // Add a small delay to ensure the dashboard is fully loaded
+      const timer = setTimeout(() => {
+        setIsReviewModalOpen(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [hasPendingReviews, pendingReviews.length, isReviewModalOpen]);
 
   if (!localBuyer) {
     return (
@@ -125,6 +170,8 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           isEditProfileModalOpen={isEditProfileModalOpen}
           setIsEditProfileModalOpen={setIsEditProfileModalOpen}
           showContactList={showContactList}
+          pendingReviewsCount={pendingReviews.length}
+          onReviewClick={() => setIsReviewModalOpen(true)}
         />
         {!isDepositModalOpen ? (
           isEditProfileModalOpen ? (
@@ -179,6 +226,15 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
           />
         )}
       </motion.div>
+
+      {/* Review Modal */}
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        pendingReviews={pendingReviews}
+        theme={theme}
+        onSubmitReview={handleSubmitReview}
+      />
     </>
   );
 };

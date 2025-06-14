@@ -1,4 +1,4 @@
-import { formatPrice } from '@/lib/utils';
+import { roundToTwo, safeAdd, safeSubtract, safeMultiply } from '@/lib/utils';
 import { Schema, model, Document, Types, Model } from 'mongoose';
 
 interface IStatusHistory {
@@ -308,9 +308,20 @@ TransactionSchema.index({ 'references.activity': 1 });
 TransactionSchema.pre('save', function (next) {
   const doc = this as unknown as ITransaction;
 
+  // Round monetary values to prevent floating-point precision issues
+  if (this.isModified('amount')) {
+    doc.amount = roundToTwo(doc.amount);
+  }
+
+  if (this.isModified('fees')) {
+    doc.fees.platform = roundToTwo(doc.fees.platform);
+    doc.fees.payment = roundToTwo(doc.fees.payment);
+    doc.fees.tax = roundToTwo(doc.fees.tax);
+  }
+
   if (this.isModified('amount') || this.isModified('fees')) {
-    const totalFees = doc.fees.platform + doc.fees.payment + doc.fees.tax;
-    doc.netAmount = doc.amount - totalFees;
+    const totalFees = safeAdd(doc.fees.platform, doc.fees.payment, doc.fees.tax);
+    doc.netAmount = safeSubtract(doc.amount, totalFees);
   }
 
   // Add status change to history if status changed
@@ -343,10 +354,10 @@ TransactionSchema.statics.createDepositTransaction = async function (
 
   if (paymentMethod === 'stripe') {
     // Stripe typically charges 2.9% + 30 cents
-    paymentFee = parseFloat(formatPrice(amount * 0.029 + 30));
+    paymentFee = safeAdd(safeMultiply(amount, 0.029), 30);
   }
 
-  const netAmount = amount - platformFee - paymentFee;
+  const netAmount = safeSubtract(amount, safeAdd(platformFee, paymentFee));
 
   return this.create({
     transactionId,

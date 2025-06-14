@@ -359,7 +359,35 @@ export const dokmaiImagePlaceholder = (isLight: boolean) => {
   return isLight ? noImageWhite : noImageBlack;
 };
 
+// Precision utility functions for monetary calculations
+export const roundToTwo = (num: number): number => {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+};
+
+export const safeAdd = (...numbers: number[]): number => {
+  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  return roundToTwo(sum);
+};
+
+export const safeSubtract = (a: number, b: number): number => {
+  return roundToTwo(a - b);
+};
+
+export const safeMultiply = (a: number, b: number): number => {
+  return roundToTwo(a * b);
+};
+
+export const safeDivide = (a: number, b: number): number => {
+  if (b === 0) throw new Error('Division by zero');
+  return roundToTwo(a / b);
+};
+
 export const formatPrice = (price: number): string => {
-  const rounded = Math.round((price + Number.EPSILON) * 100) / 100;
+  const rounded = roundToTwo(price);
   return rounded.toFixed(2);
+};
+
+export const formatPriceDisplay = (price: number): string => {
+  const rounded = roundToTwo(price);
+  return rounded.toString();
 };
