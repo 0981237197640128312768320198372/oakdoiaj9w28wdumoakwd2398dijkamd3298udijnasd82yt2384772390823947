@@ -35,10 +35,39 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [shouldLoadReviews, setShouldLoadReviews] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const themeUtils = useThemeUtils(theme || null);
 
-  const { stats: reviewStats, isLoading: reviewsLoading } = useProductReviews(product._id);
+  // Only load reviews when needed (lazy loading)
+  const { stats: reviewStats, isLoading: reviewsLoading } = useProductReviews(
+    shouldLoadReviews ? product._id : null
+  );
+
+  // Intersection Observer for lazy loading reviews
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !shouldLoadReviews) {
+            setShouldLoadReviews(true);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
+    };
+  }, [shouldLoadReviews]);
 
   const isLight = themeUtils.baseTheme === 'light';
   const isSeller = role === 'seller';
@@ -199,6 +228,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div
+      ref={cardRef}
       className={cn(styles.card, 'h-full flex flex-col')}
       onClick={handleViewDetails}
       onMouseEnter={() => setIsHovering(true)}

@@ -75,12 +75,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET: Fetch all categories or a single category by ID
+// GET: Fetch all categories, single category by ID, or batch categories by IDs
 export async function GET(req: NextRequest) {
   try {
     await connectToDatabase();
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
+    const ids = searchParams.get('ids'); // New: batch fetch by comma-separated IDs
 
     if (id) {
       if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -91,6 +92,15 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Category not found' }, { status: 404 });
       }
       return NextResponse.json({ category });
+    } else if (ids) {
+      // Batch fetch categories by IDs
+      const idArray = ids.split(',').filter((id) => mongoose.Types.ObjectId.isValid(id));
+      if (idArray.length === 0) {
+        return NextResponse.json({ error: 'No valid category IDs provided' }, { status: 400 });
+      }
+
+      const categories = await Category.find({ _id: { $in: idArray } });
+      return NextResponse.json({ categories });
     } else {
       const categories = await Category.find();
       return NextResponse.json({ categories });

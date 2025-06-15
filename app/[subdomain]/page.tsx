@@ -114,19 +114,24 @@ export default async function StorePage(props: StorePageProps) {
 
       if (products.length > 0) {
         const categoryIds = [...new Set(products.map((product: any) => product.categoryId))];
-        const categoriesPromises = categoryIds.map(async (categoryId) => {
-          const categoryResponse = await fetch(`${API_URL}/api/v3/categories?id=${categoryId}`, {
-            cache: 'no-store',
-          });
-          if (!categoryResponse.ok) {
-            console.error(`Failed to fetch category with ID: ${categoryId}`);
-            return null;
-          }
-          return await categoryResponse.json();
-        });
 
-        const categoriesResults = await Promise.all(categoriesPromises);
-        categories = categoriesResults.filter(Boolean).map((result) => result.category);
+        // Batch fetch categories in a single API call
+        if (categoryIds.length > 0) {
+          const categoryResponse = await fetch(
+            `${API_URL}/api/v3/categories?ids=${categoryIds.join(',')}`,
+            {
+              cache: 'no-store',
+            }
+          );
+
+          if (categoryResponse.ok) {
+            const categoriesData = await categoryResponse.json();
+            categories = categoriesData.categories || [];
+          } else {
+            console.error('Failed to fetch categories');
+            categories = [];
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching products or categories:', error);
@@ -138,7 +143,12 @@ export default async function StorePage(props: StorePageProps) {
     return (
       <PublicStoreLayout theme={theme} seller={seller} products={products} categories={categories}>
         <PublicStoreProfile theme={theme} seller={seller} />
-        <StoreProducts theme={theme} store={seller.username} />
+        <StoreProducts
+          theme={theme}
+          store={seller.username}
+          initialProducts={products}
+          initialCategories={categories}
+        />
       </PublicStoreLayout>
     );
   } catch (error) {

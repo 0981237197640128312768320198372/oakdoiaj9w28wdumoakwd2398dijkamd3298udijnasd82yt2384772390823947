@@ -11,20 +11,45 @@ import ProductDetail from './ProductDetail';
 interface StoreProductsProps {
   store: string | undefined;
   theme: any;
+  initialProducts?: Product[];
+  initialCategories?: Category[];
 }
 
-export default function StoreProducts({ store, theme }: StoreProductsProps) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export default function StoreProducts({
+  store,
+  theme,
+  initialProducts = [],
+  initialCategories = [],
+}: StoreProductsProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [isLoading, setIsLoading] = useState(initialProducts.length === 0);
   const [error, setError] = useState<string | null>(null);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showProductDetail, setShowProductDetail] = useState(false);
 
   useEffect(() => {
-    // console.log('StoreProducts - store value:', store);
+    // If we have initial data, use it and skip API calls
+    if (initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setCategories(initialCategories);
+      setIsLoading(false);
+
+      // Check if there's a selected product ID in localStorage
+      const selectedProductId = localStorage.getItem('selectedProductId');
+      if (selectedProductId) {
+        const product = initialProducts.find((p: Product) => p._id === selectedProductId);
+        if (product) {
+          setSelectedProduct(product);
+          setShowProductDetail(true);
+        }
+        localStorage.removeItem('selectedProductId');
+      }
+      return;
+    }
+
+    // Fallback: fetch data if no initial data provided
     if (!store) {
-      // console.log('StoreProducts - No store value provided');
       return;
     }
 
@@ -33,33 +58,37 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
       setError(null);
 
       try {
-        // console.log('StoreProducts - Fetching data for store:', store);
         const productsResponse = await fetch(`/api/v3/products?store=${store}`);
         if (!productsResponse.ok) {
           throw new Error(`Failed to fetch products: ${productsResponse.statusText}`);
         }
         const productsData = await productsResponse.json();
-        // console.log('StoreProducts - Products data:', productsData);
         setProducts(productsData.products || []);
 
-        const categoriesResponse = await fetch(`/api/v3/categories?store=${store}`);
-        if (!categoriesResponse.ok) {
-          throw new Error(`Failed to fetch categories: ${categoriesResponse.statusText}`);
+        // Batch fetch categories if products exist
+        if (productsData.products && productsData.products.length > 0) {
+          const categoryIds = [
+            ...new Set(productsData.products.map((product: any) => product.categoryId)),
+          ];
+          if (categoryIds.length > 0) {
+            const categoriesResponse = await fetch(
+              `/api/v3/categories?ids=${categoryIds.join(',')}`
+            );
+            if (categoriesResponse.ok) {
+              const categoriesData = await categoriesResponse.json();
+              setCategories(categoriesData.categories || []);
+            }
+          }
         }
-        const categoriesData = await categoriesResponse.json();
-        // console.log('StoreProducts - Categories data:', categoriesData);
-        setCategories(categoriesData.categories || []);
 
-        // Check if there's a selected product ID in localStorage
+        // Check localStorage for selected product
         const selectedProductId = localStorage.getItem('selectedProductId');
         if (selectedProductId) {
-          // Find the product with the matching ID
           const product = productsData.products?.find((p: Product) => p._id === selectedProductId);
           if (product) {
             setSelectedProduct(product);
             setShowProductDetail(true);
           }
-          // Clear the localStorage item to prevent showing the product detail on page refresh
           localStorage.removeItem('selectedProductId');
         }
       } catch (err) {
@@ -71,7 +100,7 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
     };
 
     fetchData();
-  }, [store]);
+  }, [store, initialProducts, initialCategories]);
 
   const handleViewProductDetail = (productId: string) => {
     const product = products.find((p) => p._id === productId);

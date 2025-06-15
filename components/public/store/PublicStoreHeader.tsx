@@ -12,9 +12,24 @@ import { useThemeUtils } from '@/lib/theme-utils';
 interface PublicStoreHeaderProps {
   seller: any;
   theme?: any;
+  storeCreditStats?: {
+    positiveCount: number;
+    negativeCount: number;
+    totalCount: number;
+    positivePercentage: number;
+  } | null;
+  sellerStats?: {
+    totalProducts: number;
+    totalSales: number;
+  } | null;
 }
 
-export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
+export function PublicStoreHeader({
+  seller,
+  theme,
+  storeCreditStats,
+  sellerStats,
+}: PublicStoreHeaderProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const themeUtils = useThemeUtils(theme);
@@ -29,6 +44,11 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
   };
 
   const headerStyles = getHeaderStyles();
+
+  // Use real data or fallback values
+  const totalSales = sellerStats?.totalSales ?? 0;
+  const positiveCredits = storeCreditStats?.positiveCount ?? 0;
+  const negativeCredits = storeCreditStats?.negativeCount ?? 0;
 
   return (
     <div className="relative">
@@ -86,9 +106,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
                 themeUtils.getComponentRoundednessClass()
               )}>
               <ShoppingCart className="h-3 w-3 fill-fuchsia-400 text-fuchsia-400" />
-              <span className={cn(themeUtils.getTextColors())}>
-                {seller.store.rating.toFixed(1)}
-              </span>
+              <span className={cn(themeUtils.getTextColors())}>{totalSales}</span>
             </Badge>
             <Badge
               variant="outline"
@@ -97,9 +115,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
                 themeUtils.getComponentRoundednessClass()
               )}>
               <ThumbsUp className="h-3 w-3 text-green-500" />
-              <span className={cn(themeUtils.getTextColors())}>
-                {seller.store.credits.positive}
-              </span>
+              <span className={cn(themeUtils.getTextColors())}>{positiveCredits}</span>
             </Badge>
             <Badge
               variant="outline"
@@ -109,9 +125,7 @@ export function PublicStoreHeader({ seller, theme }: PublicStoreHeaderProps) {
                 themeUtils.getComponentRoundednessClass()
               )}>
               <ThumbsDown className="h-3 w-3 text-rose-500" />
-              <span className={cn(themeUtils.getTextColors())}>
-                {seller.store.credits.negative}
-              </span>
+              <span className={cn(themeUtils.getTextColors())}>{negativeCredits}</span>
             </Badge>
           </div>
         </div>

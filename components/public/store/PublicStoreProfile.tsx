@@ -19,6 +19,7 @@ import { StoreReviewModal } from '@/components/shared/StoreReviewModal';
 import { StoreRatingStats } from '@/components/shared/StoreRatingStats';
 import { ReviewCard } from '@/components/shared/ReviewCard';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
+import { useSellerStats } from '@/hooks/useSellerStats';
 
 interface PublicStoreProfileProps {
   seller: any;
@@ -44,6 +45,11 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
     fetchReviewsList,
     loadMore,
   } = useStoreReviews(seller?._id || null);
+  const {
+    statistics: sellerStats,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useSellerStats(seller?.username || null);
 
   const themeUtils = useThemeUtils(theme);
 
@@ -102,13 +108,18 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
     <>
       <div
         className={cn(
-          'w-full min-h-[70vh] transition-all duration-500 transform',
+          'w-full min-h-[70vh] transition-all duration-500 transform ',
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2',
           themeUtils.getTextColors()
         )}>
         <Card className="overflow-hidden">
-          <PublicStoreHeader seller={seller} theme={theme} />
-          <CardContent className="p-3 lg:p-4">
+          <PublicStoreHeader
+            seller={seller}
+            theme={theme}
+            storeCreditStats={storeCreditStats}
+            sellerStats={sellerStats}
+          />
+          <CardContent className="p-5 lg:px-0">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               <div className="lg:col-span-2 space-y-5">
                 <PublicInfoSection
@@ -145,28 +156,28 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                 </PublicInfoSection>
 
                 {storeReviewStats && <StoreRatingStats stats={storeReviewStats} theme={theme} />}
-
-                <div
-                  className={cn(
-                    'p-4 border transition-all duration-300',
-                    themeUtils.getCardClass(),
-                    themeUtils.getComponentRoundednessClass()
-                  )}>
-                  {/* Section Header */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <div
-                      className={cn(
-                        'p-1 border',
-                        themeUtils.getCardClass(),
-                        themeUtils.getComponentRoundednessClass()
-                      )}>
-                      <Edit3 className="w-3 h-3" />
+                {canWriteReview && (
+                  <div
+                    className={cn(
+                      'p-4 border transition-all duration-300',
+                      themeUtils.getCardClass(),
+                      themeUtils.getComponentRoundednessClass()
+                    )}>
+                    {/* Section Header */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div
+                        className={cn(
+                          'p-1 border',
+                          themeUtils.getCardClass(),
+                          themeUtils.getComponentRoundednessClass()
+                        )}>
+                        <Edit3 className="w-3 h-3" />
+                      </div>
+                      <h3 className="text-xs font-aktivGroteskBlack tracking-widest">
+                        รีวิวร้านค้า
+                      </h3>
                     </div>
-                    <h3 className="text-xs font-aktivGroteskBlack tracking-widest">รีวิวร้านค้า</h3>
-                  </div>
 
-                  {/* Write Review Button - Only show if user can write review */}
-                  {canWriteReview && (
                     <button
                       onClick={() => setShowReviewModal(true)}
                       className={cn(
@@ -176,74 +187,74 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                       <Edit3 size={12} />
                       เขียนรีวิวร้านค้า
                     </button>
-                  )}
 
-                  {/* Show message for users who can't review */}
-                  {!canWriteReview && (
-                    <div
-                      className={cn(
-                        'text-center p-3 rounded-md text-xs opacity-70 mb-4',
-                        profileStyles.infoSection
-                      )}>
-                      {!isAuthenticated
-                        ? 'เข้าสู่ระบบเพื่อเขียนรีวิว'
-                        : 'ซื้อสินค้าจากร้านนี้ก่อนเพื่อเขียนรีวิว'}
-                    </div>
-                  )}
-
-                  {/* Reviews List */}
-                  <div className="space-y-3">
-                    {reviewsLoading && reviews.length === 0 ? (
-                      <div className="flex items-center justify-center py-6">
-                        <Loader2 size={16} className="animate-spin opacity-60" />
-                        <span className="ml-2 text-xs opacity-60">กำลังโหลดรีวิว...</span>
-                      </div>
-                    ) : reviews.length > 0 ? (
-                      <>
-                        {reviews.map((review) => (
-                          <ReviewCard key={review._id} review={review} theme={theme} />
-                        ))}
-
-                        {/* Load More Button */}
-                        {hasMore && (
-                          <div className="flex justify-center pt-2">
-                            <button
-                              onClick={loadMore}
-                              disabled={isLoadingMore}
-                              className={cn(
-                                'flex items-center gap-2 px-4 py-2 rounded-md border transition-all duration-200 text-xs',
-                                profileStyles.infoSection,
-                                'hover:opacity-80 disabled:opacity-50'
-                              )}>
-                              {isLoadingMore ? (
-                                <Loader2 size={12} className="animate-spin" />
-                              ) : (
-                                <ChevronDown size={12} />
-                              )}
-                              <span>{isLoadingMore ? 'กำลังโหลด...' : 'โหลดรีวิวเพิ่มเติม'}</span>
-                            </button>
-                          </div>
-                        )}
-
-                        {/* End Message */}
-                        {!hasMore && reviews.length > 0 && (
-                          <div className="text-center py-3">
-                            <p className={cn('text-xs opacity-60', profileStyles.secondaryText)}>
-                              แสดงรีวิวทั้งหมดแล้ว ({reviews.length} รีวิว)
-                            </p>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className={cn('text-center p-6 rounded-md', profileStyles.infoSection)}>
-                        <p className="text-xs opacity-70">ยังไม่มีรีวิวสำหรับร้านนี้</p>
-                        <p className="text-xs opacity-50 mt-1">
-                          เป็นคนแรกที่รีวิวร้านนี้หลังจากการซื้อ
-                        </p>
+                    {!canWriteReview && (
+                      <div
+                        className={cn(
+                          'text-center p-3 rounded-md text-xs opacity-70 mb-4',
+                          profileStyles.infoSection
+                        )}>
+                        {!isAuthenticated
+                          ? 'เข้าสู่ระบบเพื่อเขียนรีวิว'
+                          : 'ซื้อสินค้าจากร้านนี้ก่อนเพื่อเขียนรีวิว'}
                       </div>
                     )}
+
+                    {/* Reviews List */}
+                    <div className="space-y-3">
+                      {reviewsLoading && reviews.length === 0 ? (
+                        <div className="flex items-center justify-center py-6">
+                          <Loader2 size={16} className="animate-spin opacity-60" />
+                          <span className="ml-2 text-xs opacity-60">กำลังโหลดรีวิว...</span>
+                        </div>
+                      ) : reviews.length > 0 ? (
+                        <>
+                          {reviews.map((review) => (
+                            <ReviewCard key={review._id} review={review} theme={theme} />
+                          ))}
+
+                          {/* Load More Button */}
+                          {hasMore && (
+                            <div className="flex justify-center pt-2">
+                              <button
+                                onClick={loadMore}
+                                disabled={isLoadingMore}
+                                className={cn(
+                                  'flex items-center gap-2 px-4 py-2 rounded-md border transition-all duration-200 text-xs',
+                                  profileStyles.infoSection,
+                                  'hover:opacity-80 disabled:opacity-50'
+                                )}>
+                                {isLoadingMore ? (
+                                  <Loader2 size={12} className="animate-spin" />
+                                ) : (
+                                  <ChevronDown size={12} />
+                                )}
+                                <span>{isLoadingMore ? 'กำลังโหลด...' : 'โหลดรีวิวเพิ่มเติม'}</span>
+                              </button>
+                            </div>
+                          )}
+
+                          {/* End Message */}
+                          {!hasMore && reviews.length > 0 && (
+                            <div className="text-center py-3">
+                              <p className={cn('text-xs opacity-60', profileStyles.secondaryText)}>
+                                แสดงรีวิวทั้งหมดแล้ว ({reviews.length} รีวิว)
+                              </p>
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <div
+                          className={cn('text-center p-6 rounded-md', profileStyles.infoSection)}>
+                          <p className="text-xs opacity-70">ยังไม่มีรีวิวสำหรับร้านนี้</p>
+                          <p className="text-xs opacity-50 mt-1">
+                            เป็นคนแรกที่รีวิวร้านนี้หลังจากการซื้อ
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="space-y-3">

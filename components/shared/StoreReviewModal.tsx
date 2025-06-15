@@ -133,7 +133,7 @@ export const StoreReviewModal: React.FC<StoreReviewModalProps> = ({
             <>
               {/* Rating */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-3">RATING</label>
+                <label className="block text-sm font-medium mb-3">เรตติ้ง</label>
                 <div className="flex gap-1 justify-center">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -171,7 +171,7 @@ export const StoreReviewModal: React.FC<StoreReviewModalProps> = ({
               </div>
 
               {/* Comment */}
-              <div className="mb-6">
+              <div className="mb-5">
                 <label className="block text-sm font-medium mb-2">แบ่งปันประสบการณ์ของคุณ</label>
                 <textarea
                   value={comment}
