@@ -1,6 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Schema, model, Document, Types, models } from 'mongoose';
 
+interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: {
+    '1': number;
+    '2': number;
+    '3': number;
+    '4': number;
+    '5': number;
+  };
+  lastUpdated: Date;
+}
+
 interface IProduct extends Document {
   title: string;
   description: string;
@@ -12,6 +25,7 @@ interface IProduct extends Document {
   images: string[];
   status: 'active' | 'draft';
   rating: number;
+  reviewStats: ReviewStats;
   createdAt: Date;
   updatedAt: Date;
   _stock?: number;
@@ -29,6 +43,18 @@ const productSchema = new Schema<IProduct>({
   images: [String],
   status: { type: String, enum: ['active', 'draft'], default: 'active' },
   rating: { type: Number, default: 0 },
+  reviewStats: {
+    averageRating: { type: Number, default: 0 },
+    totalReviews: { type: Number, default: 0 },
+    ratingDistribution: {
+      '1': { type: Number, default: 0 },
+      '2': { type: Number, default: 0 },
+      '3': { type: Number, default: 0 },
+      '4': { type: Number, default: 0 },
+      '5': { type: Number, default: 0 },
+    },
+    lastUpdated: { type: Date, default: Date.now },
+  },
   _stock: { type: Number, default: 0 },
   digitalInventoryId: { type: Schema.Types.ObjectId, ref: 'DigitalInventory' },
   createdAt: { type: Date, default: Date.now },

@@ -9,10 +9,22 @@ import { Product, ThemeType, Category } from '@/types';
 import Image from 'next/image';
 import { cn, dokmaiCoinSymbol, dokmaiImagePlaceholder, formatPrice } from '@/lib/utils';
 import { useThemeUtils } from '@/lib/theme-utils';
-import { useProductReviews } from '@/hooks/useReviews';
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & {
+    reviewStats?: {
+      averageRating: number;
+      totalReviews: number;
+      ratingDistribution: {
+        '1': number;
+        '2': number;
+        '3': number;
+        '4': number;
+        '5': number;
+      };
+      lastUpdated: Date;
+    };
+  };
   theme: ThemeType;
   role: 'seller' | 'buyer';
   onViewDetails?: (productId: string) => void;
@@ -32,39 +44,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const [shouldLoadReviews, setShouldLoadReviews] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const themeUtils = useThemeUtils(theme || null);
 
-  // Only load reviews when needed (lazy loading)
-  const { stats: reviewStats, isLoading: reviewsLoading } = useProductReviews(
-    shouldLoadReviews ? product._id : null
-  );
-
-  // Intersection Observer for lazy loading reviews
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !shouldLoadReviews) {
-            setShouldLoadReviews(true);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
-    return () => {
-      if (cardRef.current) {
-        observer.unobserve(cardRef.current);
-      }
-    };
-  }, [shouldLoadReviews]);
+  // Use embedded review stats (no API calls needed!)
+  const reviewStats = product.reviewStats;
 
   const isLight = themeUtils.baseTheme === 'light';
   const isSeller = role === 'seller';
@@ -117,14 +102,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click event
+    e.stopPropagation();
     if (onEdit) {
       onEdit(product);
     }
   };
 
   const handleDelete = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click event
+    e.stopPropagation();
     if (onDelete) {
       onDelete(product._id);
     }
@@ -240,7 +225,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             themeUtils.getComponentRoundednessClass(),
             product._stock === 0 ? 'grayscale' : ''
           )}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
 
         {/* Sold out overlay */}
@@ -308,6 +292,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className={cn(styles.contentContainer, 'flex-grow flex flex-col justify-between ')}>
         <div className="flex flex-col items-start justify-end gap-1">
+          {/* OPTIMIZED: Use embedded review stats instead of API calls */}
           {reviewStats && reviewStats.averageRating > 0 && (
             <div className={styles.ratingContainer}>
               <div className="flex items-center justify-center bg-amber-500/10 border-[1px] border-amber-500 px-2 py-1 rounded">

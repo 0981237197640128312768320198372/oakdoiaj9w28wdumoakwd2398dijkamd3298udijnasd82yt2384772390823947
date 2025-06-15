@@ -159,6 +159,15 @@ export class ReviewService {
       // Remove the pending review after successful product review
       await PendingReview.findByIdAndDelete(pendingReview._id);
 
+      // Update product review stats immediately
+      try {
+        const { ProductService } = await import('./productService');
+        await ProductService.updateProductReviewStats(pendingReview.productId.toString());
+      } catch (error) {
+        console.error('Error updating product review stats after review submission:', error);
+        // Don't throw error here as the review was successfully created
+      }
+
       return review;
     } catch (error) {
       console.error('Error submitting review:', error);

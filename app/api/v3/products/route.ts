@@ -7,6 +7,7 @@ import { Product } from '@/models/v3/Product';
 import { DigitalInventory } from '@/models/v3/DigitalInventory';
 import { Seller } from '@/models/v3/Seller';
 import { Category } from '@/models/v3/Category';
+import { ProductService } from '@/lib/services/productService';
 import jwt from 'jsonwebtoken';
 import { connectToDatabase } from '@/lib/db';
 
@@ -145,84 +146,74 @@ export async function GET(req: NextRequest) {
       if (!seller) {
         return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
       }
-      sellerId = seller._id;
+      sellerId = seller._id.toString();
+
+      if (productId) {
+        // Get single product with review stats for public store
+        const product = await ProductService.getProductWithReviewStats(productId, sellerId);
+        if (!product) {
+          return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+        }
+
+        // Get associated ProductData entries
+        const productDataEntries = await DigitalInventory.find({
+          productId,
+          sellerId,
+        }).lean();
+
+        return NextResponse.json({
+          product: {
+            ...product,
+            productData: productDataEntries,
+          },
+        });
+      }
+
+      // Get products for public store with embedded review stats
+      const products = await ProductService.getPublicStoreProducts(sellerId, {
+        categoryId: categoryId || undefined,
+        limit: 50,
+        skip: 0,
+      });
+
+      return NextResponse.json({ products });
     } else {
       const authResult = jwtAuthenticate(req);
       if ('error' in authResult) {
         return NextResponse.json({ error: authResult.error }, { status: authResult.status });
       }
       sellerId = authResult.sellerId;
-    }
 
-    if (productId) {
-      if (!mongoose.Types.ObjectId.isValid(productId)) {
-        return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
-      }
-
-      // Use explicit casting to handle the type
-      const productDoc = await Product.findOne({
-        _id: productId,
-        sellerId,
-      });
-
-      if (!productDoc) {
-        return NextResponse.json({ error: 'Product not found' }, { status: 404 });
-      }
-
-      // Convert to plain object
-      const product = productDoc.toObject();
-
-      // Get category data
-      const category = await Category.findById(product.categoryId).lean();
-
-      // Get associated ProductData entries
-      const productDataEntries = await DigitalInventory.find({
-        productId,
-        sellerId,
-      }).lean();
-
-      // Calculate stock based on ProductData entries
-      const stock = productDataEntries.length;
-
-      return NextResponse.json({
-        product: {
-          ...product,
-          stock,
-          category,
-          productData: productDataEntries,
-        },
-      });
-    }
-
-    let query: any = { sellerId };
-
-    if (categoryId) {
-      query.categoryId = categoryId;
-    }
-
-    // Get products and convert to plain objects
-    const products = await Product.find(query);
-    const plainProducts = products.map((product) => product.toObject());
-
-    const productsWithCategories = await Promise.all(
-      plainProducts.map(async (product) => {
-        // Get category data if categoryId exists
-        let category = null;
-        if (product.categoryId) {
-          category = await Category.findById(product.categoryId).lean();
+      if (productId) {
+        // Get single product with review stats for seller dashboard
+        const product = await ProductService.getProductWithReviewStats(productId, sellerId);
+        if (!product) {
+          return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
 
-        // Get stock count for each product
-        const stockCount = await DigitalInventory.countDocuments({ productId: product._id });
+        // Get associated ProductData entries
+        const productDataEntries = await DigitalInventory.find({
+          productId,
+          sellerId,
+        }).lean();
 
-        return {
-          ...product,
-          stock: stockCount,
-          category,
-        };
-      })
-    );
-    return NextResponse.json({ products: productsWithCategories });
+        return NextResponse.json({
+          product: {
+            ...product,
+            productData: productDataEntries,
+          },
+        });
+      }
+
+      // Get products for seller dashboard with embedded review stats
+      const products = await ProductService.getProductsWithReviewStats(sellerId, {
+        categoryId: categoryId || undefined,
+        limit: 50,
+        skip: 0,
+      });
+
+      return NextResponse.json({ products });
+    }
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
