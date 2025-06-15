@@ -26,15 +26,22 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
-    const seller = (await Seller.findOne({ username })
-      .populate('store.theme')
-      .lean()) as SellerDocument | null;
+    const seller = (await Seller.findOne({ username }).lean()) as SellerDocument | null;
 
     if (!seller) {
       return NextResponse.json({ error: 'Seller not found' }, { status: 404 });
     }
 
-    const theme = seller.store.theme;
+    // Get theme separately to avoid populate issues
+    let theme: any = null;
+    if (seller.store.theme) {
+      try {
+        theme = await Theme.findById(seller.store.theme).lean();
+      } catch (themeError) {
+        console.error('Error fetching theme:', themeError);
+        // Continue with null theme to return default
+      }
+    }
 
     // If no theme exists, return default theme instead of 404
     if (!theme) {

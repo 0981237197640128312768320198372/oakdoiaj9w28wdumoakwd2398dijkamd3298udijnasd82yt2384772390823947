@@ -64,11 +64,41 @@ export async function GET(request: NextRequest) {
           const buyerStats = await ReviewService.getReviewStats(buyerId);
           return NextResponse.json({ data: buyerStats });
         } else if (productId) {
-          const productStats = await ReviewService.getProductRatingStats(productId);
-          return NextResponse.json({ data: productStats });
+          try {
+            const productStats = await Promise.race([
+              ReviewService.getProductRatingStats(productId),
+              new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Request timeout')), 8000)
+              ),
+            ]);
+            return NextResponse.json({ data: productStats });
+          } catch (error) {
+            console.error('Error fetching product rating stats:', error);
+            // Return default stats on timeout/error
+            return NextResponse.json({
+              data: {
+                averageRating: 0,
+                totalReviews: 0,
+                ratingDistribution: { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0 },
+              },
+            });
+          }
         } else if (sellerId) {
-          const sellerStats = await ReviewService.getSellerRatingStats(sellerId);
-          return NextResponse.json({ data: sellerStats });
+          try {
+            const sellerStats = await Promise.race([
+              ReviewService.getSellerRatingStats(sellerId),
+              new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Request timeout')), 8000)
+              ),
+            ]);
+            return NextResponse.json({ data: sellerStats });
+          } catch (error) {
+            console.error('Error fetching seller rating stats:', error);
+            // Return default stats on timeout/error
+            return NextResponse.json({
+              data: { averageRating: 0, totalReviews: 0 },
+            });
+          }
         }
         break;
 

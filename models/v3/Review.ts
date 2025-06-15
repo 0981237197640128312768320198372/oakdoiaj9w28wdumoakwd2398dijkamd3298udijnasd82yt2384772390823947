@@ -151,10 +151,73 @@ reviewSchema.statics.getAverageRating = async function (
       ? { productId, reviewType: 'product', status: 'active' }
       : { productId, reviewType: 'seller', status: 'active' };
 
-  // First, let's check if there are any reviews at all
-  const reviewCount = await this.countDocuments(matchCondition);
+  try {
+    // Use a single optimized aggregation pipeline
+    const result = await this.aggregate([
+      { $match: matchCondition },
+      {
+        $facet: {
+          stats: [
+            {
+              $group: {
+                _id: null,
+                averageRating: { $avg: '$rating' },
+                totalReviews: { $sum: 1 },
+              },
+            },
+          ],
+          distribution: [
+            {
+              $group: {
+                _id: '$rating',
+                count: { $sum: 1 },
+              },
+            },
+          ],
+        },
+      },
+    ]);
 
-  if (reviewCount === 0) {
+    if (!result || result.length === 0) {
+      return {
+        averageRating: 0,
+        totalReviews: 0,
+        ratingDistribution: {
+          '1': 0,
+          '2': 0,
+          '3': 0,
+          '4': 0,
+          '5': 0,
+        },
+      };
+    }
+
+    const stats = result[0].stats[0] || { averageRating: 0, totalReviews: 0 };
+    const distribution = result[0].distribution || [];
+
+    // Build rating distribution
+    const ratingDistribution = {
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+    };
+
+    distribution.forEach((item: any) => {
+      if (item._id >= 1 && item._id <= 5) {
+        ratingDistribution[item._id.toString() as keyof typeof ratingDistribution] = item.count;
+      }
+    });
+
+    return {
+      averageRating: stats.averageRating || 0,
+      totalReviews: stats.totalReviews || 0,
+      ratingDistribution,
+    };
+  } catch (error) {
+    console.error('Error in getAverageRating:', error);
+    // Return default values on error
     return {
       averageRating: 0,
       totalReviews: 0,
@@ -167,80 +230,6 @@ reviewSchema.statics.getAverageRating = async function (
       },
     };
   }
-
-  const result = await this.aggregate([
-    { $match: matchCondition },
-    {
-      $group: {
-        _id: null,
-        averageRating: { $avg: '$rating' },
-        totalReviews: { $sum: 1 },
-        ratingDistribution: {
-          $push: '$rating',
-        },
-      },
-    },
-    {
-      $addFields: {
-        ratingDistribution: {
-          '1': {
-            $size: {
-              $filter: {
-                input: '$ratingDistribution',
-                cond: { $eq: ['$$this', 1] },
-              },
-            },
-          },
-          '2': {
-            $size: {
-              $filter: {
-                input: '$ratingDistribution',
-                cond: { $eq: ['$$this', 2] },
-              },
-            },
-          },
-          '3': {
-            $size: {
-              $filter: {
-                input: '$ratingDistribution',
-                cond: { $eq: ['$$this', 3] },
-              },
-            },
-          },
-          '4': {
-            $size: {
-              $filter: {
-                input: '$ratingDistribution',
-                cond: { $eq: ['$$this', 4] },
-              },
-            },
-          },
-          '5': {
-            $size: {
-              $filter: {
-                input: '$ratingDistribution',
-                cond: { $eq: ['$$this', 5] },
-              },
-            },
-          },
-        },
-      },
-    },
-  ]);
-
-  const finalResult = result[0] || {
-    averageRating: 0,
-    totalReviews: 0,
-    ratingDistribution: {
-      '1': 0,
-      '2': 0,
-      '3': 0,
-      '4': 0,
-      '5': 0,
-    },
-  };
-
-  return finalResult;
 };
 
 reviewSchema.statics.getSellerRating = async function (sellerId: Types.ObjectId) {
