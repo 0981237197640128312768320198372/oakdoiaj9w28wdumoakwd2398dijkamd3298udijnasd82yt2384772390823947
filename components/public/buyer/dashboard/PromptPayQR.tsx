@@ -84,23 +84,6 @@ export default function PromptPayQR({ amount, qrCodeData, theme }: PromptPayQRPr
       )}>
       <div
         className={cn(
-          'hidden w-full items-center justify-center mb-1 text-xs md:flex',
-          themeUtils.getPrimaryColorClass('text')
-        )}>
-        <FaShieldAlt className="mr-2" />
-        <span className="flex items-center text-xs font-medium ">
-          ระบบใช้{' '}
-          <Link
-            href="https://stripe.com"
-            className="mx-1 hover:opacity-80 transition-colors duration-200 flex items-center">
-            <FaStripe className="mx-1 text-4xl" />
-          </Link>{' '}
-          <FaLock className="mx-1" /> รักษาความปลอดภัยธุรกรรม
-        </span>
-      </div>
-
-      <div
-        className={cn(
           'flex flex-col justify-center items-center p-2 border w-full ',
           themeUtils.getCardClass(),
           themeUtils.getComponentRoundednessClass(),

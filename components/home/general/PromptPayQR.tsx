@@ -63,13 +63,6 @@ export default function PromptPayQR({ amount, qrCodeData }: PromptPayQRProps) {
         <div
           ref={divRef}
           className="bg-dark-700 p-5 border-[1px] border-primary flex flex-col justify-center items-center select-none rounded-xl">
-          <span className="flex w-full gap-1 items-center text-xs justify-center tracking-widest mb-5">
-            ระบบใช้{' '}
-            <Link href="https://stripe.com" className="rounded underline text-md">
-              stripe
-            </Link>{' '}
-            รักษาความปลอดภัยธุรกรรม
-          </span>
           <div className="flex flex-col justify-center items-center gap-5 p-5 w-fit rounded-xl bg-dark-600 border-[0.5px] border-dark-100">
             <div className="h-8 w-full gap-5 flex flex-row-reverse items-center justify-center">
               <FaStripe className="text-6xl" />
