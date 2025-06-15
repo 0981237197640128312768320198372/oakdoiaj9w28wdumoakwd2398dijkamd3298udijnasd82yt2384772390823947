@@ -5,14 +5,14 @@ import { useState } from 'react';
 import { InfoSection } from './InfoSection';
 import { Star, ThumbsDown, ThumbsUp, TrendingUp, Package, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useStoreCredits } from '@/hooks/useStoreCredits';
+import { useSellerStoreCredits } from '@/hooks/useSellerStoreCredits';
 
 interface StoreStatsProps {
   seller: any;
 }
 
 export function StoreStats({ seller }: StoreStatsProps) {
-  const { stats: storeCreditStats } = useStoreCredits(seller?._id || null);
+  const { stats: storeCreditStats } = useSellerStoreCredits(seller?._id || null);
 
   const { rating } = seller.store;
   const totalProducts = 0; // temporary

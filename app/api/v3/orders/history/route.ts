@@ -102,18 +102,25 @@ export async function GET(request: NextRequest) {
           }
         ).store?.logoUrl,
       },
-      items: order.items.map((item) => ({
-        productId: (item.productId as unknown as { _id: string; title: string; images?: string[] })
-          ._id,
-        productTitle: item.productTitle,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        totalPrice: item.totalPrice,
-        digitalAssets: item.digitalAssets,
-        productImages:
-          (item.productId as unknown as { _id: string; title: string; images?: string[] }).images ||
-          [],
-      })),
+      items: order.items.map((item) => {
+        // Handle deleted products gracefully
+        const product = item.productId as unknown as {
+          _id: string;
+          title: string;
+          images?: string[];
+        } | null;
+
+        return {
+          productId: product?._id || null,
+          productTitle: item.productTitle, // Use stored title from order
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          totalPrice: item.totalPrice,
+          digitalAssets: item.digitalAssets,
+          productImages: product?.images || [],
+          isProductDeleted: !product, // Flag to indicate if product was deleted
+        };
+      }),
       totals: order.totals,
       timestamps: {
         createdAt: order.createdAt,
