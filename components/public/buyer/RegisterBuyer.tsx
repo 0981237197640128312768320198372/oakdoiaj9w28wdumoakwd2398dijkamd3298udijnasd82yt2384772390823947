@@ -228,14 +228,14 @@ export const RegisterBuyer: React.FC<RegisterBuyerProps> = ({
         )}>
         {!generatedKey ? (
           <>
-            <div className="flex justify-center items-center gap-3 mb-6">
+            <div className="flex justify-center items-center gap-3 mb-5">
               {[1, 2].map((s) => (
                 <React.Fragment key={s}>
                   <div
                     className={cn(
                       'w-7 h-7 text-xs rounded-full flex items-center justify-center transition-all duration-300 font-semibold',
                       step >= s
-                        ? themeUtils.getPrimaryColorClass('bg')
+                        ? themeUtils.getButtonClass()
                         : themeUtils.getCardClass() + ' border'
                     )}>
                     {step > s ? <CheckCircle size={14} /> : s}

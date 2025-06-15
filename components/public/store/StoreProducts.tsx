@@ -129,7 +129,6 @@ export default function StoreProducts({ store, theme }: StoreProductsProps) {
               categories={categories}
               theme={theme}
               role="buyer"
-              onBuyNow={handleBuyNow}
               onViewDetails={handleViewProductDetail}
               isLoading={isLoading}
             />
