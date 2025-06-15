@@ -222,33 +222,8 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
                 className="w-full h-full object-cover"
                 priority
               />
-            </div>
-            {seller && (
-              <div className="flex flex-col items-start">
-                <h1 className={navbarStyles.storeName}>{seller.store.name}</h1>
-                {seller.store.rating ? (
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <span
-                          key={i}
-                          className={cn(
-                            'text-xs',
-                            i < Math.floor(seller.store.rating)
-                              ? 'text-yellow-400'
-                              : 'text-gray-300'
-                          )}>
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                    <span className={cn('text-xs', isLight ? 'text-gray-600' : 'text-gray-400')}>
-                      ({seller.store.rating.toFixed(1)})
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            )}
+            </div>{' '}
+            <h1 className={navbarStyles.storeName}>{seller.store.name}</h1>
           </motion.button>
 
           <div className="items-center gap-1 hidden md:flex">
