@@ -106,6 +106,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, storeUsernam
     setNoResults(false);
 
     try {
+      // Use cached data from StoreDataContext if available
       const response = await fetch(`/api/v3/products?store=${storeUsername}`);
       if (!response.ok) throw new Error('Failed to fetch products');
 

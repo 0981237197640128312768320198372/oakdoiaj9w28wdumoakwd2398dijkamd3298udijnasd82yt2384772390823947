@@ -9,6 +9,7 @@ import { StoreNavbar } from './StoreNavbar';
 import CartDrawer from './CartDrawer';
 import OrderSuccessModal from './OrderSuccessModal';
 import { CartProvider } from '@/context/CartContext';
+import { StoreDataProvider } from '@/context/StoreDataContext';
 import PublicStoreProfile from './PublicStoreProfile';
 import StoreProducts from './StoreProducts';
 import HomeStorePage from './HomeStorePage';
@@ -84,14 +85,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
         return <BuyerDashboard theme={theme} />;
       case 'home':
       default:
-        return (
-          <HomeStorePage
-            onNavigate={setActivePage}
-            products={products}
-            categories={categories}
-            theme={theme}
-          />
-        );
+        return <HomeStorePage onNavigate={setActivePage} theme={theme} />;
     }
   };
 
@@ -110,52 +104,54 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
   );
   return (
     <CartProvider>
-      <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>
-        <StoreNavbar
-          theme={theme}
-          seller={seller}
-          activePage={activePage}
-          isAuthenticated={isAuthenticated}
-          onNavigate={setActivePage}
-          onCartOpen={() => setIsCartOpen(true)}
-        />
-
-        <motion.div
-          className="flex flex-col items-center min-h-fit justify-start w-full relative z-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              className="w-full px-5 lg:px-0 max-w-screen-lg pt-16 lg:pt-32"
-              key={activePage}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}>
-              {renderContent()}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-        <StoreFooter seller={seller} theme={theme} />
-        <CartDrawer
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          theme={theme}
-          onNavigate={setActivePage}
-          onOrderSuccess={handleOrderSuccess}
-        />
-
-        {showOrderModal && orderSuccessData && (
-          <OrderSuccessModal
-            isOpen={showOrderModal}
-            onClose={handleCloseOrderModal}
-            orderData={orderSuccessData}
+      <StoreDataProvider initialProducts={products} initialCategories={categories}>
+        <div className={cn('min-h-screen w-full', layoutStyles.background, layoutStyles.text)}>
+          <StoreNavbar
             theme={theme}
-            onViewOrderDetails={handleViewOrderDetails}
+            seller={seller}
+            activePage={activePage}
+            isAuthenticated={isAuthenticated}
+            onNavigate={setActivePage}
+            onCartOpen={() => setIsCartOpen(true)}
           />
-        )}
-      </div>
+
+          <motion.div
+            className="flex flex-col items-center min-h-fit justify-start w-full relative z-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: loaded ? 1 : 0, y: loaded ? 0 : 20 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                className="w-full px-5 lg:px-0 max-w-screen-lg pt-16 lg:pt-32"
+                key={activePage}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}>
+                {renderContent()}
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+          <StoreFooter seller={seller} theme={theme} />
+          <CartDrawer
+            isOpen={isCartOpen}
+            onClose={() => setIsCartOpen(false)}
+            theme={theme}
+            onNavigate={setActivePage}
+            onOrderSuccess={handleOrderSuccess}
+          />
+
+          {showOrderModal && orderSuccessData && (
+            <OrderSuccessModal
+              isOpen={showOrderModal}
+              onClose={handleCloseOrderModal}
+              orderData={orderSuccessData}
+              theme={theme}
+              onViewOrderDetails={handleViewOrderDetails}
+            />
+          )}
+        </div>
+      </StoreDataProvider>
     </CartProvider>
   );
 };

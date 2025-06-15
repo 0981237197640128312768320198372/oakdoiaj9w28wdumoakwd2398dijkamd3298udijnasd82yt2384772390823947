@@ -8,21 +8,16 @@ import ProductsCategory from './ProductsCategory';
 import { Category, Product } from '@/types';
 import BannerAdsCarousel from './BannerAdsCarousel';
 import ProductShowcase from './ProductShowcase';
+import { useStoreData } from '@/context/StoreDataContext';
+
 interface HomeStorePageProps {
-  products: Product[];
-  categories: Category[];
   theme: any;
   sellerId?: string;
   onNavigate: (page: string) => void;
 }
 
-const HomeStorePage: React.FC<HomeStorePageProps> = ({
-  products,
-  categories,
-  theme,
-  sellerId,
-  onNavigate,
-}) => {
+const HomeStorePage: React.FC<HomeStorePageProps> = ({ theme, sellerId, onNavigate }) => {
+  const { products, categories } = useStoreData();
   const handleViewProductDetail = (productId: string) => {
     onNavigate('products');
 
