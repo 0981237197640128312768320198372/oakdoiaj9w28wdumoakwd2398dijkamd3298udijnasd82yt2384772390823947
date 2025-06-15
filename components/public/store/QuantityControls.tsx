@@ -147,8 +147,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
     return (
       <div
         className={cn(
-          'flex items-center justify-center gap-1 w-full p-2 rounded-lg opacity-50 cursor-not-allowed',
-          isLight ? 'bg-gray-300 text-gray-500' : 'bg-gray-600 text-gray-400',
+          'flex items-center justify-center gap-1 w-full p-2 rounded-lg opacity-50 bg-dark-400 text-light-300 cursor-not-allowed',
           className
         )}>
         สินค้าหมด

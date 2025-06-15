@@ -94,11 +94,6 @@ export default function DiscountedProducts({
               role="buyer"
               category={product.category}
               onViewDetails={onViewDetails}
-              onBuyNow={(productId) => {
-                console.log(`ซื้อเลย clicked for product: ${productId}`);
-                // In a real implementation, this would handle the purchase flow
-                // or redirect to a product detail page
-              }}
             />
           </motion.div>
         ))}

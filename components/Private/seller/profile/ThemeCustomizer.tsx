@@ -502,7 +502,7 @@ export default function ThemeCustomizer({
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-3">
+                    <div className="space-y-5">
                       <div className="space-y-2">
                         <label className="text-xs font-medium text-light-400">
                           Corner Roundness
@@ -560,7 +560,7 @@ export default function ThemeCustomizer({
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-5">
                       <div className="space-y-2">
                         <label className="text-xs font-medium text-light-400">Text Color</label>
                         <ColorGrid

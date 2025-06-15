@@ -46,7 +46,7 @@ export function StoreStats({ seller }: StoreStatsProps) {
           />
         </div>
 
-        <div className="space-y-3 pt-3 border-t border-dark-300/50">
+        <div className="space-y-5 pt-3 border-t border-dark-300/50">
           <StatItem
             icon={<Star className="h-4 w-4 fill-yellow-400" />}
             label="Store Rating"

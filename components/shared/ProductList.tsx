@@ -26,7 +26,6 @@ interface ProductListProps {
   role: 'seller' | 'buyer';
   onEdit?: (product: Product) => void;
   onDelete?: (productId: string) => void;
-  onBuyNow?: (productId: string) => void;
   onViewDetails?: (productId: string) => void;
   isLoading?: boolean;
 }
@@ -38,7 +37,6 @@ const ProductList: React.FC<ProductListProps> = ({
   role,
   onEdit,
   onDelete,
-  onBuyNow,
   onViewDetails,
   isLoading = false,
 }) => {
@@ -176,7 +174,7 @@ const ProductList: React.FC<ProductListProps> = ({
       ),
       iconColor: cn(isLight ? 'text-dark-500' : 'text-light-500'),
       filterButton: cn(
-        'px-4 py-2 border text-sm transition-colors flex gap-2 items-center',
+        'px-4 py-2 border text-sm transition-colors flex gap-3 items-center',
         themeUtils.getPrimaryColorClass('border') + '/30',
         themeUtils.getButtonBorderClass(),
         themeUtils.getButtonClass()
@@ -184,10 +182,9 @@ const ProductList: React.FC<ProductListProps> = ({
 
       loadMoreButton: cn(
         'mt-5 px-4 py-2 border w-full text-sm transition-colors rounded-md flex items-center justify-center gap-2',
-        themeUtils.getCardClass(),
         isLight
-          ? 'hover:!bg-light-100/50 hover:!border-white'
-          : 'hover:!bg-dark-600 hover:!border-dark-400'
+          ? 'bg-light-100 border-light-400 hover:!bg-light-200 hover:!border-light-600'
+          : 'bg-dark-600 border-dark-400 hover:!bg-dark-500 hover:!border-dark-300'
       ),
 
       // Empty state
@@ -215,7 +212,7 @@ const ProductList: React.FC<ProductListProps> = ({
         styles.skeletonCard
       )}>
       <div className={cn('h-48', styles.skeletonContent)}></div>
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-5">
         <div className={cn('h-5 rounded w-3/4', styles.skeletonContent)}></div>
         <div className={cn('h-4 rounded w-1/2', styles.skeletonContent)}></div>
         <div className={cn('h-6 rounded w-1/3', styles.skeletonContent)}></div>
@@ -238,7 +235,7 @@ const ProductList: React.FC<ProductListProps> = ({
         </div>
       )}
       {/* Skeleton for Search and Filter Section */}
-      <div className="w-full space-y-3 mb-6">
+      <div className="w-full space-y-5 mb-6">
         <div className="flex flex-col gap-3 w-full">
           <div className="flex flex-wrap gap-5">
             <div className="relative flex-grow">
@@ -365,9 +362,9 @@ const ProductList: React.FC<ProductListProps> = ({
       )}
 
       {/* Search and Filters */}
-      <div className="w-full space-y-3 mb-5">
+      <div className="w-full space-y-5 mb-5">
         {/* Mobile-first responsive layout */}
-        <div className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col gap-5 w-full">
           {/* Search Bar - Full width on mobile, flexible on larger screens */}
           <div className="relative w-full sm:flex-1">
             <Search
@@ -395,7 +392,7 @@ const ProductList: React.FC<ProductListProps> = ({
           </div>
 
           {/* Filters Row - Stack on mobile, inline on larger screens */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <div className="flex flex-col sm:flex-row gap-5 w-full">
             {/* Category Filter */}
             <div className="relative w-full sm:flex-1 sm:min-w-[180px]">
               <select
@@ -470,7 +467,7 @@ const ProductList: React.FC<ProductListProps> = ({
             )}
 
             {/* Action Buttons Row - Stack on mobile, inline on larger screens */}
-            <div className="flex gap-3 w-full sm:w-auto">
+            <div className="flex gap-5 w-full sm:w-auto">
               <button
                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                 className={cn(
@@ -646,7 +643,6 @@ const ProductList: React.FC<ProductListProps> = ({
                       theme={theme}
                       role={role}
                       category={category}
-                      onBuyNow={onBuyNow}
                       onViewDetails={onViewDetails}
                       onEdit={onEdit}
                       onDelete={onDelete}

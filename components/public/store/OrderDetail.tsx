@@ -339,7 +339,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                 <div className="space-y-5">
                   <div
                     className={cn(
-                      'space-y-3',
+                      'space-y-5',
                       isLight ? themeUtils.getCardClass() : 'bg-dark-500 border border-dark-400',
                       themeUtils.getComponentRoundednessClass()
                     )}>
@@ -397,13 +397,13 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                 isLight ? themeUtils.getCardClass() : 'bg-dark-600 border border-dark-400'
               )}>
               <div className="p-5">
-                <div className="space-y-6">
+                <div className="space-y-5">
                   {order.items.map((item, itemIndex) => {
                     if (!item.digitalAssets || item.digitalAssets.length === 0) {
                       return null;
                     }
                     return (
-                      <div key={itemIndex} className="space-y-4">
+                      <div key={itemIndex} className="space-y-5">
                         {/* Product Title Header */}
                         <div
                           className={cn(
@@ -420,7 +420,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                         </div>
 
                         {/* Digital Assets for this Product */}
-                        <div className="grid gap-4">
+                        <div className="grid gap-5">
                           {item.digitalAssets.map((asset, assetIndex) => {
                             const parsedValue = parseAssetValue(asset.value);
                             const assetId = `${itemIndex}-${assetIndex}`;
@@ -433,7 +433,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ order, theme, onBack }) => {
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.1 * assetIndex }}
                                 className={cn(
-                                  'p-4 border space-y-3',
+                                  'p-4 border space-y-5',
                                   themeUtils.getComponentRoundednessClass(),
                                   isLight
                                     ? themeUtils.getCardClass()

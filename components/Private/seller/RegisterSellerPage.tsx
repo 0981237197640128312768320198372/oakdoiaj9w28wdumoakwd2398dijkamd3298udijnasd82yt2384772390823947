@@ -491,7 +491,7 @@ const SuccessModal = ({
               <PartyPopper className="text-primary w-8 h-8 animate-bounce" />
             </div>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-5">
             <h2 className="text-2xl font-bold text-green-400">ยืนยันตัวตนสำเร็จ!! 🎉</h2>
             <p className="text-light-300">
               ยินดีด้วยค่ะ! ร้านของคุณ{' '}

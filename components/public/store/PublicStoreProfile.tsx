@@ -201,7 +201,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                     )}
 
                     {/* Reviews List */}
-                    <div className="space-y-3">
+                    <div className="space-y-5">
                       {reviewsLoading && reviews.length === 0 ? (
                         <div className="flex items-center justify-center py-6">
                           <Loader2 size={16} className="animate-spin opacity-60" />
@@ -257,7 +257,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                 )}
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-5">
                 <PublicStoreStats
                   theme={theme}
                   seller={seller}

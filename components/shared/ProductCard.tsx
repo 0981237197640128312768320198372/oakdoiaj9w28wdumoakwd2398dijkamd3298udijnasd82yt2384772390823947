@@ -15,9 +15,6 @@ interface ProductCardProps {
   product: Product;
   theme: ThemeType;
   role: 'seller' | 'buyer';
-  // onBuyNow prop kept for backward compatibility
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onBuyNow?: (productId: string) => void;
   onViewDetails?: (productId: string) => void;
   onEdit?: (product: Product) => void;
   onDelete?: (productId: string) => void;
@@ -28,8 +25,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   product,
   theme,
   role,
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-  onBuyNow,
   onViewDetails,
   onEdit,
   onDelete,
@@ -250,7 +245,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Sold out overlay */}
         {product._stock === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center backdop-blur-sm bg-black/5">
+          <div className="absolute inset-0 flex items-center justify-center backdop-blur bg-black/5">
             <div className="bg-red-500/20 text-red-500 border-red-500/30 border-[1px] px-4 py-2 rounded-lg font-bold text-lg shadow-lg rotate-12">
               SOLD
             </div>

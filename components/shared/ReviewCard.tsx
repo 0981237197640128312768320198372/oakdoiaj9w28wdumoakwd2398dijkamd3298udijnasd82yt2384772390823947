@@ -49,7 +49,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, theme, className
   return (
     <div
       className={cn(
-        'p-4 border rounded-lg space-y-3',
+        'p-4 border rounded-lg space-y-5',
         isLight
           ? 'bg-light-50 border-light-200 text-dark-800'
           : 'bg-dark-800/50 border-dark-600 text-light-200',

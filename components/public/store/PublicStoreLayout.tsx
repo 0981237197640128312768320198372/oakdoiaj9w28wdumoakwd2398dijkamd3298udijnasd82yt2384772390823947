@@ -114,7 +114,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
             onNavigate={setActivePage}
             onCartOpen={() => setIsCartOpen(true)}
           />
-
           <motion.div
             className="flex flex-col items-center min-h-fit justify-start w-full relative z-10"
             initial={{ opacity: 0, y: 20 }}
@@ -122,7 +121,7 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
             transition={{ duration: 0.5, ease: 'easeOut' }}>
             <AnimatePresence mode="wait">
               <motion.div
-                className="w-full px-5 lg:px-0 max-w-screen-lg pt-16 lg:pt-32"
+                className="w-full px-5 lg:px-0 max-w-screen-lg pt-28"
                 key={activePage}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -140,7 +139,6 @@ const PublicStoreLayout: React.FC<PublicStoreLayoutProps> = ({
             onNavigate={setActivePage}
             onOrderSuccess={handleOrderSuccess}
           />
-
           {showOrderModal && orderSuccessData && (
             <OrderSuccessModal
               isOpen={showOrderModal}

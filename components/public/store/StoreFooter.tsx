@@ -74,7 +74,7 @@ export default function StoreFooter({ seller, theme }: StoreFooterProps) {
   };
 
   return (
-    <footer className={cn('w-full py-8 pt-16 pb-36 px-5 xl:px-0 text-xs', footerStyles.background)}>
+    <footer className={cn('w-full pt-5 pb-36 px-5 xl:px-0 text-xs', footerStyles.background)}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}

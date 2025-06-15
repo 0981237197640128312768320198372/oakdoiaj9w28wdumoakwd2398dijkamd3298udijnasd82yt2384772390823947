@@ -186,10 +186,10 @@ export const StoreNavbar: React.FC<StoreNavbarProps> = ({
         themeUtils.getButtonRoundednessClass()
       ),
       mobileNav: cn(
-        'fixed flex backdrop-blur-md items-center justify-between bottom-0 left-0 w-full z-50 transform md:hidden border-t pb-4',
+        'fixed flex backdrop-blur-md items-center justify-between bottom-0 left-0 w-full z-50 transform md:hidden border-t pb-5',
         isLight
-          ? 'bg-white/90 border-light-300 shadow-lg shadow-black/10'
-          : 'bg-dark-700/90 border-dark-300 shadow-lg shadow-black/20'
+          ? 'bg-white/80 border-light-300 shadow-lg shadow-black/10'
+          : 'bg-dark-700/80 border-dark-300 shadow-lg shadow-black/20'
       ),
     }),
     [scrolled, isLight, themeUtils]

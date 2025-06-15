@@ -21,7 +21,6 @@ export default function RelatedProducts({
   product,
   categories,
   theme,
-  onBuyNow,
   onViewDetails,
   sellerId,
 }: RelatedProductsProps) {
@@ -95,7 +94,6 @@ export default function RelatedProducts({
               theme={theme}
               role="buyer"
               category={category}
-              onBuyNow={onBuyNow}
               onViewDetails={onViewDetails}
             />
           </motion.div>

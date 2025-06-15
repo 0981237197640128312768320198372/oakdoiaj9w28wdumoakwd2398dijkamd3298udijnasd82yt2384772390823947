@@ -65,7 +65,6 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
         themeUtils.getCardClass(),
         className
       )}>
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">เรตติ้ง</h3>
         <div className={cn('flex items-center gap-1', ratingLevel.color)}>
@@ -74,7 +73,6 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
         </div>
       </div>
 
-      {/* Overall Rating */}
       <div className="flex items-center gap-4">
         <div className="text-center">
           <div className="text-3xl font-bold">{averageRating.toFixed(1)}</div>
@@ -107,9 +105,8 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
         </div>
       </div>
 
-      {/* Recent Reviews Preview */}
       {recentReviews.length > 0 && (
-        <div className="space-y-3">
+        <div className="space-y-5">
           <h4 className="text-sm font-medium opacity-80">รีวิวล่าสุด</h4>
           <div className="space-y-2">
             {recentReviews.slice(0, 2).map((review) => (
@@ -144,7 +141,6 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
         </div>
       )}
 
-      {/* Performance Indicators */}
       <div
         className={cn(
           'grid grid-cols-2 gap-3 pt-3 border-t',
