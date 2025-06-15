@@ -168,6 +168,9 @@ export async function POST(request: NextRequest) {
         sellerId,
         rating,
         comment,
+        buyerName,
+        buyerEmail,
+        buyerAvatarUrl,
       });
 
       return NextResponse.json({

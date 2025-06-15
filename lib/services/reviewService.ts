@@ -26,6 +26,9 @@ export interface CreateStoreReviewData {
   sellerId: string;
   rating: number;
   comment: string;
+  buyerName: string;
+  buyerEmail?: string;
+  buyerAvatarUrl?: string;
 }
 
 export interface PendingReviewWithSeller {
@@ -207,11 +210,11 @@ export class ReviewService {
    */
   static async submitStoreReview(data: CreateStoreReviewData): Promise<IReview> {
     try {
-      const { buyerId, sellerId, rating, comment } = data;
+      const { buyerId, sellerId, rating, comment, buyerName, buyerEmail, buyerAvatarUrl } = data;
 
       // Validate input
-      if (!buyerId || !sellerId || !rating || !comment) {
-        throw new Error('Missing required fields');
+      if (!buyerId || !sellerId || !rating || !comment || !buyerName) {
+        throw new Error('Missing required fields (buyerId, sellerId, rating, comment, buyerName)');
       }
 
       if (rating < 1 || rating > 5 || !Number.isInteger(rating)) {
@@ -249,6 +252,10 @@ export class ReviewService {
         reviewType: 'seller',
         rating,
         comment: comment.trim(),
+        // Store buyer information directly in the review
+        buyerName: buyerName.trim(),
+        buyerEmail: buyerEmail?.trim(),
+        buyerAvatarUrl: buyerAvatarUrl?.trim(),
       });
 
       try {

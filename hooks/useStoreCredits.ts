@@ -297,6 +297,10 @@ export const useStoreReviews = (sellerId: string | null) => {
         throw new Error('Authentication required');
       }
 
+      if (!buyer?.name) {
+        throw new Error('Buyer name is required');
+      }
+
       setIsLoading(true);
       setError(null);
 
@@ -313,6 +317,9 @@ export const useStoreReviews = (sellerId: string | null) => {
           body: JSON.stringify({
             sellerId,
             buyerId: buyer.id,
+            buyerName: buyer.name,
+            buyerEmail: buyer.email,
+            buyerAvatarUrl: buyer.avatarUrl,
             rating,
             comment,
           }),
@@ -337,7 +344,15 @@ export const useStoreReviews = (sellerId: string | null) => {
         setIsLoading(false);
       }
     },
-    [sellerId, buyer?.id, fetchReviews]
+    [
+      sellerId,
+      buyer?.id,
+      buyer?.name,
+      buyer?.email,
+      buyer?.avatarUrl,
+      fetchReviews,
+      fetchReviewsList,
+    ]
   );
 
   // Fetch data on mount and when dependencies change

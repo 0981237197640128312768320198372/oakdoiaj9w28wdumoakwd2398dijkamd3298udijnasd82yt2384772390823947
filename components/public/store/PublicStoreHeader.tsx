@@ -22,6 +22,10 @@ interface PublicStoreHeaderProps {
     totalProducts: number;
     totalSales: number;
   } | null;
+  storeReviewStats?: {
+    averageRating: number;
+    totalReviews: number;
+  } | null;
 }
 
 export function PublicStoreHeader({
@@ -29,6 +33,7 @@ export function PublicStoreHeader({
   theme,
   storeCreditStats,
   sellerStats,
+  storeReviewStats,
 }: PublicStoreHeaderProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -49,6 +54,7 @@ export function PublicStoreHeader({
   const totalSales = sellerStats?.totalSales ?? 0;
   const positiveCredits = storeCreditStats?.positiveCount ?? 0;
   const negativeCredits = storeCreditStats?.negativeCount ?? 0;
+  const averageRating = storeReviewStats?.averageRating ?? 0;
 
   return (
     <div className="relative">
@@ -95,9 +101,7 @@ export function PublicStoreHeader({
                 themeUtils.getComponentRoundednessClass()
               )}>
               <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-              <span className={cn(themeUtils.getTextColors())}>
-                {seller.store.rating.toFixed(1)}
-              </span>
+              <span className={cn(themeUtils.getTextColors())}>{averageRating.toFixed(1)}</span>
             </Badge>
             <Badge
               variant="outline"

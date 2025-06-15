@@ -118,6 +118,7 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
             theme={theme}
             storeCreditStats={storeCreditStats}
             sellerStats={sellerStats}
+            storeReviewStats={storeReviewStats}
           />
           <CardContent className="p-5 lg:px-0">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
