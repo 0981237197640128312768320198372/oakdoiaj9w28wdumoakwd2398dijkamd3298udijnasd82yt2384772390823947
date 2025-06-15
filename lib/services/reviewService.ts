@@ -18,6 +18,13 @@ export interface CreateReviewData {
   comment: string;
 }
 
+export interface CreateStoreReviewData {
+  buyerId: string;
+  sellerId: string;
+  rating: number;
+  comment: string;
+}
+
 export interface PendingReviewWithSeller {
   _id: string;
   orderId: Types.ObjectId;
@@ -164,6 +171,83 @@ export class ReviewService {
       // Handle MongoDB duplicate key error specifically
       if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
         throw new Error('Review already submitted for this order');
+      }
+
+      throw error;
+    }
+  }
+
+  /**
+   * Submit a store review (NEW - independent of orders)
+   */
+  static async submitStoreReview(data: CreateStoreReviewData): Promise<IReview> {
+    try {
+      const { buyerId, sellerId, rating, comment } = data;
+
+      // Validate input
+      if (!buyerId || !sellerId || !rating || !comment) {
+        throw new Error('Missing required fields');
+      }
+
+      if (rating < 1 || rating > 5 || !Number.isInteger(rating)) {
+        throw new Error('Rating must be an integer between 1 and 5');
+      }
+
+      if (comment.length < 10 || comment.length > 1000) {
+        throw new Error('Comment must be between 10 and 1000 characters');
+      }
+
+      // Import StoreCreditService to check purchase history
+      const { StoreCreditService } = await import('./storeCreditService');
+
+      // Check if buyer has purchased from seller
+      const hasPurchased = await StoreCreditService.hasPurchasedFromSeller(buyerId, sellerId);
+      if (!hasPurchased) {
+        throw new Error('You must purchase from this store before reviewing it');
+      }
+
+      // Check for existing store review
+      const existingReview = await Review.findOne({
+        buyerId: new Types.ObjectId(buyerId),
+        sellerId: new Types.ObjectId(sellerId),
+        reviewType: 'seller',
+      });
+
+      if (existingReview) {
+        throw new Error('Store review already submitted for this seller');
+      }
+
+      // Create the store review (no orderId or productId required)
+      const review = new Review({
+        buyerId: new Types.ObjectId(buyerId),
+        sellerId: new Types.ObjectId(sellerId),
+        reviewType: 'seller',
+        rating,
+        comment: comment.trim(),
+      });
+
+      try {
+        await review.save();
+      } catch (saveError: any) {
+        // Handle duplicate key error at save level
+        if (saveError.code === 11000 || saveError.message?.includes('E11000')) {
+          throw new Error('Store review already submitted for this seller');
+        }
+        throw saveError;
+      }
+
+      return review;
+    } catch (error) {
+      console.error('Error submitting store review:', error);
+
+      // Better error handling for duplicate key errors
+      if (error instanceof Error && error.message.includes('E11000')) {
+        throw new Error('Store review already submitted for this seller');
+      }
+
+      // Handle MongoDB duplicate key error specifically
+      if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
+        throw new Error('Store review already submitted for this seller');
       }
 
       throw error;

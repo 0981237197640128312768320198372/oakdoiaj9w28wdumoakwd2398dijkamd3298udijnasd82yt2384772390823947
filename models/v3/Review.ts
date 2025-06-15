@@ -5,10 +5,10 @@ import { Schema, model, Document, Types, Model } from 'mongoose';
 import User from '../User';
 
 export interface IReview extends Document {
-  orderId: Types.ObjectId;
+  orderId?: Types.ObjectId; // Optional for store reviews
   buyerId: Types.ObjectId;
   sellerId: Types.ObjectId;
-  productId: Types.ObjectId;
+  productId?: Types.ObjectId; // Optional for store reviews
   reviewType: 'product' | 'seller';
   rating: number;
   comment: string;
@@ -39,7 +39,9 @@ const reviewSchema = new Schema<IReview>(
     orderId: {
       type: Schema.Types.ObjectId,
       ref: 'Order',
-      required: true,
+      required: function (this: IReview) {
+        return this.reviewType === 'product';
+      },
       index: true,
     },
     buyerId: {
@@ -57,7 +59,9 @@ const reviewSchema = new Schema<IReview>(
     productId: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
-      required: true,
+      required: function (this: IReview) {
+        return this.reviewType === 'product';
+      },
       index: true,
     },
     reviewType: {
@@ -118,8 +122,24 @@ reviewSchema.index({ productId: 1, reviewType: 1, status: 1, createdAt: -1 });
 reviewSchema.index({ sellerId: 1, reviewType: 1, status: 1, createdAt: -1 });
 reviewSchema.index({ buyerId: 1, reviewType: 1, createdAt: -1 });
 
-// FIXED: Proper unique compound index with reviewType included
-reviewSchema.index({ orderId: 1, buyerId: 1, reviewType: 1 }, { unique: true });
+// Unique indexes for different review types
+// For product reviews: one review per buyer per order
+reviewSchema.index(
+  { orderId: 1, buyerId: 1, reviewType: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { reviewType: 'product' },
+  }
+);
+
+// For store reviews: one review per buyer per seller
+reviewSchema.index(
+  { sellerId: 1, buyerId: 1, reviewType: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { reviewType: 'seller' },
+  }
+);
 
 // Static methods
 reviewSchema.statics.getAverageRating = async function (

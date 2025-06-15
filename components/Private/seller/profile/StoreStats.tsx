@@ -1,61 +1,58 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
 import { InfoSection } from './InfoSection';
-import {
-  Star,
-  ThumbsDown,
-  ThumbsUp,
-  TrendingUp,
-  Package,
-  ShoppingCart,
-  DollarSign,
-} from 'lucide-react';
-import { cn, formatPrice } from '@/lib/utils';
+import { Star, ThumbsDown, ThumbsUp, TrendingUp, Package, ShoppingCart } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useStoreCredits } from '@/hooks/useStoreCredits';
 
 interface StoreStatsProps {
   seller: any;
 }
 
 export function StoreStats({ seller }: StoreStatsProps) {
-  const { rating, credits } = seller.store;
+  const { stats: storeCreditStats } = useStoreCredits(seller?._id || null);
 
+  const { rating } = seller.store;
   const totalProducts = 0; // temporary
   const totalSales = 0; // temporary
-  const totalCredits = credits.positive + credits.negative;
+
+  // Use real store credit data
+  const positiveCredits = storeCreditStats?.positiveCount || 0;
+  const negativeCredits = storeCreditStats?.negativeCount || 0;
+  const totalCredits = positiveCredits + negativeCredits;
   const positivePercentage =
-    totalCredits > 0 ? formatPrice((credits.positive / totalCredits) * 100) : 0;
+    totalCredits > 0 ? Math.round((positiveCredits / totalCredits) * 100) : 0;
 
   return (
     <InfoSection
       title="สถิติร้าน"
-      icon={<TrendingUp className="h-5 w-5" />}
+      icon={<TrendingUp className="h-4 w-4" />}
       className="bg-dark-700 border-[1px] border-dark-500">
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
           <StatItem
-            icon={<Package className="h-6 w-6" />}
+            icon={<Package className="h-5 w-5" />}
             label="Products"
             value={totalProducts}
             color="blue"
           />
           <StatItem
-            icon={<ShoppingCart className="h-6 w-6" />}
+            icon={<ShoppingCart className="h-5 w-5" />}
             label="Sales"
             value={totalSales}
             color="fuchsia"
           />
         </div>
 
-        <div className="space-y-4 pt-5 border-t border-dark-300/50">
+        <div className="space-y-3 pt-3 border-t border-dark-300/50">
           <StatItem
             icon={<Star className="h-4 w-4 fill-yellow-400" />}
             label="Store Rating"
             value={rating.toFixed(1)}
             color="yellow">
-            <div className="h-1.5 w-full bg-background rounded-full overflow-hidden mt-2">
+            <div className="h-1 w-full bg-background rounded-full overflow-hidden mt-2">
               <div
                 className="h-full bg-yellow-400 transition-all duration-1000"
                 style={{ width: `${(rating / 5) * 100}%` }}
@@ -68,21 +65,21 @@ export function StoreStats({ seller }: StoreStatsProps) {
               <p className="text-xs font-medium">Customer Satisfaction</p>
               <p className="text-xs text-muted-foreground">{totalCredits} reviews</p>
             </div>
-            <div className="grid grid-cols-2 gap-4 mb-3">
+            <div className="grid grid-cols-2 gap-3 mb-2">
               <StatItem
-                icon={<ThumbsUp className="h-6 w-6" />}
+                icon={<ThumbsUp className="h-5 w-5" />}
                 label="Positive"
-                value={credits.positive}
+                value={positiveCredits}
                 color="green"
               />
               <StatItem
-                icon={<ThumbsDown className="h-6 w-6" />}
+                icon={<ThumbsDown className="h-5 w-5" />}
                 label="Negative"
-                value={credits.negative}
+                value={negativeCredits}
                 color="red"
               />
             </div>
-            <div className="relative h-1.5 w-full bg-background rounded-full overflow-hidden">
+            <div className="relative h-1 w-full bg-background rounded-full overflow-hidden">
               <div
                 className="absolute inset-0 h-full bg-green-500 transition-all duration-1000 ease-out"
                 style={{ width: `${positivePercentage}%` }}

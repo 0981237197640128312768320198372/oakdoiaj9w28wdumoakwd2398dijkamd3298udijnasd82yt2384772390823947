@@ -46,10 +46,8 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
       <div
         className={cn(
           'p-6 border rounded-lg text-center',
-          isLight
-            ? 'bg-light-50 border-light-200 text-dark-600'
-            : 'bg-dark-800/50 border-dark-600 text-light-400',
           themeUtils.getComponentRoundednessClass(),
+          themeUtils.getCardClass(),
           className
         )}>
         <Star size={32} className="mx-auto mb-2 opacity-40" />
@@ -62,16 +60,14 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
   return (
     <div
       className={cn(
-        'p-6 border rounded-lg space-y-4',
-        isLight
-          ? 'bg-light-50 border-light-200 text-dark-800'
-          : 'bg-dark-800/50 border-dark-600 text-light-200',
+        'p-6 border rounded-lg space-y-5',
         themeUtils.getComponentRoundednessClass(),
+        themeUtils.getCardClass(),
         className
       )}>
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">คะแนนร้านค้า</h3>
+        <h3 className="text-lg font-semibold">เรตติ้ง</h3>
         <div className={cn('flex items-center gap-1', ratingLevel.color)}>
           <IconComponent size={16} />
           <span className="text-sm font-medium">{ratingLevel.label}</span>
@@ -149,7 +145,11 @@ export const StoreRatingStats: React.FC<StoreRatingStatsProps> = ({ stats, theme
       )}
 
       {/* Performance Indicators */}
-      <div className="grid grid-cols-2 gap-3 pt-3 border-t border-opacity-20">
+      <div
+        className={cn(
+          'grid grid-cols-2 gap-3 pt-3 border-t',
+          isLight ? 'border-light-300' : 'border-dark-400'
+        )}>
         <div className="text-center">
           <div className="text-lg font-semibold">{totalReviews}</div>
           <div className="text-xs opacity-60">รีวิวทั้งหมด</div>

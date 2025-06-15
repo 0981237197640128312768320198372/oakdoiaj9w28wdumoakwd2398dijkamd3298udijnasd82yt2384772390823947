@@ -40,6 +40,13 @@ export async function GET(request: NextRequest) {
         }
         break;
 
+      case 'seller':
+        if (sellerId) {
+          const sellerReviews = await ReviewService.getSellerReviews(sellerId, { page, limit });
+          return NextResponse.json({ data: sellerReviews });
+        }
+        break;
+
       case 'submitted':
         // Legacy support - get all reviews by buyer (product only)
         if (buyerId) {
@@ -82,34 +89,57 @@ export async function POST(request: NextRequest) {
     const type = searchParams.get('type') as 'product' | 'seller' | null;
 
     const body = await request.json();
-    const { orderId, buyerId, rating, comment } = body;
+    const { orderId, buyerId, sellerId, rating, comment } = body;
 
-    if (!orderId || !buyerId || !rating || !comment) {
+    if (!buyerId || !rating || !comment) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // SIMPLIFIED: Only allow product reviews
-    if (type !== 'product') {
-      return NextResponse.json(
-        {
-          error: 'Only product reviews are allowed. Seller reviews have been disabled.',
-        },
-        { status: 400 }
-      );
+    // Handle different review types
+    if (type === 'product') {
+      // Product reviews require orderId
+      if (!orderId) {
+        return NextResponse.json(
+          { error: 'orderId is required for product reviews' },
+          { status: 400 }
+        );
+      }
+
+      const review = await ReviewService.submitReview({
+        orderId,
+        buyerId,
+        reviewType: 'product',
+        rating,
+        comment,
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: review,
+      });
+    } else if (type === 'seller') {
+      // Store reviews require sellerId and purchase verification
+      if (!sellerId) {
+        return NextResponse.json(
+          { error: 'sellerId is required for store reviews' },
+          { status: 400 }
+        );
+      }
+
+      const review = await ReviewService.submitStoreReview({
+        buyerId,
+        sellerId,
+        rating,
+        comment,
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: review,
+      });
+    } else {
+      return NextResponse.json({ error: 'Invalid review type' }, { status: 400 });
     }
-
-    const review = await ReviewService.submitReview({
-      orderId,
-      buyerId,
-      reviewType: 'product', // Always product
-      rating,
-      comment,
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: review,
-    });
   } catch (error) {
     console.error('Error submitting review:', error);
 
@@ -117,6 +147,9 @@ export async function POST(request: NextRequest) {
       // Better error handling for duplicate submissions
       if (error.message.includes('already submitted')) {
         return NextResponse.json({ error: error.message }, { status: 409 }); // Conflict
+      }
+      if (error.message.includes('must purchase')) {
+        return NextResponse.json({ error: error.message }, { status: 403 }); // Forbidden
       }
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
