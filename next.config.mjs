@@ -55,11 +55,21 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
+  // async redirects() {
+  //   return [
+  //     {
+  //       source: '/register',
+  //       destination: 'https://lin.ee/Ovlixv5',
+  //       permanent: false,
+  //     },
+  //   ];
+  // },
+
   async redirects() {
     return [
       {
-        source: '/register',
-        destination: 'https://lin.ee/Ovlixv5',
+        source: '/((?!maintenance).*)',
+        destination: '/maintenance',
         permanent: false,
       },
     ];

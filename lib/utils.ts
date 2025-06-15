@@ -39,7 +39,7 @@ export const generateMetadata = ({
   const defaultTitle = 'แอพพรีเมียมคุณภาพสูง | Dokmai Store';
   const defaultDescription =
     'แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย สำหรับทุกคนที่ต้องการบัญชีแอพพรีเมียมในราคาถูกและคุณภาพดี ไม่ว่าจะเป็น Netflix Premium, Amazon Prime Video หรือบริการอื่น ๆ ที่ Dokmai Store เราเป็นผู้ขายอันดับหนึ่งในไทย พร้อมการันตีคุณภาพการใช้งานตลอดอายุการใช้งาน ด้วยบริการที่เชื่อถือได้ ตอบกลับลูกค้าอย่างรวดเร็วภายใน 10 นาที และไม่เกิน 24 ชั่วโมง พร้อมช่วยแก้ไขปัญหาทุกอย่างเพื่อให้คุณได้รับประสบการณ์การใช้งานที่ดีที่สุด';
-  const defaultImage = 'https://dokmaistore.com/images/og-dokmaistore.webp';
+  const defaultImage = 'https://dokmaistore.com/icons/favicon.png';
   const defaultUrl = 'https://dokmaistore.com';
   return {
     title: title ? `${title}` : defaultTitle,
