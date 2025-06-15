@@ -79,6 +79,10 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
     rating: number;
     comment: string;
     reviewType: 'product';
+    buyerId: string;
+    buyerName: string;
+    buyerEmail?: string;
+    buyerAvatarUrl?: string;
   }) => {
     await submitReview(data);
     // Refresh all data after successful review submission
@@ -233,6 +237,10 @@ const BuyerDashboard: React.FC<BuyerDashboardProps> = ({ theme }) => {
         onClose={() => setIsReviewModalOpen(false)}
         pendingReviews={pendingReviews}
         theme={theme}
+        buyerId={localBuyer.id}
+        buyerName={localBuyer.name}
+        buyerEmail={localBuyer.email}
+        buyerAvatarUrl={localBuyer.avatarUrl}
         onSubmitReview={handleSubmitReview}
       />
     </>

@@ -27,11 +27,19 @@ interface ReviewModalProps {
   onClose: () => void;
   pendingReviews: PendingReview[];
   theme: ThemeType | null;
+  buyerId: string;
+  buyerName: string;
+  buyerEmail?: string;
+  buyerAvatarUrl?: string;
   onSubmitReview: (data: {
     orderId: string;
     rating: number;
     comment: string;
     reviewType: 'product';
+    buyerId: string;
+    buyerName: string;
+    buyerEmail?: string;
+    buyerAvatarUrl?: string;
   }) => Promise<void>;
 }
 
@@ -40,6 +48,10 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
   onClose,
   pendingReviews,
   theme,
+  buyerId,
+  buyerName,
+  buyerEmail,
+  buyerAvatarUrl,
   onSubmitReview,
 }) => {
   const themeUtils = useThemeUtils(theme);
@@ -73,6 +85,10 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
         rating,
         comment: comment.trim(),
         reviewType: 'product',
+        buyerId,
+        buyerName,
+        buyerEmail,
+        buyerAvatarUrl,
       });
 
       if (isLastReview) {

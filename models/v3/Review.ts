@@ -12,6 +12,10 @@ export interface IReview extends Document {
   reviewType: 'product' | 'seller';
   rating: number;
   comment: string;
+  // Buyer information (denormalized for performance)
+  buyerName: string;
+  buyerEmail?: string;
+  buyerAvatarUrl?: string;
   isPublic: boolean;
   helpfulCount: number;
   reportCount: number;
@@ -85,6 +89,20 @@ const reviewSchema = new Schema<IReview>(
       required: true,
       minlength: 10,
       maxlength: 1000,
+      trim: true,
+    },
+    // Buyer information (denormalized for performance)
+    buyerName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    buyerEmail: {
+      type: String,
+      trim: true,
+    },
+    buyerAvatarUrl: {
+      type: String,
       trim: true,
     },
     isPublic: {
@@ -255,7 +273,7 @@ reviewSchema.statics.findByProduct = async function (
   const skip = (page - 1) * limit;
 
   return this.find({ productId, reviewType: 'product', status: 'active' })
-    .populate('buyerId', 'name avatarUrl')
+    .populate('buyerId', 'name avatarUrl email')
     .sort(sort)
     .skip(skip)
     .limit(limit);

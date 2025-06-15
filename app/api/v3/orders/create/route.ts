@@ -9,7 +9,14 @@ import { Transaction } from '@/models/v3/Transaction';
 import { Activity } from '@/models/v3/Activity';
 import { Types } from 'mongoose';
 import { headers } from 'next/headers';
-import { formatPrice, roundToTwo, safeAdd, safeSubtract, safeMultiply } from '@/lib/utils';
+import {
+  formatPrice,
+  roundToTwo,
+  safeAdd,
+  safeSubtract,
+  safeMultiply,
+  safeDivide,
+} from '@/lib/utils';
 import { ReviewService } from '@/lib/services/reviewService';
 
 interface CartItem {
@@ -151,7 +158,10 @@ export async function POST(request: NextRequest) {
       // Calculate price (with discount if applicable) using safe arithmetic
       const unitPrice =
         product.discountPercentage > 0
-          ? safeMultiply(product.price, safeSubtract(1, product.discountPercentage / 100))
+          ? safeMultiply(
+              product.price,
+              safeSubtract(1, safeDivide(product.discountPercentage, 100))
+            )
           : roundToTwo(product.price);
 
       const itemTotal = safeMultiply(unitPrice, quantity);

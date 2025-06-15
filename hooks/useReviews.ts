@@ -86,9 +86,22 @@ export const useReviews = (buyerId: string | null) => {
   const submittedReviews: SubmittedReview[] = submittedData?.data || [];
 
   const submitReview = useCallback(
-    async (data: { orderId: string; rating: number; comment: string; reviewType: 'product' }) => {
-      if (!buyerId) {
+    async (data: {
+      orderId: string;
+      rating: number;
+      comment: string;
+      reviewType: 'product';
+      buyerId: string;
+      buyerName: string;
+      buyerEmail?: string;
+      buyerAvatarUrl?: string;
+    }) => {
+      if (!data.buyerId) {
         throw new Error('Buyer ID is required');
+      }
+
+      if (!data.buyerName) {
+        throw new Error('Buyer name is required');
       }
 
       // SIMPLIFIED: Only allow product reviews
@@ -109,7 +122,10 @@ export const useReviews = (buyerId: string | null) => {
             orderId: data.orderId,
             rating: data.rating,
             comment: data.comment,
-            buyerId,
+            buyerId: data.buyerId,
+            buyerName: data.buyerName,
+            buyerEmail: data.buyerEmail,
+            buyerAvatarUrl: data.buyerAvatarUrl,
           }),
         });
 
@@ -131,7 +147,7 @@ export const useReviews = (buyerId: string | null) => {
         setIsSubmitting(false);
       }
     },
-    [buyerId, mutatePending, mutateStats, mutateSubmitted]
+    [mutatePending, mutateStats, mutateSubmitted]
   );
 
   const refreshReviews = useCallback(async () => {

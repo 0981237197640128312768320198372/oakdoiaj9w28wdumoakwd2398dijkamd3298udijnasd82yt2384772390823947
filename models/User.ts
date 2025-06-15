@@ -30,7 +30,22 @@ const userSchema = new mongoose.Schema({
       message: 'personalKey must be 8 characters with exactly 4 letters and 4 numbers',
     },
   },
-
+  name: {
+    type: String,
+    trim: true,
+    maxlength: 100,
+  },
+  avatarUrl: {
+    type: String,
+    trim: true,
+    validate: {
+      validator: function (v: string) {
+        if (!v) return true; // Allow empty values
+        return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(v);
+      },
+      message: 'avatarUrl must be a valid image URL',
+    },
+  },
   roles: [{ type: String, enum: ['buyer', 'seller'] }],
   contact: contactSchema,
   shop: {

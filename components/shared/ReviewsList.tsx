@@ -13,9 +13,12 @@ interface Review {
   comment: string;
   createdAt: string;
   buyerId?: {
+    _id?: string;
     name?: string;
     email?: string;
+    avatarUrl?: string;
   };
+  buyerPurchaseCount?: number;
 }
 
 interface ReviewsListProps {

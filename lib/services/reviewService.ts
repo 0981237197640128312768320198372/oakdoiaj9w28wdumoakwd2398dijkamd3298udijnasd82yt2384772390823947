@@ -16,6 +16,9 @@ export interface CreateReviewData {
   reviewType: 'product' | 'seller';
   rating: number;
   comment: string;
+  buyerName: string;
+  buyerEmail?: string;
+  buyerAvatarUrl?: string;
 }
 
 export interface CreateStoreReviewData {
@@ -94,10 +97,19 @@ export class ReviewService {
    */
   static async submitReview(data: CreateReviewData): Promise<IReview> {
     try {
-      const { orderId, buyerId, reviewType, rating, comment } = data;
+      const {
+        orderId,
+        buyerId,
+        reviewType,
+        rating,
+        comment,
+        buyerName,
+        buyerEmail,
+        buyerAvatarUrl,
+      } = data;
 
       // Validate input
-      if (!orderId || !buyerId || !reviewType || !rating || !comment) {
+      if (!orderId || !buyerId || !reviewType || !rating || !comment || !buyerName) {
         throw new Error('Missing required fields');
       }
 
@@ -144,6 +156,10 @@ export class ReviewService {
         reviewType: 'product', // Always product
         rating,
         comment: comment.trim(),
+        // Store buyer information directly in the review
+        buyerName: buyerName.trim(),
+        buyerEmail: buyerEmail?.trim(),
+        buyerAvatarUrl: buyerAvatarUrl?.trim(),
       });
 
       try {
@@ -264,24 +280,54 @@ export class ReviewService {
   }
 
   /**
-   * Get reviews for a product
+   * Get reviews for a product with enhanced buyer information
    */
   static async getProductReviews(
     productId: string,
     options: { page?: number; limit?: number; sort?: string } = {}
-  ): Promise<IReview[]> {
+  ): Promise<any[]> {
     try {
       const objectId = new Types.ObjectId(productId);
-      return await Review.findByProduct(objectId, options);
+      const { page = 1, limit = 10, sort = '-createdAt' } = options;
+      const skip = (page - 1) * limit;
+
+      const reviews = await Review.find({
+        productId: objectId,
+        reviewType: 'product',
+        status: 'active',
+      })
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+
+      const enhancedReviews = await Promise.all(
+        reviews.map(async (review) => {
+          const reviewObj = review.toObject();
+
+          const { Order } = await import('../../models/v3/Order');
+          const purchaseCount = await Order.countDocuments({
+            buyerId: review.buyerId,
+            sellerId: review.sellerId,
+            status: 'completed',
+          });
+
+          const enhanced = {
+            ...reviewObj,
+            buyerPurchaseCount: purchaseCount,
+            hasBuyerData: !!reviewObj.buyerName,
+          };
+
+          return enhanced;
+        })
+      );
+
+      return enhancedReviews;
     } catch (error) {
       console.error('Error fetching product reviews:', error);
       throw new Error('Failed to fetch product reviews');
     }
   }
 
-  /**
-   * Get product rating statistics
-   */
   static async getProductRatingStats(productId: string) {
     try {
       const objectId = new Types.ObjectId(productId);

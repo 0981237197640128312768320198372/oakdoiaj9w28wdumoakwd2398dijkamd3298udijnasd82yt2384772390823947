@@ -119,10 +119,14 @@ export async function POST(request: NextRequest) {
     const type = searchParams.get('type') as 'product' | 'seller' | null;
 
     const body = await request.json();
-    const { orderId, buyerId, sellerId, rating, comment } = body;
+    const { orderId, buyerId, sellerId, rating, comment, buyerName, buyerEmail, buyerAvatarUrl } =
+      body;
 
-    if (!buyerId || !rating || !comment) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!buyerId || !rating || !comment || !buyerName) {
+      return NextResponse.json(
+        { error: 'Missing required fields (buyerId, rating, comment, buyerName)' },
+        { status: 400 }
+      );
     }
 
     // Handle different review types
@@ -141,6 +145,9 @@ export async function POST(request: NextRequest) {
         reviewType: 'product',
         rating,
         comment,
+        buyerName,
+        buyerEmail,
+        buyerAvatarUrl,
       });
 
       return NextResponse.json({
