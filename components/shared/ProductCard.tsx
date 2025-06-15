@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
@@ -312,11 +313,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className={cn(styles.contentContainer, 'flex-grow flex flex-col justify-between ')}>
         <div className="flex flex-col items-start justify-end gap-1">
-          {reviewsLoading ? (
-            <div className="flex items-center bg-gray-200 animate-pulse px-2 py-1 rounded">
-              <div className="w-16 h-3 bg-gray-300 rounded"></div>
-            </div>
-          ) : reviewStats && reviewStats.averageRating > 0 ? (
+          {reviewStats && reviewStats.averageRating > 0 && (
             <div className={styles.ratingContainer}>
               <div className="flex items-center justify-center bg-amber-500/10 border-[1px] border-amber-500 px-2 py-1 rounded">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -334,7 +331,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <span className="text-xs ml-1 opacity-70">({reviewStats.totalReviews})</span>
               </div>
             </div>
-          ) : null}
+          )}
           <div className="flex items-center gap-1 text-xs w-full justify-between">
             <h3 className={styles.title}>{product.title}</h3>
             <div className={cn(styles.categoryTag)}>
