@@ -8,7 +8,7 @@ interface OrderItem {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  digitalAssets: any[];
+  digitalAssets: Array<{ key: string; value: string }>;
 }
 
 interface Order {
@@ -17,7 +17,9 @@ interface Order {
   buyer: {
     _id: string;
     name: string;
+    username?: string;
     email: string;
+    avatarUrl?: string;
   };
   items: OrderItem[];
   totals: {

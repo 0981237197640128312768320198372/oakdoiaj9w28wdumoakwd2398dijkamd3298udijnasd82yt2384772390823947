@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       .populate({
         path: 'buyerId',
         model: Buyer,
-        select: 'username email firstName lastName',
+        select: 'name username email avatarUrl',
       })
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -60,21 +60,20 @@ export async function GET(request: NextRequest) {
     const formattedOrders = orders.map((order) => {
       const buyer = order.buyerId as unknown as {
         _id: string;
+        name: string;
         username?: string;
         email: string;
-        firstName?: string;
-        lastName?: string;
+        avatarUrl?: string;
       };
       return {
         _id: order._id,
         orderId: order.orderId,
         buyer: {
           _id: buyer._id,
-          name:
-            buyer.username ||
-            `${buyer.firstName || ''} ${buyer.lastName || ''}`.trim() ||
-            'Unknown',
+          name: buyer.username || buyer.name || 'Unknown',
+          username: buyer.username,
           email: buyer.email,
+          avatarUrl: buyer.avatarUrl,
         },
         items: order.items.map((item) => ({
           productId: item.productId,

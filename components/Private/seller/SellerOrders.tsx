@@ -4,56 +4,97 @@ import React, { useState } from 'react';
 import {
   ShoppingBag,
   Filter,
-  User,
   Package,
   Clock,
   CheckCircle,
   XCircle,
   Loader2,
+  Key,
+  Search,
+  RefreshCw,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerOrders } from '@/hooks/useSellerOrders';
+import Image from 'next/image';
+import { dokmaiCoinSymbol } from '@/lib/utils';
+import AssetsModal from './AssetsModal';
 
-const SellerOrders = () => {
+const SellerOrders: React.FC = () => {
   const { seller } = useSellerAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedAssetItem, setSelectedAssetItem] = useState<{
+    orderId: string;
+    productTitle: string;
+    digitalAssets: { key: string; value: string }[];
+  } | null>(null);
 
+  const dokmaiCoin = dokmaiCoinSymbol(false);
   const { orders, pagination, loading, error, refetch } = useSellerOrders(
     seller?._id || null,
     currentPage,
     statusFilter
   );
 
+  const openAssetsModal = (
+    orderId: string,
+    productTitle: string,
+    digitalAssets: { key: string; value: string }[]
+  ) => {
+    setSelectedAssetItem({
+      orderId,
+      productTitle,
+      digitalAssets,
+    });
+  };
+
+  const closeAssetsModal = () => {
+    setSelectedAssetItem(null);
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'completed':
-        return <CheckCircle size={16} className="text-green-500" />;
       case 'pending':
-        return <Clock size={16} className="text-yellow-500" />;
+        return <Clock size={10} className="text-yellow-500" />;
+      case 'confirmed':
+        return <Package size={10} className="text-blue-500" />;
+      case 'completed':
+        return <CheckCircle size={10} className="text-green-500" />;
       case 'cancelled':
-        return <XCircle size={16} className="text-red-500" />;
+        return <XCircle size={10} className="text-red-500" />;
       default:
-        return <Clock size={16} className="text-gray-500" />;
+        return <Package size={10} className="text-gray-500" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'text-green-500 bg-green-500/10';
+        return 'bg-green-500/10 text-green-500 border-green-500';
       case 'pending':
-        return 'text-yellow-500 bg-yellow-500/10';
+        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500';
       case 'cancelled':
-        return 'text-red-500 bg-red-500/10';
+        return 'bg-red-500/10 text-red-500 border-red-500';
+      case 'confirmed':
+        return 'bg-blue-500/10 text-blue-500 border-blue-500';
       default:
-        return 'text-gray-500 bg-gray-500/10';
+        return 'bg-gray-500/10 text-gray-500 border-gray-500';
     }
   };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
-      year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -61,164 +102,225 @@ const SellerOrders = () => {
     });
   };
 
-  if (loading && orders.length === 0) {
+  // Filter orders based on search query
+  const filteredOrders = orders.filter((order) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
     return (
-      <div className="w-full animate-in fade-in duration-500">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-light-100">Recent Orders</h1>
-        </div>
-        <div className="bg-dark-600 border border-dark-400 rounded-xl p-6 text-center">
-          <Loader2 size={32} className="mx-auto text-light-500 mb-4 animate-spin" />
-          <p className="text-light-500">Loading orders...</p>
-        </div>
+      order.orderId.toLowerCase().includes(query) ||
+      order.buyer.name.toLowerCase().includes(query) ||
+      (order.buyer.username && order.buyer.username.toLowerCase().includes(query)) ||
+      order.items.some((item) => item.productTitle.toLowerCase().includes(query))
+    );
+  });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 size={24} className="animate-spin text-primary-500" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="w-full animate-in fade-in duration-500">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-light-100">Recent Orders</h1>
-        </div>
-        <div className="bg-dark-600 border border-dark-400 rounded-xl p-6 text-center">
-          <XCircle size={64} className="mx-auto text-red-500 mb-4" />
-          <h2 className="text-xl font-bold text-light-100 mb-2">Error Loading Orders</h2>
-          <p className="text-light-500 mb-4">{error}</p>
-          <button
-            onClick={refetch}
-            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
-            Try Again
-          </button>
-        </div>
+      <div className="text-center py-8">
+        <p className="text-red-500 mb-4 text-xs">{error}</p>
+        <button
+          onClick={refetch}
+          className="px-3 py-2 bg-primary-600 text-white rounded text-xs hover:bg-primary-700 transition-colors">
+          Try Again
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="w-full animate-in fade-in duration-500">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-light-100">Recent Orders</h1>
-        <div className="flex items-center gap-3">
-          <select
-            value={statusFilter}
-            onChange={(e) => {
-              setStatusFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="bg-dark-600 border border-dark-400 text-light-100 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
-            <option value="all">All Orders</option>
-            <option value="pending">Pending</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <button className="flex items-center gap-2 bg-dark-600 hover:bg-dark-500 text-light-100 text-sm rounded-full px-4 py-2 font-bold border border-dark-400 transition-all duration-300">
-            <Filter size={16} /> Filter
+    <div className="w-full space-y-5">
+      {/* Header Controls */}
+      <div className="flex flex-col gap-5">
+        <h2 className="text-lg font-bold text-light-100">Orders</h2>
+
+        <div className="flex flex-col sm:flex-row gap-5">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search
+              size={14}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-light-500"
+            />
+            <input
+              type="text"
+              placeholder="Search orders..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-8 pr-3 py-2 bg-dark-700 border border-dark-600 rounded text-xs text-light-100 placeholder-light-500 focus:outline-none focus:border-primary-500"
+            />
+          </div>
+
+          {/* Filter */}
+          <div className="flex items-center gap-2">
+            <Filter size={14} className="text-light-500" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-dark-700 border border-dark-600 rounded px-3 py-2 text-light-100 text-xs focus:outline-none focus:border-primary-500">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          {/* Refresh */}
+          <button
+            onClick={refetch}
+            className="flex items-center gap-2 px-3 py-2 bg-dark-700 border border-dark-600 rounded text-xs text-light-100 hover:bg-dark-600 transition-colors">
+            <RefreshCw size={14} />
+            Refresh
           </button>
         </div>
       </div>
 
-      {orders.length === 0 ? (
-        <div className="bg-dark-600 border border-dark-400 rounded-xl p-6 text-center">
-          <ShoppingBag size={64} className="mx-auto text-light-500 mb-4" />
-          <h2 className="text-xl font-bold text-light-100 mb-2">No Orders Yet</h2>
-          <p className="text-light-500 mb-4">When customers place orders, they will appear here.</p>
+      {/* Orders Grid */}
+      {filteredOrders.length === 0 ? (
+        <div className="text-center py-12">
+          <ShoppingBag size={32} className="mx-auto text-light-500 mb-4" />
+          <h3 className="text-sm font-bold text-light-200 mb-2">No orders found</h3>
+          <p className="text-xs text-light-500">
+            {searchQuery ? 'No orders match your search.' : 'You have no orders yet.'}
+          </p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <div
+        <div className="w-full grid lg:grid-cols-2 gap-5">
+          {filteredOrders.map((order, i) => (
+            <motion.div
               key={order._id}
-              className="bg-dark-600 border border-dark-400 rounded-xl p-6 hover:bg-dark-500 transition-colors">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="bg-primary-600/20 p-2 rounded-lg">
-                    <ShoppingBag size={20} className="text-primary-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-light-100">{order.orderId}</h3>
-                    <p className="text-sm text-light-500">{formatDate(order.createdAt)}</p>
-                  </div>
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="flex flex-col w-full gap-3 rounded-lg border border-dark-600 bg-dark-700 p-5">
+              {/* Header */}
+              <div className="flex w-full justify-between items-start pb-3 border-b border-dark-600">
+                <div className="flex flex-col">
+                  <h3 className="font-bold text-white text-xs">{order.orderId}</h3>
+                  <p className="text-xs text-light-500">{formatDate(order.createdAt)}</p>
                 </div>
                 <div
-                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  className={`flex items-center gap-1 px-2 py-1 text-xs border rounded ${getStatusColor(
                     order.status
                   )}`}>
                   {getStatusIcon(order.status)}
-                  {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                  <span className="capitalize font-bold">{order.status}</span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 mb-4">
-                <User size={16} className="text-light-500" />
-                <div>
-                  <p className="text-light-100 font-medium">{order.buyer.name}</p>
-                  <p className="text-sm text-light-500">{order.buyer.email}</p>
+              {/* Buyer Info */}
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  {order.buyer.avatarUrl ? (
+                    <Image
+                      src={order.buyer.avatarUrl}
+                      alt={order.buyer.name}
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 rounded-full object-cover border border-dark-500"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-primary-600/20 border border-dark-500 flex items-center justify-center">
+                      <span className="text-xs font-bold text-primary-400">
+                        {getInitials(order.buyer.name)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-light-100 truncate">{order.buyer.name}</p>
+                  {order.buyer.username && (
+                    <p className="text-xs text-light-500 truncate">@{order.buyer.username}</p>
+                  )}
                 </div>
               </div>
 
-              <div className="space-y-2 mb-4">
-                {order.items.map((item, index) => (
+              {/* Items */}
+              <div className="flex flex-col w-full">
+                {order.items.map((item, j) => (
                   <div
-                    key={index}
-                    className="flex items-center justify-between bg-dark-700 rounded-lg p-3">
-                    <div className="flex items-center gap-3">
-                      <Package size={16} className="text-light-500" />
-                      <div>
-                        <p className="text-light-100 font-medium">{item.productTitle}</p>
-                        <p className="text-sm text-light-500">Quantity: {item.quantity}</p>
+                    key={j}
+                    className="flex flex-col w-full p-5 rounded-lg border-b bg-dark-600 border-dark-600 last:border-b-0">
+                    <div className="flex w-full justify-between items-center">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <Package size={12} className="text-light-500 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-light-100 truncate">
+                            {item.productTitle}
+                          </p>
+                          <p className="text-xs text-light-500">Qty: {item.quantity}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src={dokmaiCoin}
+                          alt="Dokmai Coin"
+                          width={20}
+                          height={20}
+                          className="h-4 w-auto"
+                        />
+                        <span className="font-medium"> {item.totalPrice.toLocaleString()}</span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-light-100 font-bold">{item.totalPrice.toLocaleString()}</p>
-                      <p className="text-sm text-light-500">
-                        {item.unitPrice.toLocaleString()} each
-                      </p>
-                    </div>
+
+                    {/* Digital Assets */}
+                    {item.digitalAssets && item.digitalAssets.length > 0 && (
+                      <div className="mt-3 w-full text-center">
+                        <button
+                          onClick={() =>
+                            openAssetsModal(order.orderId, item.productTitle, item.digitalAssets)
+                          }
+                          className="flex items-center gap-2 text-xs text-light-400 hover:text-light-300 transition-colors">
+                          <Key size={10} />
+                          <span>View Assets ({item.digitalAssets.length})</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-
-              <div className="flex justify-between items-center pt-4 border-t border-dark-400">
-                <div className="text-sm text-light-500">
-                  Payment:{' '}
-                  <span
-                    className={`font-medium ${
-                      order.paymentStatus === 'paid' ? 'text-green-500' : 'text-yellow-500'
-                    }`}>
-                    {order.paymentStatus}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <p className="text-xl font-bold text-light-100">
-                    {order.totals.total.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-light-500">Total Amount</p>
-                </div>
-              </div>
-            </div>
+            </motion.div>
           ))}
-
-          {pagination && pagination.totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-6">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={!pagination.hasPrevPage}
-                className="px-4 py-2 bg-dark-600 border border-dark-400 text-light-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark-500 transition-colors">
-                Previous
-              </button>
-              <span className="text-light-100 px-4">
-                Page {pagination.currentPage} of {pagination.totalPages}
-              </span>
-              <button
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pagination.totalPages))}
-                disabled={!pagination.hasNextPage}
-                className="px-4 py-2 bg-dark-600 border border-dark-400 text-light-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark-500 transition-colors">
-                Next
-              </button>
-            </div>
-          )}
         </div>
+      )}
+
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex justify-center items-center gap-5 mt-5">
+          <button
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-2 bg-dark-700 border border-dark-600 rounded text-xs text-light-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark-600 transition-colors">
+            Previous
+          </button>
+          <span className="text-xs text-light-300">
+            Page {currentPage} of {pagination.totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === pagination.totalPages}
+            className="px-3 py-2 bg-dark-700 border border-dark-600 rounded text-xs text-light-100 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-dark-600 transition-colors">
+            Next
+          </button>
+        </div>
+      )}
+
+      {/* Assets Modal */}
+      {selectedAssetItem && (
+        <AssetsModal
+          isOpen={!!selectedAssetItem}
+          onClose={closeAssetsModal}
+          orderId={selectedAssetItem.orderId}
+          productTitle={selectedAssetItem.productTitle}
+          digitalAssets={selectedAssetItem.digitalAssets}
+        />
       )}
     </div>
   );
