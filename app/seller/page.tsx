@@ -1,4 +1,4 @@
-import SellerPageContent from '@/components/Private/seller/SellerPageContent';
+import SellerPageContent from '@/components/private/seller/SellerPageContent';
 import { SellerDashboardProvider } from '@/context/SellerDashboardContext';
 import { generateMetadata } from '@/lib/utils';
 import React from 'react';

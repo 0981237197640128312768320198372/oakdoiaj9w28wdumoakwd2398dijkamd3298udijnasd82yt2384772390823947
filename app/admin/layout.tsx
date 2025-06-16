@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/next-script-for-ga */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import Authenticator from '@/components/Private/admin/Authenticator';
+import Authenticator from '@/components/private/admin/Authenticator';
 import '@/styles/globals.css';
 
 export default function RootLayout({

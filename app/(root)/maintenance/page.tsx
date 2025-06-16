@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import Image from 'next/image';
-import dokmaicoin from '@/assets/icons/DCSymbolWhite.svg';
 import { GrVmMaintenance } from 'react-icons/gr';
 
 const Maintenance = () => {

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Plus, Package } from 'lucide-react';
 import ProductList from '@/components/shared/ProductList';
-import ProductForm from '../product/ProductForm';
+import ProductForm from './ProductForm';
 import DigitalInventoryManager from './DigitalInventoryManager';
 import EmptyState from './EmptyState';
 import { Product } from '@/types';

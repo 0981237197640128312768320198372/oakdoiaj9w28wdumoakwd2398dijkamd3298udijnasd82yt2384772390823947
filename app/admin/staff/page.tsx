@@ -1,4 +1,4 @@
-import StaffPageContent from '@/components/Private/admin/StaffPageContent';
+import StaffPageContent from '@/components/private/admin/StaffPageContent';
 import { generateMetadata } from '@/lib/utils';
 
 export const metadata = generateMetadata({

@@ -1,4 +1,4 @@
-import AdminPageContent from '@/components/Private/admin/AdminPageContent';
+import AdminPageContent from '@/components/private/admin/AdminPageContent';
 import { generateMetadata } from '@/lib/utils';
 
 export const metadata = generateMetadata({
