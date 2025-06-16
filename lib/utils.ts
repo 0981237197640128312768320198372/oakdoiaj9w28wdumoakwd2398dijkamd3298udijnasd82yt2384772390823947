@@ -35,10 +35,10 @@ export const generateMetadata = ({
   iconUrl?: string;
 }): Metadata => {
   const defaultKeywords =
-    'Netflix Premium, บัญชี Netflix, บริการสตรีมมิ่ง, ดูหนังออนไลน์, ดูซีรีส์, บัญชีราคาถูก, Dokmai Store, ซื้อ Netflix ราคาถูก, บัญชี Netflix ราคาถูก, บัญชี Netflix คุณภาพดี, บริการลูกค้าไว, Netflix Premium, Netflix, Premium, Netflix Account, Account, Netflix Access, Dokmai, Store, Dokmai Store, Digital Product, Premium App, Streaming Service, Service, Streaming, Movie, Movies, Series, Action, Comedy, Drama, Romantic, Watching, Netflix Series, Netflix Movie, Cheap, Cheap Price, High Quality, Good Quality, Quality, amazon prime video, prime video, Fast Service, Fast Response, Trustable, Reliable, Affordable, เน็ตฟลิกซ์พรีเมียม, เน็ตฟลิกซ์, พรีเมียม, บัญชีเน็ตฟลิกซ์, บัญชี, แอคเค้าท์เน็ตฟลิกซ์,  แอคเค้าท์, เน็ตฟลิกซ์ Access, ดอกไม้สโตร์, ดอกไม้, สโตร์, ร้านค้า, สินค้าดิจิทัล, สินค้าดิจิตอล, แอพพรีเมียม, บริการสตรีมมื่ง, บริการ, สตรีมมิ่ง, หนัง, ดูหนัง, ซีรีย์, ดูซีรีย์, ดู, ซีรีย์เน็ตฟลิกซ์, ซีรีย์ Netflix, Series เน็ตฟลิกซ์, หนังเน็ตฟลิกซ์, หนัง Netflix, ราคาถูก, ราคาดี, ถูก, คุณภาพดี, คุณภาพสูง, คุณภาพ, บริการเร็ว, บริการไว, บริการดี, ตอบเร็ว, ตอบไว, น่าเชื่อถือ, เชื่อถือได้';
-  const defaultTitle = 'แอพพรีเมียมคุณภาพสูง | Dokmai Store';
+    'Digital Marketplace, Online Marketplace, E-commerce Platform, Digital Products, Sell Online, Buy Online, Multi-vendor Marketplace, Digital Store, Online Store Builder, E-commerce Solution, Marketplace Platform, Digital Commerce, Online Business, Seller Platform, Buyer Platform, Professional Marketplace, Thailand Marketplace, Thai E-commerce, Unlimited Customization, Professional Subdomains, Fast Performance, Clean Interface, Reliable Service, Quality Platform, Professional Grade, Lightning Fast, Clean Design, Easy Setup, Thai Support, Secure Marketplace, Modern Interface, Mobile Optimized, Quality Service, Expert Support, ตลาดออนไลน์, แพลตฟอร์มขายของออนไลน์, ร้านค้าออนไลน์, ขายของออนไลน์, ซื้อของออนไลน์, ตลาดดิจิทัล, สินค้าดิจิทัล, แพลตฟอร์มอีคอมเมิร์ซ, ระบบขายของออนไลน์, เว็บขายของ, สร้างร้านค้าออนไลน์, ตลาดออนไลน์ไทย, อีคอมเมิร์ซไทย, ปรับแต่งได้ไม่จำกัด, โดเมนย่อยมืออาชีพ, ประสิทธิภาพสูง, อินเทอร์เฟซสะอาด, บริการเชื่อถือได้, แพลตฟอร์มคุณภาพ, มืออาชีพ, เร็วสุด, ดีไซน์สะอาด, ฟีเจอร์ไม่จำกัด, ตั้งค่าง่าย, ซัพพอร์ตไทย, แพลตฟอร์มเชื่อถือได้, ตลาดปลอดภัย, บริการคุณภาพ, ซัพพอร์ตผู้เชี่ยวชาญ, ดอกไม้สโตร์, Dokmai Store';
+  const defaultTitle = 'แพลตฟอร์มตลาดออนไลน์มืออาชีพ | Dokmai Store';
   const defaultDescription =
-    'แพลตฟอร์มสินค้าดิจิทัลที่ดีที่สุดในประเทศไทย สำหรับทุกคนที่ต้องการบัญชีแอพพรีเมียมในราคาถูกและคุณภาพดี ไม่ว่าจะเป็น Netflix Premium, Amazon Prime Video หรือบริการอื่น ๆ ที่ Dokmai Store เราเป็นผู้ขายอันดับหนึ่งในไทย พร้อมการันตีคุณภาพการใช้งานตลอดอายุการใช้งาน ด้วยบริการที่เชื่อถือได้ ตอบกลับลูกค้าอย่างรวดเร็วภายใน 10 นาที และไม่เกิน 24 ชั่วโมง พร้อมช่วยแก้ไขปัญหาทุกอย่างเพื่อให้คุณได้รับประสบการณ์การใช้งานที่ดีที่สุด';
+    'แพลตฟอร์มตลาดดิจิทัลแบบมืออาชีพที่ดีที่สุดในไทย เว็บไซต์ดูสะอาดตา ประสิทธิภาพสูง การปรับแต่งร้านได้ไม่จำกัด สร้างร้านค้าของคุณได้ในไม่กี่นาที พร้อมระบบจัดการครบครัน บริการเชื่อถือได้ ระบบปลอดภัย เหมาะสำหรับผู้ขายและผู้ซื้อที่ต้องการประสบการณ์การซื้อขายออนไลน์ระดับมืออาชีพ';
   const defaultImage = 'https://dokmaistore.com/icons/favicon.png';
   const defaultUrl = 'https://dokmaistore.com';
   return {
@@ -68,7 +68,7 @@ export const generateMetadata = ({
           url: image || defaultImage,
           width: 1200,
           height: 630,
-          alt: 'Netflix Premium คุณภาพสูง ราคาถูก ที่ Dokmai Store',
+          alt: 'แพลตฟอร์มตลาดออนไลน์มืออาชีพ Dokmai Store',
         },
       ],
       siteName: 'Dokmai Store',
@@ -81,7 +81,7 @@ export const generateMetadata = ({
       images: [
         {
           url: image || defaultImage,
-          alt: 'Netflix Premium คุณภาพสูง ราคาถูก ที่ Dokmai Store',
+          alt: 'แพลตฟอร์มตลาดออนไลน์มืออาชีพ Dokmai Store',
         },
       ],
     },
