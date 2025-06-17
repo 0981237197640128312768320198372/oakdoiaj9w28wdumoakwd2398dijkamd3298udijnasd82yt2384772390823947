@@ -13,13 +13,13 @@ import { PublicInfoSection } from './PublicInfoSection';
 import { useThemeUtils } from '@/lib/theme-utils';
 import { PublicStoreHeader } from './PublicStoreHeader';
 import { PublicStoreStats } from './PublicStoreStats';
-import { SocialLinks } from '@/components/private/seller/profile/SocialLinks';
 import { useStoreCredits, useStoreReviews } from '@/hooks/useStoreCredits';
 import { StoreReviewModal } from '@/components/shared/StoreReviewModal';
 import { StoreRatingStats } from '@/components/shared/StoreRatingStats';
 import { ReviewCard } from '@/components/shared/ReviewCard';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useSellerStats } from '@/hooks/useSellerStats';
+import { SocialLinks } from '@/components/private/seller/profile/SocialLinks';
 
 interface PublicStoreProfileProps {
   seller: any;

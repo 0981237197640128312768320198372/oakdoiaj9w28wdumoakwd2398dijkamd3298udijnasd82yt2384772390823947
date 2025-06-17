@@ -24,7 +24,7 @@ export default function SellerOverview() {
   }
 
   return (
-    <div className="space-y-5 p-5 max-w-screen-lg min-h-[75vh]">
+    <div className="space-y-5 px-5 lg:px-0 max-w-screen-lg min-h-[75vh]">
       {/* Header with store info and key metrics */}
       <OverviewHeader seller={seller} ratingStats={ratingStats} ratingLoading={ratingLoading} />
 
