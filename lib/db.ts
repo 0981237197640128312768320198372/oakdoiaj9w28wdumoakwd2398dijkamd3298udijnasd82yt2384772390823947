@@ -16,15 +16,19 @@ const cached: CachedConnection = {
   promise: null,
 };
 
-// Optimized connection options for production
+// Optimized connection options for production and serverless environments
 const connectionOptions = {
-  bufferCommands: false,
+  bufferCommands: false, // Disable command buffering to get immediate errors
   maxPoolSize: 10, // Maintain up to 10 socket connections
-  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+  serverSelectionTimeoutMS: 10000, // Increased timeout for server selection
   socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
   family: 4, // Use IPv4, skip trying IPv6
   maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
-  connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
+  connectTimeoutMS: 15000, // Increased connection timeout for production
+  retryWrites: true, // Enable retryable writes
+  retryReads: true, // Enable retryable reads
+  heartbeatFrequencyMS: 10000, // Check connection health every 10 seconds
+  maxStalenessSeconds: 90, // Allow reading from secondaries up to 90 seconds behind
 };
 
 export async function connectToDatabase(): Promise<Connection> {

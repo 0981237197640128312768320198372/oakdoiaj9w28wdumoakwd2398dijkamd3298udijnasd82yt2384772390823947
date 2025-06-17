@@ -4,6 +4,7 @@ import { Types } from 'mongoose';
 import { PendingReview, IPendingReview } from '../../models/v3/PendingReview';
 import { Review, IReview } from '../../models/v3/Review';
 import { IOrder } from '../../models/v3/Order';
+import { connectToDatabase } from '../db';
 // Import models to ensure they're registered for population
 import '../../models/User';
 import '../../models/Seller';
@@ -351,6 +352,9 @@ export class ReviewService {
    */
   static async getSellerRatingStats(sellerId: string) {
     try {
+      // Ensure database connection before any operations
+      await connectToDatabase();
+
       const objectId = new Types.ObjectId(sellerId);
       return await Review.getSellerRating(objectId);
     } catch (error) {
@@ -460,6 +464,9 @@ export class ReviewService {
     options: { page?: number; limit?: number; sort?: string } = {}
   ): Promise<IReview[]> {
     try {
+      // Ensure database connection before any operations
+      await connectToDatabase();
+
       const objectId = new Types.ObjectId(sellerId);
       return await Review.findBySeller(objectId, options);
     } catch (error) {

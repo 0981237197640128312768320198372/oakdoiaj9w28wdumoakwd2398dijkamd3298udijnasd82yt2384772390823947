@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ReviewService } from '@/lib/services/reviewService';
+import { connectToDatabase } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   try {
+    // Ensure database connection before any operations with retry logic
+    try {
+      await connectToDatabase();
+    } catch (connectionError) {
+      console.error('Database connection failed:', connectionError);
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again.' },
+        { status: 503 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const buyerId = searchParams.get('buyerId');
     const productId = searchParams.get('productId');
@@ -115,6 +127,17 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure database connection before any operations with retry logic
+    try {
+      await connectToDatabase();
+    } catch (connectionError) {
+      console.error('Database connection failed:', connectionError);
+      return NextResponse.json(
+        { error: 'Database connection failed. Please try again.' },
+        { status: 503 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') as 'product' | 'seller' | null;
 
