@@ -58,7 +58,7 @@ export default function SellerOverview() {
       />
 
       {/* Detailed Insights */}
-      <DetailedInsights seller={seller} />
+      <DetailedInsights />
       {/* Analytics Dashboard */}
       <AnalyticsDashboard
         seller={seller}

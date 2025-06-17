@@ -63,7 +63,7 @@ const SellerPageContent = () => {
         <SidebarInset>
           <SellerHeader />
           <main className="flex-1 bg-dark-800">
-            <div className="w-full max-w-screen-2xl mx-auto px-4 py-6">
+            <div className="w-full max-w-screen-2xl mx-auto p-5">
               <div
                 className={`w-full transition-all duration-500 ${
                   isTransitioning ? 'opacity-0' : 'opacity-100'

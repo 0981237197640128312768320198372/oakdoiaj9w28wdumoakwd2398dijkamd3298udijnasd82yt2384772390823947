@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { Loader2 } from 'lucide-react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartOptions } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
-
-// Register Chart.js components
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { Loader2, Clock, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 
 interface OrderStatusChartProps {
   orders: any[];
@@ -43,104 +38,76 @@ export function OrderStatusChart({ orders, loading }: OrderStatusChartProps) {
     );
   }
 
-  const statusColors = {
-    pending: '#EAB308', // yellow-500
-    processing: '#3B82F6', // blue-500
-    completed: '#10B981', // green-500
-    cancelled: '#EF4444', // red-500
-  };
-
-  const statusLabels = {
-    pending: 'Pending',
-    processing: 'Processing',
-    completed: 'Completed',
-    cancelled: 'Cancelled',
-  };
-
-  // Prepare data for Chart.js
-  const chartData = {
-    labels: Object.keys(statusCounts).map(
-      (status) => statusLabels[status as keyof typeof statusLabels]
-    ),
-    datasets: [
-      {
-        data: Object.values(statusCounts),
-        backgroundColor: Object.values(statusColors),
-        borderColor: Object.values(statusColors).map((color) => color + '80'), // Add transparency
-        borderWidth: 1,
-        hoverBorderWidth: 2,
-        hoverOffset: 4,
-      },
-    ],
-  };
-
-  // Chart.js options
-  const options: ChartOptions<'pie'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false, // We'll create a custom legend
-      },
-      tooltip: {
-        backgroundColor: '#1F2937', // dark-800
-        titleColor: '#F9FAFB', // light-50
-        bodyColor: '#F9FAFB', // light-50
-        borderColor: '#374151', // dark-600
-        borderWidth: 1,
-        cornerRadius: 8,
-        displayColors: true,
-        callbacks: {
-          label: function (context) {
-            const label = context.label || '';
-            const value = context.parsed;
-            const percentage = ((value / total) * 100).toFixed(1);
-            return `${label}: ${value} (${percentage}%)`;
-          },
-        },
-      },
+  const statusConfig = {
+    pending: {
+      label: 'Pending',
+      icon: Clock,
+      color: 'bg-yellow-500',
+      bgColor: 'bg-yellow-500/10',
+      borderColor: 'border-yellow-500/20',
+      textColor: 'text-yellow-400',
     },
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-      duration: 1000,
+    processing: {
+      label: 'Processing',
+      icon: RefreshCw,
+      color: 'bg-blue-500',
+      bgColor: 'bg-blue-500/10',
+      borderColor: 'border-blue-500/20',
+      textColor: 'text-blue-400',
+    },
+    completed: {
+      label: 'Completed',
+      icon: CheckCircle,
+      color: 'bg-green-500',
+      bgColor: 'bg-green-500/10',
+      borderColor: 'border-green-500/20',
+      textColor: 'text-green-400',
+    },
+    cancelled: {
+      label: 'Cancelled',
+      icon: XCircle,
+      color: 'bg-red-500',
+      bgColor: 'bg-red-500/10',
+      borderColor: 'border-red-500/20',
+      textColor: 'text-red-400',
     },
   };
 
   return (
     <div className="space-y-4">
-      {/* Pie Chart */}
-      <div className="relative h-40 w-full">
-        <Pie data={chartData} options={options} />
-      </div>
-
-      {/* Custom Legend */}
-      <div className="grid grid-cols-2 gap-2">
+      {/* Status Cards Grid */}
+      <div className="grid grid-cols-2 gap-3">
         {Object.entries(statusCounts).map(([status, count]) => {
+          const config = statusConfig[status as keyof typeof statusConfig];
+          const Icon = config.icon;
           const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : '0';
-          const color = statusColors[status as keyof typeof statusColors];
-          const label = statusLabels[status as keyof typeof statusLabels];
 
           return (
-            <div key={status} className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full flex-shrink-0"
-                style={{ backgroundColor: color }}
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-light-400 truncate">{label}</span>
-                  <span className="text-xs text-white font-medium">{count}</span>
+            <div
+              key={status}
+              className={`p-3 rounded-lg border transition-all duration-200 hover:shadow-sm ${config.bgColor} ${config.borderColor}`}>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${config.color}`} />
+                  <Icon className={`w-4 h-4 ${config.textColor}`} />
                 </div>
-                <div className="text-xs text-light-500">{percentage}%</div>
+                <span className="text-lg font-bold text-white">{count}</span>
+              </div>
+
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-light-200">{config.label}</p>
+                <p className="text-xs text-light-500">{percentage}% of total</p>
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="text-center">
-        <p className="text-xs text-light-500">Total Orders: {total}</p>
+      {/* Total Summary */}
+      <div className="text-center pt-2 border-t border-dark-600">
+        <p className="text-xs text-light-500">
+          Total Orders: <span className="text-white font-medium">{total}</span>
+        </p>
       </div>
     </div>
   );

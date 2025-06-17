@@ -3,7 +3,32 @@
 'use client';
 
 import { TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  ChartOptions,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { useSalesTrend } from '@/hooks/useSalesTrend';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface SalesChartProps {
   seller: any;
@@ -40,6 +65,93 @@ export function SalesChart({ seller }: SalesChartProps) {
   const totalSales = salesTrend?.totalSales || 0;
   const trend = salesTrend?.trend || 0;
 
+  // Prepare data for Chart.js
+  const labels =
+    salesData.length > 0
+      ? salesData.map((item) => item.day)
+      : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const data = salesData.length > 0 ? salesData.map((item) => item.sales) : [0, 0, 0, 0, 0, 0, 0];
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: 'Sales',
+        data,
+        fill: true,
+        backgroundColor: (context: any) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+          gradient.addColorStop(0, 'rgba(184, 254, 19, 0.3)'); // green-500 with opacity
+          gradient.addColorStop(1, 'rgba(184, 254, 19, 0.05)'); // green-500 with very low opacity
+          return gradient;
+        },
+        borderColor: '#B9FE13', // green-500
+        borderWidth: 2,
+        pointBackgroundColor: '#10B981',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.4, // Smooth curves
+      },
+    ],
+  };
+
+  const options: ChartOptions<'line'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: '#1F2937', // dark-800
+        titleColor: '#F9FAFB', // light-50
+        bodyColor: '#F9FAFB', // light-50
+        borderColor: '#374151', // dark-600
+        borderWidth: 1,
+        cornerRadius: 8,
+        displayColors: false,
+        callbacks: {
+          label: function (context) {
+            return `Sales: ${context.parsed.y}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: '#9CA3AF', // light-400
+          font: {
+            size: 10,
+          },
+        },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: '#374151', // dark-600
+        },
+        ticks: {
+          color: '#9CA3AF', // light-400
+          font: {
+            size: 10,
+          },
+        },
+      },
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart',
+    },
+  };
+
   return (
     <div className="space-y-3">
       {/* Summary */}
@@ -61,34 +173,9 @@ export function SalesChart({ seller }: SalesChartProps) {
         </div>
       </div>
 
-      {/* Simple Bar Chart */}
-      <div className="flex items-end gap-1 h-16">
-        {salesData.length > 0
-          ? salesData.map((item, index) => {
-              const maxSales = Math.max(...salesData.map((d) => d.sales), 1);
-              const heightPercentage = Math.max((item.sales / maxSales) * 100, 2);
-
-              return (
-                <div key={index} className="flex-1 flex flex-col items-center gap-1">
-                  <div
-                    className="w-full bg-primary/20 rounded-sm min-h-[2px]"
-                    style={{
-                      height: `${heightPercentage}%`,
-                    }}
-                  />
-                  <span className="text-xs text-light-500">{item.day}</span>
-                </div>
-              );
-            })
-          : // Show empty state when no data
-            Array.from({ length: 7 }, (_, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full bg-primary/10 rounded-sm h-[2px]" />
-                <span className="text-xs text-light-500">
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
-                </span>
-              </div>
-            ))}
+      {/* Line Chart */}
+      <div className="relative h-16">
+        <Line data={chartData} options={options} />
       </div>
 
       <p className="text-xs text-light-500 text-center">Last 7 days</p>

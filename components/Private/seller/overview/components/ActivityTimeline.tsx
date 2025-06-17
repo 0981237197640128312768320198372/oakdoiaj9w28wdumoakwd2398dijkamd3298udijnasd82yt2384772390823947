@@ -157,7 +157,7 @@ export function ActivityTimeline({ orders, loading }: ActivityTimelineProps) {
       <div className="flex-shrink-0 relative">
         <div
           className={cn(
-            'w-2 h-2 rounded-full border-2 bg-light-800',
+            'w-2 h-2 rounded-full border-2 ',
             color === 'blue' && 'border-blue-500',
             color === 'green' && 'border-green-500',
             color === 'yellow' && 'border-yellow-500',
