@@ -18,9 +18,15 @@ interface OverviewHeaderProps {
     totalReviews: number;
   } | null;
   ratingLoading?: boolean;
+  onViewChange?: (view: 'theme-customizer' | 'edit-profile') => void;
 }
 
-export function OverviewHeader({ seller, ratingStats, ratingLoading }: OverviewHeaderProps) {
+export function OverviewHeader({
+  seller,
+  ratingStats,
+  ratingLoading,
+  onViewChange,
+}: OverviewHeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { statistics, isLoading: statsLoading } = useSellerStats(seller?.username);
 
@@ -60,11 +66,11 @@ export function OverviewHeader({ seller, ratingStats, ratingLoading }: OverviewH
   ];
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
       {/* Store Header Card */}
-      <div className="bg-dark-700 border border-dark-500 rounded-xl p-5">
+      <div className="bg-dark-700 border border-dark-600 rounded-xl p-5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-5">
             <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-dark-600">
               <Image
                 src={seller?.store?.logoUrl || dokmailogosquare}
@@ -91,20 +97,34 @@ export function OverviewHeader({ seller, ratingStats, ratingLoading }: OverviewH
 
           <div className="relative">
             <button
+              id="settings-menu-button"
               onClick={() => setShowSettings(!showSettings)}
-              className="p-2 hover:bg-dark-600 rounded-lg transition-colors">
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setShowSettings(!showSettings);
+                }
+              }}
+              className="p-2 hover:bg-dark-600 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+              aria-expanded={showSettings}
+              aria-haspopup="menu"
+              aria-label="Settings menu">
               <Settings className="w-4 h-4 text-light-400" />
             </button>
 
             {showSettings && (
-              <SettingsDropdown onClose={() => setShowSettings(false)} seller={seller} />
+              <SettingsDropdown
+                onClose={() => setShowSettings(false)}
+                seller={seller}
+                onViewChange={onViewChange}
+              />
             )}
           </div>
         </div>
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {metrics.map((metric, index) => (
           <MetricCard
             key={index}

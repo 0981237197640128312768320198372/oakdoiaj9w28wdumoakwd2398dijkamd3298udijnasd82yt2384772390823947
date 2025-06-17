@@ -44,8 +44,16 @@ export function ThemeCustomizerModal({ isOpen, onClose, seller }: ThemeCustomize
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-dark-800 border border-dark-600 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-[10000] p-4 animate-in fade-in-0 duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}>
+      <div
+        className="bg-dark-800 border border-dark-600 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-dark-600">
           <div className="flex items-center gap-2">

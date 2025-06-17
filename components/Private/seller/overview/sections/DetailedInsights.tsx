@@ -10,15 +10,10 @@ interface DetailedInsightsProps {
 
 export function DetailedInsights({ seller }: DetailedInsightsProps) {
   return (
-    <div className="space-y-4">
-      <h2 className="text-sm font-medium text-white flex items-center gap-2">
-        <BarChart3 className="w-4 h-4 text-primary" />
-        Detailed Insights
-      </h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Customer Analytics */}
-        <div className="bg-dark-700 border border-dark-500 rounded-xl p-5">
+        <div className="bg-dark-700 border border-dark-600 rounded-xl p-5">
           <h3 className="text-xs font-medium text-light-300 mb-3 flex items-center gap-2">
             <Users className="w-3 h-3" />
             Customer Analytics
@@ -40,7 +35,7 @@ export function DetailedInsights({ seller }: DetailedInsightsProps) {
         </div>
 
         {/* Financial Summary */}
-        <div className="bg-dark-700 border border-dark-500 rounded-xl p-5">
+        <div className="bg-dark-700 border border-dark-600 rounded-xl p-5">
           <h3 className="text-xs font-medium text-light-300 mb-3 flex items-center gap-2">
             <DollarSign className="w-3 h-3" />
             Financial Summary
@@ -62,7 +57,7 @@ export function DetailedInsights({ seller }: DetailedInsightsProps) {
         </div>
 
         {/* Growth Trends */}
-        <div className="bg-dark-700 border border-dark-500 rounded-xl p-5">
+        <div className="bg-dark-700 border border-dark-600 rounded-xl p-5">
           <h3 className="text-xs font-medium text-light-300 mb-3 flex items-center gap-2">
             <TrendingUp className="w-3 h-3" />
             Growth Trends

@@ -54,9 +54,7 @@ export function ActivityTimeline({ orders, loading }: ActivityTimelineProps) {
         icon: 'ShoppingBag',
         color: 'blue',
         title: 'New Order',
-        description: `Order #${order.orderId?.slice(-8) || 'Unknown'} • ฿${
-          order.totals?.total || 0
-        }`,
+        description: `Order #${order.orderId || 'Unknown'} • ฿${order.totals?.total || 0}`,
       });
 
       // Add order confirmation activity
@@ -69,7 +67,7 @@ export function ActivityTimeline({ orders, loading }: ActivityTimelineProps) {
           icon: 'CheckCircle',
           color: 'green',
           title: 'Order Confirmed',
-          description: `Order #${order.orderId?.slice(-8) || 'Unknown'} confirmed`,
+          description: `Order #${order.orderId || 'Unknown'} confirmed`,
         });
       }
 
@@ -97,7 +95,7 @@ export function ActivityTimeline({ orders, loading }: ActivityTimelineProps) {
           icon: 'Package',
           color: 'green',
           title: 'Order Completed',
-          description: `Order #${order.orderId?.slice(-8) || 'Unknown'} delivered`,
+          description: `Order #${order.orderId || 'Unknown'} delivered`,
         });
       }
 
@@ -111,12 +109,11 @@ export function ActivityTimeline({ orders, loading }: ActivityTimelineProps) {
           icon: 'XCircle',
           color: 'red',
           title: 'Order Cancelled',
-          description: `Order #${order.orderId?.slice(-8) || 'Unknown'} cancelled`,
+          description: `Order #${order.orderId || 'Unknown'} cancelled`,
         });
       }
     });
 
-    // Sort by timestamp (newest first) and limit to recent activities
     return timelineActivities
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 8);
@@ -249,9 +246,9 @@ export function ActivityTimeline({ orders, loading }: ActivityTimelineProps) {
 
   return (
     <div className="space-y-1">
-      <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-light-400 scrollbar-track-transparent __dokmai_scrollbar">
+      <div className="max-h-64 overflow-y-auto p-3 bg-dark-600  rounded-xl scrollbar-thin scrollbar-thumb-light-400 scrollbar-track-transparent __dokmai_scrollbar">
         {activities.map((activity, index) => (
-          <div key={activity.id} className="relative">
+          <div key={activity.id} className="relative ">
             {/* Timeline line */}
             {index < activities.length - 1 && (
               <div className="absolute left-1 top-6 w-px h-12 bg-dark-300" />
