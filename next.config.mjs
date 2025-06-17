@@ -77,6 +77,10 @@ const nextConfig = {
               type: 'host',
               value: '(?!admin\\.dokmaistore\\.com).*',
             },
+            {
+              type: 'host',
+              value: '(?!seller\\.dokmaistore\\.com).*',
+            },
           ],
         },
       ];
