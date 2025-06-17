@@ -34,7 +34,7 @@ export function OrderStatusChart({ orders, loading }: OrderStatusChartProps) {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-5">
       {/* Status Bars */}
       <div className="space-y-2">
         {Object.entries(statusCounts).map(([status, count]) => {

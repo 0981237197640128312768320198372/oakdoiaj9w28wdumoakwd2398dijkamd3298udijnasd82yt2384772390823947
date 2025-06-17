@@ -42,13 +42,13 @@ export function StoreHealthMonitor({
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Inventory Alerts */}
-        <div className="bg-dark-700 border border-dark-600 rounded-lg p-4">
+        <div className="bg-dark-700 border border-dark-500 rounded-xl p-5">
           <h3 className="text-xs font-medium text-light-300 mb-3">Inventory Status</h3>
           <InventoryAlerts seller={seller} />
         </div>
 
         {/* Customer Feedback */}
-        <div className="bg-dark-700 border border-dark-600 rounded-lg p-4">
+        <div className="bg-dark-700 border border-dark-500 rounded-xl p-5">
           <h3 className="text-xs font-medium text-light-300 mb-3">Customer Feedback</h3>
           <ReviewsSummary
             seller={seller}

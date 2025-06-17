@@ -4,14 +4,13 @@
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerDashboard } from '@/context/SellerDashboardContext';
 import React, { useState, useEffect } from 'react';
-import SellerNavbar from './SellerNavbar';
-import SellerOrders from './SellerOrders';
-import SellerAnalytics from './SellerAnalytics';
-import SellerInfo from './profile/SellerInfo';
-import SellerProducts from './product/SellerProducts';
-import CustomizeYourPage from './profile/CustomizeYourPage';
-import AuthSellerPage from './AuthSellerPage';
-import SellerOverview from './overview/SellerOverview';
+import SellerNavbar from '@/components/Private/seller/SellerNavbar';
+import SellerOrders from '@/components/Private/seller/SellerOrders';
+import SellerAnalytics from '@/components/Private/seller/SellerAnalytics';
+import SellerProducts from '@/components/Private/seller/product/SellerProducts';
+import CustomizeYourPage from '@/components/Private/seller/profile/CustomizeYourPage';
+import AuthSellerPage from '@/components/Private/seller/AuthSellerPage';
+import SellerOverview from '@/components/Private/seller/overview/SellerOverview';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();
