@@ -5,14 +5,14 @@ import { useEffect, useState } from 'react';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { CalendarDays, Globe, Info, Mail, MessageCircle, User } from 'lucide-react';
-import { StoreHeader } from './StoreHeader';
 import { cn } from '@/lib/utils';
-import { SocialLinks } from './SocialLinks';
-import { InfoSection } from './InfoSection';
-import { StoreStats } from './StoreStats';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
+import { StoreHeader } from '@/components/Private/seller/profile/StoreHeader';
+import { StoreStats } from '@/components/Private/seller/profile/StoreStats';
+import { SocialLinks } from '@/components/Private/seller/profile/SocialLinks';
+import { InfoSection } from './InfoSection';
 
 export default function SellerInfo() {
   const { seller } = useSellerAuth();
