@@ -19,7 +19,7 @@ import { StoreRatingStats } from '@/components/shared/StoreRatingStats';
 import { ReviewCard } from '@/components/shared/ReviewCard';
 import { useBuyerAuth } from '@/context/BuyerAuthContext';
 import { useSellerStats } from '@/hooks/useSellerStats';
-import { SocialLinks } from '@/components/private/seller/profile/SocialLinks';
+import { SocialLinks } from '@/components/Private/seller/profile/SocialLinks';
 
 interface PublicStoreProfileProps {
   seller: any;
