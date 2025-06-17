@@ -2,26 +2,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { useSalesTrend } from '@/hooks/useSalesTrend';
 
 interface SalesChartProps {
   seller: any;
 }
 
 export function SalesChart({ seller }: SalesChartProps) {
-  // Mock data for now - replace with real data later
-  const mockData = [
-    { day: 'Mon', sales: 0 },
-    { day: 'Tue', sales: 0 },
-    { day: 'Wed', sales: 0 },
-    { day: 'Thu', sales: 0 },
-    { day: 'Fri', sales: 0 },
-    { day: 'Sat', sales: 0 },
-    { day: 'Sun', sales: 0 },
-  ];
+  const { salesTrend, isLoading, error } = useSalesTrend(seller?.username, 7);
 
-  const totalSales = mockData.reduce((sum, item) => sum + item.sales, 0);
-  const trend = 0; // Calculate trend percentage
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-center h-24">
+          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          <span className="ml-2 text-xs text-light-400">Loading sales data...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center justify-center h-24">
+          <span className="text-xs text-red-400">Failed to load sales data</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Use real data or fallback to empty data
+  const salesData = salesTrend?.salesData || [];
+  const totalSales = salesTrend?.totalSales || 0;
+  const trend = salesTrend?.trend || 0;
 
   return (
     <div className="space-y-3">
@@ -46,20 +63,32 @@ export function SalesChart({ seller }: SalesChartProps) {
 
       {/* Simple Bar Chart */}
       <div className="flex items-end gap-1 h-16">
-        {mockData.map((item, index) => (
-          <div key={index} className="flex-1 flex flex-col items-center gap-1">
-            <div
-              className="w-full bg-primary/20 rounded-sm min-h-[2px]"
-              style={{
-                height: `${Math.max(
-                  (item.sales / Math.max(...mockData.map((d) => d.sales), 1)) * 100,
-                  2
-                )}%`,
-              }}
-            />
-            <span className="text-xs text-light-500">{item.day}</span>
-          </div>
-        ))}
+        {salesData.length > 0
+          ? salesData.map((item, index) => {
+              const maxSales = Math.max(...salesData.map((d) => d.sales), 1);
+              const heightPercentage = Math.max((item.sales / maxSales) * 100, 2);
+
+              return (
+                <div key={index} className="flex-1 flex flex-col items-center gap-1">
+                  <div
+                    className="w-full bg-primary/20 rounded-sm min-h-[2px]"
+                    style={{
+                      height: `${heightPercentage}%`,
+                    }}
+                  />
+                  <span className="text-xs text-light-500">{item.day}</span>
+                </div>
+              );
+            })
+          : // Show empty state when no data
+            Array.from({ length: 7 }, (_, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center gap-1">
+                <div className="w-full bg-primary/10 rounded-sm h-[2px]" />
+                <span className="text-xs text-light-500">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
+                </span>
+              </div>
+            ))}
       </div>
 
       <p className="text-xs text-light-500 text-center">Last 7 days</p>

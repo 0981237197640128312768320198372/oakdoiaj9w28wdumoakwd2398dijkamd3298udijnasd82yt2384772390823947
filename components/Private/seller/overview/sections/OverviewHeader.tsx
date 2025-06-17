@@ -2,10 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { Settings, Star, Package, ShoppingCart, Wallet2 } from 'lucide-react';
 import { useSellerStats } from '@/hooks/useSellerStats';
-import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { MetricCard } from '../components/MetricCard';
 import { SettingsDropdown } from '../components/SettingsDropdown';
 import { PiGlobeSimpleBold } from 'react-icons/pi';
@@ -70,15 +68,6 @@ export function OverviewHeader({
       <div className="bg-dark-700 border border-dark-600 rounded-xl p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
-            <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-dark-600">
-              <Image
-                src={seller?.store?.logoUrl || dokmailogosquare}
-                alt={seller?.store?.name || 'Store'}
-                fill
-                className="object-cover"
-                sizes="32px"
-              />
-            </div>
             <div>
               <h1 className="text-sm font-medium text-white">{seller?.store?.name}</h1>
               <div className="flex items-center gap-2 text-xs text-light-400">

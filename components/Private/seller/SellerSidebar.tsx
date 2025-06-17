@@ -52,19 +52,22 @@ export function SellerSidebar() {
 
   return (
     <Sidebar variant="floating" className="border-r border-dark-500 bg-dark-800">
-      <SidebarHeader className="px-4 py-4">
-        <div className="flex items-center gap-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md">
+      <SidebarHeader className="p-5">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-8 w-8 rounded-full overflow-hidden border border-dark-400 flex-shrink-0">
             <Image
-              src={dokmailogosquare}
-              alt="Dokmai Store"
+              src={seller?.store.logoUrl || dokmailogosquare}
+              alt={seller?.store.name || 'Store Name'}
               width={32}
               height={32}
-              className="h-6 w-6"
+              className="h-full w-full object-cover"
             />
           </div>
-          <div className="text-xs font-aktivGroteskBold text-light-100 tracking-wide">
-            Store Name
+          <div className="flex flex-col min-w-0">
+            <h1 className="text-xs font-aktivGroteskBold text-light-100 truncate">
+              {seller?.store.name}
+            </h1>
+            <p className="text-xs text-light-400 truncate">@{seller?.username}</p>
           </div>
         </div>
       </SidebarHeader>
@@ -93,7 +96,7 @@ export function SellerSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-dark-500 p-4">
+      <SidebarFooter className="border-t border-dark-500 p-5">
         {seller && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">

@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { Settings } from 'lucide-react';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerDashboard } from '@/context/SellerDashboardContext';
 import { SettingsDropdown } from '@/components/Private/seller/overview/components/SettingsDropdown';
-import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -40,30 +38,11 @@ export function SellerHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-4">
+    <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-dark-500 bg-dark-800 px-5">
       <div className="flex items-center gap-4 w-full max-w-screen-2xl mx-auto">
         {/* Mobile Sidebar Trigger */}
         <SidebarTrigger className="md:hidden" />
-        <Separator orientation="vertical" className="h-6 bg-dark-500 md:hidden" />
-
-        {/* Store Info */}
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="h-8 w-8 rounded-full overflow-hidden border border-dark-400 flex-shrink-0">
-            <Image
-              src={seller.store.logoUrl || dokmailogosquare}
-              alt={seller.store.name}
-              width={32}
-              height={32}
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <h1 className="text-xs font-aktivGroteskBold text-light-100 truncate">
-              {seller.store.name}
-            </h1>
-            <p className="text-xs text-light-400 truncate">@{seller.username}</p>
-          </div>
-        </div>
+        <Separator orientation="vertical" className="h-5 bg-dark-500 md:hidden" />
 
         {/* Breadcrumb */}
         <div className="hidden md:flex items-center flex-1">

@@ -69,7 +69,7 @@ const nextConfig = {
     if (process.env.NODE_ENV === 'production') {
       return [
         {
-          source: '/((?!maintenance|admin|api|images|icons).*)',
+          source: '/((?!maintenance|admin|seller|api|images|icons).*)',
           destination: '/maintenance',
           permanent: false,
           has: [
