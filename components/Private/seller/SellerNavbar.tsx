@@ -8,7 +8,7 @@ import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { FaPowerOff } from 'react-icons/fa';
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerDashboard } from '@/context/SellerDashboardContext';
-import { Package, BarChart3, ShoppingBag, Power, Store, Menu } from 'lucide-react';
+import { Package, BarChart3, ShoppingBag, Power, Layout, Menu } from 'lucide-react';
 
 const SellerNavbar = () => {
   const { seller, logout } = useSellerAuth();
@@ -16,7 +16,7 @@ const SellerNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNavigation = (
-    view: 'profile' | 'products' | 'orders' | 'analytics' | 'edit-profile'
+    view: 'overview' | 'products' | 'orders' | 'analytics' | 'edit-profile'
   ) => {
     setActiveView(view);
     setIsMenuOpen(false);
@@ -82,13 +82,13 @@ const SellerNavbar = () => {
                 }`}>
                 <div className="flex flex-col ">
                   <button
-                    onClick={() => handleNavigation('profile')}
+                    onClick={() => handleNavigation('overview')}
                     className={`flex gap-1 items-center ${
-                      isActive('profile')
+                      isActive('overview')
                         ? 'bg-dark-500 text-light-100'
                         : 'bg-dark-600 hover:bg-dark-500 text-light-100 '
                     } text-xs p-3 font-aktivGroteskBold transition-all duration-300 w-full justify-center`}>
-                    <Store size={16} /> Profile
+                    <Layout size={16} /> Overview
                   </button>
                   <button
                     onClick={() => handleNavigation('products')}
@@ -128,13 +128,13 @@ const SellerNavbar = () => {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center gap-2">
                 <button
-                  onClick={() => handleNavigation('profile')}
+                  onClick={() => handleNavigation('overview')}
                   className={`flex gap-1 items-center ${
-                    isActive('profile')
+                    isActive('overview')
                       ? 'bg-dark-500 text-light-100 border-dark-300'
                       : 'bg-dark-600 hover:bg-dark-500 text-light-100 border-dark-400'
                   } text-xs rounded-full px-3 py-2 font-aktivGroteskBold border-[1px] transition-all duration-300`}>
-                  <Store size={16} /> Profile
+                  <Layout size={16} /> Overview
                 </button>
                 <button
                   onClick={() => handleNavigation('products')}

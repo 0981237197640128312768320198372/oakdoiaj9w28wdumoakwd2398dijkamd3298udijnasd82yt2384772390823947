@@ -66,11 +66,10 @@ const nextConfig = {
   // },
 
   async redirects() {
-    // Only redirect to maintenance in production environment
     if (process.env.NODE_ENV === 'production') {
       return [
         {
-          source: '/((?!maintenance).*)',
+          source: '/((?!maintenance|admin).*)',
           destination: '/maintenance',
           permanent: false,
         },

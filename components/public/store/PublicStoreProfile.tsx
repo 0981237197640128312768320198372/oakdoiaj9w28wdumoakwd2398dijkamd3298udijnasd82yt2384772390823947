@@ -164,7 +164,6 @@ const PublicStoreProfile: React.FC<PublicStoreProfileProps> = ({ seller, theme }
                       themeUtils.getCardClass(),
                       themeUtils.getComponentRoundednessClass()
                     )}>
-                    {/* Section Header */}
                     <div className="flex items-center gap-2 mb-4">
                       <div
                         className={cn(

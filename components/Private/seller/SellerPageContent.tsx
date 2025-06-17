@@ -11,6 +11,7 @@ import SellerInfo from './profile/SellerInfo';
 import SellerProducts from './product/SellerProducts';
 import CustomizeYourPage from './profile/CustomizeYourPage';
 import AuthSellerPage from './AuthSellerPage';
+import SellerOverview from './overview/SellerOverview';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();
@@ -33,8 +34,8 @@ const SellerPageContent = () => {
       return <AuthSellerPage />;
     }
     switch (displayedView) {
-      case 'profile':
-        return <SellerInfo />;
+      case 'overview':
+        return <SellerOverview />;
       case 'edit-profile':
         return <CustomizeYourPage />;
       case 'products':
@@ -46,7 +47,7 @@ const SellerPageContent = () => {
       case 'analytics':
         return <SellerAnalytics />;
       default:
-        return <SellerInfo />;
+        return <SellerOverview />;
     }
   };
   return (
