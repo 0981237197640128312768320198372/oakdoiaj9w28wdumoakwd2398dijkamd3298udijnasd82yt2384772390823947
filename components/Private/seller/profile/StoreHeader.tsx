@@ -20,7 +20,7 @@ export function StoreHeader({ seller }: StoreHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNavigation = (
-    view: 'profile' | 'products' | 'orders' | 'analytics' | 'edit-profile'
+    view: 'overview' | 'products' | 'orders' | 'analytics' | 'edit-profile' | 'theme-customizer'
   ) => {
     setActiveView(view);
     setIsMenuOpen(false);
