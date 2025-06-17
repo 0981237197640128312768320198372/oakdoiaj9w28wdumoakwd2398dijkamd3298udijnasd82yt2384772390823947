@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { StoreData } from '@/components/private/seller/StoreData';
+import { StoreData } from '@/components/Private/seller/StoreData';
 import { BuyerAuthProvider } from '@/context/BuyerAuthContext';
 import '@/styles/globals.css';
 

@@ -2,7 +2,7 @@
 'use client';
 
 import { X, User } from 'lucide-react';
-import EditProfile from '@/components/private/seller/profile/EditProfile';
+import EditProfile from '@/components/Private/seller/profile/EditProfile';
 
 interface ProfileEditModalProps {
   isOpen: boolean;

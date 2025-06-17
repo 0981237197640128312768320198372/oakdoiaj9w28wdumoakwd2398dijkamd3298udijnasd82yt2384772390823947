@@ -18,7 +18,7 @@ import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerOrders } from '@/hooks/useSellerOrders';
 import Image from 'next/image';
 import { dokmaiCoinSymbol } from '@/lib/utils';
-import AssetsModal from '@/components/private/seller/AssetsModal';
+import AssetsModal from '@/components/Private/seller/AssetsModal';
 
 const SellerOrders: React.FC = () => {
   const { seller } = useSellerAuth();

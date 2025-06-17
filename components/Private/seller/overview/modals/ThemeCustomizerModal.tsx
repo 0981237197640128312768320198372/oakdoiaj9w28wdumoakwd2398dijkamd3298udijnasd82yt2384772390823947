@@ -5,7 +5,7 @@
 import { X, Palette, Loader2 } from 'lucide-react';
 import { useSellerThemeWithSWR } from '@/hooks/useSellerThemeWithSWR';
 import { useSellerAuth } from '@/context/SellerAuthContext';
-import ThemeCustomizer from '@/components/private/seller/profile/ThemeCustomizer';
+import ThemeCustomizer from '@/components/Private/seller/profile/ThemeCustomizer';
 import type { ThemeType } from '@/types';
 
 interface ThemeCustomizerModalProps {

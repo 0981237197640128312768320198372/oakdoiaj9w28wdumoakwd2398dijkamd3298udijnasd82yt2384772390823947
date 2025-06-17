@@ -12,9 +12,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { ThemeType } from '@/types';
 
 const ThemeCustomizer = dynamic(
-  () => import('@/components/private/seller/profile/ThemeCustomizer')
+  () => import('@/components/Private/seller/profile/ThemeCustomizer')
 );
-const EditProfile = dynamic(() => import('@/components/private/seller/profile/EditProfile'));
+const EditProfile = dynamic(() => import('@/components/Private/seller/profile/EditProfile'));
 
 export default function CustomizeYourPage() {
   const { seller, login } = useSellerAuth();
