@@ -69,9 +69,15 @@ const nextConfig = {
     if (process.env.NODE_ENV === 'production') {
       return [
         {
-          source: '/((?!maintenance|admin).*)',
+          source: '/((?!maintenance|admin|api).*)',
           destination: '/maintenance',
           permanent: false,
+          has: [
+            {
+              type: 'host',
+              value: '(?!admin\\.dokmaistore\\.com).*',
+            },
+          ],
         },
       ];
     }
