@@ -1,6 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import { Edit, Link, Link2Off, Trash2, Save, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Edit, Link, Link2Off, Trash2, Save, X, AlertTriangle, Check } from 'lucide-react';
 import { HiOutlineInboxStack } from 'react-icons/hi2';
 import { Button2 } from '@/components/ui/button2';
 import StatusBadge from './StatusBadge';
@@ -21,9 +21,11 @@ interface InventoryCardProps {
   onUnlink: () => void;
   onDelete: () => void;
   onSave?: () => void;
+  onUpdateName?: (newName: string) => void;
   isSelected: boolean;
   isEditing?: boolean;
   isSaving?: boolean;
+  isUpdatingName?: boolean;
   // onDuplicate prop removed as per user request
 }
 
@@ -34,13 +36,52 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
   onUnlink,
   onDelete,
   onSave,
+  onUpdateName,
   isSelected,
   isEditing = false,
   isSaving = false,
+  isUpdatingName = false,
 }) => {
   const isLinked = !!inventory.connectedProduct;
   const assetCount = inventory.digitalAssets.length;
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [tempName, setTempName] = useState(inventory.inventoryGroup);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditingName && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditingName]);
+
+  const handleNameClick = () => {
+    if (!isEditingName) {
+      setTempName(inventory.inventoryGroup);
+      setIsEditingName(true);
+    }
+  };
+
+  const handleNameSave = () => {
+    if (tempName.trim() && tempName !== inventory.inventoryGroup && onUpdateName) {
+      onUpdateName(tempName.trim());
+    }
+    setIsEditingName(false);
+  };
+
+  const handleNameCancel = () => {
+    setTempName(inventory.inventoryGroup);
+    setIsEditingName(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleNameSave();
+    } else if (e.key === 'Escape') {
+      handleNameCancel();
+    }
+  };
 
   const confirmDeleteInventory = () => {
     onDelete();
@@ -49,24 +90,58 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
 
   return (
     <div
-      className={`bg-dark-600 rounded-xl transition-all duration-200 ${
+      className={`bg-dark-600 rounded-xl transition-all duration-200 relative ${
         isSelected
           ? 'border-primary/50 border-2'
           : isLinked
           ? 'border-dark-400 border'
           : 'border-yellow-500/50 border shadow-lg shadow-yellow-500/40'
       } overflow-hidden`}>
+      {/* Alert icon for unlinked inventories */}
+      {!isLinked && (
+        <div className="absolute top-2 right-2 z-10">
+          <AlertTriangle size={16} className="text-yellow-500" />
+        </div>
+      )}
       <div className="p-4">
         {/* Header section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
           <div className="w-full sm:w-auto">
             <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-              <h3 className="text-light-100 font-medium text-lg flex items-center gap-2 truncate max-w-[250px]">
-                {inventory.inventoryGroup}
-                {isSelected && (
-                  <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                )}
-              </h3>
+              {isEditingName ? (
+                <div className="flex items-center gap-2 w-full">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={tempName}
+                    onChange={(e) => setTempName(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    className="bg-dark-500 text-light-100 px-2 py-1 rounded text-sm border border-dark-400 focus:border-primary outline-none flex-1 max-w-[200px]"
+                    disabled={isUpdatingName}
+                  />
+                  <button
+                    onClick={handleNameSave}
+                    disabled={isUpdatingName || !tempName.trim()}
+                    className="p-1 text-green-400 hover:bg-green-500/20 rounded disabled:opacity-50">
+                    <Check size={14} />
+                  </button>
+                  <button
+                    onClick={handleNameCancel}
+                    disabled={isUpdatingName}
+                    className="p-1 text-red-400 hover:bg-red-500/20 rounded disabled:opacity-50">
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <h3
+                  onClick={handleNameClick}
+                  className="text-light-100 font-medium text-lg flex items-center gap-2 truncate max-w-[250px] cursor-pointer hover:text-primary transition-colors">
+                  {inventory.inventoryGroup}
+                  {isSelected && (
+                    <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                  )}
+                </h3>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center gap-2 mt-2">

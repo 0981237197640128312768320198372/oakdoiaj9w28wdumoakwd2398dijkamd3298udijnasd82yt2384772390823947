@@ -29,7 +29,6 @@ export default function DigitalInventoryManager() {
   const [inventoryList, setInventoryList] = useState<Array<InventoryItem>>([]);
   const [products, setProducts] = useState<Array<{ _id: string; title: string }>>([]);
   const [defaultAssetKeys] = useState<string[]>(['Email', 'Password']); // Default keys for new inventories
-  const [errors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [selectedInventoryIndex, setSelectedInventoryIndex] = useState<number | null>(null);
@@ -431,8 +430,8 @@ export default function DigitalInventoryManager() {
         defaultAssetKeys={defaultAssetKeys}
       />
 
-      <div className="p-6 space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <div className="p-5 space-y-5">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 mb-5">
           <div>
             <h2 className="text-2xl font-bold text-light-100 flex items-center">
               <HiOutlineInboxStack className="mr-2 text-primary" size={24} />
@@ -530,7 +529,6 @@ export default function DigitalInventoryManager() {
                           assetKeys={inventory.assetKeys || defaultAssetKeys}
                           onInventoryChange={(upd) => handleInventoryChange(orig, upd)}
                           onAssetKeysChange={(newKeys) => handleAssetKeysChange(orig, newKeys)}
-                          errors={errors}
                           onSave={() => handleSaveInventory(orig)}
                           isSaving={isSavingInCard}
                         />

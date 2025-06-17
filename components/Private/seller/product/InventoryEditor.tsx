@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Save } from 'lucide-react';
 import { Button2 } from '@/components/ui/button2';
-import FormField from '@/components/ui/FormField';
 import StatusBadge from './StatusBadge';
 import { HiOutlineInboxStack } from 'react-icons/hi2';
 
@@ -20,7 +19,6 @@ interface InventoryEditorProps {
     };
   };
   assetKeys: string[];
-  errors: Record<string, string>;
   onInventoryChange: (inventory: {
     inventoryGroup: string;
     digitalAssets: Array<Record<string, string>>;
@@ -34,7 +32,6 @@ interface InventoryEditorProps {
 const InventoryEditor: React.FC<InventoryEditorProps> = ({
   inventory,
   assetKeys,
-  errors,
   onInventoryChange,
   onSave,
   isSaving = false,
@@ -52,13 +49,6 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
   }, [assetKeys]);
 
   useEffect(() => {}, [inventory, assetKeys, editedKeys]);
-
-  const handleInventoryGroupChange = (value: string) => {
-    onInventoryChange({
-      ...inventory,
-      inventoryGroup: value,
-    });
-  };
 
   const handleAddDigitalAsset = () => {
     const keysToUse = assetKeys;
@@ -118,37 +108,14 @@ const InventoryEditor: React.FC<InventoryEditorProps> = ({
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
-        <div className="flex-1 w-full sm:w-auto sm:mr-2">
-          <FormField
-            id="inventoryGroup"
-            label="Inventory Group Name"
-            error={errors[`inventoryGroup`]}>
-            <input
-              id="inventoryGroup"
-              type="text"
-              value={inventory.inventoryGroup}
-              onChange={(e) => handleInventoryGroupChange(e.target.value)}
-              className={`w-full px-3 py-2 rounded-lg border transition-colors duration-200 text-sm
-                ${
-                  errors[`inventoryGroup`]
-                    ? 'border-red-500/50 bg-red-500/5 focus:border-red-500'
-                    : 'border-dark-500 bg-dark-500/50 focus:border-primary/50'
-                } text-light-200 focus:outline-none focus:ring-1 focus:ring-primary/10`}
-              placeholder="Enter inventory group name..."
-            />
-          </FormField>
+      {inventory.connectedProduct && (
+        <div className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg border border-primary/10 mb-5">
+          <StatusBadge status="linked" size="sm" />
+          <span className="text-sm text-light-300 truncate max-w-[200px]">
+            {inventory.connectedProduct.title}
+          </span>
         </div>
-
-        {inventory.connectedProduct && (
-          <div className="flex items-center gap-2 bg-primary/10 px-3 py-2 rounded-lg border border-primary/10 w-full sm:w-auto">
-            <StatusBadge status="linked" size="sm" />
-            <span className="text-sm text-light-300 truncate max-w-[200px]">
-              {inventory.connectedProduct.title}
-            </span>
-          </div>
-        )}
-      </div>
+      )}
 
       <div className="border-b border-dark-500 mb-5">
         <div className="flex gap-4 overflow-x-auto pb-1 no-scrollbar">

@@ -33,14 +33,14 @@ export function MetricCard({ label, value, icon: Icon, color, format, loading }:
   return (
     <div className="bg-dark-700 border border-dark-600 rounded-lg p-3">
       <div className="flex items-center justify-between mb-2">
-        <Icon className={`w-4 h-4 ${color}`} />
+        <Icon className={`w-6 h-6 ${color}`} />
         {loading && <Loader2 className="w-3 h-3 animate-spin text-light-400" />}
       </div>
 
       <div className="space-y-1">
         <div className="flex items-center gap-1">
           {format === 'currency' && (
-            <Image src={dokmaiCoin} alt="Dokmai Coin" width={12} height={12} className="w-3 h-3" />
+            <Image src={dokmaiCoin} alt="Dokmai Coin" width={11} height={11} className="w-3 h-3" />
           )}
           <span className="text-sm font-medium text-white">{formatValue(value, format)}</span>
           {format === 'rating' && <span className="text-xs text-light-400">/5</span>}

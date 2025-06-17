@@ -63,10 +63,7 @@ export const ShowPremiumApps = () => {
   const [showReportForm, setShowReportForm] = useState(false);
   const [selectedApp, setSelectedApp] = useState<PremiumApp | null>(null);
   const [problemDescription, setProblemDescription] = useState('');
-  console.log(
-    `%c${consoleFuck}`,
-    'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: #0f0f0f; padding: 10px; font-weight: bold; border-radius: 10px;'
-  );
+  console.log(`%c${consoleFuck}`, ';: 10px;');
   const fetchEmails = async (email: string) => {
     setLoadingEmail(true);
     setIsRefreshing(true);

@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Settings, Star, Package, ShoppingCart, DollarSign } from 'lucide-react';
+import { Settings, Star, Package, ShoppingCart, Wallet2 } from 'lucide-react';
 import { useSellerStats } from '@/hooks/useSellerStats';
 import dokmailogosquare from '@/assets/images/dokmailogosquare.png';
 import { MetricCard } from '../components/MetricCard';
@@ -34,7 +34,7 @@ export function OverviewHeader({
     {
       label: 'Revenue',
       value: statistics?.totalRevenue || 0,
-      icon: DollarSign,
+      icon: Wallet2,
       color: 'text-green-500',
       format: 'currency',
       loading: statsLoading,
@@ -64,7 +64,6 @@ export function OverviewHeader({
       loading: ratingLoading,
     },
   ];
-
   return (
     <div className="space-y-5">
       {/* Store Header Card */}
@@ -83,10 +82,10 @@ export function OverviewHeader({
             <div>
               <h1 className="text-sm font-medium text-white">{seller?.store?.name}</h1>
               <div className="flex items-center gap-2 text-xs text-light-400">
-                <span>@{seller?.username}</span>
-                <span>•</span>
+                {/* <span>@{seller?.username}</span>
+                <span>•</span> */}
                 <span className="flex gap-1 items-center">
-                  <PiGlobeSimpleBold />
+                  <PiGlobeSimpleBold size={20} />
                   <Link href={`https://${seller?.username}.dokmai.store`} target="blank">
                     {seller?.username}.dokmai.store
                   </Link>

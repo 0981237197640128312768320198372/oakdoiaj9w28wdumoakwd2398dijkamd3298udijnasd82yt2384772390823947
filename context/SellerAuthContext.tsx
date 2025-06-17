@@ -8,6 +8,7 @@ const SellerAuthContext = createContext<AuthContextType | undefined>(undefined);
 export const SellerAuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [seller, setSeller] = useState<Seller | null>(null);
 
+  console.log(seller);
   useEffect(() => {
     const token = localStorage.getItem('sellerToken');
     if (token) {
@@ -42,7 +43,6 @@ export const SellerAuthProvider = ({ children }: { children: React.ReactNode }) 
     </SellerAuthContext.Provider>
   );
 };
-
 export const useSellerAuth = () => {
   const context = useContext(SellerAuthContext);
   if (context === undefined) {

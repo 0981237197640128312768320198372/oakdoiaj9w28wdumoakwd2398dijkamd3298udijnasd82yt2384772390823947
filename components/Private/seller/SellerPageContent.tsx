@@ -4,13 +4,15 @@
 import { useSellerAuth } from '@/context/SellerAuthContext';
 import { useSellerDashboard } from '@/context/SellerDashboardContext';
 import React, { useState, useEffect } from 'react';
-import SellerNavbar from '@/components/Private/seller/SellerNavbar';
+import { SellerSidebar } from '@/components/Private/seller/SellerSidebar';
+import { SellerHeader } from '@/components/Private/seller/SellerHeader';
 import SellerOrders from '@/components/Private/seller/SellerOrders';
 import SellerAnalytics from '@/components/Private/seller/SellerAnalytics';
 import SellerProducts from '@/components/Private/seller/product/SellerProducts';
 import CustomizeYourPage from '@/components/Private/seller/profile/CustomizeYourPage';
 import AuthSellerPage from '@/components/Private/seller/AuthSellerPage';
 import SellerOverview from '@/components/Private/seller/overview/SellerOverview';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 
 const SellerPageContent = () => {
   const { seller } = useSellerAuth();
@@ -36,6 +38,7 @@ const SellerPageContent = () => {
       case 'overview':
         return <SellerOverview />;
       case 'edit-profile':
+      case 'theme-customizer':
         return <CustomizeYourPage />;
       case 'products':
         return (
@@ -49,18 +52,29 @@ const SellerPageContent = () => {
         return <SellerOverview />;
     }
   };
+  if (!seller) {
+    return <AuthSellerPage />;
+  }
+
   return (
-    <>
-      <SellerNavbar />
-      <div className="flex flex-col justify-start w-full min-h-screen items-center px-5 xl:px-0 max-w-screen-lg ">
-        <div
-          className={`mt-20 w-full transition-all duration-500 ${
-            isTransitioning ? 'opacity-0' : 'opacity-100'
-          }`}>
-          {renderActiveComponent()}
-        </div>
+    <SidebarProvider>
+      <div className="flex min-h-screen bg-dark-800 text-white w-full">
+        <SellerSidebar />
+        <SidebarInset>
+          <SellerHeader />
+          <main className="flex-1 bg-dark-800">
+            <div className="w-full max-w-screen-2xl mx-auto px-4 py-6">
+              <div
+                className={`w-full transition-all duration-500 ${
+                  isTransitioning ? 'opacity-0' : 'opacity-100'
+                }`}>
+                {renderActiveComponent()}
+              </div>
+            </div>
+          </main>
+        </SidebarInset>
       </div>
-    </>
+    </SidebarProvider>
   );
 };
 

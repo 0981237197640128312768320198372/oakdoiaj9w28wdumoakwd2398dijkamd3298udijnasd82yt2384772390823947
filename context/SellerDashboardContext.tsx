@@ -3,9 +3,18 @@
 
 import { consoleFuck } from '@/lib/utils';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+type ViewType =
+  | 'overview'
+  | 'products'
+  | 'orders'
+  | 'analytics'
+  | 'edit-profile'
+  | 'theme-customizer';
+
 interface SellerDashboardContextType {
-  activeView: any;
-  setActiveView: (view: any) => void;
+  activeView: ViewType;
+  setActiveView: (view: ViewType) => void;
 }
 
 // Create the context with default values
@@ -16,11 +25,8 @@ const SellerDashboardContext = createContext<SellerDashboardContextType>({
 
 // Create a provider component
 export const SellerDashboardProvider = ({ children }: { children: ReactNode }) => {
-  const [activeView, setActiveView] = useState('overview');
-  console.log(
-    `%c${consoleFuck}`,
-    'display: inline-block; width: 64px; height: 64px; text-align: center; line-height: 64px; font-size: 32px; color: white; background: #0f0f0f; padding: 10px; font-weight: bold; border-radius: 10px;'
-  );
+  const [activeView, setActiveView] = useState<ViewType>('overview');
+  console.log(`%c${consoleFuck}`, ';');
   return (
     <SellerDashboardContext.Provider value={{ activeView, setActiveView }}>
       {children}

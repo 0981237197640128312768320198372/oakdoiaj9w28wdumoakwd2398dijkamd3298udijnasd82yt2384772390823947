@@ -13,7 +13,7 @@ export interface Seller {
     theme: any;
     name: string;
     description: string;
-    logoUrl?: string;
+    logoUrl: string;
     rating: number;
     credits: {
       positive: number;

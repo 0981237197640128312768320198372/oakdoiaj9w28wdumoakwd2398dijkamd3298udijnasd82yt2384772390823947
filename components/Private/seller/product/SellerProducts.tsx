@@ -88,9 +88,9 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
   };
   return (
     <>
-      <div className="space-y-8 animate-fade-in mb-5">
+      <div className="space-y-5 animate-fade-in">
         <Tabs defaultValue="products" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="w-full max-w-md mx-auto my-5 bg-dark-700 p-1 rounded-full border-[1px] border-dark-500">
+          <TabsList className="w-full max-w-md mx-auto  bg-dark-700 p-1 rounded-full border-[1px] border-dark-500">
             <TabsTrigger
               value="products"
               className="flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:text-dark-800">
@@ -105,7 +105,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="products" className="mt-10 animate-fadeIn">
+          <TabsContent value="products" className="animate-fadeIn">
             <div className="bg-dark-800/50 rounded-xl border border-dark-700 shadow-lg overflow-hidden">
               {isLoading ? (
                 <div className="p-10 mx-auto my-20 flex justify-center items-center">
@@ -115,7 +115,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
                 <EmptyState onAddProduct={openAddProductModal} />
               ) : (
                 <div className="bg-dark-700 rounded-xl border border-dark-500 shadow-lg overflow-hidden p-5">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 mb-5">
                     <div>
                       <h2 className="text-2xl font-bold text-light-100 flex items-center">
                         <Package className="mr-2 text-primary" size={24} />
@@ -154,7 +154,7 @@ const SellerProducts: React.FC<SellerProductsProps> = ({ seller }) => {
               )}
             </div>
           </TabsContent>
-          <TabsContent value="digital-inventory" className="mt-4 animate-fadeIn">
+          <TabsContent value="digital-inventory" className="mt-5 animate-fadeIn">
             <div className="bg-dark-700 rounded-xl border border-dark-500 shadow-lg overflow-hidden">
               <DigitalInventoryManager />
             </div>
