@@ -36,6 +36,14 @@ export default function RootLayout({
         />
       </head>
       <body className="font-aktivGroteskRegular min-h-screen bg-dark-800 text-light-200 overflow-x-hidden selection:bg-primary/50  selection:text-primary">
+        <div className="absolute inset-0 bg-gradient-to-tl from-primary/10 via-dark-700 to-dark-800">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+            <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-bg-primary/10 rounded-full animate-ping"></div>
+            <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-primary/50 rounded-full animate-pulse"></div>
+            <div className="absolute top-2/3 right-1/4 w-1 h-1 bg-primary/80 rounded-full animate-ping"></div>
+          </div>
+        </div>
         <CartProvider>
           <Navbar />
           <div className="flex flex-col justify-start items-center w-full min-h-screen py-20 bg-dark-800">

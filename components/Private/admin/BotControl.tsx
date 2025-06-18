@@ -45,7 +45,8 @@ const BotControl = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch('/api/v2/TheBot/get_TheBot_data');
+      // Use the new API endpoint
+      const response = await fetch('/api/v3/thebot');
       if (!response.ok) throw new Error('Failed to fetch bot data');
       const data = await response.json();
       setBots(data.bots);
@@ -64,15 +65,20 @@ const BotControl = () => {
     parameters?: string[]
   ) => {
     try {
-      const payload = { botId, botState, parameters };
+      // Use the new API endpoint
+      const payload: { botState: 'running' | 'stopped' | 'idle'; parameters?: string[] } = {
+        botState,
+      };
       if (parameters) payload.parameters = parameters;
-      const response = await fetch('/api/v2/TheBot/set_TheBot_state', {
+
+      const response = await fetch(`/api/v3/thebot/state?botId=${botId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+
       if (!response.ok) throw new Error('Failed to set bot state');
-      // fetchBotData();
+      // No need to fetch data immediately - the bot will report its status via webhook
     } catch (err) {
       setError('Failed to set bot state. Please try again later.');
       console.error(err);
@@ -83,14 +89,16 @@ const BotControl = () => {
     const command = commandInputs[botId];
     if (!command) return;
     try {
-      const response = await fetch('/api/v2/TheBot/set_one_time_command', {
+      // Use the new API endpoint
+      const response = await fetch(`/api/v3/thebot/command?botId=${botId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ botId, command }),
+        body: JSON.stringify({ command }),
       });
+
       if (!response.ok) throw new Error('Failed to send command');
       setCommandInputs((prev) => ({ ...prev, [botId]: '' }));
-      // fetchBotData();
+      // No need to fetch data immediately - the bot will report command results via webhook
     } catch (err) {
       setError('Failed to send command. Please try again later.');
       console.error(err);
@@ -158,13 +166,19 @@ const BotControl = () => {
   const massRestart = () => {
     bots.forEach((bot) => {
       setBotState(bot.botId, 'stopped');
-      setBotState(bot.botId, 'running', bot.parameters);
+      // Add a small delay before starting to ensure the stop command is processed first
+      setTimeout(() => {
+        setBotState(bot.botId, 'running', bot.parameters);
+      }, 1000);
     });
   };
 
   const restartBot = (bot: BotData) => {
     setBotState(bot.botId, 'stopped');
-    setBotState(bot.botId, 'running', bot.parameters);
+    // Add a small delay before starting to ensure the stop command is processed first
+    setTimeout(() => {
+      setBotState(bot.botId, 'running', bot.parameters);
+    }, 1000);
   };
 
   useEffect(() => {

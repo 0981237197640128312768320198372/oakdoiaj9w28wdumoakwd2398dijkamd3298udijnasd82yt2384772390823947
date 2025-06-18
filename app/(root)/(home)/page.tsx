@@ -1,8 +1,7 @@
 import React from 'react';
 import { generateMetadata } from '@/lib/utils';
-import LandingWrapper from '@/components/home/landing/LandingWrapper';
-import HeroComparison from '@/components/home/landing/HeroComparison';
-import ProblemSolution from '@/components/home/landing/ProblemSolution';
+import DashboardShowcase from '@/components/shared/DashboardShowcase';
+import overviewScreenshot from '@/assets/images/Overview.png';
 
 export const metadata = generateMetadata({
   title: "Dokmai Store - Thailand's Professional Digital Marketplace Platform",
@@ -14,10 +13,7 @@ export const metadata = generateMetadata({
 export default function Home() {
   return (
     <main className="flex flex-col justify-center items-center __container">
-      <LandingWrapper>
-        <HeroComparison />
-        <ProblemSolution />
-      </LandingWrapper>
+      <DashboardShowcase imageUrl={overviewScreenshot as unknown as string} />
     </main>
   );
 }
