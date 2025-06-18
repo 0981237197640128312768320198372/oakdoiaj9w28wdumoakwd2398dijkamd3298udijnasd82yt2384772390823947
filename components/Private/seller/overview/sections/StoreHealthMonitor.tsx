@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
+import { mockReviews } from '@/mock-data/seller-overview-mock-data';
 import { InventoryAlerts } from '../components/InventoryAlerts';
 import { ReviewsSummary } from '../components/ReviewsSummary';
 
@@ -32,6 +34,7 @@ export function StoreHealthMonitor({
   reviews,
   ratingLoading,
 }: StoreHealthMonitorProps) {
+  const mock = mockReviews;
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -44,12 +47,7 @@ export function StoreHealthMonitor({
         {/* Customer Feedback */}
         <div className="bg-dark-700 border border-dark-600 rounded-xl p-5">
           <h3 className="text-xs font-medium text-light-300 mb-3">Customer Feedback</h3>
-          <ReviewsSummary
-            seller={seller}
-            ratingStats={ratingStats}
-            reviews={reviews}
-            isLoading={ratingLoading}
-          />
+          <ReviewsSummary ratingStats={ratingStats} reviews={mock} isLoading={ratingLoading} />
         </div>
       </div>
     </div>

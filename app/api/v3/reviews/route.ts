@@ -127,7 +127,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Ensure database connection before any operations with retry logic
     try {
       await connectToDatabase();
     } catch (connectionError) {

@@ -5,7 +5,6 @@
 import { Star, MessageSquare, TrendingUp, Loader2 } from 'lucide-react';
 
 interface ReviewsSummaryProps {
-  seller: any;
   ratingStats?: {
     averageRating: number;
     totalReviews: number;
@@ -26,12 +25,7 @@ interface ReviewsSummaryProps {
   isLoading?: boolean;
 }
 
-export function ReviewsSummary({
-  seller,
-  ratingStats,
-  reviews = [],
-  isLoading,
-}: ReviewsSummaryProps) {
+export function ReviewsSummary({ ratingStats, reviews = [], isLoading }: ReviewsSummaryProps) {
   if (isLoading) {
     return (
       <div className="space-y-2">
@@ -91,7 +85,7 @@ export function ReviewsSummary({
             <TrendingUp className="w-3 h-3" />
             Recent Reviews
           </h4>
-          <div className="space-y-2 max-h-32 overflow-y-auto">
+          <div className="space-y-2 max-h-full overflow-y-auto __dokmai_scrollbar">
             {reviews.slice(0, 3).map((review) => (
               <div key={review._id} className="bg-dark-800 border border-dark-700 rounded-lg p-2">
                 <div className="flex items-center gap-2 mb-1">
