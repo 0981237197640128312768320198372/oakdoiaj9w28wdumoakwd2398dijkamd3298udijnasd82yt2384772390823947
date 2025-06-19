@@ -1,7 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Import your database model or use direct DB connection
-import { getBot, updateBot } from '../../../../../lib/botDatabase';
+import { getBot, updateBot } from '@/lib/botDatabase';
+
+/**
+ * GET /api/v3/thebot/state?botId=bot-123
+ * Get bot state (for polling)
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const botId = searchParams.get('botId');
+
+    // Validate botId
+    if (!botId) {
+      return NextResponse.json(
+        { success: false, error: 'Missing required query parameter: botId' },
+        { status: 400 }
+      );
+    }
+
+    // Get bot data
+    const bot = await getBot(botId);
+    if (!bot) {
+      return NextResponse.json({ success: false, error: 'Bot not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      botState: bot.botState,
+      parameters: bot.parameters,
+    });
+  } catch (error) {
+    console.error(`Error getting bot state:`, error);
+    return NextResponse.json({ success: false, error: 'Failed to get bot state' }, { status: 500 });
+  }
+}
 
 /**
  * POST /api/v3/thebot/state?botId=bot-123
