@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TbRefresh } from 'react-icons/tb';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
@@ -65,7 +65,6 @@ const BotControl = () => {
     parameters?: string[]
   ) => {
     try {
-      // Use the new API endpoint
       const payload: { botState: 'running' | 'stopped' | 'idle'; parameters?: string[] } = {
         botState,
       };
@@ -77,31 +76,47 @@ const BotControl = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error('Failed to set bot state');
-      // No need to fetch data immediately - the bot will report its status via webhook
-    } catch (err) {
-      setError('Failed to set bot state. Please try again later.');
-      console.error(err);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Failed to set bot state');
+      }
+
+      const result = await response.json();
+      console.log(`✅ Bot ${botId} state command sent:`, result.message);
+
+      // Immediate refresh to show pending state
+      setTimeout(() => fetchBotData(), 1000);
+    } catch (err: any) {
+      setError(`Failed to set bot state: ${err.message}`);
+      console.error('Bot state error:', err);
     }
   };
 
   const sendCommand = async (botId: string) => {
-    const command = commandInputs[botId];
+    const command = commandInputs[botId]?.trim();
     if (!command) return;
+
     try {
-      // Use the new API endpoint
       const response = await fetch(`/api/v3/thebot/command?botId=${botId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command }),
       });
 
-      if (!response.ok) throw new Error('Failed to send command');
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Failed to send command');
+      }
+
+      const result = await response.json();
+      console.log(`✅ Command sent to bot ${botId}:`, result.message);
+
+      // Clear input and refresh to show command activity
       setCommandInputs((prev) => ({ ...prev, [botId]: '' }));
-      // No need to fetch data immediately - the bot will report command results via webhook
-    } catch (err) {
-      setError('Failed to send command. Please try again later.');
-      console.error(err);
+      setTimeout(() => fetchBotData(), 1000);
+    } catch (err: any) {
+      setError(`Failed to send command: ${err.message}`);
+      console.error('Command error:', err);
     }
   };
 
@@ -183,7 +198,9 @@ const BotControl = () => {
 
   useEffect(() => {
     fetchBotData();
-    const interval = setInterval(fetchBotData, 60000 * 5);
+    // Reduced polling interval since webhooks handle real-time updates
+    // This is just for periodic sync in case of missed webhooks
+    const interval = setInterval(fetchBotData, 30000); // 30 seconds
     return () => clearInterval(interval);
   }, []);
 
