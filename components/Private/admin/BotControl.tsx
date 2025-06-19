@@ -64,7 +64,7 @@ const BotControl = () => {
 
   const getBotHealthStatus = (bot: BotData) => {
     if (!bot.lastSeen) {
-      return { status: 'unknown', color: 'gray', message: 'Never seen' };
+      return { status: 'unknown', color: 'dark', message: 'Never seen' };
     }
 
     const lastSeenTime = new Date(bot.lastSeen).getTime();
@@ -231,17 +231,17 @@ const BotControl = () => {
   const idleBots = bots.filter((bot) => bot.botState === 'idle').length;
 
   const BotCardSkeleton = () => (
-    <div className="flex flex-col border border-gray-700 shadow-md p-4 rounded-lg bg-gray-800">
+    <div className="flex flex-col border border-dark-600 shadow-md p-4 rounded-lg bg-dark-600">
       <div className="flex justify-between items-center">
-        <Skeleton className="h-5 w-32 bg-gray-700" />
-        <Skeleton className="h-5 w-16 bg-gray-700" />
+        <Skeleton className="h-5 w-32 bg-dark-600" />
+        <Skeleton className="h-5 w-16 bg-dark-600" />
       </div>
       <div className="mt-3">
-        <Skeleton className="h-4 w-48 bg-gray-700" />
+        <Skeleton className="h-4 w-48 bg-dark-600" />
       </div>
       <div className="mt-3 flex gap-2">
-        <Skeleton className="h-8 w-20 bg-gray-700" />
-        <Skeleton className="h-8 w-20 bg-gray-700" />
+        <Skeleton className="h-8 w-20 bg-dark-600" />
+        <Skeleton className="h-8 w-20 bg-dark-600" />
       </div>
     </div>
   );
@@ -257,15 +257,15 @@ const BotControl = () => {
   }
 
   return (
-    <div className="p-6 border border-gray-800 bg-black w-full rounded-lg">
+    <div className="p-5 border border-dark-600 bg-dark-700 w-full rounded-lg">
       <div className="w-full flex flex-col gap-6">
         <h3 className="flex items-center gap-3 font-bold text-white text-lg">
           <SiHackaday className="text-emerald-400" /> Bot Controller
         </h3>
 
-        <div className="flex gap-6 text-sm">
-          <span className="text-gray-300">
-            Total Bots: <span className="font-medium text-white">{totalBots}</span>
+        <div className="flex gap-5 text-sm items-center">
+          <span className="bg-sky-500/20 text-sky-400 px-2 py-1 rounded border border-sky-500/30">
+            Total Bots: {totalBots}
           </span>
           <span className="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/30">
             Running: {runningBots}
@@ -279,16 +279,16 @@ const BotControl = () => {
         </div>
 
         <div className="flex gap-5 items-center flex-wrap">
-          <div className="flex flex-col gap-3 bg-gray-900 w-full p-5 rounded-lg border border-gray-800">
+          <div className="flex flex-col gap-5 bg-dark-600 border-dark-500 w-full p-5 rounded-lg border ">
             <div className="flex justify-between w-full">
               <div>
-                <h4 className="text-gray-200 font-medium">Mass Actions</h4>
-                <p className="text-xs text-gray-500">Actions will affect all bots</p>
+                <h4 className="text-light-200 font-medium">Mass Actions</h4>
+                <p className="text-xs text-light-500">Actions will affect all bots</p>
               </div>
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="p-2 text-sm rounded-md h-fit font-medium bg-emerald-600 text-white hover:bg-emerald-500 border border-emerald-500/30 transition-colors"
+                className="p-2 text-sm rounded-md h-fit font-medium bg-primary text-black hover:bg-primary/90 transition-colors"
                 title="Refresh data">
                 <TbRefresh className={`text-lg ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
@@ -304,7 +304,7 @@ const BotControl = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 max-h-[75vh] w-full bg-gray-950 p-4 mt-8 overflow-y-scroll __dokmai_scrollbar rounded-lg border border-gray-800">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 max-h-[75vh] w-full bg-dark-950 p-5 mt-5 overflow-y-scroll __dokmai_scrollbar rounded-lg border bg-dark-600 border-dark-500">
         {loading
           ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
           : bots.map((bot) => {
@@ -322,50 +322,18 @@ const BotControl = () => {
               return (
                 <div
                   key={bot.botId}
-                  className="bg-gray-900 border border-gray-700 rounded-lg font-mono text-xs overflow-hidden hover:border-gray-600 hover:bg-gray-800 transition-all duration-200 shadow-lg">
+                  className="bg-dark-500 border-dark-400 border rounded-lg font-mono text-xs overflow-hidden hover:border-dark-200 hover:shadow-xl transition-all duration-200 ">
                   {/* Enhanced Header with More Info */}
-                  <div className="bg-gray-800 px-3 py-2.5 border-b border-gray-700">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="text-gray-200 font-medium truncate max-w-[120px]"
-                          title={bot.botId}>
-                          {bot.botId}
-                        </span>
-                        <div
-                          className={`w-2 h-2 rounded-full shadow-sm ${
-                            healthStatus.color === 'green'
-                              ? 'bg-emerald-500 shadow-emerald-500/50'
-                              : healthStatus.color === 'red'
-                              ? 'bg-red-500 shadow-red-500/50'
-                              : 'bg-gray-500 shadow-gray-500/50'
-                          }`}
-                          title={healthStatus.message}></div>
-                      </div>
-                      <span
-                        className={`px-2 py-1 rounded-md text-xs font-medium ${
-                          bot.botState === 'running' &&
-                          'text-emerald-300 bg-emerald-500/20 border border-emerald-500/30'
-                        } ${
-                          bot.botState === 'stopped' &&
-                          'text-red-300 bg-red-500/20 border border-red-500/30'
-                        } ${
-                          bot.botState === 'idle' &&
-                          'text-amber-300 bg-amber-500/20 border border-amber-500/30'
-                        }`}>
-                        {bot.botState.toUpperCase()}
-                      </span>
-                    </div>
-
+                  <div className="bg-dark-400 px-3 py-2.5 border-b border-dark-300">
                     {/* Quick Stats Row */}
-                    <div className="flex items-center justify-between text-xs text-gray-400">
+                    <div className="flex items-center justify-between text-xs text-light-400">
                       <span className="flex items-center gap-1">
-                        <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                        <span className="w-1 h-1 bg-dark-500 rounded-full"></span>
                         {bot.activity.length} activities
                       </span>
                       {uptime !== null && (
                         <span className="flex items-center gap-1">
-                          <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                          <span className="w-1 h-1 bg-light-500 rounded-full"></span>
                           {uptime < 60 ? `${uptime}m ago` : `${Math.floor(uptime / 60)}h ago`}
                         </span>
                       )}
@@ -373,19 +341,32 @@ const BotControl = () => {
                   </div>
 
                   {/* Enhanced Content */}
-                  <div className="p-3 bg-gray-900 text-gray-300">
+                  <div className="p-3 bg-dark-900 text-light-300">
+                    <span
+                      className={`px-2 py-1 rounded-md text-xs font-medium ${
+                        bot.botState === 'running' &&
+                        'text-emerald-300 bg-emerald-500/20 border border-emerald-500/30'
+                      } ${
+                        bot.botState === 'stopped' &&
+                        'text-red-300 bg-red-500/20 border border-red-500/30'
+                      } ${
+                        bot.botState === 'idle' &&
+                        'text-amber-300 bg-amber-500/20 border border-amber-500/30'
+                      }`}>
+                      {bot.botState.toUpperCase()}
+                    </span>
                     {/* Parameters & Webhook Info */}
                     <div className="mb-3 space-y-1">
                       <div className="flex items-center gap-2 text-xs">
-                        <span className="text-gray-500 font-medium min-w-[45px]">Params:</span>
-                        <span className="text-gray-300 bg-gray-800 px-2 py-0.5 rounded text-xs border border-gray-700">
+                        <span className="text-light-500 font-medium min-w-[45px]">Params:</span>
+                        <span className="text-light-300 bg-dark-600 px-2 py-0.5 rounded text-xs border border-dark-600">
                           {bot.parameters.length > 0 ? bot.parameters.join(', ') : 'none'}
                         </span>
                       </div>
 
                       {bot.webhookUrl && (
                         <div className="flex items-center gap-2 text-xs">
-                          <span className="text-gray-500 font-medium min-w-[45px]">Hook:</span>
+                          <span className="text-light-500 font-medium min-w-[45px]">Hook:</span>
                           <span
                             className="text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded text-xs border border-blue-500/20 truncate max-w-[120px]"
                             title={bot.webhookUrl}>
@@ -396,7 +377,7 @@ const BotControl = () => {
 
                       {lastActivity && (
                         <div className="flex items-center gap-2 text-xs">
-                          <span className="text-gray-500 font-medium min-w-[45px]">Last:</span>
+                          <span className="text-light-500 font-medium min-w-[45px]">Last:</span>
                           <span
                             className={`px-2 py-0.5 rounded text-xs border ${
                               lastActivity.status === 'completed'
@@ -405,7 +386,7 @@ const BotControl = () => {
                                 ? 'text-red-400 bg-red-500/10 border-red-500/20'
                                 : lastActivity.status === 'in-progress'
                                 ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
-                                : 'text-gray-400 bg-gray-500/10 border-gray-500/20'
+                                : 'text-light-400 bg-dark-500/10 border-dark-500/20'
                             }`}>
                             {lastActivity.type} - {lastActivity.status || 'unknown'}
                           </span>
@@ -452,7 +433,7 @@ const BotControl = () => {
                     </div>
 
                     {/* Enhanced Command Input */}
-                    <div className="flex gap-1 mb-3 bg-gray-800 rounded-md border border-gray-700 p-2">
+                    <div className="flex gap-1 mb-3 items-center text-white bg-dark-600 rounded-md border border-dark-600 p-2">
                       <span className="text-emerald-400 font-medium">{'>'}</span>
                       <input
                         type="text"
@@ -461,7 +442,7 @@ const BotControl = () => {
                           setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
                         }
                         placeholder="command..."
-                        className="bg-transparent border-none outline-none text-emerald-300 flex-1 text-xs placeholder-gray-500"
+                        className="bg-transparent border-none outline-none text-emerald-300 flex-1 pl-2 text-xs placeholder-dark-100"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
                             sendCommand(bot.botId);
@@ -477,11 +458,11 @@ const BotControl = () => {
 
                     {/* Enhanced Activity Output */}
                     {bot.activity.length > 0 && (
-                      <div className="border-t border-gray-700 pt-3">
-                        <div className="text-xs text-gray-400 mb-2 font-medium">
+                      <div className="border-t border-dark-600 pt-3">
+                        <div className="text-xs text-light-400 mb-2 font-medium">
                           Recent Activity:
                         </div>
-                        <div className="bg-gray-950 border border-gray-700 rounded-md p-2 max-h-48 overflow-y-auto __dokmai_scrollbar">
+                        <div className="bg-dark-950 border border-dark-600 rounded-md p-2 max-h-48 overflow-y-auto __dokmai_scrollbar">
                           {bot.activity
                             .sort(
                               (a, b) =>
@@ -491,10 +472,10 @@ const BotControl = () => {
                             .map((activity, index) => (
                               <div
                                 key={index}
-                                className="mb-3 pb-2 border-b border-gray-700/30 last:border-b-0">
+                                className="mb-3 pb-2 border-b border-dark-600/30 last:border-b-0">
                                 {/* Activity Header */}
                                 <div className="flex items-center justify-between mb-1">
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-light-500">
                                     [{formatTime(activity.timestamp)}]
                                   </span>
                                   <div className="flex items-center gap-2">
@@ -516,7 +497,7 @@ const BotControl = () => {
                                           ? 'bg-red-500/20 text-red-300 border border-red-500/30'
                                           : activity.status === 'in-progress'
                                           ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                          : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+                                          : 'bg-dark-500/20 text-light-400 border border-dark-500/30'
                                       }`}>
                                       {activity.status || 'unknown'}
                                     </span>
@@ -524,7 +505,7 @@ const BotControl = () => {
                                 </div>
 
                                 {/* Activity Message */}
-                                <div className="text-xs text-gray-300 mb-1">
+                                <div className="text-xs text-light-300 mb-1">
                                   {activity.message || 'No message available'}
                                 </div>
 
@@ -538,9 +519,9 @@ const BotControl = () => {
 
                                 {/* Output */}
                                 {activity.output && (
-                                  <div className="bg-gray-800 border border-gray-700 rounded p-2 mt-1">
+                                  <div className="bg-dark-600 border border-dark-600 rounded p-2 mt-1">
                                     <div className="text-xs text-emerald-400 mb-1">Output:</div>
-                                    <pre className="text-xs text-gray-300 whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
+                                    <pre className="text-xs text-light-300 whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
                                       {activity.output}
                                     </pre>
                                     <button
@@ -572,9 +553,9 @@ const BotControl = () => {
 
                                 {/* Details */}
                                 {activity.details && Object.keys(activity.details).length > 0 && (
-                                  <div className="bg-gray-800 border border-gray-700 rounded p-2 mt-1">
+                                  <div className="bg-dark-600 border border-dark-600 rounded p-2 mt-1">
                                     <div className="text-xs text-amber-400 mb-1">Details:</div>
-                                    <div className="text-xs text-gray-300 space-y-1">
+                                    <div className="text-xs text-light-300 space-y-1">
                                       {Object.entries(activity.details).map(([key, value]) => (
                                         <div key={key} className="flex gap-2">
                                           <span className="text-amber-400">{key}:</span>
@@ -591,8 +572,8 @@ const BotControl = () => {
                     )}
 
                     {/* Copy ID */}
-                    <div className="flex items-center justify-between border-t border-gray-700 pt-2 mt-2">
-                      <span className="text-xs text-gray-500">ID: {bot.botId}</span>
+                    <div className="flex items-center justify-between border-t border-dark-600 pt-2 mt-2">
+                      <span className="text-xs text-light-500">ID: {bot.botId}</span>
                       <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
                     </div>
                   </div>
@@ -603,13 +584,13 @@ const BotControl = () => {
         {/* Confirmation Modals */}
         {showConfirm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 max-w-md">
-              <h4 className="text-gray-100 font-bold">Are you sure?</h4>
-              <p className="text-gray-400 mt-2">{confirmMessage}</p>
+            <div className="bg-dark-600 p-6 rounded-lg border border-dark-600 max-w-md">
+              <h4 className="text-light-100 font-bold">Are you sure?</h4>
+              <p className="text-light-400 mt-2">{confirmMessage}</p>
               <div className="flex justify-end gap-3 mt-4">
                 <button
                   onClick={() => setShowConfirm(false)}
-                  className="px-3 py-2 bg-gray-600 text-gray-200 rounded-md hover:bg-gray-500 transition-colors">
+                  className="px-3 py-2 bg-dark-600 text-light-200 rounded-md hover:bg-dark-500 transition-colors">
                   Cancel
                 </button>
                 <button
@@ -624,9 +605,9 @@ const BotControl = () => {
 
         {showDeleteConfirm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 max-w-md">
-              <h4 className="text-gray-100 font-bold">Delete Bot</h4>
-              <p className="text-gray-400 mt-2">
+            <div className="bg-dark-600 p-6 rounded-lg border border-dark-600 max-w-md">
+              <h4 className="text-light-100 font-bold">Delete Bot</h4>
+              <p className="text-light-400 mt-2">
                 Are you sure you want to permanently delete bot{' '}
                 <span className="font-mono text-red-400">{botToDelete}</span>?
               </p>
@@ -639,7 +620,7 @@ const BotControl = () => {
                     setShowDeleteConfirm(false);
                     setBotToDelete(null);
                   }}
-                  className="px-3 py-2 bg-gray-600 text-gray-200 rounded-md hover:bg-gray-500 transition-colors">
+                  className="px-3 py-2 bg-dark-600 text-light-200 rounded-md hover:bg-dark-500 transition-colors">
                   Cancel
                 </button>
                 <button
