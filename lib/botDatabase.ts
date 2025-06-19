@@ -110,6 +110,19 @@ export async function updateBotActivity(
 }
 
 // Handle bot registration and webhook management
+export async function deleteBot(botId: string): Promise<void> {
+  const client = await connectToDatabase();
+  const collection = client.db('botController').collection('bots');
+
+  // Remove from database
+  await collection.deleteOne({ botId });
+
+  // Remove from in-memory registry
+  if (botRegistry[botId]) {
+    delete botRegistry[botId];
+  }
+}
+
 export async function registerBot(botId: string, webhookUrl: string): Promise<void> {
   // Update in-memory registry
   botRegistry[botId] = {

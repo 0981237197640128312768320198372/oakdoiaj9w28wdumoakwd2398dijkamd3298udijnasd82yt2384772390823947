@@ -28,6 +28,8 @@ interface BotData {
   botId: string;
   botState: 'running' | 'stopped' | 'idle' | 'error';
   parameters: string[];
+  webhookUrl?: string;
+  lastSeen?: string;
   activity: BotActivity[];
 }
 
@@ -40,12 +42,13 @@ const BotControl = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmAction, setConfirmAction] = useState<null | string>(null);
   const [confirmMessage, setConfirmMessage] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [botToDelete, setBotToDelete] = useState<string | null>(null);
 
   const fetchBotData = async () => {
     try {
       setLoading(true);
       setError(null);
-      // Use the new API endpoint
       const response = await fetch('/api/v3/thebot');
       if (!response.ok) throw new Error('Failed to fetch bot data');
       const data = await response.json();
@@ -56,6 +59,31 @@ const BotControl = () => {
     } finally {
       setLoading(false);
       setIsRefreshing(false);
+    }
+  };
+
+  const getBotHealthStatus = (bot: BotData) => {
+    if (!bot.lastSeen) {
+      return { status: 'unknown', color: 'gray', message: 'Never seen' };
+    }
+
+    const lastSeenTime = new Date(bot.lastSeen).getTime();
+    const now = Date.now();
+    const timeDiff = now - lastSeenTime;
+    const healthyThreshold = 13 * 60 * 60 * 1000; // 13 hours in ms
+
+    if (timeDiff < healthyThreshold) {
+      return {
+        status: 'healthy',
+        color: 'green',
+        message: `Last seen ${formatTime(bot.lastSeen)}`,
+      };
+    } else {
+      return {
+        status: 'offline',
+        color: 'red',
+        message: `Offline since ${formatTime(bot.lastSeen)}`,
+      };
     }
   };
 
@@ -83,8 +111,6 @@ const BotControl = () => {
 
       const result = await response.json();
       console.log(`✅ Bot ${botId} state command sent:`, result.message);
-
-      // Immediate refresh to show pending state
       setTimeout(() => fetchBotData(), 1000);
     } catch (err: any) {
       setError(`Failed to set bot state: ${err.message}`);
@@ -110,8 +136,6 @@ const BotControl = () => {
 
       const result = await response.json();
       console.log(`✅ Command sent to bot ${botId}:`, result.message);
-
-      // Clear input and refresh to show command activity
       setCommandInputs((prev) => ({ ...prev, [botId]: '' }));
       setTimeout(() => fetchBotData(), 1000);
     } catch (err: any) {
@@ -124,13 +148,12 @@ const BotControl = () => {
     setIsRefreshing(true);
     fetchBotData();
   };
+
   const actionExplanations: { [key: string]: string } = {
-    massStop: 'This will stop all bots. Are you sure?',
-    massStartCreateGenerate: 'This will start all bots in creating mode. Are you sure?',
-    massStartCreate: 'This will start all bots in creating mode. Are you sure?',
-    massStartChecking: 'This will start all bots in checking mode. Are you sure?',
-    massRestart: 'This will restart all bots. Are you sure?',
+    massDeleteStopped:
+      'This will permanently delete all stopped and idle bots. This action cannot be undone. Are you sure?',
   };
+
   const handleMassAction = (action: string) => {
     setConfirmAction(action);
     setConfirmMessage(actionExplanations[action]);
@@ -140,20 +163,8 @@ const BotControl = () => {
   const confirmMassAction = () => {
     if (confirmAction) {
       switch (confirmAction) {
-        case 'massStop':
-          massStop();
-          break;
-        case 'massStartCreateGenerate':
-          massStartCreateGenerate();
-          break;
-        case 'massStartCreate':
-          massStartCreate();
-          break;
-        case 'massStartChecking':
-          massStartChecking();
-          break;
-        case 'massRestart':
-          massRestart();
+        case 'massDeleteStopped':
+          massDeleteStopped();
           break;
         default:
           break;
@@ -163,34 +174,46 @@ const BotControl = () => {
     }
   };
 
-  const massStop = () => {
-    bots.forEach((bot) => setBotState(bot.botId, 'stopped'));
+  const deleteBot = async (botId: string) => {
+    try {
+      const response = await fetch(`/api/v3/thebot/delete?botId=${botId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Failed to delete bot');
+      }
+
+      const result = await response.json();
+      console.log(`✅ Bot ${botId} deleted:`, result.message);
+      setTimeout(() => fetchBotData(), 1000);
+    } catch (err: any) {
+      setError(`Failed to delete bot: ${err.message}`);
+      console.error('Delete bot error:', err);
+    }
   };
 
-  const massStartCreateGenerate = () => {
-    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen', '--ibangen']));
-  };
-  const massStartCreate = () => {
-    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--mailgen']));
+  const handleDeleteBot = (botId: string) => {
+    setBotToDelete(botId);
+    setShowDeleteConfirm(true);
   };
 
-  const massStartChecking = () => {
-    bots.forEach((bot) => setBotState(bot.botId, 'running', ['--checking']));
+  const confirmDeleteBot = () => {
+    if (botToDelete) {
+      deleteBot(botToDelete);
+      setShowDeleteConfirm(false);
+      setBotToDelete(null);
+    }
   };
 
-  const massRestart = () => {
-    bots.forEach((bot) => {
-      setBotState(bot.botId, 'stopped');
-      // Add a small delay before starting to ensure the stop command is processed first
-      setTimeout(() => {
-        setBotState(bot.botId, 'running', bot.parameters);
-      }, 1000);
-    });
+  const massDeleteStopped = () => {
+    const stoppedBots = bots.filter((bot) => bot.botState === 'stopped' || bot.botState === 'idle');
+    stoppedBots.forEach((bot) => deleteBot(bot.botId));
   };
 
   const restartBot = (bot: BotData) => {
     setBotState(bot.botId, 'stopped');
-    // Add a small delay before starting to ensure the stop command is processed first
     setTimeout(() => {
       setBotState(bot.botId, 'running', bot.parameters);
     }, 1000);
@@ -198,9 +221,7 @@ const BotControl = () => {
 
   useEffect(() => {
     fetchBotData();
-    // Reduced polling interval since webhooks handle real-time updates
-    // This is just for periodic sync in case of missed webhooks
-    const interval = setInterval(fetchBotData, 30000); // 30 seconds
+    const interval = setInterval(fetchBotData, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -209,59 +230,18 @@ const BotControl = () => {
   const stoppedBots = bots.filter((bot) => bot.botState === 'stopped').length;
   const idleBots = bots.filter((bot) => bot.botState === 'idle').length;
 
-  const renderActivities = (activities: BotActivity[]) => {
-    const sortedActivities = activities
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, 3);
-    return sortedActivities.map((activity, index) => (
-      <div key={index} className="bg-dark-300 p-2 flex flex-col gap-1">
-        <div className="flex justify-between items-center">
-          <span className="text-xs text-light-400">{formatTime(activity.timestamp)}</span>
-        </div>
-        <p className="text-xs ">{activity.message || 'No message available'}</p>
-        {activity.details && (
-          <div className="mt-2">
-            <p className="text-white text-xs">Details:</p>
-            <ul className="list-disc ml-5 text-xs text-light-100/60">
-              {Object.entries(activity.details).map(([key, value]) => (
-                <li key={key}>
-                  {key}: {value}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    ));
-  };
-
   const BotCardSkeleton = () => (
-    <div className="flex flex-col border border-dark-400 shadow-md p-5 rounded bg-dark-500">
+    <div className="flex flex-col border border-slate-700/50 shadow-md p-4 rounded-lg bg-slate-800/50">
       <div className="flex justify-between items-center">
-        <Skeleton className="h-6 w-32 bg-dark-300" />
-        <Skeleton className="h-6 w-16 bg-dark-300" />
+        <Skeleton className="h-5 w-32 bg-slate-700" />
+        <Skeleton className="h-5 w-16 bg-slate-700" />
       </div>
-      <div className="mt-4">
-        <Skeleton className="h-4 w-48 bg-dark-300" />
+      <div className="mt-3">
+        <Skeleton className="h-4 w-48 bg-slate-700" />
       </div>
-      <div className="mt-4 flex gap-2">
-        <Skeleton className="h-10 w-32 bg-dark-300" />
-        <Skeleton className="h-10 w-32 bg-dark-300" />
-      </div>
-      <div className="mt-4 flex gap-2">
-        <Skeleton className="h-10 flex-1 bg-dark-300" />
-        <Skeleton className="h-10 w-24 bg-dark-300" />
-      </div>
-      <div className="mt-4">
-        <Skeleton className="h-6 w-32 bg-dark-300" />
-        <div className="mt-2 space-y-4">
-          {[...Array(3)].map((_, index) => (
-            <div key={index} className="flex flex-col gap-2">
-              <Skeleton className="h-4 w-24 bg-dark-300" />
-              <Skeleton className="h-4 w-48 bg-dark-300" />
-            </div>
-          ))}
-        </div>
+      <div className="mt-3 flex gap-2">
+        <Skeleton className="h-8 w-20 bg-slate-700" />
+        <Skeleton className="h-8 w-20 bg-slate-700" />
       </div>
     </div>
   );
@@ -277,163 +257,395 @@ const BotControl = () => {
   }
 
   return (
-    <div className="p-5 border-[1px] border-dark-500 bg-dark-700 w-full ">
-      <div className="w-full flex flex-col gap-5 flex-wrap">
-        <h3 className="flex items-center gap-2 font-bold  text-light-100">
-          <SiHackaday /> Bot Controller
+    <div className="p-6 border border-slate-800/50 bg-slate-950/80 w-full rounded-lg backdrop-blur-sm">
+      <div className="w-full flex flex-col gap-6">
+        <h3 className="flex items-center gap-3 font-bold text-slate-100 text-lg">
+          <SiHackaday className="text-emerald-400" /> Bot Controller
         </h3>
-        <div className="flex gap-5">
-          Total Bots: {totalBots}
-          <span className="bg-green-500/20 text-green-500 px-1">Running: {runningBots}</span>
-          <span className="bg-sky-500/20 text-sky-500 px-1">Idle: {idleBots}</span>
-          <span className="bg-red-500/20 text-red-500 px-1">Stopped: {stoppedBots}</span>
+
+        <div className="flex gap-6 text-sm">
+          <span className="text-slate-300">
+            Total Bots: <span className="font-medium text-slate-100">{totalBots}</span>
+          </span>
+          <span className="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded border border-emerald-500/30">
+            Running: {runningBots}
+          </span>
+          <span className="bg-amber-500/20 text-amber-400 px-2 py-1 rounded border border-amber-500/30">
+            Idle: {idleBots}
+          </span>
+          <span className="bg-red-500/20 text-red-400 px-2 py-1 rounded border border-red-500/30">
+            Stopped: {stoppedBots}
+          </span>
         </div>
+
         <div className="flex gap-5 items-center flex-wrap">
-          <div className="flex flex-col gap-2 bg-dark-600 w-full p-5">
+          <div className="flex flex-col gap-3 bg-slate-900/60 w-full p-5 rounded-lg border border-slate-800/50">
             <div className="flex justify-between w-full">
-              <h3 className="">
-                Mass Action <p className="text-xs text-white/40">Action will effect all bot</p>
-              </h3>
+              <div>
+                <h4 className="text-slate-200 font-medium">Mass Actions</h4>
+                <p className="text-xs text-slate-500">Actions will affect all bots</p>
+              </div>
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="p-1 text-sm rounded-sm h-fit font-aktivGroteskBold bg-primary text-black hover:bg-primary/70"
+                className="p-2 text-sm rounded-md h-fit font-medium bg-emerald-600 text-slate-100 hover:bg-emerald-500 border border-emerald-500/30 transition-colors"
                 title="Refresh data">
-                <TbRefresh className={`text-xl ${isRefreshing ? 'animate-spin' : ''}`} />
+                <TbRefresh className={`text-lg ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
             </div>
-            <div className="grid gap-5 grid-cols-2 font-semibold">
+            <div className="grid gap-3 grid-cols-3 font-medium">
               <button
-                onClick={() => handleMassAction('massStop')}
-                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Stop
-              </button>
-              <button
-                onClick={() => handleMassAction('massStartCreateGenerate')}
-                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Create (Generate Data)
-              </button>
-              <button
-                onClick={() => handleMassAction('massStartCreate')}
-                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Create
-              </button>
-              <button
-                disabled
-                onClick={() => handleMassAction('massStartChecking')}
-                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Check
-              </button>
-              <button
-                onClick={() => handleMassAction('massRestart')}
-                className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                Restart
+                onClick={() => handleMassAction('massDeleteStopped')}
+                className="px-3 py-2 rounded-md font-medium bg-red-700/80 text-red-200 hover:bg-red-600/80 border border-red-600/30 transition-colors">
+                Delete Stopped
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 max-h-[800px] w-full bg-dark-600 p-5 mt-10  overflow-y-scroll __dokmai_scrollbar">
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 max-h-[75vh] w-full bg-slate-950/50 p-4 mt-8 overflow-y-scroll __dokmai_scrollbar rounded-lg border border-slate-800/50">
         {loading
           ? [...Array(9)].map((_, index) => <BotCardSkeleton key={index} />)
-          : bots.map((bot) => (
-              <div
-                key={bot.botId}
-                className={`flex flex-col border shadow-lg 
-                  ${bot.botState === 'running' && 'border-green-500 shadow-green-500/30 '}
-                  ${bot.botState === 'stopped' && 'border-red-500 shadow-red-500/30 '}
-                  ${bot.botState === 'idle' && 'border-sky-500 shadow-sky-500/30 '}
-                 p-5 rounded bg-dark-500 transition duration-200`}>
-                <div className="flex justify-between items-center">
-                  <span className="flex gap-2 text-light-100">
-                    {bot.botId} <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
-                  </span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs 
-                       ${bot.botState === 'running' && 'text-green-500 bg-green-500/30 '}
-                  ${bot.botState === 'stopped' && 'text-red-500 bg-red-500/30 '}
-                  ${bot.botState === 'idle' && 'text-sky-500 bg-sky-500/30 '}`}>
-                    {bot.botState}
-                  </span>
-                </div>
-                <div className="mt-2">
-                  <p className="text-xs text-light-800">
-                    Parameters Active: {bot.parameters.join(', ')}
-                  </p>
-                </div>
-                <div className="mt-5 flex gap-2">
-                  {bot.botState === 'stopped' || bot.botState === 'idle' ? (
-                    <>
-                      <button
-                        onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
-                        className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Create
-                      </button>
-                      <button
-                        onClick={() =>
-                          setBotState(bot.botId, 'running', ['--mailgen', '--ibangen'])
+          : bots.map((bot) => {
+              const healthStatus = getBotHealthStatus(bot);
+              const lastActivity =
+                bot.activity.length > 0
+                  ? bot.activity.sort(
+                      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                    )[0]
+                  : null;
+              const uptime = bot.lastSeen
+                ? Math.floor((Date.now() - new Date(bot.lastSeen).getTime()) / (1000 * 60))
+                : null;
+
+              return (
+                <div
+                  key={bot.botId}
+                  className="bg-slate-900/90 border border-slate-700/60 rounded-lg font-mono text-xs overflow-hidden hover:border-slate-600/80 hover:bg-slate-900 transition-all duration-200 shadow-lg backdrop-blur-sm">
+                  {/* Enhanced Header with More Info */}
+                  <div className="bg-slate-800/80 px-3 py-2.5 border-b border-slate-700/50">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="text-slate-200 font-medium truncate max-w-[120px]"
+                          title={bot.botId}>
+                          {bot.botId}
+                        </span>
+                        <div
+                          className={`w-2 h-2 rounded-full shadow-sm ${
+                            healthStatus.color === 'green'
+                              ? 'bg-emerald-500 shadow-emerald-500/50'
+                              : healthStatus.color === 'red'
+                              ? 'bg-red-500 shadow-red-500/50'
+                              : 'bg-slate-500 shadow-slate-500/50'
+                          }`}
+                          title={healthStatus.message}></div>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded-md text-xs font-medium ${
+                          bot.botState === 'running' &&
+                          'text-emerald-300 bg-emerald-500/20 border border-emerald-500/30'
+                        } ${
+                          bot.botState === 'stopped' &&
+                          'text-red-300 bg-red-500/20 border border-red-500/30'
+                        } ${
+                          bot.botState === 'idle' &&
+                          'text-amber-300 bg-amber-500/20 border border-amber-500/30'
+                        }`}>
+                        {bot.botState.toUpperCase()}
+                      </span>
+                    </div>
+
+                    {/* Quick Stats Row */}
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span className="flex items-center gap-1">
+                        <span className="w-1 h-1 bg-slate-500 rounded-full"></span>
+                        {bot.activity.length} activities
+                      </span>
+                      {uptime !== null && (
+                        <span className="flex items-center gap-1">
+                          <span className="w-1 h-1 bg-slate-500 rounded-full"></span>
+                          {uptime < 60 ? `${uptime}m ago` : `${Math.floor(uptime / 60)}h ago`}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Enhanced Content */}
+                  <div className="p-3 bg-slate-900/90 text-slate-300">
+                    {/* Parameters & Webhook Info */}
+                    <div className="mb-3 space-y-1">
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-slate-500 font-medium min-w-[45px]">Params:</span>
+                        <span className="text-slate-300 bg-slate-800/50 px-2 py-0.5 rounded text-xs border border-slate-700/50">
+                          {bot.parameters.length > 0 ? bot.parameters.join(', ') : 'none'}
+                        </span>
+                      </div>
+
+                      {bot.webhookUrl && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 font-medium min-w-[45px]">Hook:</span>
+                          <span
+                            className="text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded text-xs border border-blue-500/20 truncate max-w-[120px]"
+                            title={bot.webhookUrl}>
+                            {bot.webhookUrl.split('/').pop()}
+                          </span>
+                        </div>
+                      )}
+
+                      {lastActivity && (
+                        <div className="flex items-center gap-2 text-xs">
+                          <span className="text-slate-500 font-medium min-w-[45px]">Last:</span>
+                          <span
+                            className={`px-2 py-0.5 rounded text-xs border ${
+                              lastActivity.status === 'completed'
+                                ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                                : lastActivity.status === 'failed'
+                                ? 'text-red-400 bg-red-500/10 border-red-500/20'
+                                : lastActivity.status === 'in-progress'
+                                ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                                : 'text-slate-400 bg-slate-500/10 border-slate-500/20'
+                            }`}>
+                            {lastActivity.type} - {lastActivity.status || 'unknown'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Enhanced Action Buttons */}
+                    <div className="flex gap-1 mb-3">
+                      {bot.botState === 'stopped' || bot.botState === 'idle' ? (
+                        <>
+                          <button
+                            onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
+                            className="px-2 py-1.5 bg-emerald-700/80 text-emerald-200 rounded-md text-xs hover:bg-emerald-600/80 border border-emerald-600/30 transition-colors">
+                            Start
+                          </button>
+                          <button
+                            onClick={() =>
+                              setBotState(bot.botId, 'running', ['--mailgen', '--ibangen'])
+                            }
+                            className="px-2 py-1.5 bg-blue-700/80 text-blue-200 rounded-md text-xs hover:bg-blue-600/80 border border-blue-600/30 transition-colors">
+                            Generate
+                          </button>
+                          <button
+                            onClick={() => handleDeleteBot(bot.botId)}
+                            className="px-2 py-1.5 bg-red-700/80 text-red-200 rounded-md text-xs hover:bg-red-600/80 border border-red-600/30 transition-colors">
+                            Delete
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => setBotState(bot.botId, 'stopped')}
+                            className="px-2 py-1.5 bg-red-700/80 text-red-200 rounded-md text-xs hover:bg-red-600/80 border border-red-600/30 transition-colors">
+                            Stop
+                          </button>
+                          <button
+                            onClick={() => restartBot(bot)}
+                            className="px-2 py-1.5 bg-cyan-700/80 text-cyan-200 rounded-md text-xs hover:bg-cyan-600/80 border border-cyan-600/30 transition-colors">
+                            Restart
+                          </button>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Enhanced Command Input */}
+                    <div className="flex gap-1 mb-3 bg-slate-800/50 rounded-md border border-slate-700/50 p-2">
+                      <span className="text-emerald-400 font-medium">{'>'}</span>
+                      <input
+                        type="text"
+                        value={commandInputs[bot.botId] || ''}
+                        onChange={(e) =>
+                          setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
                         }
-                        className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Create (Generate Data)
-                      </button>
+                        placeholder="command..."
+                        className="bg-transparent border-none outline-none text-emerald-300 flex-1 text-xs placeholder-slate-500"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            sendCommand(bot.botId);
+                          }
+                        }}
+                      />
                       <button
-                        onClick={() => setBotState(bot.botId, 'running', ['--checking'])}
-                        disabled
-                        className="px-1 rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                        Check
+                        onClick={() => sendCommand(bot.botId)}
+                        className="px-2 py-1 bg-emerald-700/80 text-emerald-200 rounded text-xs hover:bg-emerald-600/80 border border-emerald-600/30 transition-colors">
+                        Send
                       </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() => setBotState(bot.botId, 'stopped')}
-                        className="px-1 rounded-sm font-aktivGroteskBold bg-red-500/20 text-red-500 hover:bg-red-500/40">
-                        Stop
-                      </button>
-                      <button
-                        onClick={() => restartBot(bot)}
-                        className="px-1 rounded-sm font-aktivGroteskBold bg-cyan-500 text-dark-800 hover:bg-cyan-500">
-                        Restart
-                      </button>
-                    </>
-                  )}
+                    </div>
+
+                    {/* Enhanced Activity Output */}
+                    {bot.activity.length > 0 && (
+                      <div className="border-t border-slate-700/50 pt-3">
+                        <div className="text-xs text-slate-400 mb-2 font-medium">
+                          Recent Activity:
+                        </div>
+                        <div className="bg-slate-950/80 border border-slate-700/50 rounded-md p-2 max-h-48 overflow-y-auto __dokmai_scrollbar">
+                          {bot.activity
+                            .sort(
+                              (a, b) =>
+                                new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+                            )
+                            .slice(0, 5)
+                            .map((activity, index) => (
+                              <div
+                                key={index}
+                                className="mb-3 pb-2 border-b border-slate-700/30 last:border-b-0">
+                                {/* Activity Header */}
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-xs text-slate-500">
+                                    [{formatTime(activity.timestamp)}]
+                                  </span>
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={`text-xs px-1.5 py-0.5 rounded ${
+                                        activity.type === 'error'
+                                          ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                          : activity.type === 'command'
+                                          ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                      }`}>
+                                      {activity.type}
+                                    </span>
+                                    <span
+                                      className={`text-xs px-1.5 py-0.5 rounded ${
+                                        activity.status === 'completed'
+                                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                          : activity.status === 'failed'
+                                          ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                          : activity.status === 'in-progress'
+                                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                          : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
+                                      }`}>
+                                      {activity.status || 'unknown'}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Activity Message */}
+                                <div className="text-xs text-slate-300 mb-1">
+                                  {activity.message || 'No message available'}
+                                </div>
+
+                                {/* Command */}
+                                {activity.command && (
+                                  <div className="text-xs mb-1">
+                                    <span className="text-blue-400">$ </span>
+                                    <span className="text-emerald-400">{activity.command}</span>
+                                  </div>
+                                )}
+
+                                {/* Output */}
+                                {activity.output && (
+                                  <div className="bg-slate-800/50 border border-slate-700/50 rounded p-2 mt-1">
+                                    <div className="text-xs text-emerald-400 mb-1">Output:</div>
+                                    <pre className="text-xs text-slate-300 whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
+                                      {activity.output}
+                                    </pre>
+                                    <button
+                                      onClick={() =>
+                                        navigator.clipboard.writeText(activity.output || '')
+                                      }
+                                      className="text-xs text-blue-400 hover:text-blue-300 mt-1">
+                                      Copy Output
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* Error */}
+                                {activity.error && (
+                                  <div className="bg-red-900/20 border border-red-600/30 rounded p-2 mt-1">
+                                    <div className="text-xs text-red-400 mb-1">Error:</div>
+                                    <pre className="text-xs text-red-300 whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
+                                      {activity.error}
+                                    </pre>
+                                    <button
+                                      onClick={() =>
+                                        navigator.clipboard.writeText(activity.error || '')
+                                      }
+                                      className="text-xs text-blue-400 hover:text-blue-300 mt-1">
+                                      Copy Error
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* Details */}
+                                {activity.details && Object.keys(activity.details).length > 0 && (
+                                  <div className="bg-slate-800/50 border border-slate-700/50 rounded p-2 mt-1">
+                                    <div className="text-xs text-amber-400 mb-1">Details:</div>
+                                    <div className="text-xs text-slate-300 space-y-1">
+                                      {Object.entries(activity.details).map(([key, value]) => (
+                                        <div key={key} className="flex gap-2">
+                                          <span className="text-amber-400">{key}:</span>
+                                          <span className="break-all">{JSON.stringify(value)}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Copy ID */}
+                    <div className="flex items-center justify-between border-t border-slate-700/50 pt-2 mt-2">
+                      <span className="text-xs text-slate-500">ID: {bot.botId}</span>
+                      <CopyToClipboard textToCopy={bot.botId.replace('bot-', '')} />
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-5 flex gap-2">
-                  <input
-                    type="text"
-                    value={commandInputs[bot.botId] || ''}
-                    onChange={(e) =>
-                      setCommandInputs({ ...commandInputs, [bot.botId]: e.target.value })
-                    }
-                    placeholder="Enter command"
-                    className="border border-primary p-2 w-full focus:border-primary focus:outline-none focus:ring-0 bg-transparent text-sm"
-                  />
-                  <button
-                    onClick={() => sendCommand(bot.botId)}
-                    className="px-3 text-sm rounded-sm font-aktivGroteskBold bg-primary text-dark-800 hover:bg-primary/70">
-                    Send
-                  </button>
-                </div>
-                <div className="mt-5 p-5 bg-dark-400">
-                  <div className="space-y-4">{renderActivities(bot.activity)}</div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
+
+        {/* Confirmation Modals */}
         {showConfirm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-dark-700 p-5 rounded border border-dark-500">
-              <h4 className="text-light-100">Are you sure?</h4>
-              <p className="text-light-500">{confirmMessage}</p>
-              <div className="flex justify-end gap-2 mt-4">
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 max-w-md">
+              <h4 className="text-slate-100 font-bold">Are you sure?</h4>
+              <p className="text-slate-400 mt-2">{confirmMessage}</p>
+              <div className="flex justify-end gap-3 mt-4">
                 <button
                   onClick={() => setShowConfirm(false)}
-                  className="px-2 py-1 bg-gray-500 text-white rounded">
+                  className="px-3 py-2 bg-slate-600 text-slate-200 rounded-md hover:bg-slate-500 transition-colors">
                   Cancel
                 </button>
                 <button
                   onClick={confirmMassAction}
-                  className="px-2 py-1 bg-red-500 text-white rounded">
+                  className="px-3 py-2 bg-red-600 text-red-100 rounded-md hover:bg-red-500 transition-colors">
                   Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-slate-800 p-6 rounded-lg border border-slate-700 max-w-md">
+              <h4 className="text-slate-100 font-bold">Delete Bot</h4>
+              <p className="text-slate-400 mt-2">
+                Are you sure you want to permanently delete bot{' '}
+                <span className="font-mono text-red-400">{botToDelete}</span>?
+              </p>
+              <p className="text-red-400 text-xs mt-2">
+                This action cannot be undone. All bot data and activity history will be lost.
+              </p>
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setBotToDelete(null);
+                  }}
+                  className="px-3 py-2 bg-slate-600 text-slate-200 rounded-md hover:bg-slate-500 transition-colors">
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteBot}
+                  className="px-3 py-2 bg-red-600 text-red-100 rounded-md hover:bg-red-500 transition-colors">
+                  Delete Bot
                 </button>
               </div>
             </div>
