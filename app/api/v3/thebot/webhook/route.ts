@@ -65,7 +65,14 @@ async function handleBotRegistration(body: any) {
   // Register bot in database and memory
   await registerBot(botId, webhookUrl);
 
+  // Debug: Check if registration worked
   console.log(`[Webhook] Bot ${botId} registered successfully`);
+  console.log('🔍 Registry after registration:', {
+    botId,
+    registryKeys: Object.keys(botRegistry),
+    botInfo: botRegistry[botId],
+    fullRegistry: botRegistry,
+  });
 }
 
 async function handleBotReport(body: any) {

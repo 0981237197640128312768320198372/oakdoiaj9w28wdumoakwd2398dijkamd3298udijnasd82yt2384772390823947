@@ -31,16 +31,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Bot not found' }, { status: 404 });
     }
 
-    // Get bot's webhook URL from registry
-    const botRegistry = global.botRegistry || {};
-    const botInfo = botRegistry[botId];
-
-    if (!botInfo?.webhookUrl) {
+    // Get bot's webhook URL from database (more reliable than global registry)
+    if (!bot.webhookUrl) {
+      console.log(`❌ Bot ${botId} has no webhook URL registered`);
       return NextResponse.json(
         { success: false, error: 'Bot is not registered with webhook' },
         { status: 400 }
       );
     }
+
+    console.log(`✅ Using webhook URL from database: ${bot.webhookUrl}`);
 
     // Generate command ID
     const commandId = `cmd_${Date.now()}`;
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send webhook to bot controller
-    const webhookResponse = await fetch(botInfo.webhookUrl, {
+    const webhookResponse = await fetch(bot.webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

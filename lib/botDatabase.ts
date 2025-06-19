@@ -20,6 +20,8 @@ export interface Bot {
   botId: string;
   botState: 'running' | 'stopped' | 'idle' | 'error';
   parameters: string[];
+  webhookUrl?: string;
+  lastSeen?: Date;
   activity: BotActivity[];
 }
 
@@ -118,15 +120,17 @@ export async function registerBot(botId: string, webhookUrl: string): Promise<vo
 
   // Check if bot exists in database
   const bot = await getBot(botId);
+  const client = await connectToDatabase();
+  const collection = client.db('botController').collection('bots');
 
   if (!bot) {
-    // Create new bot in database
-    const client = await connectToDatabase();
-    const collection = client.db('botController').collection('bots');
+    // Create new bot in database with webhook URL
     await collection.insertOne({
       botId,
       botState: 'idle',
       parameters: [],
+      webhookUrl,
+      lastSeen: new Date(),
       activity: [
         {
           _id: `act_${Date.now()}`,
@@ -136,5 +140,16 @@ export async function registerBot(botId: string, webhookUrl: string): Promise<vo
         },
       ],
     });
+  } else {
+    // Update existing bot with webhook URL
+    await collection.updateOne(
+      { botId },
+      {
+        $set: {
+          webhookUrl,
+          lastSeen: new Date(),
+        },
+      }
+    );
   }
 }

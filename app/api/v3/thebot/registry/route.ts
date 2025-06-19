@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { botRegistry } from '@/lib/botDatabase';
 
+/**
+ * GET /api/v3/thebot/registry
+ * Get bot registry information (all registered bots)
+ */
 export async function GET() {
   try {
     const registry = botRegistry || {};
