@@ -330,6 +330,19 @@ const BotControl = () => {
                       <span className="flex items-center gap-1">
                         <span className="w-1 h-1 bg-dark-500 rounded-full"></span>
                         {bot.activity.length} activities
+                      </span>{' '}
+                      <span
+                        className={`px-1 py-0.5 rounded-md text-xs font-medium ${
+                          bot.botState === 'running' &&
+                          'text-emerald-300 bg-emerald-500/20 border border-emerald-500/30'
+                        } ${
+                          bot.botState === 'stopped' &&
+                          'text-red-300 bg-red-500/20 border border-red-500/30'
+                        } ${
+                          bot.botState === 'idle' &&
+                          'text-amber-300 bg-amber-500/20 border border-amber-500/30'
+                        }`}>
+                        {bot.botState.toUpperCase()}
                       </span>
                       {uptime !== null && (
                         <span className="flex items-center gap-1">
@@ -342,19 +355,6 @@ const BotControl = () => {
 
                   {/* Enhanced Content */}
                   <div className="p-3 bg-dark-900 text-light-300">
-                    <span
-                      className={`px-2 py-1 rounded-md text-xs font-medium ${
-                        bot.botState === 'running' &&
-                        'text-emerald-300 bg-emerald-500/20 border border-emerald-500/30'
-                      } ${
-                        bot.botState === 'stopped' &&
-                        'text-red-300 bg-red-500/20 border border-red-500/30'
-                      } ${
-                        bot.botState === 'idle' &&
-                        'text-amber-300 bg-amber-500/20 border border-amber-500/30'
-                      }`}>
-                      {bot.botState.toUpperCase()}
-                    </span>
                     {/* Parameters & Webhook Info */}
                     <div className="mb-3 space-y-1">
                       <div className="flex items-center gap-2 text-xs">
@@ -462,7 +462,7 @@ const BotControl = () => {
                         <div className="text-xs text-light-400 mb-2 font-medium">
                           Recent Activity:
                         </div>
-                        <div className="bg-dark-950 border border-dark-600 rounded-md p-2 max-h-48 overflow-y-auto __dokmai_scrollbar">
+                        <div className="bg-dark-800 border border-dark-500 rounded-md p-2 max-h-48 overflow-y-auto __dokmai_scrollbar">
                           {bot.activity
                             .sort(
                               (a, b) =>
@@ -524,13 +524,6 @@ const BotControl = () => {
                                     <pre className="text-xs text-light-300 whitespace-pre-wrap overflow-x-auto max-h-24 overflow-y-auto">
                                       {activity.output}
                                     </pre>
-                                    <button
-                                      onClick={() =>
-                                        navigator.clipboard.writeText(activity.output || '')
-                                      }
-                                      className="text-xs text-blue-400 hover:text-blue-300 mt-1">
-                                      Copy Output
-                                    </button>
                                   </div>
                                 )}
 
@@ -553,7 +546,7 @@ const BotControl = () => {
 
                                 {/* Details */}
                                 {activity.details && Object.keys(activity.details).length > 0 && (
-                                  <div className="bg-dark-600 border border-dark-600 rounded p-2 mt-1">
+                                  <div className="bg-dark-700 border border-dark-600 rounded p-2 mt-1">
                                     <div className="text-xs text-amber-400 mb-1">Details:</div>
                                     <div className="text-xs text-light-300 space-y-1">
                                       {Object.entries(activity.details).map(([key, value]) => (
