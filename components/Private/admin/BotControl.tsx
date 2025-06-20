@@ -28,10 +28,47 @@ interface BotData {
   botId: string;
   botState: 'running' | 'stopped' | 'idle' | 'error';
   parameters: string[];
+  selectedParameters?: string[]; // New field for user-selected parameters
   webhookUrl?: string;
   lastSeen?: string;
   activity: BotActivity[];
 }
+
+// Available parameters for bot configuration
+const AVAILABLE_PARAMETERS = [
+  { value: '--proxy', label: 'Proxy Mode', description: 'Use proxy for requests' },
+  {
+    value: '--test',
+    label: 'Testing Mode',
+    description: 'Testing mode (prevent force browser close)',
+  },
+  { value: '--once', label: 'Single Run', description: 'Process only one account then exit' },
+  {
+    value: '--mailgen',
+    label: 'Mail Generator',
+    description: 'Generate random emails instead of reading files',
+  },
+  {
+    value: '--generate-email',
+    label: 'Email Gen Only',
+    description: 'Only generate email/password, no processing',
+  },
+  {
+    value: '--ibangen',
+    label: 'IBAN Generator',
+    description: 'Generate IBAN instead of using pre-made ones',
+  },
+  {
+    value: '--check',
+    label: 'Account Checker',
+    description: 'Check existing accounts (login + determine good/bad)',
+  },
+  {
+    value: '--NoEmail',
+    label: 'No Email Access',
+    description: 'When email cannot use fetchEmail function (cannot access the email)',
+  },
+];
 
 const BotControl = () => {
   const [bots, setBots] = useState<BotData[]>([]);
@@ -44,6 +81,10 @@ const BotControl = () => {
   const [confirmMessage, setConfirmMessage] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [botToDelete, setBotToDelete] = useState<string | null>(null);
+  const [showParameterModal, setShowParameterModal] = useState(false);
+  const [currentBotForParams, setCurrentBotForParams] = useState<string | null>(null);
+  const [botParameters, setBotParameters] = useState<{ [key: string]: string[] }>({});
+  const [tempSelectedParams, setTempSelectedParams] = useState<string[]>([]);
 
   const fetchBotData = async () => {
     try {
@@ -215,8 +256,48 @@ const BotControl = () => {
   const restartBot = (bot: BotData) => {
     setBotState(bot.botId, 'stopped');
     setTimeout(() => {
-      setBotState(bot.botId, 'running', bot.parameters);
+      const selectedParams = botParameters[bot.botId] || bot.parameters || [];
+      setBotState(bot.botId, 'running', selectedParams);
     }, 1000);
+  };
+
+  // Parameter management functions
+  const openParameterModal = (botId: string) => {
+    setCurrentBotForParams(botId);
+    const currentParams = botParameters[botId] || [];
+    setTempSelectedParams(currentParams);
+    setShowParameterModal(true);
+  };
+
+  const closeParameterModal = () => {
+    setShowParameterModal(false);
+    setCurrentBotForParams(null);
+    setTempSelectedParams([]);
+  };
+
+  const toggleParameter = (paramValue: string) => {
+    setTempSelectedParams((prev) =>
+      prev.includes(paramValue) ? prev.filter((p) => p !== paramValue) : [...prev, paramValue]
+    );
+  };
+
+  const applyParameters = () => {
+    if (currentBotForParams) {
+      setBotParameters((prev) => ({
+        ...prev,
+        [currentBotForParams]: tempSelectedParams,
+      }));
+    }
+    closeParameterModal();
+  };
+
+  const getBotSelectedParameters = (botId: string) => {
+    return botParameters[botId] || [];
+  };
+
+  const startBotWithSelectedParams = (botId: string) => {
+    const selectedParams = getBotSelectedParameters(botId);
+    setBotState(botId, 'running', selectedParams.length > 0 ? selectedParams : ['--mailgen']);
   };
 
   useEffect(() => {
@@ -355,10 +436,39 @@ const BotControl = () => {
 
                   {/* Enhanced Content */}
                   <div className="p-3 bg-dark-900 text-light-300">
-                    {/* Parameters & Webhook Info */}
-                    <div className="mb-3 space-y-1">
+                    {/* Selected Parameters Display */}
+                    <div className="mb-3 space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-light-500 font-medium">Selected Parameters:</span>
+                        <button
+                          onClick={() => openParameterModal(bot.botId)}
+                          className="px-2 py-1 bg-purple-700/80 text-purple-200 rounded text-xs hover:bg-purple-600/80 border border-purple-600/30 transition-colors">
+                          Settings
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {getBotSelectedParameters(bot.botId).length > 0 ? (
+                          getBotSelectedParameters(bot.botId).map((param) => {
+                            const paramInfo = AVAILABLE_PARAMETERS.find((p) => p.value === param);
+                            return (
+                              <span
+                                key={param}
+                                className="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-xs border border-emerald-500/30"
+                                title={paramInfo?.description}>
+                                {paramInfo?.label || param}
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <span className="text-light-400 text-xs italic">
+                            No parameters selected
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Current Running Parameters */}
                       <div className="flex items-center gap-2 text-xs">
-                        <span className="text-light-500 font-medium min-w-[45px]">Params:</span>
+                        <span className="text-light-500 font-medium min-w-[45px]">Running:</span>
                         <span className="text-light-300 bg-dark-600 px-2 py-0.5 rounded text-xs border border-dark-600">
                           {bot.parameters.length > 0 ? bot.parameters.join(', ') : 'none'}
                         </span>
@@ -399,16 +509,9 @@ const BotControl = () => {
                       {bot.botState === 'stopped' || bot.botState === 'idle' ? (
                         <>
                           <button
-                            onClick={() => setBotState(bot.botId, 'running', ['--mailgen'])}
+                            onClick={() => startBotWithSelectedParams(bot.botId)}
                             className="px-2 py-1.5 bg-emerald-700/80 text-emerald-200 rounded-md text-xs hover:bg-emerald-600/80 border border-emerald-600/30 transition-colors">
                             Start
-                          </button>
-                          <button
-                            onClick={() =>
-                              setBotState(bot.botId, 'running', ['--mailgen', '--ibangen'])
-                            }
-                            className="px-2 py-1.5 bg-blue-700/80 text-blue-200 rounded-md text-xs hover:bg-blue-600/80 border border-blue-600/30 transition-colors">
-                            Generate
                           </button>
                           <button
                             onClick={() => handleDeleteBot(bot.botId)}
@@ -620,6 +723,106 @@ const BotControl = () => {
                   onClick={confirmDeleteBot}
                   className="px-3 py-2 bg-red-600 text-red-100 rounded-md hover:bg-red-500 transition-colors">
                   Delete Bot
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Parameter Selection Modal */}
+        {showParameterModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-dark-600 p-6 rounded-lg border border-dark-600 max-w-2xl w-full mx-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-light-100 font-bold text-lg">
+                  Configure Parameters for Bot {currentBotForParams}
+                </h4>
+                <button
+                  onClick={closeParameterModal}
+                  className="text-light-400 hover:text-light-200 text-xl">
+                  ×
+                </button>
+              </div>
+
+              <p className="text-light-400 text-sm mb-4">
+                Select the parameters you want this bot to use when starting. You can select
+                multiple parameters.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6">
+                {AVAILABLE_PARAMETERS.map((param) => (
+                  <div
+                    key={param.value}
+                    className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                      tempSelectedParams.includes(param.value)
+                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                        : 'bg-dark-700 border-dark-500 text-light-300 hover:border-dark-400'
+                    }`}
+                    onClick={() => toggleParameter(param.value)}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={tempSelectedParams.includes(param.value)}
+                          onChange={() => toggleParameter(param.value)}
+                          className="w-4 h-4 text-emerald-600 bg-dark-800 border-dark-600 rounded focus:ring-emerald-500"
+                        />
+                        <span className="font-medium text-sm">{param.label}</span>
+                      </div>
+                      <span className="text-xs font-mono text-light-500">{param.value}</span>
+                    </div>
+                    <p className="text-xs text-light-400 mt-1 ml-6">{param.description}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="border-t border-dark-500 pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-light-300 text-sm font-medium">
+                    Selected Parameters ({tempSelectedParams.length}):
+                  </span>
+                  {tempSelectedParams.length > 0 && (
+                    <button
+                      onClick={() => setTempSelectedParams([])}
+                      className="text-xs text-red-400 hover:text-red-300">
+                      Clear All
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-4 min-h-[2rem]">
+                  {tempSelectedParams.length > 0 ? (
+                    tempSelectedParams.map((param) => {
+                      const paramInfo = AVAILABLE_PARAMETERS.find((p) => p.value === param);
+                      return (
+                        <span
+                          key={param}
+                          className="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-xs border border-emerald-500/30 flex items-center gap-1">
+                          {paramInfo?.label || param}
+                          <button
+                            onClick={() => toggleParameter(param)}
+                            className="text-emerald-400 hover:text-emerald-200 ml-1">
+                            ×
+                          </button>
+                        </span>
+                      );
+                    })
+                  ) : (
+                    <span className="text-light-500 text-xs italic">No parameters selected</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={closeParameterModal}
+                  className="px-4 py-2 bg-dark-700 text-light-200 rounded-md hover:bg-dark-600 transition-colors">
+                  Cancel
+                </button>
+                <button
+                  onClick={applyParameters}
+                  className="px-4 py-2 bg-emerald-600 text-emerald-100 rounded-md hover:bg-emerald-500 transition-colors">
+                  Apply Parameters
                 </button>
               </div>
             </div>
