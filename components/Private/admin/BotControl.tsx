@@ -470,7 +470,7 @@ const BotControl = () => {
                       <div className="flex items-center gap-2 text-xs">
                         <span className="text-light-500 font-medium min-w-[45px]">Running:</span>
                         <span className="text-light-300 bg-dark-600 px-2 py-0.5 rounded text-xs border border-dark-600">
-                          {bot.parameters.length > 0 ? bot.parameters.join(', ') : 'none'}
+                          {bot.parameters?.length > 0 ? bot.parameters.join(', ') : 'none'}
                         </span>
                       </div>
 
